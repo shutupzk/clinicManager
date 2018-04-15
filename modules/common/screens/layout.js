@@ -1,7 +1,7 @@
 import Head from './head'
 import ConLayout from './con_layout'
 import { styles } from '../../../components/styles'
-import { HeaderBar, FooterBar, Prompt } from '../../../components'
+import { HeaderBar, FooterBar } from '../../../components'
 
 const Layout = props => {
   return (

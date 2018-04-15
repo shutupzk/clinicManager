@@ -8,20 +8,44 @@ const PORT = '9151' // 端口
 // 主功能
 const MAINFUNCTION = [
   {
-    title: 'api管理',
-    short_name: 'apis',
-    navigateName: '/apis',
+    title: '就诊流程',
+    short_name: 'treatment',
+    navigateName: '/treatment',
     children: [
-      { title: 'api列表', navigateName: '/apis', color: '#5D75A6' }
+      { title: '就诊人登记', navigateName: '/treatment' },
+      { title: '预约分诊', navigateName: '/treatment/triage' },
+      { title: '医生接诊', navigateName: '/treatment/admission' },
+      { title: '收费管理', navigateName: '/treatment/charge' },
+      { title: '门诊发药', navigateName: '/treatment/drugdelivery' },
+      { title: '检查', navigateName: '/treatment/exam' },
+      { title: '检验', navigateName: '/treatment/inspect' },
+      { title: '治疗', navigateName: '/treatment/treat' },
+      { title: '药品零售', navigateName: '/treatment/drugretail' }
     ]
   },
   {
-    title: '项目管理',
-    short_name: 'projects',
-    navigateName: '/projects',
-    children: [
-      { title: '项目列表', navigateName: '/projects', color: '#5D75A6' }
-    ]
+    title: '诊所管理',
+    short_name: 'clinic',
+    navigateName: '/clinic',
+    children: []
+  },
+  {
+    title: '财务管理',
+    short_name: 'finance',
+    navigateName: '/finance',
+    children: []
+  },
+  {
+    title: '设置管理',
+    short_name: 'setting',
+    navigateName: '/setting',
+    children: []
+  },
+  {
+    title: '平台管理',
+    short_name: 'platform',
+    navigateName: '/platform',
+    children: []
   }
 ]
 

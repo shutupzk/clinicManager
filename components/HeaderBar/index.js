@@ -57,18 +57,19 @@ class HeaderBar extends Component {
   }
 
   render () {
-    const hideRightCon = this.props.hideRightCon || false
+    // const hideRightCon = this.props.hideRightCon || false
     // const { showLogutBtn } = this.state
     const curUrl = this.props.url && this.props.url.pathname
     // const imgstylenormal = { height: '.26rem', padding: '0 .1rem 0 .3rem', marginTop: '.16rem' }
+    console.log('curUrl =========', curUrl)
     return (
       <div className={'headerBar'}>
         <div className={'headerTop'}>
-          <span style={{marginRight:55}}>消息中心</span>
+          <span style={{ marginRight: 55 }}>消息中心</span>
           <span>退出</span>
-          <span style={{marginRight:25}}>您好，{'管理员'}</span>
+          <span style={{ marginRight: 25 }}>您好，{'管理员'}</span>
         </div>
-        <div className={'headerNav'}>
+        {/* <div className={'headerNav'}>
           <div className={'left_title'}>
             <img src={'/static/login/u49.png'} />
             <span className={'left_title_txt'}>{`${TITLE}`}</span>
@@ -86,14 +87,51 @@ class HeaderBar extends Component {
               <li>平台管理<img src={'/static/home/u141.png'} /></li>
             </ul>
           </div>
+        </div> */}
+        <div className={'headerNav'}>
+          <div className={'left_title'}>
+            <img src={'/static/login/u49.png'} />
+            <span className={'left_title_txt'}>{`${TITLE}`}</span>
+            <span className={'left_title_addr'}>深圳市龙华店</span>
+          </div>
+          <div className={'right_nav_menu'}>
+            <ul className='left'>
+              {MAINFUNCTION.map((item, iKey) => {
+                // return (
+                //   <li
+                //     className={curUrl.indexOf(item.short_name) > -1 ? 'selLi' : ''}
+                //     onClick={() => {
+                //       Router.push(item.navigateName)
+                //     }}
+                //     key={iKey}
+                //   >
+                //     {item.title}
+                //   </li>
+                return (
+                  <li
+                    className={curUrl.indexOf(item.short_name) > -1 ? 'selLi' : ''}
+                    onClick={() => {
+                      Router.push(item.navigateName)
+                    }}
+                  >
+                    {item.title}
+                    <img src={'/static/home/u141.png'} />
+                  </li>
+                )
+              })}
+              <div className='clearfix' />
+            </ul>
+          </div>
         </div>
         {/* <img style={HOSPITALINFO.headerImg && HOSPITALINFO.headerImg.imgstyle ? HOSPITALINFO.headerImg.imgstyle : imgstylenormal} src={HOSPITALINFO.hospital_loginlogo} className='left' /> */}
-        {/* <article className='left' style={{marginLeft: '20px', fontSize: 18}}>{HOSPITAL_NAME}管理后台</article>
+        {/* <article className="left" style={{ marginLeft: '20px', fontSize: 18 }}>
+          {HOSPITAL_NAME}管理后台
+        </article>
         {hideRightCon ? (
           ''
         ) : (
-          <section className='headerBarRight right'>
-            <ul className='left'>
+          <section className="headerBarRight right">
+            <ul className="left">
               {MAINFUNCTION.map((item, iKey) => {
                 return (
                   <li
@@ -107,10 +145,10 @@ class HeaderBar extends Component {
                   </li>
                 )
               })}
-              <div className='clearfix' />
+              <div className="clearfix" />
             </ul>
             {this.headerUser()}
-            <div className='clearfix' />
+            <div className="clearfix" />
           </section>
         )} */}
         {canlendarStyles()}

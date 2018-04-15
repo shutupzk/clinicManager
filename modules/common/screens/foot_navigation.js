@@ -9,27 +9,22 @@ export default class Navigation extends Component {
   }
 
   render () {
-    const data = this.props.data
+    const { data, url } = this.props
     return (
       <ul className='footNavUl'>
-        <div className={'selLeftMenu'}>就诊人登记</div>
-        <div>预约分诊</div>
-        <div>医生接诊</div>
-        <div>收费管理</div>
-        <div>门诊发药</div>
-        <div>检查</div>
-        <div>检验</div>
-        <div>治疗</div>
-        <div>药品零售</div>
-        {/* {data &&
+        {data &&
           data.map((item, itemKey) => {
-            return <div key={itemKey}>{item.childs && item.childs.length > 0 ? levelTowHtml(this, item, itemKey) : levelOneHtml(this, item, itemKey)}</div>
-          })} */}
+            return (
+              <Link href={item.navigateName}>
+                <div className={url === item.navigateName ? 'selLeftMenu' : ''}>{item.title}</div>
+              </Link>
+            )
+          })}
         <style jsx global>{`
           .footNavUl {
             position: relative;
             z-index: 10;
-            width:100%;
+            width: 100%;
             overflow: auto;
           }
           .footNavLI {
@@ -51,7 +46,7 @@ export default class Navigation extends Component {
             line-height: 0.4rem;
             border-top: 1px solid ${theme.bordercolor};
           }
-          .footNavUl div{
+          .footNavUl div {
             width: 171px;
             height: 45px;
             line-height: 45px;
@@ -60,7 +55,7 @@ export default class Navigation extends Component {
             text-indent: 40px;
           }
           .footNavUl div:hover,
-          .footNavUl div.selLeftMenu{
+          .footNavUl div.selLeftMenu {
             color: #fff;
             background: inherit;
             box-sizing: border-box;
@@ -77,60 +72,4 @@ export default class Navigation extends Component {
       </ul>
     )
   }
-}
-
-const levelOneHtml = (self, item, itemKey) => {
-  const url = self.props.url
-  return (
-    <li className={url === item.navigateName || (item.navigateNameDetail && url.indexOf(item.navigateNameDetail) > -1) ? 'leftLiCur footNavLI' : 'footNavLI'} key={item.title}>
-      <Link href={item.navigateName}>
-        <a style={{ color: item.color }} className='flex lr-flex tb-flex footNavLIA'>
-          {item.title}
-        </a>
-      </Link>
-    </li>
-  )
-}
-
-const levelTowHtml = (self, item, itemKey) => {
-  const url = self.props.url
-  const commanUrl = url.indexOf(item.navigateName) > -1
-  return (
-    <li className={commanUrl ? 'leftLiCur footNavLI' : 'footNavLI'} key={item.title}>
-      <a
-        style={{ color: item.color }}
-        className='flex lr-flex tb-flex footNavLIA'
-        onClick={() => {
-          const prev = self.state[itemKey]
-          self.setState({
-            [itemKey]: !prev
-          })
-        }}
-      >
-        {item.title}
-        <i
-          style={{
-            display: 'block',
-            marginLeft: '.03rem',
-            borderTop: '.02rem solid #fff',
-            borderLeft: '.02rem solid #fff',
-            width: '.06rem',
-            height: '.06rem',
-            transform: self.state[itemKey] || commanUrl ? 'rotate(45deg)' : 'rotate(-135deg)'
-          }}
-        />
-      </a>
-      <article className='footNavChild' style={{ display: self.state[itemKey] || commanUrl ? 'block' : 'none' }}>
-        {item.childs.map((child, childKey) => {
-          return (
-            <Link href={child.navigateName} key={childKey}>
-              <p className='footNavChildItem' style={{ color: url === child.navigateName ? '#fff' : item.color }}>
-                {child.title}
-              </p>
-            </Link>
-          )
-        })}
-      </article>
-    </li>
-  )
 }
