@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import { HOSPITAL_NAME, MAINFUNCTION } from '../../config'
+import { TITLE, HOSPITAL_NAME, MAINFUNCTION } from '../../config'
 import canlendarStyles from './Wrapper'
 // import Link from 'next/link'
 import { theme } from '../../components'
@@ -63,8 +63,32 @@ class HeaderBar extends Component {
     // const imgstylenormal = { height: '.26rem', padding: '0 .1rem 0 .3rem', marginTop: '.16rem' }
     return (
       <div className={'headerBar'}>
+        <div className={'headerTop'}>
+          <span style={{marginRight:55}}>消息中心</span>
+          <span>退出</span>
+          <span style={{marginRight:25}}>您好，{'管理员'}</span>
+        </div>
+        <div className={'headerNav'}>
+          <div className={'left_title'}>
+            <img src={'/static/login/u49.png'} />
+            <span className={'left_title_txt'}>{`${TITLE}`}</span>
+            <span className={'left_title_addr'}>深圳市龙华店</span>
+          </div>
+          <div className={'right_nav_menu'}>
+            <ul>
+              <li className={'selLi'}>
+                就诊流程
+                <img src={'/static/home/u141.png'} />
+              </li>
+              <li>诊所管理<img src={'/static/home/u141.png'} /></li>
+              <li>财务管理<img src={'/static/home/u141.png'} /></li>
+              <li>设置管理<img src={'/static/home/u141.png'} /></li>
+              <li>平台管理<img src={'/static/home/u141.png'} /></li>
+            </ul>
+          </div>
+        </div>
         {/* <img style={HOSPITALINFO.headerImg && HOSPITALINFO.headerImg.imgstyle ? HOSPITALINFO.headerImg.imgstyle : imgstylenormal} src={HOSPITALINFO.hospital_loginlogo} className='left' /> */}
-        <article className='left' style={{marginLeft: '20px', fontSize: 18}}>{HOSPITAL_NAME}管理后台</article>
+        {/* <article className='left' style={{marginLeft: '20px', fontSize: 18}}>{HOSPITAL_NAME}管理后台</article>
         {hideRightCon ? (
           ''
         ) : (
@@ -88,7 +112,7 @@ class HeaderBar extends Component {
             {this.headerUser()}
             <div className='clearfix' />
           </section>
-        )}
+        )} */}
         {canlendarStyles()}
         <div className='clearfix' />
       </div>

@@ -1,6 +1,6 @@
 import withData from './withData'
 
-const TITLE = '院内接口对接管理平台'
+const TITLE = '诊小二管家平台'
 
 const API_SERVER = 'localhost:9151'
 const PORT = '9151' // 端口

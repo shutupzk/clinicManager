@@ -11,6 +11,7 @@ export function canlendarStyles () {
           font-size: ${theme.fontsize};
           position: relative;
           z-index: 100;
+          min-width:1000px;
         }
         .headerBarRight {
           padding-right: 0.1rem;

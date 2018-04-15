@@ -3,6 +3,72 @@ export function styles () {
   return (
     <style jsx global>
       {`
+        .headerTop{
+          width:100%;
+          height:30px;
+          border-bottom:1px solid #d8d8d8
+        }
+        .headerTop span{
+          float:right;
+          line-height:30px;
+          margin-right:15px;
+          cursor:pointer
+        }
+        .headerNav{
+          height: 75px;
+          float: left;
+        }
+        .headerNav .left_title{
+          float:left;
+        }
+        .headerNav .left_title img{
+          float: left;
+          margin: 10px;
+        }
+        .headerNav .left_title .left_title_txt{
+          font-family: 'PingFangSC-Semibold', 'PingFang SC Semibold', 'PingFang SC';
+          font-weight: 650;
+          font-style: normal;
+          font-size: 28px;
+          text-align: left;
+          float: left;
+          line-height:65px;
+          color: #333333;
+        }
+        .headerNav .left_title .left_title_addr{
+          line-height: 80px;
+          float:left;
+          margin-left: 5px;
+        }
+        .right_nav_menu{
+          float:left;
+          margin-left: 10px;
+        }
+        .right_nav_menu ul{
+          
+
+        }
+        .right_nav_menu ul li{
+          float: left;
+          // padding: 0 3px;
+          line-height: 90px;
+          width: 76px;
+          margin-left: 15px;
+          cursor: pointer;
+          position: relative;
+          text-align:center;
+          height: 78px;
+        }
+        .right_nav_menu ul li img{
+          position:absolute;
+          bottom:0;
+          left:0;
+          display:none;
+        }
+        .right_nav_menu ul li:hover img,
+        .right_nav_menu ul li.selLi img{
+          display:block;
+        }
         p {
           font-size: 14px;
           line-height: 24px;
