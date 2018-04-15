@@ -124,7 +124,8 @@ class SigninScreen extends Component {
             color: #333333;
           }
           .loginPage {
-            background: url('/static/icons/loginBack.png') center no-repeat;
+            // background: url('/static/icons/loginBack.png') center no-repeat;
+            background:#ffffff;
             position: fixed;
             top: 0;
             right: 0;
@@ -133,7 +134,7 @@ class SigninScreen extends Component {
           }
           .loginCon {
             background: #ffffff;
-            box-shadow: 0px 10px 28px 0px rgba(0, 0, 0, 0.3);
+            // box-shadow: 0px 10px 28px 0px rgba(0, 0, 0, 0.3);
             border-radius: 6px;
             // width: 30%;
             // height: auto;

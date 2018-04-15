@@ -130,7 +130,7 @@ export function styles () {
           float: left;
         }
         .right {
-          float: right;
+          // float: left;
         }
         .clearfix {
           content: '.';
@@ -508,6 +508,144 @@ export function styles () {
         .disabledDetailInput textarea {
           border: none;
           min-height: 0.3rem;
+        }
+        /*子页面顶部设置*/
+        .childTopBar{
+          width: 1690px;
+          height: 40px;
+          float: left;
+          // background: #909090;
+          padding: 15px 20px;
+          border-bottom:1px solid #d8d8d8;
+        }
+        .childTopBar span{
+          border-width: 0px;
+          left: 0px;
+          top: 0px;
+          font-size:13px;
+          color:#ffffff;
+          width: 103px;
+          height: 40px;
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          float: left;
+          line-height: 40px;
+          text-align: center;
+          background: inherit;
+          color:#000000;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 5px;
+          cursor:pointer
+        }
+        .childTopBar span:hover,
+        .childTopBar span.sel{
+          background-color: rgba(0, 204, 102, 1);
+          color:#ffffff;
+          border: none;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+        }
+        .formList{
+          float:left;
+          width: 1730px;
+        }
+        .formList ul{
+          width:1000px;
+          height:auto;
+          margin:0 20px;
+        }
+        .formList ul li{
+          float:left;
+          width:50%;
+          height: 65px;
+        }
+        .formList ul li>label{
+          float:left;
+          width:100%;
+          height: 30px;
+          line-height: 30px;
+        }
+        .formList ul li>input{
+          width:300px;
+          float:left;
+          height:19px;
+        }
+        .formList ul li>select{
+          width:300px;
+          float:left;
+          height:25px;
+        }
+        .saveBtn{
+          border-width: 0px;
+          // position: absolute;
+          left: 0px;
+          top: 0px;
+          width: 103px;
+          height: 40px;
+          background: inherit;
+          background-color: rgba(0, 204, 102, 1);
+          border: none;
+          border-radius: 5px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;  
+          color:#ffffff;
+          display:table;
+          margin: 10px auto;
+          cursor:pointer;
+        }
+        .regisListTop{
+          float: left;
+          margin: 10px 20px;
+        }
+        .regisListTop input{
+          width: 298px;
+          height: 36px;
+          font-family: 'ArialMT', 'Arial';
+          font-weight: 400;
+          font-style: normal;
+          font-size: 13px;
+          text-decoration: none;
+          color: #000000;
+          text-align: left;
+        }
+        .regisListTop button{
+          border-width: 0px;
+          left: 0px;
+          top: 0px;
+          width: 103px;
+          height: 30px;
+          background: inherit;
+          background-color: rgba(0, 204, 102, 1);
+          border: none;
+          border-radius: 5px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          color:#ffffff;
+          margin-left: 30px;
+          cursor: pointer;
+        }
+        .regisListTop a{
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          color: #CCCCCC;
+          font-size: 14px;
+          margin-left: 20px;
+        }
+        .regisList{
+          
         }
       `}
     </style>

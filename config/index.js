@@ -27,7 +27,14 @@ const MAINFUNCTION = [
     title: '诊所管理',
     short_name: 'clinic',
     navigateName: '/clinic',
-    children: []
+    children: [
+      { title: '科室管理', navigateName: '/clinic' },
+      { title: '医生管理', navigateName: '/clinic/doctor' },
+      { title: '排班管理', navigateName: '/clinic/schedule' },
+      { title: '药房管理', navigateName: '/clinic/pharmacy' },
+      { title: '耗材管理', navigateName: '/clinic/consumable' },
+      { title: '患者管理', navigateName: '/clinic/patient' }
+    ]
   },
   {
     title: '财务管理',
@@ -39,13 +46,23 @@ const MAINFUNCTION = [
     title: '设置管理',
     short_name: 'setting',
     navigateName: '/setting',
-    children: []
+    children: [
+      { title: '收费项目设置', navigateName: '/setting' },
+      { title: '模板设置', navigateName: '/setting/template' },
+      { title: '权限分组', navigateName: '/setting/permissionGroup' },
+      { title: '用户权限', navigateName: '/setting/userRights' },
+      { title: '会员规则管理', navigateName: '/setting/membershipRules' },
+      { title: '供应商管理', navigateName: '/setting/supplier' }
+    ]
   },
   {
     title: '平台管理',
     short_name: 'platform',
     navigateName: '/platform',
-    children: []
+    children: [
+      { title: '诊所管理', navigateName: '/platform' },
+      { title: '业务管理', navigateName: '/platform/business' }
+    ]
   }
 ]
 

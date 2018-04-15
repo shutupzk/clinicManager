@@ -10,7 +10,7 @@ class ConLayout extends Component {
     const screenHeight = process.browser ? document.documentElement.clientHeight : 1000
     const appConHeight = screenHeight - 126
     return (
-      <div className={'appContent'} style={{ background: '#fff' }}>
+      <div className={'appContent'} style={{ background: '#fff',minWidth: 1000 }}>
         <div className={'appContentLeft left'}>
           <Navigation url={url} data={conList[0] && conList[0].children} />
         </div>
@@ -21,9 +21,12 @@ class ConLayout extends Component {
         </div>
         <div className='clearfix' />
         <style jsx>{`
+          .appConRightCon{
+            overflow: auto;
+          }
           .appContentLeft {
             // background: ${theme.maincolor};
-            width: 9%;
+            width: 171px;
             color: #000;
             text-align: center;
             height: 100%;
@@ -36,14 +39,17 @@ class ConLayout extends Component {
             top: 0;
             left: 0;
             bottom: 0;
-            width: 9%;
+            width: 171px;
             border-right:1px solid #d8d8d8
           }
           .appContentRight {
-            width: 88%;
+            // max-width: 91%;
+            // min-width: 800px;
+            width:auto;
+            overflow:auto;
           }
           .appConRightCon {
-            padding: 0.14rem;
+            // padding: 0.14rem;
           }
         `}</style>
       </div>
