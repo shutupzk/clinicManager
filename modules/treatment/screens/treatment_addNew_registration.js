@@ -21,19 +21,14 @@ class AddNewRegistrationScreen extends Component {
   async submit () {
 
   }
-
+  //改变显示内容
   changeContent({type}){
     this.setState({pageType:type});
   }
-
-  render () {
+  //显示添加新增
+  showAddNew(){
     return(
-      <div>
-        <div className={'childTopBar'}>
-          <span className={this.state.pageType==1?'sel':''} onClick={() => this.changeContent({type:1})} >新增登记</span>
-          <span className={this.state.pageType==2?'sel':''} onClick={() => this.changeContent({type:2})}>就诊人列表</span>
-        </div>
-        <div className={'formList'} style={{display:this.state.pageType==1?'block':'none'}}>
+      <div className={'formList'}>
           <ul>
             <li>
               <label for='patientName'>就诊人名称：<b style={{color:'red'}}> *</b></label>
@@ -113,10 +108,15 @@ class AddNewRegistrationScreen extends Component {
             </li>
           </ul>
           <div style={{float:'left',width:'1000px',height: '60px'}}>
-            <button className='saveBtn' onclick={() => this.submit(this.props)}>保存</button>  
+            <button className='saveBtn' onClick={() => this.submit(this.props)}>保存</button>  
           </div>
         </div>
-        <div className={'formList'} style={{display:this.state.pageType==2?'block':'none'}}>
+    )
+  }
+  //显示新增列表
+  showNewList(){
+    return(
+      <div className={'formList'}>
           <div className={'regisListTop'}>
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button className={'searchBtn'}>查询</button>
@@ -125,9 +125,9 @@ class AddNewRegistrationScreen extends Component {
           <div className={'regisList'}>
             <ul>
               <li>
-                <div>
-                  <span>更新时间：20180408 10:23:34</span>
-                  <span>待分诊</span>
+                <div className={'liTop'}>
+                  <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                  <span className={'status'}>待分诊</span>
                 </div>
                 <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
                 <div>门诊ID：000989123654</div>
@@ -135,11 +135,93 @@ class AddNewRegistrationScreen extends Component {
                 <div>接诊医生：</div>
                 <div>登记人员：XXX</div>
                 <div>登记时间：20180410 10:23:23</div>
-                <div>查看详情</div>
+                <div className={'seeDetail'} onClick={() => this.seeDetail()}>查看详情</div>
               </li>
+              <li>
+                <div className={'liTop'}>
+                  <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                  <span className={'status'}>待分诊</span>
+                </div>
+                <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+                <div>门诊ID：000989123654</div>
+                <div>接诊科室：</div>
+                <div>接诊医生：</div>
+                <div>登记人员：XXX</div>
+                <div>登记时间：20180410 10:23:23</div>
+                <div className={'seeDetail'}>查看详情</div>
+              </li>
+              <li>
+                <div className={'liTop'}>
+                  <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                  <span className={'status'}>待分诊</span>
+                </div>
+                <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+                <div>门诊ID：000989123654</div>
+                <div>接诊科室：</div>
+                <div>接诊医生：</div>
+                <div>登记人员：XXX</div>
+                <div>登记时间：20180410 10:23:23</div>
+                <div className={'seeDetail'}>查看详情</div>
+              </li>
+              <li>
+                <div className={'liTop'}>
+                  <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                  <span className={'status'}>待分诊</span>
+                </div>
+                <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+                <div>门诊ID：000989123654</div>
+                <div>接诊科室：</div>
+                <div>接诊医生：</div>
+                <div>登记人员：XXX</div>
+                <div>登记时间：20180410 10:23:23</div>
+                <div className={'seeDetail'}>查看详情</div>
+              </li>
+              <li>
+                <div className={'liTop'}>
+                  <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                  <span className={'status'}>待分诊</span>
+                </div>
+                <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+                <div>门诊ID：000989123654</div>
+                <div>接诊科室：</div>
+                <div>接诊医生：</div>
+                <div>登记人员：XXX</div>
+                <div>登记时间：20180410 10:23:23</div>
+                <div className={'seeDetail'}>查看详情</div>
+              </li>
+              <li>
+                <div className={'liTop'}>
+                  <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                  <span className={'status'}>待分诊</span>
+                </div>
+                <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+                <div>门诊ID：000989123654</div>
+                <div>接诊科室：</div>
+                <div>接诊医生：</div>
+                <div>登记人员：XXX</div>
+                <div>登记时间：20180410 10:23:23</div>
+                <div className={'seeDetail'}>查看详情</div>
+              </li>
+              
             </ul>
           </div>
+          <div className={'pagination'}></div>
         </div>
+    )
+  }
+  //查看详情
+  seeDetail(){
+    Router.push('treatment/newListDetail')
+  }
+
+  render () {
+    return(
+      <div>
+        <div className={'childTopBar'}>
+          <span className={this.state.pageType==1?'sel':''} onClick={() => this.changeContent({type:1})} >新增登记</span>
+          <span className={this.state.pageType==2?'sel':''} onClick={() => this.changeContent({type:2})}>就诊人列表</span>
+        </div>
+        {this.state.pageType==1?this.showAddNew():this.showNewList()}  
       </div>
     )
   }

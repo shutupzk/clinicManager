@@ -6,6 +6,7 @@ import { HeaderBar, FooterBar } from '../../../components'
 const Layout = props => {
   return (
     <main>
+      {/* <div className={'mask'}></div> */}
       <Head title={props.title} />
       <div>
         <HeaderBar {...props} />

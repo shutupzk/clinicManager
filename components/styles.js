@@ -601,6 +601,24 @@ export function styles () {
           margin: 10px auto;
           cursor:pointer;
         }
+        .commonBtn{
+          color:#ffffff;
+          width: 103px;
+          height: 40px;
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          float: left;
+          line-height: 40px;
+          text-align: center;
+          background: inherit;
+          color:#000000;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 5px;
+          cursor:pointer
+        }
         .regisListTop{
           float: left;
           margin: 10px 20px;
@@ -645,7 +663,88 @@ export function styles () {
           margin-left: 20px;
         }
         .regisList{
+          float: left;
+          width: 100%;
+        }
+        .regisList ul li{
+          float:left;
+          width: 300px;
+          height: 216px;
+          background: inherit;
+          background-color: rgba(255, 255, 255, 1);
+          box-sizing: border-box;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 4px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          margin: 20px 30px 0 0;
+        }
+        .regisList ul li div{
+          float:left;
+          width:280px;
+          font-size:14px;
+          margin: 0 10px;
+          height:22px;
+          line-height:22px;
+        }
+        .liTop span.updateTime{
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          color: #CCCCCC;
+          float:left;
           
+        }
+        .liTop span.status{
+          float:right;
+        }
+        .regisList ul li div.liTop{
+          height: 35px;
+          line-height: 35px;
+        }
+        .regisList ul li div.seeDetail{
+          width: 100%;
+          margin: 0;
+          text-align: center;
+          height: 40px;
+          line-height: 40px;
+          border-top: 1px solid #d8d8d8;
+          cursor: pointer;
+          margin-top: 7px;
+        }
+        .regisList ul li div.seeDetail a{
+          width: 50%;
+          text-align: center;
+          display: block;
+          float: left;
+        }
+        .regisList ul li div.seeDetail a:hover{
+          font-weight:bold;
+        }
+        .mask{
+          position:fixed;
+          width:100%;
+          height:100%;
+          background:rgba(255,255,255,0.5);
+          top:0;
+          z-index:1000;
+        }
+        .healthFile{
+          width: 853px;
+          height: 617px;
+          background: inherit;
+          background-color: rgba(255, 255, 255, 1);
+          box-sizing: border-box;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 0px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
         }
       `}
     </style>
