@@ -211,7 +211,7 @@ class AddNewRegistrationScreen extends Component {
   }
   //查看详情
   seeDetail(){
-    Router.push('treatment/newListDetail')
+    Router.push('/treatment/newListDetail')
   }
 
   render () {

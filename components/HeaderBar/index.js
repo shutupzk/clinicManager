@@ -55,6 +55,10 @@ class HeaderBar extends Component {
       </div>
     )
   }
+  //退出登录
+  logout(){
+    Router.push('/login')
+  }
 
   render () {
     // const hideRightCon = this.props.hideRightCon || false
@@ -66,7 +70,7 @@ class HeaderBar extends Component {
       <div className={'headerBar'}>
         <div className={'headerTop'}>
           <span style={{ marginRight: 55 }}>消息中心</span>
-          <span>退出</span>
+          <span onClick={() => this.logout()}>退出</span>
           <span style={{ marginRight: 25 }}>您好，{'管理员'}</span>
         </div>
         {/* <div className={'headerNav'}>

@@ -171,11 +171,11 @@ class TriageScreen extends Component {
             <button className={'bigBtn'}>新增预约</button>
             <div className={'radioDiv'}>
               <label>
-                <input type='radio' checked={this.state.showType==1?'checked':''} name={'showType'} onClick={() => this.changeShowType({type:1})} />
+                <input type='radio' checked={this.state.showType==1?'checked':''} name={'showType'} onChange={() => this.changeShowType({type:1})} />
                 日历列表
               </label>
               <label style={{marginLeft:'10px'}}>
-                <input type='radio' checked={this.state.showType==2?'checked':''} name={'showType'} onClick={() => this.changeShowType({type:2})} />
+                <input type='radio' checked={this.state.showType==2?'checked':''} name={'showType'} onChange={() => this.changeShowType({type:2})} />
                 就诊人列表
               </label>
             </div>
