@@ -518,10 +518,25 @@ export function styles () {
           padding: 15px 20px;
           border-bottom:1px solid #d8d8d8;
         }
+        .regisListTop button.bigBtn{
+          font-size:13px;
+          color:#ffffff;
+          width: 103px;
+          height: 40px;
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          float: left;
+          line-height: 40px;
+          text-align: center;
+          background: inherit;
+          background-color: rgba(0,204,102,1);
+          color:#ffffff;
+          border-radius: 5px;
+          cursor:pointer
+        }
+
         .childTopBar span{
-          border-width: 0px;
-          left: 0px;
-          top: 0px;
           font-size:13px;
           color:#ffffff;
           width: 103px;
@@ -623,7 +638,7 @@ export function styles () {
           float: left;
           margin: 10px 20px;
         }
-        .regisListTop input{
+        .regisListTop input[type='text']{
           width: 298px;
           height: 36px;
           font-family: 'ArialMT', 'Arial';
@@ -745,6 +760,23 @@ export function styles () {
           -moz-box-shadow: none;
           -webkit-box-shadow: none;
           box-shadow: none;
+        }
+        .radioDiv{
+          float:left;
+          margin-left:15px;
+        }
+        .radioDiv label{
+          float:left;
+          height:40px;
+          line-height: 40px;
+        }
+        .regisListTop input[type='text'].searchbox{
+          width: 171px;
+          height: 36px;
+        }
+        .regisListTop input[type='text'].datebox{
+          width: 85px;
+          height: 36px;
         }
       `}
     </style>

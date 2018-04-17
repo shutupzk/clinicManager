@@ -10,7 +10,8 @@ class TriageScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      pageType:1
+      pageType:1,
+      showType:1
     }
   }
 
@@ -141,9 +142,56 @@ class TriageScreen extends Component {
         </div>
     )
   }
+  
+  //切换显示列表
+  changeShowType({type}){
+    this.setState({showType:type});
+  }
+  //显示日历列表
+  showCalendarList(){
+    return(
+      <div>
+        sadasdasdas
+      </div>
+    )
+  }
+  //显示就诊人列表
+  showPatientList(){
+    return(
+      <div>
+        11111
+      </div>
+    )
+  }
   //预约管理
   showReservation(){
-
+    return(
+      <div className={'formList'}>
+          <div className={'regisListTop'}>
+            <button className={'bigBtn'}>新增预约</button>
+            <div className={'radioDiv'}>
+              <label>
+                <input type='radio' checked={this.state.showType==1?'checked':''} name={'showType'} onClick={() => this.changeShowType({type:1})} />
+                日历列表
+              </label>
+              <label style={{marginLeft:'10px'}}>
+                <input type='radio' checked={this.state.showType==2?'checked':''} name={'showType'} onClick={() => this.changeShowType({type:2})} />
+                就诊人列表
+              </label>
+            </div>
+            <input className={'searchbox'} style={{marginLeft:'25px'}} type='text' placeholder='搜索科室' />
+            <input className={'searchbox'} style={{marginLeft:'15px'}} type='text' placeholder='搜索医生' />
+            <input type='text' style={{marginLeft:'15px'}} placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
+            <input className={'datebox'} style={{marginLeft:'15px'}} type='text' placeholder='预约日期' />
+            <input className={'datebox'} style={{marginLeft:'15px'}} type='text' placeholder='预约日期' />
+            <button className={'searchBtn'}>查询</button>
+            {/* <a>注：当日登记就诊人列表</a> */}
+          </div>
+          {this.state.showType==1?this.showCalendarList:''}
+          {this.state.showType==2?this.showPatientList:''}
+          <div className={'pagination'}></div>
+        </div>
+    )
   }
   render () {
     return (
