@@ -40,35 +40,6 @@ export function styles () {
           float:left;
           margin-left: 5px;
         }
-        .right_nav_menu{
-          float:left;
-          margin-left: 10px;
-        }
-        .right_nav_menu ul{
-          
-
-        }
-        .right_nav_menu ul li{
-          float: left;
-          // padding: 0 3px;
-          line-height: 90px;
-          width: 76px;
-          margin-left: 15px;
-          cursor: pointer;
-          position: relative;
-          text-align:center;
-          height: 78px;
-        }
-        .right_nav_menu ul li img{
-          position:absolute;
-          bottom:0;
-          left:0;
-          display:none;
-        }
-        .right_nav_menu ul li:hover img,
-        .right_nav_menu ul li.selLi img{
-          display:block;
-        }
         p {
           font-size: 14px;
           line-height: 24px;
@@ -510,12 +481,16 @@ export function styles () {
           min-height: 0.3rem;
         }
         /*子页面顶部设置*/
+        .orderRecordsPage{
+          float: left;
+          width:100%;
+        }
         .childTopBar{
-          width: 1690px;
-          height: 40px;
+          width:100%;
+          height: 80px;
           float: left;
           // background: #909090;
-          padding: 15px 20px;
+          // padding: 15px 20px;
           border-bottom:1px solid #d8d8d8;
         }
         .regisListTop button.bigBtn{
@@ -553,7 +528,11 @@ export function styles () {
           border-style: solid;
           border-color: rgba(204, 204, 204, 1);
           border-radius: 5px;
-          cursor:pointer
+          cursor:pointer;
+          margin: 20px 0;
+        }
+        .childTopBar span:nth-child(1){
+          margin-left:20px;
         }
         .childTopBar span:hover,
         .childTopBar span.sel{
@@ -636,7 +615,9 @@ export function styles () {
         }
         .regisListTop{
           float: left;
-          margin: 10px 20px;
+          // margin: 10px 20px;
+          width:100%;
+          margin-top: 10px;
         }
         .regisListTop input[type='text']{
           width: 298px;
@@ -648,6 +629,25 @@ export function styles () {
           text-decoration: none;
           color: #000000;
           text-align: left;
+          margin: 10px 0 0 20px;
+        }
+        .addBtn{
+          width: 103px;
+          height: 30px;
+          background: inherit;
+          background-color: rgba(0, 204, 102, 1);
+          border: none;
+          border-radius: 5px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          font-family: 'PingFangSC-Regular', 'PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          color:#ffffff;
+          margin: 10px;
+          cursor: pointer;
+          float:right;
         }
         .regisListTop button{
           border-width: 0px;
@@ -666,7 +666,7 @@ export function styles () {
           font-weight: 400;
           font-style: normal;
           color:#ffffff;
-          margin-left: 30px;
+          margin: 10px 0 0 30px;
           cursor: pointer;
         }
         .regisListTop a{
@@ -767,8 +767,8 @@ export function styles () {
         }
         .radioDiv label{
           float:left;
-          height:40px;
-          line-height: 40px;
+          height: 60px;
+          line-height: 60px;
         }
         .regisListTop input[type='text'].searchbox{
           width: 171px;
@@ -777,6 +777,71 @@ export function styles () {
         .regisListTop input[type='text'].datebox{
           width: 85px;
           height: 36px;
+        }
+        .calenderFilter{
+          float: left;
+          margin: 10px 20px;
+          width:99%;
+        }
+        .calenderFilterBtn{
+          width: 103px;
+          height: 30px;
+          background: inherit;
+          background-color: rgba(0,204,102,1);
+          border: none;
+          border-radius: 5px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          font-family: 'PingFangSC-Regular','PingFang SC';
+          font-weight: 400;
+          font-style: normal;
+          color: #ffffff;
+          margin-left: 30px;
+          cursor: pointer;
+        }
+        .calenderBox h4{
+          float: left;
+          width: 1000px;
+          text-align: center;
+        }
+        .calendarContent{
+          float: left;
+          width: 1000px;
+        }
+        .calendarContent table{
+          border:1px solid;
+          border-collapse: collapse;
+          margin: 0 auto;
+        }
+        .calendarContent table tr{
+          border-bottom:1px solid;
+          height:30px;
+        }
+        .calendarContent table tr td{
+          border:1px solid;
+          width:100px;
+          text-align:center;
+        }
+        .listBox{
+          float:left;
+          margin:10px 20px;
+          width: 900px;
+        }
+        .listBox ul{
+          width: 100%;
+          float:left;
+          border-top:1px solid #909090;
+          border-left:1px solid #909090;
+        }
+        .listBox ul li{
+          float:left;
+          border-bottom:1px solid #909090;
+          border-right:1px solid #909090;
+          text-align:center;
+          font-size:13px;
+          height:30px;
+          line-height:30px
         }
       `}
     </style>

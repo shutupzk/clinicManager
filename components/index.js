@@ -10,6 +10,7 @@ import LoadErrCard from './LoadErrCard'
 import ErrCard from './ErrCard'
 import PayWay from './PayWay'
 import HeaderBar from './HeaderBar'
+import RightContent from './RightContent'
 import FooterBar from './FooterBar'
 import PageCard from './PageCard'
 import DraftCard from './DraftCard'
@@ -34,6 +35,7 @@ export {
   ErrCard,
   PayWay,
   HeaderBar,
+  RightContent,
   FooterBar,
   PageCard,
   DraftCard

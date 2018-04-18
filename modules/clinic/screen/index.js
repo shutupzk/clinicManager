@@ -1,3 +1,4 @@
 import DoctorListScreen from './doctor/doctor_list_screen'
-
-export { DoctorListScreen }
+import DepartmentListScreen  from './department/department_list_screen'
+import ScheduleListScreen  from './schedule/schedule_list_screen'
+export { DoctorListScreen,DepartmentListScreen,ScheduleListScreen }

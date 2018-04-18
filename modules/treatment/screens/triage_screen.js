@@ -150,25 +150,210 @@ class TriageScreen extends Component {
   //显示日历列表
   showCalendarList(){
     return(
-      <div>
-        sadasdasdas
+      <div className={'regisList'}>
+        <div className={'calenderFilter'}>
+          <button className={'calenderFilterBtn'}>上周</button>
+          <button className={'calenderFilterBtn'}>下周</button>
+          <button className={'calenderFilterBtn'}>本周</button>
+        </div>
+        <div className={'calenderBox'}>
+          <h4>2018年4月9日至4月15日</h4>
+          <div className={'calendarContent'}>
+            <table>
+              <tr>
+                <td></td>
+                <td>周一（日期）</td>
+                <td>周一（日期）</td>
+                <td>周一（日期）</td>
+                <td>周一（日期）</td>
+                <td>周一（日期）</td>
+                <td>周一（日期）</td>
+                <td>周一（日期）</td>
+              </tr>
+              <tr style={{height:'58px'}}>
+                <td>预约</td>
+                <td>上午5人<br/>下午5人</td>
+                <td>上午5人<br/>下午5人</td>
+                <td>上午5人<br/>下午5人</td>
+                <td>上午5人<br/>下午5人</td>
+                <td>上午5人<br/>下午5人</td>
+                <td>上午5人<br/>下午5人</td>
+                <td>上午5人<br/>下午5人</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+              <tr>
+                <td>07:00-08:00</td>
+                <td>sdas</td>
+                <td>sadas</td>
+                <td>sada</td>
+                <td>dsds</td>
+                <td>sds</td>
+                <td>dsds</td>
+                <td>dsd</td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
     )
   }
   //显示就诊人列表
   showPatientList(){
     return(
-      <div>
-        11111
+      <div className={'regisList'}>
+        <ul>
+        <li>
+            <div className={'liTop'}>
+              <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+              <span className={'status'}>已预约</span>
+            </div>
+            <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+            <div>门诊ID：000989123654</div>
+            <div>接诊科室：</div>
+            <div>接诊医生：</div>
+            <div>预约时间：20180410 10:23:23</div>
+            <div>备注：</div>
+            <div className={'seeDetail'} onClick={() => this.seeDetail()}>
+              <a onClick={() => this.editPatient()}>修改</a>
+              <a onClick={() => this.cancelReservation()}>取消</a>
+            </div>
+          </li>
+          <li>
+            <div className={'liTop'}>
+              <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+              <span className={'status'}>已就诊</span>
+            </div>
+            <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+            <div>门诊ID：000989123654</div>
+            <div>接诊科室：</div>
+            <div>接诊医生：</div>
+            <div>预约时间：20180410 10:23:23</div>
+            <div>备注：</div>
+            <div className={'seeDetail'}>
+              <a onClick={() => this.gotoWechat()}>微信交流</a>
+              <a onClick={() => this.scanPatient()}>查看</a>
+            </div>
+          </li>
+          <li>
+            <div className={'liTop'}>
+              <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+              <span className={'status'}>已就诊</span>
+            </div>
+            <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
+            <div>门诊ID：000989123654</div>
+            <div>接诊科室：</div>
+            <div>接诊医生：</div>
+            <div>预约时间：20180410 10:23:23</div>
+            <div>备注：</div>
+            <div className={'seeDetail'}>
+              <a onClick={() => this.gotoWechat()}>微信交流</a>
+              <a onClick={() => this.scanPatient()}>查看</a>
+            </div>
+          </li>
+        </ul>
       </div>
     )
+  }
+ 
+  //新增预约
+  addNewReservation(){
+    Router.push('/treatment/reservation_add')
   }
   //预约管理
   showReservation(){
     return(
       <div className={'formList'}>
           <div className={'regisListTop'}>
-            <button className={'bigBtn'}>新增预约</button>
+            <button className={'bigBtn'} onClick={() => this.addNewReservation()}>新增预约</button>
             <div className={'radioDiv'}>
               <label>
                 <input type='radio' checked={this.state.showType==1?'checked':''} name={'showType'} onChange={() => this.changeShowType({type:1})} />
@@ -187,8 +372,8 @@ class TriageScreen extends Component {
             <button className={'searchBtn'}>查询</button>
             {/* <a>注：当日登记就诊人列表</a> */}
           </div>
-          {this.state.showType==1?this.showCalendarList:''}
-          {this.state.showType==2?this.showPatientList:''}
+          {this.state.showType==1?this.showCalendarList():''}
+          {this.state.showType==2?this.showPatientList():''}
           <div className={'pagination'}></div>
         </div>
     )

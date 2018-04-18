@@ -1,7 +1,7 @@
 import Head from './head'
 import ConLayout from './con_layout'
 import { styles } from '../../../components/styles'
-import { HeaderBar, FooterBar } from '../../../components'
+import {RightContent, HeaderBar, FooterBar } from '../../../components'
 
 const Layout = props => {
   return (
@@ -9,12 +9,13 @@ const Layout = props => {
       {/* <div className={'mask'}></div> */}
       <Head title={props.title} />
       <div>
-        <HeaderBar {...props} />
+        <ConLayout {...props} />
+        <RightContent {...props} />
         {/* <Prompt /> */}
-        <div style={{ overflow: 'auto' }}>
+        {/* <div style={{ overflow: 'auto' }}>
           <ConLayout {...props} />
-        </div>
-        <FooterBar notLoginPage />
+        </div> */}
+        {/* <FooterBar notLoginPage /> */}
       </div>
       {styles()}
     </main>

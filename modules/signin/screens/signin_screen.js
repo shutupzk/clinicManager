@@ -36,7 +36,7 @@ class SigninScreen extends Component {
       localforage.setItem('password', password)
       // Router.push('/')
       // Router.push(HOME_PAGE.url)
-      Router.push('/home')
+      Router.push('/treatment')
     } else {
       alert('用户名或密码错误');
       // this.props.showPrompt({ text: '用户名或密码错误' })
@@ -46,61 +46,87 @@ class SigninScreen extends Component {
     //欢迎使用  
     return (
       <div className={'loginPage'}>
-        <div className={'loginCon'}>
-          <div className={'loginTop'}>
+        {/* <div className={'loginCon'}> */}
+          {/* <div className={'loginTop'}>
             <img src={'/static/login/u49.png'} />
-            <span>{`${TITLE}`}</span>
+            <span>{`${TITLE}`}</span> */}
             {/* <h3 style={{ textAlign: 'center', fontSize: 22, color: theme.mainfontcolor, paddingTop: 50, margin: 0 }}>{`${TITLE}`}</h3>  */}
-          </div>
-          <img style={{
+          {/* </div> */}
+          {/* <img style={{
               float:'left',
               margin:'30px 0 0 40px'
-            }} src={'/static/login/u35.png'} />
-          <section
-            style={{
-              background: 'none',
-              height: 'auto',
-              paddingTop: 30,
-              float:'left',
-              marginLeft:'179px',
-              paddingBottom: 100
-            }}
+            }} src={'/static/login/u35.png'} /> */}
+          
+          
+        {/* </div> */}
+        <section
+            // style={{
+            //   background: 'none',
+            //   height: 'auto',
+            //   paddingTop: 30,
+            //   float:'left',
+            //   marginLeft:'179px',
+            //   paddingBottom: 100
+            // }}
           >
-            <span className={'loginTxt'}>登录</span>
-            <dl>
-              <dt>用户名</dt>
+            <span className={'loginTxt'}>登录系统</span>
+            <ul>
+              <li>
+                <input type='text' placeholder={'请输入您的手机号'} onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />
+              </li>
+              <li>
+                <input placeholder={'请输入密码'} type='password' onChange={e => this.setState({ password: e.target.value })} value={this.state.password} />
+              </li>
+            </ul>
+            {/* <dl>
+              <dt> </dt>
               <dd>
                 <input type='text' placeholder={'请输入您的手机号'} onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />
               </dd>
             </dl>
             <dl>
-              <dt>密码</dt>
+              <dt> </dt>
               <dd>
                 <input placeholder={'请输入密码'} type='password' onChange={e => this.setState({ password: e.target.value })} value={this.state.password} />
-                {/* <a className='right forgetpass flex tb-flex'
-                  onClick={() => { Router.push('/profile/forgot_password') }}>
-                  <img style={{width: 16, paddingRight: 3}} src={`/static/${HOSPITALINFO.hospital_short_name}/forgetPass.png`} />
-                  <span className=''>忘记密码?</span>
-                </a> */}
+                
               </dd>
-            </dl>
+            </dl> */}
             <button className='loginBtn' onClick={() => this.submit(this.props)}>
               登录
             </button>
           </section>
-          
-        </div>
         <style jsx>{`
+          section{
+            background: #ffffff;
+            height: auto;
+            border: 1px solid #d8d8d8;
+            border-radius: 10px;
+            position: absolute;
+            top: 30%;
+            right: 20%;
+            box-shadow: 0 0 10px #bcbcbc;
+            width: 310px;
+            height: 380px;
+          }
+          ul{
+            width: 250px;
+            float: left;
+            margin: 10px 30px;
+          }
+          ul li{
+            float: left;
+            height: 70px;
+          }
           .loginTxt{
-            font-family: 'PingFangSC-Semibold','PingFang SC Semibold','PingFang SC';
-            font-weight: 650;
-            font-style: normal;
-            font-size: 18px;
+            font-size: 25px;
             text-align: left;
             float: left;
             line-height: 51px;
             color: #333333;
             width: 100%;
+            height: 80px;
+            line-height: 80px;
+            text-indent: 30px;
           }
           .loginTop{
             padding: 10px;
@@ -124,9 +150,10 @@ class SigninScreen extends Component {
             color: #333333;
           }
           .loginPage {
-            // background: url('/static/icons/loginBack.png') center no-repeat;
-            background:#ffffff;
+            background: url('/static/login/u35.png') top center no-repeat;
+            // background:#ffffff;
             position: fixed;
+            background-size:100% 60%; 
             top: 0;
             right: 0;
             bottom: 0;
@@ -167,8 +194,8 @@ class SigninScreen extends Component {
           input{
             left: 0px;
             top: 0px;
-            width: 326px;
-            height: 49px;
+            width: 250px;
+            height: 40px;
             font-family: 'ArialMT', 'Arial';
             font-weight: 400;
             font-style: normal;
@@ -176,7 +203,7 @@ class SigninScreen extends Component {
             text-decoration: none;
             color: #000000;
             text-align: left;
-            border: 1px solid #909090;
+            // border: 1px solid #909090;
           }
           .forgetpass {
             color: ${theme.maincolor};
@@ -184,26 +211,21 @@ class SigninScreen extends Component {
             padding-left: 26px;
           }
           .loginBtn{
-            border-width: 0px;
-            // position: absolute;
-            left: 0px;
-            top: 0px;
             width: 140px;
             height: 40px;
             background: inherit;
-            background-color: rgba(22, 155, 213, 1);
+            background-color: rgba(22,155,213,1);
             border: none;
             border-radius: 5px;
             -moz-box-shadow: none;
             -webkit-box-shadow: none;
             box-shadow: none;
-            font-family: 'PingFangSC-Regular', 'PingFang SC';
+            font-family: 'PingFangSC-Regular','PingFang SC';
             font-weight: 400;
             font-style: normal;
-            color:#ffffff;
-            padding:0;
-            margin: 30px auto;
-            display: table;
+            color: #ffffff;
+            padding: 0;
+            margin: 20px 85px;
           }
 
         `}</style>

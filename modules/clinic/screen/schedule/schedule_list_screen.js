@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { doctorList } from '../../../../ducks'
 
-class DoctorListScreen extends Component {
+class ScheduleListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -54,26 +54,10 @@ class DoctorListScreen extends Component {
     return (
       <ul className='flex tb-flex'>
         <li style={{ flex: 1,height:'40px',lineHeight:'40px' }}>序号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>医生编码  </li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>医生名称</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属科室</li>
+        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>科室编码  </li>
+        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>科室名称</li>
         <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属诊所</li>
         <li style={{ flex: 5,height:'40px',lineHeight:'40px' }}>是否开放预约挂号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>操作</li>
-      </ul>
-    )
-  }
-
-  renderTitle1 () {
-    const { titleText, orderTitle, liPadding } = styles
-    return (
-      <ul className='flex tb-flex'>
-        <li style={{ flex: 1,height:'40px',lineHeight:'40px' }}>序号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>职员编码  </li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>职员名称</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属科室(部门)</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属诊所</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>职位</li>
         <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>操作</li>
       </ul>
     )
@@ -108,11 +92,11 @@ class DoctorListScreen extends Component {
     return(
       <div>
           <div className={'regisListTop'}>
-            <input type='text' placeholder='搜索医生名称/医生编号' />
+            <input type='text' placeholder='搜索科室名称/科室编号' />
             <button className={'searchBtn'}>查询</button>
           </div>
           <div className={'listBox'}>
-            <button className={'addBtn'}>新增医生</button>
+            <button className={'addBtn'}>新增科室</button>
             {this.renderTitle()}
             {exercises.map((item, index) => {
               return this.renderRow(item, index)
@@ -121,38 +105,77 @@ class DoctorListScreen extends Component {
         </div>
     )
   }
-  showEmployee(){
-    let exercises = this.getListData()
+  //显示日历列表
+  showCalendarList(){
     return(
-      <div>
-          <div className={'regisListTop'}>
-            <input type='text' placeholder='搜索职员名称/职员编号' />
-            <button className={'searchBtn'}>查询</button>
-          </div>
-          <div className={'listBox'}>
-            <button className={'addBtn'}>新增职员</button>
-            {this.renderTitle1()}
-            {exercises.map((item, index) => {
-              return this.renderRow(item, index)
-            })}
+      <div className={'regisList'}>
+        <div className={'calenderFilter'}>
+          <button className={'calenderFilterBtn'}>上周</button>
+          <button className={'calenderFilterBtn'}>下周</button>
+          <button className={'calenderFilterBtn'}>本周</button>
+          <button className={'calenderFilterBtn'}>复制上周排班</button>
+        </div>
+        <div className={'calenderBox'}>
+          <h4>2018年4月9日至4月15日</h4>
+          <div className={'calendarContent'}>
+            <table>
+              <tr>
+                <td>人员名称</td>
+                <td>科室名称</td>
+                <td>周一（日期）</td>
+                <td>周二（日期）</td>
+                <td>周三（日期）</td>
+                <td>周四（日期）</td>
+                <td>周五（日期）</td>
+                <td>周六（日期）</td>
+                <td>周日（日期）</td>
+              </tr>
+              <tr style={{height:'58px'}}>
+                <td>人员名称</td>
+                <td>科室名称</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+              </tr>
+              <tr style={{height:'58px'}}>
+                <td>人员名称</td>
+                <td>科室名称</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+                <td>08:00-12:00；<br/>14:00-18:00；</td>
+              </tr>
+            </table>
           </div>
         </div>
+      </div>
     )
   }
   render () {
     const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
+        <div className={'formList'}>
         <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-            医生
-          </span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-            职员
-          </span>
+          <div className={'regisListTop'}>
+            <input className={'searchbox'} style={{marginLeft:'25px'}} type='text' placeholder='搜索科室' />
+            <input className={'searchbox'} style={{marginLeft:'15px'}} type='text' placeholder='搜索医生' />
+            <button className={'searchBtn'}>查询</button>
+          </div>
+          {this.state.showType==1?this.showCalendarList():''}
+          {this.state.showType==2?this.showPatientList():''}
+          <div className={'pagination'}></div>
         </div>
-        {this.state.pageType==1?this.showDoctor():''}
-        {this.state.pageType==2?this.showEmployee():''}
+        </div>
+        {this.state.pageType==1?this.showCalendarList():''}
+        {/* {this.state.pageType==2?this.showEmployee():''} */}
       </div>
     )
   }
@@ -196,4 +219,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(DoctorListScreen)
+export default connect(mapStateToProps, { doctorList })(ScheduleListScreen)

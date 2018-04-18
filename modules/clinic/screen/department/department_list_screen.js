@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { doctorList } from '../../../../ducks'
 
-class DoctorListScreen extends Component {
+class DepartmentListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -54,26 +54,10 @@ class DoctorListScreen extends Component {
     return (
       <ul className='flex tb-flex'>
         <li style={{ flex: 1,height:'40px',lineHeight:'40px' }}>序号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>医生编码  </li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>医生名称</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属科室</li>
+        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>科室编码  </li>
+        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>科室名称</li>
         <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属诊所</li>
         <li style={{ flex: 5,height:'40px',lineHeight:'40px' }}>是否开放预约挂号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>操作</li>
-      </ul>
-    )
-  }
-
-  renderTitle1 () {
-    const { titleText, orderTitle, liPadding } = styles
-    return (
-      <ul className='flex tb-flex'>
-        <li style={{ flex: 1,height:'40px',lineHeight:'40px' }}>序号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>职员编码  </li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>职员名称</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属科室(部门)</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属诊所</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>职位</li>
         <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>操作</li>
       </ul>
     )
@@ -108,30 +92,12 @@ class DoctorListScreen extends Component {
     return(
       <div>
           <div className={'regisListTop'}>
-            <input type='text' placeholder='搜索医生名称/医生编号' />
+            <input type='text' placeholder='搜索科室名称/科室编号' />
             <button className={'searchBtn'}>查询</button>
           </div>
           <div className={'listBox'}>
-            <button className={'addBtn'}>新增医生</button>
+            <button className={'addBtn'}>新增科室</button>
             {this.renderTitle()}
-            {exercises.map((item, index) => {
-              return this.renderRow(item, index)
-            })}
-          </div>
-        </div>
-    )
-  }
-  showEmployee(){
-    let exercises = this.getListData()
-    return(
-      <div>
-          <div className={'regisListTop'}>
-            <input type='text' placeholder='搜索职员名称/职员编号' />
-            <button className={'searchBtn'}>查询</button>
-          </div>
-          <div className={'listBox'}>
-            <button className={'addBtn'}>新增职员</button>
-            {this.renderTitle1()}
             {exercises.map((item, index) => {
               return this.renderRow(item, index)
             })}
@@ -143,16 +109,16 @@ class DoctorListScreen extends Component {
     const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
-        <div className={'childTopBar'}>
+        {/* <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
             医生
           </span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
             职员
           </span>
-        </div>
+        </div> */}
         {this.state.pageType==1?this.showDoctor():''}
-        {this.state.pageType==2?this.showEmployee():''}
+        {/* {this.state.pageType==2?this.showEmployee():''} */}
       </div>
     )
   }
@@ -196,4 +162,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(DoctorListScreen)
+export default connect(mapStateToProps, { doctorList })(DepartmentListScreen)

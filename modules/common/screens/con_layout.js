@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { MAINFUNCTION } from '../../../config'
+import {TITLE, HOSPITAL_NAME, MAINFUNCTION } from '../../../config'
 import { theme } from '../../../components'
 import Navigation from './foot_navigation'
+// import { TITLE, HOSPITAL_NAME} from '../../../config'
 
 class ConLayout extends Component {
   render () {
@@ -10,17 +11,29 @@ class ConLayout extends Component {
     const screenHeight = process.browser ? document.documentElement.clientHeight : 1000
     const appConHeight = screenHeight - 126
     return (
-      <div className={'appContent'} style={{ background: '#fff',minWidth: 1000 }}>
+      //className={'appContent'} style={{ background: '#fff',minWidth: 1000 }}
+      <div className={'leftBar'}>
+        <div className={'logoBox'}>
+          <img src={'/static/login/u49.png'} />
+          <div className={'logoTxt'}>
+            <span>{`${TITLE}`}</span>
+            <span>深圳市龙华店</span>
+          </div>
+        </div>
         <div className={'appContentLeft left'}>
           <Navigation url={url} data={conList[0] && conList[0].children} />
         </div>
-        <div className={'right appContentRight'}>
+        {/* <div className={'right appContentRight'}>
           <div className={'appConRightCon'} style={{ minHeight: appConHeight }}>
             {this.props.children}
           </div>
-        </div>
+        </div> */}
         <div className='clearfix' />
         <style jsx>{`
+          .leftBar{
+            width: 171px;
+            float: left;
+          }
           .appConRightCon{
             overflow: auto;
           }
@@ -35,7 +48,7 @@ class ConLayout extends Component {
             content: '';
             display: block;
             // background: ${theme.maincolor};
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             bottom: 0;
