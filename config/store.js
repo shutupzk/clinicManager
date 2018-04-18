@@ -2,10 +2,10 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
 
-import {} from '../ducks'
+import { doctors } from '../ducks'
 
 // middleware
-function createMiddleware() {
+function createMiddleware () {
   if (process.browser && window.devToolsExtension) {
     return compose(
       applyMiddleware(thunk),
@@ -18,8 +18,8 @@ function createMiddleware() {
 }
 
 // reducer
-function getReducer() {
-  return combineReducers({})
+function getReducer () {
+  return combineReducers({ doctors })
 }
 
 // store

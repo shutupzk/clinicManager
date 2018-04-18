@@ -1,0 +1,149 @@
+import React, { Component } from 'react'
+import Router from 'next/router'
+import { connect } from 'react-redux'
+import { doctorList } from '../../../../ducks'
+
+class DoctorListScreen extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      personnelType: 1
+    }
+  }
+
+  componentWillMount () {
+    const { doctorList, clinic_code } = this.props
+    doctorList({ clinic_code })
+  }
+
+  getListData () {
+    const { doctors } = this.props
+    let array = []
+    for (let key in doctors) {
+      array.push(doctors[key])
+    }
+    return array
+  }
+
+  goToDetail ({ apiName }) {
+    const { selectBaseApi } = this.props
+    selectBaseApi({ apiName })
+    Router.push('/apis/detail')
+  }
+
+  goToEdit ({ apiName }) {
+    const { selectBaseApi } = this.props
+    selectBaseApi({ apiName })
+    Router.push('/apis/edit')
+  }
+
+  async toRemove ({ apiName }) {
+    const confirmed = confirm('确定要删除  ' + apiName + '?')
+    if (confirmed) {
+      const { removeBaseApi } = this.props
+      const error = await removeBaseApi({ apiName })
+      if (error) {
+        alert(error)
+      }
+    }
+  }
+
+  renderTitle () {
+    const { titleText, orderTitle, liPadding } = styles
+    return (
+      <ul className='flex tb-flex' style={{ ...orderTitle, ...liPadding }}>
+        <li style={{ ...titleText, flex: 1 }}>序号</li>
+        <li style={{ ...titleText, flex: 2 }}>名称</li>
+        <li style={{ ...titleText, flex: 5 }}>说明</li>
+        <li style={{ ...titleText, flex: 2, textAlign: 'center' }}>操作</li>
+      </ul>
+    )
+  }
+
+  renderRow ({ apiName, description }, index) {
+    const { liPadding, fenyeItem, buttonMiddle } = styles
+    return (
+      <ul style={{ ...liPadding }} className='flex tb-flex listItem' key={index}>
+        <li style={{ flex: 1 }}>{`${index}`}</li>
+        <li style={{ flex: 2 }}>{apiName}</li>
+        <li style={{ flex: 5 }}>{description}</li>
+        <li style={{ flex: 2, textAlign: 'center' }}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, background: '#0BC019', border: '1px solid #0BC019' }} onClick={() => this.goToDetail({ apiName })}>
+            查看
+          </button>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
+            编辑
+          </button>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ apiName })}>
+            删除
+          </button>
+        </li>
+      </ul>
+    )
+  }
+
+  render () {
+    let exercises = this.getListData()
+    const { fenyeItem, buttonLarge } = styles
+    return (
+      <div className={'orderRecordsPage'}>
+        <div className={'childTopBar'}>
+          <span className={this.state.personnelType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
+            医生
+          </span>
+          <span className={this.state.personnelType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
+            职员
+          </span>
+        </div>
+        <div className={'regisListTop'}>
+          <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
+          <button className={'searchBtn'}>查询</button>
+        </div>
+        {this.renderTitle()}
+        {exercises.map((item, index) => {
+          return this.renderRow(item, index)
+        })}
+      </div>
+    )
+  }
+}
+
+const styles = {
+  titleText: {
+    fontSize: '16px'
+  },
+  liPadding: {
+    padding: '10px 15px'
+  },
+  orderTitle: {
+    color: '#797979',
+    background: '#f2f2f2',
+    borderRadius: '3px'
+  },
+  buttonMiddle: {
+    height: '30px',
+    width: '50px'
+  },
+  buttonLarge: {
+    height: '40px',
+    width: '80px',
+    fontSize: '20px'
+  },
+  fenyeItem: {
+    background: '#3ca0ff',
+    borderRadius: '2px',
+    display: 'inline-block',
+    cursor: 'pointer',
+    border: '1px solid #3ca0ff',
+    color: '#fff'
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    doctors: state.doctors.data,
+    clinic_code: '00000001'
+  }
+}
+
+export default connect(mapStateToProps, { doctorList })(DoctorListScreen)

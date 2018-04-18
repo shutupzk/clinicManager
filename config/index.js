@@ -2,7 +2,7 @@ import withData from './withData'
 
 const TITLE = '诊小二管家平台'
 
-const API_SERVER = 'localhost:9151'
+const API_SERVER = 'http://localhost:8080'
 const PORT = '9151' // 端口
 
 // 主功能
