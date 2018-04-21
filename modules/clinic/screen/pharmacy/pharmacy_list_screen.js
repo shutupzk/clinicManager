@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { doctorList } from '../../../../ducks'
 
-class DoctorListScreen extends Component {
+class PharmacyListScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -50,29 +50,31 @@ class DoctorListScreen extends Component {
   }
 
   renderTitle () {
+    // const { titleText, orderTitle, liPadding } = styles
     return (
       <ul className='flex tb-flex'>
-        <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生编码 </li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生名称</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属科室</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属诊所</li>
-        <li style={{ flex: 5, height: '40px', lineHeight: '40px' }}>是否开放预约挂号</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>操作</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>入库日期</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>入库单号 </li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>入库方式</li>
+        <li style={{ flex: 5, height: '40px', lineHeight: '40px' }}>供应商</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>操作员</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>状态</li>
+        <li style={{ flex: 5, height: '40px', lineHeight: '40px' }}>操作</li>
       </ul>
     )
   }
-
   renderTitle1 () {
+    // const { titleText, orderTitle, liPadding } = styles
     return (
       <ul className='flex tb-flex'>
-        <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员编码 </li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员名称</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属科室(部门)</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属诊所</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职位</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>操作</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>出库日期</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>出库单号 </li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>出库方式</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>领用科室</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>领用人</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>审核人</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>状态</li>
+        <li style={{ flex: 5, height: '40px', lineHeight: '40px' }}>操作</li>
       </ul>
     )
   }
@@ -101,16 +103,17 @@ class DoctorListScreen extends Component {
   changeContent ({ type }) {
     this.setState({ pageType: type })
   }
-  showDoctor () {
+  showStorage () {
     let exercises = this.getListData()
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索医生名称/医生编号' />
+          <input type='text' className={'datebox'} placeholder='入库日期' />
+          <input type='text' placeholder='入库单号' />
           <button className={'searchBtn'}>查询</button>
         </div>
         <div className={'listBox'}>
-          <button className={'addBtn'}>新增医生</button>
+          <button className={'addBtn'}>新增入库</button>
           {this.renderTitle()}
           {exercises.map((item, index) => {
             return this.renderRow(item, index)
@@ -119,38 +122,43 @@ class DoctorListScreen extends Component {
       </div>
     )
   }
-  showEmployee () {
+  showOutbound () {
     let exercises = this.getListData()
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索职员名称/职员编号' />
+          <input type='text' className={'datebox'} placeholder='出库日期' />
+          <input type='text' placeholder='出库单号' />
           <button className={'searchBtn'}>查询</button>
         </div>
         <div className={'listBox'}>
-          <button className={'addBtn'}>新增职员</button>
+          <button className={'addBtn'}>新增出库</button>
           {this.renderTitle1()}
           {exercises.map((item, index) => {
-            return this.renderRow(item, index)
+            return this.renderRow1(item, index)
           })}
         </div>
       </div>
     )
   }
   render () {
-		// const { fenyeItem, buttonLarge } = styles
+    // const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
         <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						医生
-					</span>
+            入库管理
+          </span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-						职员
-					</span>
+            出库管理
+          </span>
+          <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
+            当前库存
+          </span>
         </div>
-        {this.state.pageType === 1 ? this.showDoctor() : ''}
-        {this.state.pageType === 2 ? this.showEmployee() : ''}
+        {this.state.pageType === 1 ? this.showStorage() : ''}
+        {this.state.pageType === 2 ? this.showOutbound() : ''}
+        {/* {this.state.pageType==2?this.showEmployee():''} */}
       </div>
     )
   }
@@ -194,4 +202,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(DoctorListScreen)
+export default connect(mapStateToProps, { doctorList })(PharmacyListScreen)

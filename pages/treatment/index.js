@@ -9,6 +9,5 @@ export default withData((props) => {
       {/* <div> teatment </div> */}
       <AddNewRegistrationScreen {...props} />
     </Layout>
-    
   )
 })

@@ -15,7 +15,7 @@ export default class Navigation extends Component {
         {data &&
           data.map((item, itemKey) => {
             return (
-              <Link href={item.navigateName}>
+              <Link key={item.navigateName} href={item.navigateName}>
                 <div className={url === item.navigateName ? 'selLeftMenu' : ''}>{item.title}</div>
               </Link>
             )

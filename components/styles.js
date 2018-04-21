@@ -534,6 +534,7 @@ export function styles () {
         .childTopBar span:nth-child(1){
           margin-left:20px;
         }
+        .healthFile_menu span.sel,
         .childTopBar span:hover,
         .childTopBar span.sel{
           background-color: rgba(0, 204, 102, 1);
@@ -677,10 +678,12 @@ export function styles () {
           font-size: 14px;
           margin-left: 20px;
         }
+        .formListBox,
         .regisList{
           float: left;
           width: 100%;
         }
+
         .regisList ul li{
           float:left;
           width: 300px;
@@ -747,9 +750,10 @@ export function styles () {
           top:0;
           z-index:1000;
         }
+
         .healthFile{
           width: 853px;
-          height: 617px;
+          min-height: 785px;
           background: inherit;
           background-color: rgba(255, 255, 255, 1);
           box-sizing: border-box;
@@ -760,7 +764,128 @@ export function styles () {
           -moz-box-shadow: none;
           -webkit-box-shadow: none;
           box-shadow: none;
+          position:absolute;
         }
+        .doctorList{
+          width: 853px;
+          min-height: 617px;
+          background: inherit;
+          background-color: rgba(255, 255, 255, 1);
+          box-sizing: border-box;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 0px;
+          -moz-box-shadow: none;
+          -webkit-box-shadow: none;
+          box-shadow: none;
+          position:absolute;
+        }
+        .doctorList_top{
+          border-bottom:1px solid #d8d8d8;
+          width: 100%;
+          height: 50px;
+        }
+
+        .healthFile_top{
+          width: 100%;
+          height: 30px;
+          // background: #909090;
+        }
+        .doctorList_top span:nth-child(1),
+        .healthFile_top span:nth-child(1){
+          float: left;
+          height: 30px;
+          line-height: 30px;
+          text-indent: 10px;
+        }
+        .doctorList_top span:nth-child(1){
+          height: 60px;
+          line-height: 60px;
+        }
+        .doctorList_top span:last-child,
+        .healthFile_top span:nth-child(2){
+          float: right;
+          height: 20px;
+          line-height: 30px;
+          width: 30px;
+          text-align: center;
+          font-size: 20px;
+          cursor: pointer;
+        }
+        .healthFile_menu{
+          width: 667px;
+          margin: 20px auto 10px auto;
+          height: 60px;
+        }
+        .healthFile_menu span{
+          float: left;
+          width: 220px;
+          height: 59px;
+          text-align: center;
+          line-height: 59px;
+          border: 1px solid #d8d8d8;
+        }
+        .progress{
+          width: 667px;
+          height: 15px;
+          margin: 10px auto;
+          border: 1px solid #d8d8d8;
+          text-align: center;
+          line-height: 15px;
+        }
+        .progressContent{
+
+        }
+        .mRecord,
+        .recordContent{
+          width: 667px;
+          margin: 0 auto;
+          height: 550px;
+        }
+        .mRecord ul,
+        .recordContent ul{
+          float: left;
+          width: 100%;
+        }
+        .mRecord ul li{
+          float:left;
+          width:100%;
+          margin-bottom: 10px;
+        }
+
+        .recordContent ul li{
+          float:left;
+          width:50%;
+          height: 75px;
+        }
+        .mRecord ul li label,
+        .recordContent ul li label{
+          float:left;
+          width:100%;
+        }
+        .mRecord ul li textarea{
+          width:661px;
+        }
+        .mRecord ul li input,
+        .recordContent ul li input{
+          width:300px;
+          height:30px;
+        }
+        .recordContent ul li select{
+          width:300px;
+          height:30px;
+        }
+        .bottomBtn{
+          width: 210px;
+          margin: 8px auto;
+          height: 40px;
+        }
+        .bottomBtn button{
+          float:left;
+          margin:10px 0;
+        }
+
         .radioDiv{
           float:left;
           margin-left:15px;
@@ -780,7 +905,7 @@ export function styles () {
         }
         .calenderFilter{
           float: left;
-          margin: 10px 20px;
+          margin: 10px 0;
           width:99%;
         }
         .calenderFilterBtn{
@@ -842,6 +967,99 @@ export function styles () {
           font-size:13px;
           height:30px;
           line-height:30px
+        }
+        .cardNumBox{
+          width: 562px;
+          height: 81px;
+          background-color: rgba(255, 255, 255, 1);
+          box-sizing: border-box;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 0px;
+          // float: left;
+          margin: 20px;      
+        }
+        .cardNumber{
+          width:50%;
+          float:left;
+        }
+        .cardNumber span{
+          float: left;
+          width: 100%;
+          height: 40px;
+          line-height: 40px;
+          text-indent: 20px;
+        }
+        .memberLevel{
+          width:30%;
+          float:left;
+        }
+        .memberLevel span{
+          float: left;
+          width: 100%;
+          height: 40px;
+          line-height: 40px;
+          text-indent: 20px;
+        }
+        .changeLevel{
+          float:left;
+        }
+        .changeLevel button{
+          float:left;
+          width:80px;
+          margin: 40px 0 0 0;
+        }
+        .discountSituation{
+          width: 562px;
+          height: 125px;
+          background-color: rgba(255, 255, 255, 1);
+          box-sizing: border-box;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 0px;
+          // float: left;
+          margin: 20px;     
+        }
+        .cardInfo span,
+        .discountSituation span{
+          float: left;
+          width: 100%;
+          height: 35px;
+          line-height: 35px;
+          text-indent: 20px;
+        }
+        .cardInfo ul,
+        .discountSituation ul{
+          float:left;
+          width:100%;
+        }
+        .cardInfo ul li,
+        .discountSituation ul li{
+          float:left;
+          width:50%;
+          height:30px;
+        }
+        .cardInfo{
+          width: 562px;
+          height: 176px;
+          background-color: rgba(255, 255, 255, 1);
+          box-sizing: border-box;
+          border-width: 1px;
+          border-style: solid;
+          border-color: rgba(204, 204, 204, 1);
+          border-radius: 0px;
+          // float: left;
+          margin: 20px;     
+        }
+        .cardInfoBtn{
+          float:left;
+          width:100%;
+        }
+        .cardInfoBtn button{
+          float:left;
+          margin-left:20px;
         }
       `}
     </style>

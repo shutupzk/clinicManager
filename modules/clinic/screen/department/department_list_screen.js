@@ -8,7 +8,7 @@ class DepartmentListScreen extends Component {
     super(props)
     this.state = {
       personnelType: 1,
-      pageType:1
+      pageType: 1
     }
   }
 
@@ -50,15 +50,15 @@ class DepartmentListScreen extends Component {
   }
 
   renderTitle () {
-    const { titleText, orderTitle, liPadding } = styles
+    // const { titleText, orderTitle, liPadding } = styles
     return (
       <ul className='flex tb-flex'>
-        <li style={{ flex: 1,height:'40px',lineHeight:'40px' }}>序号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>科室编码  </li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>科室名称</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>所属诊所</li>
-        <li style={{ flex: 5,height:'40px',lineHeight:'40px' }}>是否开放预约挂号</li>
-        <li style={{ flex: 3,height:'40px',lineHeight:'40px' }}>操作</li>
+        <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>科室编码 </li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>科室名称</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属诊所</li>
+        <li style={{ flex: 5, height: '40px', lineHeight: '40px' }}>是否开放预约挂号</li>
+        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>操作</li>
       </ul>
     )
   }
@@ -72,41 +72,41 @@ class DepartmentListScreen extends Component {
         <li style={{ flex: 5 }}>{description}</li>
         <li style={{ flex: 2, textAlign: 'center' }}>
           <button style={{ ...fenyeItem, ...buttonMiddle, background: '#0BC019', border: '1px solid #0BC019' }} onClick={() => this.goToDetail({ apiName })}>
-            查看
-          </button>
+						查看
+					</button>
           <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
-            编辑
-          </button>
+						编辑
+					</button>
           <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ apiName })}>
-            删除
-          </button>
+						删除
+					</button>
         </li>
       </ul>
     )
   }
-  changeContent({type}){
-    this.setState({pageType:type});
+  changeContent ({ type }) {
+    this.setState({ pageType: type })
   }
-  showDoctor(){
+  showDoctor () {
     let exercises = this.getListData()
-    return(
+    return (
       <div>
-          <div className={'regisListTop'}>
-            <input type='text' placeholder='搜索科室名称/科室编号' />
-            <button className={'searchBtn'}>查询</button>
-          </div>
-          <div className={'listBox'}>
-            <button className={'addBtn'}>新增科室</button>
-            {this.renderTitle()}
-            {exercises.map((item, index) => {
-              return this.renderRow(item, index)
-            })}
-          </div>
+        <div className={'regisListTop'}>
+          <input type='text' placeholder='搜索科室名称/科室编号' />
+          <button className={'searchBtn'}>查询</button>
         </div>
+        <div className={'listBox'}>
+          <button className={'addBtn'}>新增科室</button>
+          {this.renderTitle()}
+          {exercises.map((item, index) => {
+            return this.renderRow(item, index)
+          })}
+        </div>
+      </div>
     )
   }
   render () {
-    const { fenyeItem, buttonLarge } = styles
+    // const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
         {/* <div className={'childTopBar'}>
@@ -117,7 +117,7 @@ class DepartmentListScreen extends Component {
             职员
           </span>
         </div> */}
-        {this.state.pageType==1?this.showDoctor():''}
+        {this.state.pageType === 1 ? this.showDoctor() : ''}
         {/* {this.state.pageType==2?this.showEmployee():''} */}
       </div>
     )

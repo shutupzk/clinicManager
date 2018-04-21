@@ -87,15 +87,16 @@ class RightContent extends Component {
     // const winWidth = this.state.winWidth;
     // console.log("winWidth"+winWidth);
     // window.re();
+    // console.log("curUrl",this.props.url.pathname+"==="+curUrl);
     return (
       <div className={'rightContent'} style={{width:'91%'}}>
         <div className={'right_nav_menu'}>
           <ul className='left'>
            {MAINFUNCTION.map((item, iKey) => {
               return (
-                <li
+                <li key={item.navigateName}
                   className={curUrl.indexOf(item.short_name) > -1 ? 'selLi' : ''}
-                  onClick={() => {
+                   onClick={() => {
                     Router.push(item.navigateName)
                   }}
                 >
