@@ -6,22 +6,22 @@ import { connect } from 'react-redux'
 // import { queryBaseApis, selectBaseApi, removeBaseApi } from '../../../ducks'
 
 class AddNewRegistrationScreen extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       pageType: 1
     }
   }
 
-  componentWillMount () {}
+  componentWillMount() {}
 
-  async submit () {}
+  async submit() {}
 	// 改变显示内容
-  changeContent ({ type }) {
+  changeContent({ type }) {
     this.setState({ pageType: type })
   }
 	// 显示添加新增
-  showAddNew () {
+  showAddNew() {
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -68,9 +68,9 @@ class AddNewRegistrationScreen extends Component {
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
-              <input style={{ width: '142px' }} type='text' value={'省'} />
-              <input style={{ width: '142px', marginLeft: '20px' }} type='text' value={'市'} />
-              <input style={{ width: '142px', marginLeft: '20px' }} type='text' value={'区'} />
+              <input style={{ width: '142px' }} type='text' defaultValue={'省'} />
+              <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'市'} />
+              <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'区'} />
               <input style={{ marginLeft: '20px' }} type='text' />
             </li>
             <li>
@@ -128,7 +128,7 @@ class AddNewRegistrationScreen extends Component {
     )
   }
 	// 显示新增列表
-  showNewList () {
+  showNewList() {
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -225,11 +225,11 @@ class AddNewRegistrationScreen extends Component {
     )
   }
 	// 查看详情
-  seeDetail () {
+  seeDetail() {
     Router.push('/treatment/newListDetail')
   }
 
-  render () {
+  render() {
     return (
       <div>
         <div className={'childTopBar'}>
