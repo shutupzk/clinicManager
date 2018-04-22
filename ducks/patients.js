@@ -10,7 +10,7 @@ const initState = {
 export function patients(state = initState, action = {}) {
   switch (action.type) {
     case PATIENT_ADD:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, action.data) })
+      return { ...state, data: { ...state.data, ...action.data } }
     case PATIENT_SELECT:
       return Object.assign({}, state, { selectId: action.selectId })
     default:
