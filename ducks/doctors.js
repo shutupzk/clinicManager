@@ -23,7 +23,7 @@ export function doctors (state = initState, action = {}) {
   }
 }
 
-export const doctorList = ({ clinic_id, personnel_type = '2' }) => async dispatch => {
+export const doctorList = ({ clinic_id, personnel_type }) => async dispatch => {
   try {
     const data = await request('/personnel/list', {
       clinic_id,

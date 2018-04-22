@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { doctorList } from '../../../../ducks'
 
 class DoctorListScreen extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       personnelType: 1,
@@ -12,12 +12,13 @@ class DoctorListScreen extends Component {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const { doctorList, clinic_id } = this.props
-    doctorList({ clinic_id })
+    console.log('clinic_id ======', clinic_id)
+    doctorList({ clinic_id, personnel_type: 2 })
   }
 
-  getListData () {
+  getListData() {
     const { doctors } = this.props
     let array = []
     for (let key in doctors) {
@@ -26,19 +27,19 @@ class DoctorListScreen extends Component {
     return array
   }
 
-  goToDetail ({ apiName }) {
+  goToDetail({ apiName }) {
     const { selectBaseApi } = this.props
     selectBaseApi({ apiName })
     Router.push('/apis/detail')
   }
 
-  goToEdit ({ apiName }) {
+  goToEdit({ apiName }) {
     const { selectBaseApi } = this.props
     selectBaseApi({ apiName })
     Router.push('/apis/edit')
   }
 
-  async toRemove ({ apiName }) {
+  async toRemove({ apiName }) {
     const confirmed = confirm('确定要删除  ' + apiName + '?')
     if (confirmed) {
       const { removeBaseApi } = this.props
@@ -49,9 +50,9 @@ class DoctorListScreen extends Component {
     }
   }
 
-  renderTitle () {
+  renderTitle() {
     return (
-      <ul className='flex tb-flex'>
+      <ul className="flex tb-flex">
         <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生编码 </li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生名称</li>
@@ -63,9 +64,9 @@ class DoctorListScreen extends Component {
     )
   }
 
-  renderTitle1 () {
+  renderTitle1() {
     return (
-      <ul className='flex tb-flex'>
+      <ul className="flex tb-flex">
         <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员编码 </li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员名称</li>
@@ -77,36 +78,35 @@ class DoctorListScreen extends Component {
     )
   }
 
-  renderRow ({ apiName, description }, index) {
+  renderRow({ code, name, department_name, clinic_name, is_appointment }, index) {
     const { liPadding, fenyeItem, buttonMiddle } = styles
     return (
-      <ul style={{ ...liPadding }} className='flex tb-flex listItem' key={index}>
+      <ul style={{ ...liPadding }} className="flex tb-flex listItem" key={index}>
         <li style={{ flex: 1 }}>{`${index}`}</li>
-        <li style={{ flex: 2 }}>{apiName}</li>
-        <li style={{ flex: 5 }}>{description}</li>
+        <li style={{ flex: 2 }}>{code}</li>
+        <li style={{ flex: 2 }}>{name}</li>
+        <li style={{ flex: 2 }}>{department_name}</li>
+        <li style={{ flex: 2 }}>{clinic_name}</li>
         <li style={{ flex: 2, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, background: '#0BC019', border: '1px solid #0BC019' }} onClick={() => this.goToDetail({ apiName })}>
-						查看
-					</button>
           <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
-						编辑
-					</button>
+            编辑
+          </button>
           <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ apiName })}>
-						删除
-					</button>
+            删除
+          </button>
         </li>
       </ul>
     )
   }
-  changeContent ({ type }) {
+  changeContent({ type }) {
     this.setState({ pageType: type })
   }
-  showDoctor () {
+  showDoctor() {
     let exercises = this.getListData()
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索医生名称/医生编号' />
+          <input type="text" placeholder="搜索医生名称/医生编号" />
           <button className={'searchBtn'}>查询</button>
         </div>
         <div className={'listBox'}>
@@ -119,12 +119,12 @@ class DoctorListScreen extends Component {
       </div>
     )
   }
-  showEmployee () {
+  showEmployee() {
     let exercises = this.getListData()
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索职员名称/职员编号' />
+          <input type="text" placeholder="搜索职员名称/职员编号" />
           <button className={'searchBtn'}>查询</button>
         </div>
         <div className={'listBox'}>
@@ -137,17 +137,17 @@ class DoctorListScreen extends Component {
       </div>
     )
   }
-  render () {
-		// const { fenyeItem, buttonLarge } = styles
+  render() {
+    // const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
         <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						医生
-					</span>
+            医生
+          </span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-						职员
-					</span>
+            职员
+          </span>
         </div>
         {this.state.pageType === 1 ? this.showDoctor() : ''}
         {this.state.pageType === 2 ? this.showEmployee() : ''}
@@ -188,9 +188,10 @@ const styles = {
 }
 
 const mapStateToProps = state => {
+  console.log(state)
   return {
     doctors: state.doctors.data,
-    clinic_id: '1'
+    clinic_id: state.user.data.clinic_id
   }
 }
 

@@ -4,16 +4,15 @@ const USER_SIGNIN = 'USER_SIGNIN'
 const USER_SIGNOUT = 'USER_SIGNOUT'
 
 const initState = {
-  data: {},
-  selectId: null
+  data: {}
 }
 
 export function user (state = initState, action = {}) {
   switch (action.type) {
     case USER_SIGNIN:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, action.data) })
+      return { ...state, data: action.data }
     case USER_SIGNOUT:
-      return Object.assign({}, state, { selectId: action.selectId })
+      return { ...state, data: {} }
     default:
       return state
   }
@@ -29,14 +28,12 @@ export const signin = ({ username, password }) => async dispatch => {
       return data.msg
     }
     const user = data.data || {}
-    let json = { [user.id]: user }
-    const { id } = user
-    localforage.setItem('userId', id)
+    localforage.setItem('userId', user.id)
     localforage.setItem('username', username)
     localforage.setItem('password', password)
     dispatch({
       type: USER_SIGNIN,
-      data: json
+      data: user
     })
     return null
   } catch (e) {
