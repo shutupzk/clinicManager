@@ -24,7 +24,8 @@ export const getPatientByCertNo = ({ cert_no }) => async dispatch => {
       cert_no
     })
     console.log(data)
-    const patient = data.data || {}
+    const patient = data.data
+    if (!patient || !patient.id) return '就诊人不存在'
     let json = { [patient.id]: patient }
     dispatch({
       type: PATIENT_ADD,

@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { triagePatientsList } from '../../../ducks'
+import { getPatientByCertNo } from '../../../ducks'
 
 class AddNewRegistrationScreen extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class AddNewRegistrationScreen extends Component {
   }
 
   componentWillMount() {
-    this.queryList(this.state.patientKeyword)
+    this.queryOne(this.state.patientKeyword)
   }
 
   async submit() {}
@@ -26,18 +26,28 @@ class AddNewRegistrationScreen extends Component {
   }
 
 	// 查询就诊人信息
-  queryList(keyword = '') {
-    const { triagePatientsList, clinic_id } = this.props
-    triagePatientsList({ clinic_id, keyword })
-    // console.log('this.props', this.props)
-    // this.setState({ patientInfo: this.props })
+  queryOne(keyword = '') {
+    const { getPatientByCertNo } = this.props
+    getPatientByCertNo({ keyword })
+		// console.log('this.props', this.props)
+		// this.setState({ patientInfo: this.props })
   }
   getOneData() {
-    const { triagePatients } = this.props
-    console.log('triagePatients',triagePatients)
+    const { patients } = this.props
+    console.log('patients', patients)
+    const { patientKeyword } = this.state
+    const keyword = patientKeyword
+		// console.log('keyword', keyword)
     let array = []
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
+    for (let key in patients) {
+      const patient = patients[key]
+      if (keyword) {
+        let pattern = new RegExp(keyword)
+				// console.log('pattern', pattern)
+        const { cert_no } = patients[key]
+				// console.log('code, name', { cert_no })
+        if (!pattern.test(cert_no)) continue
+      }
       array.push(patient)
     }
     return array
@@ -46,6 +56,8 @@ class AddNewRegistrationScreen extends Component {
   showAddNew() {
     let patientInfo = this.getOneData()
     console.log('patientInfo', patientInfo)
+    let patient = patientInfo[0]
+    console.log('patient', patient)
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -70,11 +82,11 @@ class AddNewRegistrationScreen extends Component {
               <label htmlFor='patientName'>
 								就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' id='patientName' />
+              <input type='text' id='patientName' defaultValue={patient.patient_name} />
             </li>
             <li>
               <label>身份证号码：</label>
-              <input type='text' />
+              <input type='text' defaultValue={patient.cert_no} />
             </li>
             <li style={{ width: '20%' }}>
               <label>
@@ -87,9 +99,9 @@ class AddNewRegistrationScreen extends Component {
 								性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div>
-                <input id='man' type='radio' name='sex' />
+                <input id='man' type='radio' name='sex' checked={patient.sex === 1} />
                 <label htmlFor='man'>男</label>
-                <input id='woman' type='radio' name='sex' style={{ marginLeft: '15px' }} />
+                <input id='woman' type='radio' name='sex' style={{ marginLeft: '15px' }} checked={patient.sex === 2} />
                 <label htmlFor='woman'>女</label>
               </div>
             </li>
@@ -97,7 +109,7 @@ class AddNewRegistrationScreen extends Component {
               <label>
 								手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' />
+              <input type='text' defaultValue={patient.phone} />
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
@@ -281,9 +293,7 @@ class AddNewRegistrationScreen extends Component {
 const mapStateToProps = state => {
   console.log(state)
   return {
-    clinic_id: state.user.data.clinic_id,
-    triagePatients: state.triagePatients.data,
-    page_info: state.triagePatients.page_info
+    patients: state.patients.data
   }
 }
-export default connect(mapStateToProps, { triagePatientsList })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, { getPatientByCertNo })(AddNewRegistrationScreen)
