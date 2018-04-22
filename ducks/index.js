@@ -1,5 +1,8 @@
+import { user, signin, signout } from './user'
 import { doctors, doctorList, doctorSelect } from './doctors'
 
-export { doctors }
+// keys
+export { user, doctors }
 
-export { doctorList, doctorSelect }
+// actions
+export { signin, signout, doctorList, doctorSelect }

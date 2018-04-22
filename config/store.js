@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
 
-import { doctors } from '../ducks'
+import { user, doctors } from '../ducks'
 
 // middleware
 function createMiddleware () {
@@ -19,7 +19,7 @@ function createMiddleware () {
 
 // reducer
 function getReducer () {
-  return combineReducers({ doctors })
+  return combineReducers({ user, doctors })
 }
 
 // store

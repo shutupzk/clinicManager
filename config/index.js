@@ -2,7 +2,7 @@ import withData from './withData'
 
 const TITLE = '诊小二管家平台'
 
-const API_SERVER = 'http://47.104.206.95:8080'//'http://localhost:8080'
+const API_SERVER = 'http://localhost:8080' // 'http://localhost:8080'
 const PORT = '9151' // 端口
 
 // 主功能
@@ -59,10 +59,7 @@ const MAINFUNCTION = [
     title: '平台管理',
     short_name: 'platform',
     navigateName: '/platform',
-    children: [
-      { title: '诊所管理', navigateName: '/platform' },
-      { title: '业务管理', navigateName: '/platform/business' }
-    ]
+    children: [{ title: '诊所管理', navigateName: '/platform' }, { title: '业务管理', navigateName: '/platform/business' }]
   }
 ]
 
@@ -71,6 +68,5 @@ const HOME_PAGE = { url: '/apis' }
 
 // 主题颜色
 const MAINCOLOR = '#2A4680'
-
 
 export { API_SERVER, withData, HOME_PAGE, MAINCOLOR, PORT, TITLE, MAINFUNCTION }

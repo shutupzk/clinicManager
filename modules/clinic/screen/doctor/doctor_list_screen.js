@@ -13,8 +13,8 @@ class DoctorListScreen extends Component {
   }
 
   componentWillMount () {
-    const { doctorList, clinic_code } = this.props
-    doctorList({ clinic_code })
+    const { doctorList, clinic_id } = this.props
+    doctorList({ clinic_id })
   }
 
   getListData () {
@@ -190,7 +190,7 @@ const styles = {
 const mapStateToProps = state => {
   return {
     doctors: state.doctors.data,
-    clinic_code: '00000001'
+    clinic_id: '1'
   }
 }
 
