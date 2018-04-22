@@ -15,7 +15,9 @@ class AddNewRegistrationScreen extends Component {
     }
   }
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.queryList(this.state.patientKeyword)
+  }
 
   async submit() {}
 	// 改变显示内容
@@ -24,15 +26,25 @@ class AddNewRegistrationScreen extends Component {
   }
 
 	// 查询就诊人信息
-  getOnePatientInfo(keyword = '') {
+  queryList(keyword = '') {
     const { triagePatientsList, clinic_id } = this.props
     triagePatientsList({ clinic_id, keyword })
     // console.log('this.props', this.props)
     // this.setState({ patientInfo: this.props })
   }
+  getOneData() {
+    const { triagePatients } = this.props
+    console.log('triagePatients',triagePatients)
+    let array = []
+    for (let key in triagePatients) {
+      const patient = triagePatients[key]
+      array.push(patient)
+    }
+    return array
+  }
 	// 显示添加新增
   showAddNew() {
-    let patientInfo = this.props.triagePatients
+    let patientInfo = this.getOneData()
     console.log('patientInfo', patientInfo)
     return (
       <div className={'formList'}>
@@ -44,7 +56,7 @@ class AddNewRegistrationScreen extends Component {
             onClick={() => {
               const patientKeyword = this.refs.patientKeywordInput.value
               this.setState({ patientKeyword })
-              this.getOnePatientInfo(patientKeyword)
+              this.queryList(patientKeyword)
             }}
 					>
 						查询
@@ -269,8 +281,9 @@ class AddNewRegistrationScreen extends Component {
 const mapStateToProps = state => {
   console.log(state)
   return {
-    doctors: state.doctors.data,
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    triagePatients: state.triagePatients.data,
+    page_info: state.triagePatients.page_info
   }
 }
 export default connect(mapStateToProps, { triagePatientsList })(AddNewRegistrationScreen)
