@@ -21,7 +21,7 @@ class TriageScreen extends Component {
     this.queryList()
   }
 
-  queryList () {
+  queryList() {
     const { clinic_id, triagePatientsList } = this.props
     triagePatientsList({ clinic_id })
   }
