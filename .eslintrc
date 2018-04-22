@@ -3,11 +3,13 @@
   "globals": {
     "__DEV__": false,
     "requestAnimationFrame": true,
-    "fetch": true,
+    "browser": true,
     "React": true
   },
   "rules": {
     "space-before-function-paren": [0, "always"],
-    "properties": "never"
+    "camelcase": [0, {"properties": "never"}],
+    "no-undef": 0,
+    "react/prop-types": 0
   }
 }

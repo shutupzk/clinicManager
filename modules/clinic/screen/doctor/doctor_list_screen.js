@@ -64,7 +64,7 @@ class DoctorListScreen extends Component {
 
   renderTitle() {
     return (
-      <ul className="flex tb-flex">
+      <ul className='flex tb-flex'>
         <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生编码 </li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生名称</li>
@@ -78,7 +78,7 @@ class DoctorListScreen extends Component {
 
   renderTitle1() {
     return (
-      <ul className="flex tb-flex">
+      <ul className='flex tb-flex'>
         <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员编码 </li>
         <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员名称</li>
@@ -91,9 +91,9 @@ class DoctorListScreen extends Component {
   }
 
   renderRow({ code, name, department_name, clinic_name, is_appointment }, index) {
-    const { liPadding, fenyeItem, buttonMiddle } = styles
+    const { fenyeItem, buttonMiddle } = styles
     return (
-      <ul className="flex tb-flex" key={index}>
+      <ul className='flex tb-flex' key={index}>
         <li style={{ flex: 1 }}>{`${index + 1}`}</li>
         <li style={{ flex: 3 }}>{code}</li>
         <li style={{ flex: 3 }}>{name}</li>
@@ -101,10 +101,10 @@ class DoctorListScreen extends Component {
         <li style={{ flex: 3 }}>{clinic_name}</li>
         <li style={{ flex: 5 }}>{is_appointment ? '是' : '否'}</li>
         <li style={{ flex: 3, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ })}>
             编辑
           </button>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ apiName })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ })}>
             删除
           </button>
         </li>
@@ -113,9 +113,9 @@ class DoctorListScreen extends Component {
   }
 
   renderRow1({ code, name, department_name, clinic_name, is_appointment }, index) {
-    const { liPadding, fenyeItem, buttonMiddle } = styles
+    const { fenyeItem, buttonMiddle } = styles
     return (
-      <ul className="flex tb-flex" key={index}>
+      <ul className='flex tb-flex' key={index}>
         <li style={{ flex: 1 }}>{`${index + 1}`}</li>
         <li style={{ flex: 3 }}>{code}</li>
         <li style={{ flex: 3 }}>{name}</li>
@@ -123,10 +123,10 @@ class DoctorListScreen extends Component {
         <li style={{ flex: 3 }}>{clinic_name}</li>
         <li style={{ flex: 3 }}>{is_appointment ? '是' : '否'}</li>
         <li style={{ flex: 3, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ })}>
             编辑
           </button>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ apiName })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ })}>
             删除
           </button>
         </li>
@@ -141,7 +141,7 @@ class DoctorListScreen extends Component {
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type="text" placeholder="搜索医生名称/医生编号" ref="doctorKeywordInput" defaultValue={this.state.doctorKeyword}/>
+          <input type='text' placeholder='搜索医生名称/医生编号' ref='doctorKeywordInput' defaultValue={this.state.doctorKeyword} />
           <button
             className={'searchBtn'}
             onClick={() => {
@@ -168,7 +168,7 @@ class DoctorListScreen extends Component {
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type="text" placeholder="搜索职员名称/职员编号" ref="employeeKeywordInput" defaultValue={this.state.employeeKeyword} />
+          <input type='text' placeholder='搜索职员名称/职员编号' ref='employeeKeywordInput' defaultValue={this.state.employeeKeyword} />
           <button
             className={'searchBtn'}
             onClick={() => {

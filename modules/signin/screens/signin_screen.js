@@ -40,13 +40,13 @@ class SigninScreen extends Component {
           <span className={'loginTxt'}>登录系统</span>
           <ul>
             <li>
-              <input type="text" placeholder={'请输入您的手机号'} onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />
+              <input type='text' placeholder={'请输入您的手机号'} onChange={e => this.setState({ username: e.target.value })} value={this.state.username} />
             </li>
             <li>
-              <input placeholder={'请输入密码'} type="password" onChange={e => this.setState({ password: e.target.value })} value={this.state.password} />
+              <input placeholder={'请输入密码'} type='password' onChange={e => this.setState({ password: e.target.value })} value={this.state.password} />
             </li>
           </ul>
-          <button className="loginBtn" onClick={() => this.submit(this.props)}>
+          <button className='loginBtn' onClick={() => this.submit(this.props)}>
             登录
           </button>
         </section>
