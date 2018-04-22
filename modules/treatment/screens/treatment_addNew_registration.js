@@ -10,7 +10,8 @@ class AddNewRegistrationScreen extends Component {
     super(props)
     this.state = {
       pageType: 1,
-      patientKeyword: ''
+      patientKeyword: '',
+      patientInfo: ''
     }
   }
 
@@ -26,10 +27,13 @@ class AddNewRegistrationScreen extends Component {
   getOnePatientInfo(keyword = '') {
     const { triagePatientsList, clinic_id } = this.props
     triagePatientsList({ clinic_id, keyword })
+    // console.log('this.props', this.props)
+    // this.setState({ patientInfo: this.props })
   }
 	// 显示添加新增
   showAddNew() {
-    // let patientInfo = ''
+    let patientInfo = this.props.triagePatients
+    console.log('patientInfo', patientInfo)
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
