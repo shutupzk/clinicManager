@@ -7,21 +7,33 @@ class DoctorListScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      personnelType: 1,
-      pageType: 1
+      personnel_type: 2,
+      doctorKeyword: '',
+      employeeKeyword: ''
     }
   }
 
   componentWillMount() {
-    const { doctorList, clinic_id } = this.props
-    console.log('clinic_id ======', clinic_id)
-    doctorList({ clinic_id, personnel_type: 2 })
+    this.queryList()
   }
 
-  getListData() {
+  queryList(keyword = '', personnel_type = 2) {
+    const { doctorList, clinic_id } = this.props
+    doctorList({ clinic_id, personnel_type, keyword })
+  }
+
+  getListData(personnel_type) {
     const { doctors } = this.props
+    const { doctorKeyword, employeeKeyword } = this.state
+    const keyword = personnel_type === 2 ? doctorKeyword : employeeKeyword
     let array = []
     for (let key in doctors) {
+      if (doctors[key].personnel_type !== personnel_type) continue
+      if (keyword) {
+        let pattern = new RegExp(keyword)
+        const { code, name } = doctors[key]
+        if (!pattern.test(code) && !pattern.test(name)) continue
+      }
       array.push(doctors[key])
     }
     return array
@@ -81,13 +93,14 @@ class DoctorListScreen extends Component {
   renderRow({ code, name, department_name, clinic_name, is_appointment }, index) {
     const { liPadding, fenyeItem, buttonMiddle } = styles
     return (
-      <ul style={{ ...liPadding }} className="flex tb-flex listItem" key={index}>
-        <li style={{ flex: 1 }}>{`${index}`}</li>
-        <li style={{ flex: 2 }}>{code}</li>
-        <li style={{ flex: 2 }}>{name}</li>
-        <li style={{ flex: 2 }}>{department_name}</li>
-        <li style={{ flex: 2 }}>{clinic_name}</li>
-        <li style={{ flex: 2, textAlign: 'center' }}>
+      <ul className="flex tb-flex" key={index}>
+        <li style={{ flex: 1 }}>{`${index + 1}`}</li>
+        <li style={{ flex: 3 }}>{code}</li>
+        <li style={{ flex: 3 }}>{name}</li>
+        <li style={{ flex: 3 }}>{department_name}</li>
+        <li style={{ flex: 3 }}>{clinic_name}</li>
+        <li style={{ flex: 5 }}>{is_appointment ? '是' : '否'}</li>
+        <li style={{ flex: 3, textAlign: 'center' }}>
           <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
             编辑
           </button>
@@ -98,16 +111,47 @@ class DoctorListScreen extends Component {
       </ul>
     )
   }
-  changeContent({ type }) {
-    this.setState({ pageType: type })
+
+  renderRow1({ code, name, department_name, clinic_name, is_appointment }, index) {
+    const { liPadding, fenyeItem, buttonMiddle } = styles
+    return (
+      <ul className="flex tb-flex" key={index}>
+        <li style={{ flex: 1 }}>{`${index + 1}`}</li>
+        <li style={{ flex: 3 }}>{code}</li>
+        <li style={{ flex: 3 }}>{name}</li>
+        <li style={{ flex: 3 }}>{department_name}</li>
+        <li style={{ flex: 3 }}>{clinic_name}</li>
+        <li style={{ flex: 3 }}>{is_appointment ? '是' : '否'}</li>
+        <li style={{ flex: 3, textAlign: 'center' }}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ apiName })}>
+            编辑
+          </button>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ apiName })}>
+            删除
+          </button>
+        </li>
+      </ul>
+    )
+  }
+  changeContent({ personnel_type }) {
+    this.setState({ personnel_type })
   }
   showDoctor() {
-    let exercises = this.getListData()
+    let exercises = this.getListData(2)
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type="text" placeholder="搜索医生名称/医生编号" />
-          <button className={'searchBtn'}>查询</button>
+          <input type="text" placeholder="搜索医生名称/医生编号" ref="doctorKeywordInput" defaultValue={this.state.doctorKeyword}/>
+          <button
+            className={'searchBtn'}
+            onClick={() => {
+              const doctorKeyword = this.refs.doctorKeywordInput.value
+              this.setState({ doctorKeyword })
+              this.queryList(doctorKeyword, 2)
+            }}
+          >
+            查询
+          </button>
         </div>
         <div className={'listBox'}>
           <button className={'addBtn'}>新增医生</button>
@@ -120,18 +164,27 @@ class DoctorListScreen extends Component {
     )
   }
   showEmployee() {
-    let exercises = this.getListData()
+    let exercises = this.getListData(1)
     return (
       <div>
         <div className={'regisListTop'}>
-          <input type="text" placeholder="搜索职员名称/职员编号" />
-          <button className={'searchBtn'}>查询</button>
+          <input type="text" placeholder="搜索职员名称/职员编号" ref="employeeKeywordInput" defaultValue={this.state.employeeKeyword} />
+          <button
+            className={'searchBtn'}
+            onClick={() => {
+              const employeeKeyword = this.refs.employeeKeywordInput.value
+              this.setState({ employeeKeyword })
+              this.queryList(employeeKeyword, 1)
+            }}
+          >
+            查询
+          </button>
         </div>
         <div className={'listBox'}>
           <button className={'addBtn'}>新增职员</button>
           {this.renderTitle1()}
           {exercises.map((item, index) => {
-            return this.renderRow(item, index)
+            return this.renderRow1(item, index)
           })}
         </div>
       </div>
@@ -142,15 +195,15 @@ class DoctorListScreen extends Component {
     return (
       <div className={'orderRecordsPage'}>
         <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
+          <span className={this.state.personnel_type === 2 ? 'sel' : ''} onClick={() => this.changeContent({ personnel_type: 2 })}>
             医生
           </span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
+          <span className={this.state.personnel_type === 1 ? 'sel' : ''} onClick={() => this.changeContent({ personnel_type: 1 })}>
             职员
           </span>
         </div>
-        {this.state.pageType === 1 ? this.showDoctor() : ''}
-        {this.state.pageType === 2 ? this.showEmployee() : ''}
+        {this.state.personnel_type === 2 ? this.showDoctor() : ''}
+        {this.state.personnel_type === 1 ? this.showEmployee() : ''}
       </div>
     )
   }
