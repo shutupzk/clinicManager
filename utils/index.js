@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export const readJsonKey = (key, json, fkey, tKey) => {
   return foreachJsonKey(key, json, fkey, tKey)
 }
@@ -53,4 +55,11 @@ const foreachJsonKey = (oldkey, json, fkey, tKey) => {
     delete obj[tKey]
   }
   return obj
+}
+
+export const getAgeByBirthday = birthday => {
+  if (!birthday) return null
+  let birhYear = moment(birthday).year()
+  let currentYear = moment().year()
+  return currentYear - birhYear
 }
