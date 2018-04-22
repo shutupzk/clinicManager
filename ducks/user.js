@@ -42,7 +42,7 @@ export const signin = ({ username, password }) => async dispatch => {
   }
 }
 
-export const signout = ({ username, password }) => async dispatch => {
+export const signout = () => async dispatch => {
   try {
     localforage.clear()
     dispatch({

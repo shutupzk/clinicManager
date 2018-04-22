@@ -3,13 +3,14 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-// import { queryBaseApis, selectBaseApi, removeBaseApi } from '../../../ducks'
+import { triagePatientsList } from '../../../ducks'
 
 class AddNewRegistrationScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1
+      pageType: 1,
+      patientKeyword: ''
     }
   }
 
@@ -20,14 +21,30 @@ class AddNewRegistrationScreen extends Component {
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
+
+	// 查询就诊人信息
+  getOnePatientInfo(keyword = '') {
+    const { triagePatientsList, clinic_id } = this.props
+    triagePatientsList({ clinic_id, keyword })
+  }
 	// 显示添加新增
   showAddNew() {
+    // let patientInfo = ''
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
           <label style={{ float: 'left', marginLeft: '20px', height: '60px', lineHeight: '60px' }}>就诊人登记</label>
-          <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-          <button className={'searchBtn'}>查询</button>
+          <input ref='patientKeywordInput' type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' defaultValue={this.state.patientKeyword} />
+          <button
+            className={'searchBtn'}
+            onClick={() => {
+              const patientKeyword = this.refs.patientKeywordInput.value
+              this.setState({ patientKeyword })
+              this.getOnePatientInfo(patientKeyword)
+            }}
+					>
+						查询
+					</button>
           <button className={'searchBtn'}>读卡</button>
           {/* <a>注：当日登记就诊人列表</a> */}
         </div>
@@ -245,4 +262,11 @@ class AddNewRegistrationScreen extends Component {
     )
   }
 }
-export default connect(null)(AddNewRegistrationScreen)
+const mapStateToProps = state => {
+  console.log(state)
+  return {
+    doctors: state.doctors.data,
+    clinic_id: state.user.data.clinic_id
+  }
+}
+export default connect(mapStateToProps, { triagePatientsList })(AddNewRegistrationScreen)
