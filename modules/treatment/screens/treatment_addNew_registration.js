@@ -3,7 +3,9 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo } from '../../../ducks'
+import { getPatientByCertNo, departmentList } from '../../../ducks'
+// import { getAgeByBirthday } from '../../../utils'
+import moment from 'moment'
 
 class AddNewRegistrationScreen extends Component {
   constructor(props) {
@@ -11,12 +13,14 @@ class AddNewRegistrationScreen extends Component {
     this.state = {
       pageType: 1,
       patientKeyword: '',
-      patientInfo: ''
+      patientInfo: {},
+      department_id: ''
     }
   }
 
   componentWillMount() {
-    this.queryOne(this.state.patientKeyword)
+    const { departmentList, clinic_id } = this.props
+    departmentList({ clinic_id })
   }
 
   async submit() {}
@@ -26,38 +30,26 @@ class AddNewRegistrationScreen extends Component {
   }
 
 	// 查询就诊人信息
-  queryOne(keyword = '') {
+  async queryOne(cert_no = '') {
     const { getPatientByCertNo } = this.props
-    getPatientByCertNo({ keyword })
-		// console.log('this.props', this.props)
-		// this.setState({ patientInfo: this.props })
+    let patient = await getPatientByCertNo({ cert_no })
+    this.setState({ patientInfo: patient || {} })
   }
-  getOneData() {
-    const { patients } = this.props
-    console.log('patients', patients)
-    const { patientKeyword } = this.state
-    const keyword = patientKeyword
-		// console.log('keyword', keyword)
-    let array = []
-    for (let key in patients) {
-      const patient = patients[key]
-      if (keyword) {
-        let pattern = new RegExp(keyword)
-				// console.log('pattern', pattern)
-        const { cert_no } = patients[key]
-				// console.log('code, name', { cert_no })
-        if (!pattern.test(cert_no)) continue
-      }
-      array.push(patient)
+	// 科室
+  queryDepartment() {
+    const array = []
+    const { departments } = this.props
+    for (let key in departments) {
+      array.push(departments[key])
     }
+    console.log('array', array)
     return array
   }
 	// 显示添加新增
   showAddNew() {
-    let patientInfo = this.getOneData()
-    console.log('patientInfo', patientInfo)
-    let patient = patientInfo[0]
+    let patient = this.state.patientInfo
     console.log('patient', patient)
+    let departments = this.queryDepartment()
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -68,7 +60,7 @@ class AddNewRegistrationScreen extends Component {
             onClick={() => {
               const patientKeyword = this.refs.patientKeywordInput.value
               this.setState({ patientKeyword })
-              this.queryList(patientKeyword)
+              this.queryOne(patientKeyword)
             }}
 					>
 						查询
@@ -82,26 +74,75 @@ class AddNewRegistrationScreen extends Component {
               <label htmlFor='patientName'>
 								就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' id='patientName' defaultValue={patient.patient_name} />
+              <input
+                type='text'
+                id='patientName'
+                value={patient.name}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.name = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li>
               <label>身份证号码：</label>
-              <input type='text' defaultValue={patient.cert_no} />
+              <input
+                type='text'
+                value={patient.cert_no}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.cert_no = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li style={{ width: '20%' }}>
               <label>
-								年龄：<b style={{ color: 'red' }}> *</b>
+								生日：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' style={{ width: '120px' }} />
+              <input
+                type='date'
+                style={{ width: '120px' }}
+                value={moment(patient.birthday).format('YYYY-MM-DD')}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.birthday = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li style={{ width: '30%' }}>
               <label>
 								性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div>
-                <input id='man' type='radio' name='sex' checked={patient.sex === 1} />
+                <input
+                  id='man'
+                  type='radio'
+                  name='sex'
+                  value={1}
+                  checked={patient.sex === '1'}
+                  onChange={e => {
+                    let newPatient = patient
+                    newPatient.sex = e.target.value
+                    this.setState({ patientInfo: newPatient })
+                  }}
+								/>
                 <label htmlFor='man'>男</label>
-                <input id='woman' type='radio' name='sex' style={{ marginLeft: '15px' }} checked={patient.sex === 2} />
+                <input
+                  id='woman'
+                  type='radio'
+                  name='sex'
+                  value={2}
+                  style={{ marginLeft: '15px' }}
+                  checked={patient.sex === '2'}
+                  onChange={e => {
+                    let newPatient = patient
+                    newPatient.sex = e.target.value
+                    this.setState({ patientInfo: newPatient })
+                  }}
+								/>
                 <label htmlFor='woman'>女</label>
               </div>
             </li>
@@ -109,22 +150,42 @@ class AddNewRegistrationScreen extends Component {
               <label>
 								手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' defaultValue={patient.phone} />
+              <input
+                type='text'
+                value={patient.phone}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.phone = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
               <input style={{ width: '142px' }} type='text' defaultValue={'省'} />
               <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'市'} />
               <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'区'} />
-              <input style={{ marginLeft: '20px' }} type='text' />
+              <input style={{ marginLeft: '20px' }} type='text' value={patient.address} />
             </li>
             <li>
               <label>接诊科室：</label>
-              <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
+              <select
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.department_id = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							>
+                <option value={'0'} key={'0'}>
+									请选择
+								</option>
+                {departments.map((item, index) => {
+                  return (
+                    <option value={item.id} key={item.id}>
+                      {item.name}
+                    </option>
+                  )
+                })}
               </select>
             </li>
             <li>
@@ -156,7 +217,7 @@ class AddNewRegistrationScreen extends Component {
             </li>
             <li>
               <label>职业：</label>
-              <input type='text' />
+              <input type='text' value={patient.profession} />
             </li>
             <li>
               <label>备注：</label>
@@ -293,7 +354,9 @@ class AddNewRegistrationScreen extends Component {
 const mapStateToProps = state => {
   console.log(state)
   return {
-    patients: state.patients.data
+    patients: state.patients.data,
+    departments: state.departments.data,
+    clinic_id: state.user.data.clinic_id
   }
 }
-export default connect(mapStateToProps, { getPatientByCertNo })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, { getPatientByCertNo, departmentList })(AddNewRegistrationScreen)

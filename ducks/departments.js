@@ -8,7 +8,7 @@ const initState = {
   selectId: null
 }
 
-export function departments (state = initState, action = {}) {
+export function departments(state = initState, action = {}) {
   switch (action.type) {
     case DEPARTMENT_ADD:
       return Object.assign({}, state, { data: Object.assign({}, state.data, action.data) })
@@ -23,21 +23,19 @@ export function departments (state = initState, action = {}) {
   }
 }
 
-export const departmentList = ({ clinic_id, personnel_type, keyword }) => async dispatch => {
+export const departmentList = ({ clinic_id }) => async dispatch => {
   try {
-    const data = await request('/personnel/list', {
-      clinic_id,
-      personnel_type,
-      keyword
+    const data = await request('/department/list', {
+      clinic_id
     })
-    console.log(data)
+    console.log('departments========', data)
     const docs = data.data || []
     let json = {}
     for (let doc of docs) {
       json[doc.id] = doc
     }
     dispatch({
-      type: DOCTOR_ADD,
+      type: DEPARTMENT_ADD,
       data: json
     })
     return null
@@ -47,11 +45,11 @@ export const departmentList = ({ clinic_id, personnel_type, keyword }) => async 
   }
 }
 
-export const departmentSelect = ({ personnel_id }) => async dispatch => {
+export const departmentSelect = ({ department_id }) => async dispatch => {
   try {
     dispatch({
       type: DEPARTMENT_SELECT,
-      selectId: personnel_id
+      selectId: department_id
     })
     return null
   } catch (e) {

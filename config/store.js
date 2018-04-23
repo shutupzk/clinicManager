@@ -2,7 +2,7 @@ import { createStore, compose, applyMiddleware } from 'redux'
 import { persistCombineReducers, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 import thunk from 'redux-thunk'
-import { user, doctors, triagePatients, patients } from '../ducks'
+import { user, doctors, triagePatients, patients, departments } from '../ducks'
 
 const reduxConfig = {
   key: 'root',
@@ -13,7 +13,8 @@ const appReducer = persistCombineReducers(reduxConfig, {
   user,
   doctors,
   triagePatients,
-  patients
+  patients,
+  departments
 })
 
 const rootReducer = (state, action) => {
