@@ -3,8 +3,8 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo, departmentList } from '../../../ducks'
-// import { getAgeByBirthday } from '../../../utils'
+import { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList } from '../../../ducks'
+import { getAgeByBirthday } from '../../../utils'
 import moment from 'moment'
 
 class AddNewRegistrationScreen extends Component {
@@ -23,7 +23,17 @@ class AddNewRegistrationScreen extends Component {
     departmentList({ clinic_id })
   }
 
-  async submit() {}
+  async submit() {
+    const { addTriagePatientsList, clinic_id, personnel_id } = this.props
+    let patientInfo = this.state.patientInfo
+    patientInfo.clinic_id = clinic_id
+    patientInfo.personnel_id = personnel_id
+		// console.log(patientInfo)
+    addTriagePatientsList({ patientInfo })
+    this.setState({ patientInfo: {} })
+    this.setState({ pageType: 2 })
+    this.queryPatients()
+  }
 	// 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
@@ -42,13 +52,13 @@ class AddNewRegistrationScreen extends Component {
     for (let key in departments) {
       array.push(departments[key])
     }
-    console.log('array', array)
+		// console.log('array', array)
     return array
   }
 	// 显示添加新增
   showAddNew() {
     let patient = this.state.patientInfo
-    console.log('patient', patient)
+		// console.log('patient', patient)
     let departments = this.queryDepartment()
     return (
       <div className={'formList'}>
@@ -107,7 +117,7 @@ class AddNewRegistrationScreen extends Component {
                 value={moment(patient.birthday).format('YYYY-MM-DD')}
                 onChange={e => {
                   let newPatient = patient
-                  newPatient.birthday = e.target.value
+                  newPatient.birthday = moment(e.target.value).format('YYYYMMDD')
                   this.setState({ patientInfo: newPatient })
                 }}
 							/>
@@ -121,7 +131,7 @@ class AddNewRegistrationScreen extends Component {
                   id='man'
                   type='radio'
                   name='sex'
-                  value={1}
+                  value={'1'}
                   checked={patient.sex === '1'}
                   onChange={e => {
                     let newPatient = patient
@@ -134,7 +144,7 @@ class AddNewRegistrationScreen extends Component {
                   id='woman'
                   type='radio'
                   name='sex'
-                  value={2}
+                  value={'2'}
                   style={{ marginLeft: '15px' }}
                   checked={patient.sex === '2'}
                   onChange={e => {
@@ -165,11 +175,21 @@ class AddNewRegistrationScreen extends Component {
               <input style={{ width: '142px' }} type='text' defaultValue={'省'} />
               <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'市'} />
               <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'区'} />
-              <input style={{ marginLeft: '20px' }} type='text' value={patient.address} />
+              <input
+                style={{ marginLeft: '20px' }}
+                type='text'
+                value={patient.address}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.address = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li>
               <label>接诊科室：</label>
               <select
+                value={patient.department_id}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.department_id = e.target.value
@@ -193,39 +213,99 @@ class AddNewRegistrationScreen extends Component {
 								就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
               <div>
-                <input id='first' type='radio' name='type' />
+                <input
+                  id='first'
+                  type='radio'
+                  name='type'
+                  value={1}
+                  onChange={e => {
+                    let newPatient = patient
+                    newPatient.visit_type = e.target.value
+                    this.setState({ patientInfo: newPatient })
+                  }}
+								/>
                 <label htmlFor='first'>首诊</label>
-                <input id='referral' type='radio' name='type' style={{ marginLeft: '15px' }} />
+                <input
+                  id='referral'
+                  type='radio'
+                  name='type'
+                  value={2}
+                  style={{ marginLeft: '15px' }}
+                  onChange={e => {
+                    let newPatient = patient
+                    newPatient.visit_type = e.target.value
+                    this.setState({ patientInfo: newPatient })
+                  }}
+								/>
                 <label htmlFor='referral'>复诊</label>
-                <input id='operate' type='radio' name='type' style={{ marginLeft: '15px' }} />
+                <input
+                  id='operate'
+                  type='radio'
+                  name='type'
+                  value={3}
+                  style={{ marginLeft: '15px' }}
+                  onChange={e => {
+                    let newPatient = patient
+                    newPatient.visit_type = e.target.value
+                    this.setState({ patientInfo: newPatient })
+                  }}
+								/>
                 <label htmlFor='operate'>术后复诊</label>
               </div>
             </li>
             <li style={{ width: '100%', cursor: 'pointer' }}>更多：完善健康档案（收起、展开）</li>
             <li>
               <label>会员卡号：</label>
-              <input type='text' />
+              <input
+                type='text'
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.member_card_number = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li>
               <label>就诊人来源：</label>
-              <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
+              <select
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.patient_channel_id = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							>
+                <option value={1}>1</option>
+                <option value={2}>2</option>
+                <option value={3}>3</option>
+                <option value={4}>4</option>
               </select>
             </li>
             <li>
               <label>职业：</label>
-              <input type='text' value={patient.profession} />
+              <input
+                type='text'
+                value={patient.profession}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.profession = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
             <li>
               <label>备注：</label>
-              <input type='text' />
+              <input
+                type='text'
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.remark = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+							/>
             </li>
           </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
-            <button className='saveBtn' onClick={() => this.submit(this.props)}>
+            <button className='saveBtn' onClick={() => this.submit()}>
 							保存
 						</button>
           </div>
@@ -233,8 +313,22 @@ class AddNewRegistrationScreen extends Component {
       </div>
     )
   }
+  queryPatients() {
+    const { clinic_id, triagePatientsList } = this.props
+    triagePatientsList({ clinic_id })
+  }
+  getTriagePatientListData() {
+    const { triagePatients } = this.props
+    let array = []
+    for (let key in triagePatients) {
+      const patient = triagePatients[key]
+      array.push(patient)
+    }
+    return array
+  }
 	// 显示新增列表
   showNewList() {
+    const array = this.getTriagePatientListData()
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -244,86 +338,27 @@ class AddNewRegistrationScreen extends Component {
         </div>
         <div className={'regisList'}>
           <ul>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'} onClick={() => this.seeDetail()}>
-								查看详情
-							</div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>查看详情</div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>查看详情</div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>查看详情</div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>查看详情</div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>查看详情</div>
-            </li>
+            {array.map((patient, index) => {
+              return (
+                <li key={index}>
+                  <div className={'liTop'}>
+                    <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+                    <span className={'status'}>待分诊</span>
+                  </div>
+                  <div>
+										就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
+									</div>
+                  <div>门诊ID：{patient.cert_no}</div>
+                  <div>接诊科室：{patient.department_name}</div>
+                  <div>接诊医生：{patient.doctor_name}</div>
+                  <div>登记人员：{patient.register_personnel_name}</div>
+                  <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
+                  <div className={'seeDetail'} onClick={() => this.seeDetail()}>
+										查看详情
+									</div>
+                </li>
+              )
+            })}
           </ul>
         </div>
         <div className={'pagination'} />
@@ -342,7 +377,13 @@ class AddNewRegistrationScreen extends Component {
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
 						登记
 					</span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.queryPatients()
+              this.changeContent({ type: 2 })
+            }}
+					>
 						就诊人列表
 					</span>
         </div>
@@ -354,9 +395,11 @@ class AddNewRegistrationScreen extends Component {
 const mapStateToProps = state => {
   console.log(state)
   return {
+    personnel_id: state.user.data.id,
     patients: state.patients.data,
     departments: state.departments.data,
+    triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id
   }
 }
-export default connect(mapStateToProps, { getPatientByCertNo, departmentList })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList })(AddNewRegistrationScreen)

@@ -44,6 +44,22 @@ export const triagePatientsList = ({ clinic_id, keyword }) => async dispatch => 
   }
 }
 
+export const addTriagePatientsList = ({ patientInfo }) => async dispatch => {
+  try {
+    console.log('patientInfo', patientInfo)
+    const data = await request('/triage/register', patientInfo)
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const triagePatientsSelect = ({ clinic_triage_patient_id }) => async dispatch => {
   try {
     dispatch({
