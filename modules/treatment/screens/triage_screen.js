@@ -316,63 +316,6 @@ class TriageScreen extends Component {
         </div>
         <div className={'doctorList_content'}>
           <ul>
-<<<<<<< HEAD
-            <li>
-              <div>
-                <img src={'/static/login/u49.png'} />
-                <span>医生</span>
-                <span>唐伯虎</span>
-              </div>
-              <div>
-                <span>科室名称：XX科室</span>
-                <span>今日待接诊：5人</span>
-                <span>今日已接诊：5人</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div className={'pagination'} />
-        <style jsx>{`
-					.doctorList_content ul li {
-						width:250px;
-            height:150px; 
-            background:rgba(255,255,255,1);
-            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
-            float: left;
-          }
-          .doctorList_content ul li img{
-            width: 40px;
-            height: 40px;
-            margin: 5px auto;
-            display: table;
-          }
-          .doctorList_content ul li>div:nth-child(1){
-            float: left;
-            width: 100px;
-            margin: 25px 0;
-          }
-          .doctorList_content ul li>div:nth-child(1)>span{
-            width:100%;
-            text-align:center;
-            height:20px;
-            display: block;
-            line-height: 20px;
-          }
-          .doctorList_content ul li>div:nth-child(2){
-            float: left;
-            width: 100px;
-            margin: 25px 0;
-          }
-          .doctorList_content ul li>div:nth-child(2)>span{
-            float:left;
-            width:100%;
-            font-size:12px;
-            height: 33px;
-            line-height: 33px;
-          }
-				
-				`}</style>
-=======
             {doctors.map((doctor, index) => {
               return (
                 <li key={index} onClick={async () => {
@@ -441,7 +384,6 @@ class TriageScreen extends Component {
             }
           `}
         </style>
->>>>>>> f8d0ff1c7a46b4e64401d1392fc3d0121906075e
       </div>
     )
   }
