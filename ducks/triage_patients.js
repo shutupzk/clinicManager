@@ -19,11 +19,13 @@ export function triagePatients(state = initState, action = {}) {
   }
 }
 
-export const triagePatientsList = ({ clinic_id, keyword }) => async dispatch => {
+export const triagePatientsList = ({ clinic_id, keyword, is_today, register_type }) => async dispatch => {
   try {
     const data = await request('/triage/patientlist', {
       clinic_id,
-      keyword
+      keyword,
+      is_today,
+      register_type
     })
     console.log(data)
     const docs = data.data || []

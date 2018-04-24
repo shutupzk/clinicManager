@@ -23,7 +23,7 @@ class TriageScreen extends Component {
 
   queryList() {
     const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id })
+    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
   }
 
   // 改变显示内容
@@ -393,8 +393,10 @@ class TriageScreen extends Component {
   getTriagePatientListData() {
     const { triagePatients } = this.props
     let array = []
+    let today = moment().format('YYYY-MM-DD')
     for (let key in triagePatients) {
       const patient = triagePatients[key]
+      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
       array.push(patient)
     }
     return array.sort((a, b) => {
