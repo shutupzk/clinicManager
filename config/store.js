@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { autoRehydrate } from 'redux-persist'
 import thunk from 'redux-thunk'
 
-import { user, doctors, triagePatients, patients, departments } from '../ducks'
+import { user, doctors, triagePatients, patients, departments, triageDoctors } from '../ducks'
 
 // middleware
 function createMiddleware() {
@@ -24,7 +24,8 @@ function getReducer() {
     doctors,
     triagePatients,
     patients,
-    departments
+    departments,
+    triageDoctors
   })
 }
 
