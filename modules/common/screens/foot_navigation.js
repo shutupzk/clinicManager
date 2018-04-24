@@ -3,72 +3,96 @@ import Link from 'next/link'
 import { theme } from '../../../components'
 
 export default class Navigation extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
 
-  render () {
+  render() {
     const { data, url } = this.props
     return (
       <ul className='footNavUl'>
         {data &&
-          data.map((item, itemKey) => {
-            return (
-              <Link key={item.navigateName} href={item.navigateName}>
-                <div className={url === item.navigateName ? 'selLeftMenu' : ''}>{item.title}</div>
-              </Link>
-            )
-          })}
+					data.map((item, itemKey) => {
+  return (
+    <Link key={item.navigateName} href={item.navigateName}>
+      <div className={url === item.navigateName ? 'selLeftMenu' : ''}>
+        <i />
+        <img src={'/static/login/u49.png'} />
+        <a>{item.title}</a>
+      </div>
+    </Link>
+  )
+})}
         <style jsx global>{`
-          .footNavUl {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            overflow: auto;
+					.footNavUl {
+						position: relative;
+						z-index: 10;
+						width: 100%;
+						// overflow: auto;
+					}
+					.footNavLI {
+						line-height: 0.46rem;
+						font-size: 0.16rem;
+						cursor: pointer;
+					}
+					.footNavLI.leftLiCur {
+						background: #1a3979;
+					}
+					.footNavLI.leftLiCur .footNavLIA {
+						color: #fff !important;
+					}
+					.footNavChild {
+						padding-bottom: 6px;
+						background: #2a3788;
+					}
+					.footNavChildItem {
+						line-height: 0.4rem;
+						border-top: 1px solid ${theme.bordercolor};
+					}
+					.footNavUl div {
+						width: 256px;
+						height: 50px;
+						line-height: 50px;
+						cursor: pointer;
+						text-align: left;
+						text-indent: 40px;
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
           }
-          .footNavLI {
-            line-height: 0.46rem;
-            font-size: 0.16rem;
-            cursor: pointer;
+          .footNavUl div i{
+            display:none;
+            float: left;
+            margin: 15px 0 0 20px;
+            width:6px;
+            height:20px; 
+            background:rgba(42,205,200,1);
+            border-radius: 5px ;
+            position: absolute;
           }
-          .footNavLI.leftLiCur {
-            background: #1a3979;
+          .footNavUl div img{
+            width:20px;
+            height:20px; 
+            float: left;
+            margin: 15px 0 0 56px;
           }
-          .footNavLI.leftLiCur .footNavLIA {
-            color: #fff !important;
+          .footNavUl div a{
+            float: left;
+            margin-left:36px;
+            text-indent:0;
           }
-          .footNavChild {
-            padding-bottom: 6px;
-            background: #2a3788;
+					.footNavUl div:hover,
+					.footNavUl div.selLeftMenu {
+						background: rgba(42, 205, 200, 0.23309999999999997);
+						// opacity:0.23309999999999997;
+						color: rgba(52, 52, 52, 1);
           }
-          .footNavChildItem {
-            line-height: 0.4rem;
-            border-top: 1px solid ${theme.bordercolor};
+          .footNavUl div:hover i,
+					.footNavUl div.selLeftMenu i{
+            display:block;
           }
-          .footNavUl div {
-            width: 171px;
-            height: 45px;
-            line-height: 45px;
-            cursor: pointer;
-            text-align: left;
-            text-indent: 40px;
-          }
-          .footNavUl div:hover,
-          .footNavUl div.selLeftMenu {
-            color: #fff;
-            background: inherit;
-            box-sizing: border-box;
-            border-width: 1px;
-            border-style: solid;
-            border-color: rgba(204, 204, 204, 1);
-            border-radius: 0px;
-            -moz-box-shadow: none;
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            background-color: rgba(0, 204, 102, 1);
-          }
-        `}</style>
+				`}</style>
       </ul>
     )
   }

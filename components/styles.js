@@ -77,6 +77,8 @@ export function styles () {
           color: ${theme.fontcolor};
           font-weight: 300;
           margin: 0;
+          display: inline-block;
+          overflow: hidden;
         }
         .flex {
           display: -webkit-box; /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
@@ -546,7 +548,7 @@ export function styles () {
         }
         .formList{
           float:left;
-          width: 1730px;
+          width: 100%;
         }
         .formList ul{
           width:1000px;

@@ -17,7 +17,8 @@ class RightContent extends Component {
 		// let windowWidth = window.innerWidth;
 		// this.onWindowResize.bind(this);
     this.state = {
-      showLogutBtn: false
+      showLogutBtn: false,
+      windowWidth: 1920
     }
   }
 
@@ -62,19 +63,19 @@ class RightContent extends Component {
 	//   Router.push('/login')
 	// }
   componentDidMount() {
-		// window.addEventListener('resize', this.onWindowResize.bind(this));
+    window.addEventListener('resize', this.onWindowResize.bind(this))
   }
   componentWillUnmount() {
-		// window.removeEventListener('resize', this.onWindowResize.bind(this));
+    window.removeEventListener('resize', this.onWindowResize.bind(this))
   }
   onWindowResize() {
-		// let winWidth1 = window.innerWidth;
+    let winWidth1 = window.innerWidth
 		// const winHeight = window.innerHeight;
 		// console.log("winWidth=="+winHeight+"==="+window.outerHeight);
 		// if(winHeight < window.outerHeight){
 		//   winWidth1 = winWidth1-17;
 		// }
-		// this.setState({winWidth:winWidth1});
+    this.setState({ windowWidth: winWidth1 })
   }
 
   render() {
@@ -91,7 +92,7 @@ class RightContent extends Component {
 		// window.re();
 		// console.log("curUrl",this.props.url.pathname+"==="+curUrl);
     return (
-      <div className={'rightContent'} style={{ width: '91%' }}>
+      <div className={'rightContent'} style={{ width: this.state.windowWidth - 256 }}>
         <div className={'right_nav_menu'}>
           <ul className='left'>
             {MAINFUNCTION.map((item, iKey) => {
@@ -104,57 +105,120 @@ class RightContent extends Component {
                   }}
 								>
                   {item.title}
-                  <img src={'/static/home/u141.png'} />
+                  {/* <img src={'/static/home/u141.png'} /> */}
                 </li>
               )
             })}
             <div className='clearfix' />
           </ul>
-          <div
+          {/* <div
             style={{ float: 'right', cursor: 'pointer' }}
             onClick={() => {
               this.doSignout()
             }}
 					>
 						注销
-					</div>
+					</div> */}
+          <div className={'rightUserInfo'}>
+            <span>
+              <img src='/static/login/u49.png' />
+              <a>你好，{this.props.name}</a>
+            </span>
+            <span>消息中心</span>
+            <span onClick={() => {
+              this.doSignout()
+            }}>退出</span>
+          </div>
         </div>
         <div className={'contentBox'}>{this.props.children}</div>
         <style jsx>{`
 					.rightContent {
-						float: left;
+						// float: left;
 						position: absolute;
-						left: 171px;
+						left: 256px;
 						// background: #909090;
+						height: 100%;
+						top: 0;
+						overflow: auto;
 					}
 					.right_nav_menu {
 						float: left;
 						width: 100%;
-						border-bottom: 1px solid #d8d8d8;
+						height: 64px;
+						background:rgba(255,255,255,1);
+						box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.12) 
 					}
 					.right_nav_menu ul {
 					}
 					.right_nav_menu ul li {
 						float: left;
-						// padding: 0 3px;
-						line-height: 90px;
+						line-height: 64px;
 						width: 76px;
 						margin-left: 15px;
 						cursor: pointer;
 						position: relative;
 						text-align: center;
-						height: 78px;
+						height: 62px;
+						#343434
 					}
-					.right_nav_menu ul li img {
-						position: absolute;
-						bottom: -2px;
-						left: 0;
-						display: none;
+					.right_nav_menu ul li.selLi,
+					.right_nav_menu ul li:hover{
+						color:#000000;
+						border-bottom:2px solid #30A8A4;
 					}
-					.right_nav_menu ul li:hover img,
-					.right_nav_menu ul li.selLi img {
+					.rightUserInfo{
+						float:right;
+						width:350px;
+						height:64px;
+						// background:#909090;
+					}
+					.rightUserInfo>span{
+						float:left;
+						height:26px;
+						line-height:26px;
+						margin-top: 20px;
+					}
+					.rightUserInfo>span:nth-child(1) img{
+						width:20px;
+						height:20px;
+						border-radius:100%;
+						margin:3px;
+						float: left;
+					}
+					.rightUserInfo>span:nth-child(1) a{
+						height: 26px;
+						line-height: 26px;
+						float: left;
+						margin-left: 10px;
+					}
+					.rightUserInfo>span:nth-child(2){
+						width:70px;
+						height:26px; 
+						background:rgba(42,205,200,1);
+						border-radius: 15px ; 
+						color:#FFFFFF;
+						font-size:12px;
+						line-height:26px;
 						display: block;
+						text-align: center;
+						float:left;
+						margin-left: 20px;
+						cursor: pointer;
 					}
+					.rightUserInfo>span:nth-child(3){
+						width:70px;
+						height:26px; 
+						border-radius: 15px ; 
+						border:1px solid #31B0B3;
+						display: block;
+						text-align: center;
+						line-height:26px;
+						float:left;
+						margin-left: 10px;
+						color:#31B0B3;
+						cursor: pointer;
+					}
+
 					.contentBox {
 						float: left;
 						width: 100%;
@@ -168,7 +232,7 @@ class RightContent extends Component {
 function mapStateToProps(state) {
   return {
 		// token: state.user.data.token,
-		// adminId: state.user.data.id,
+    name: state.user.data.name
 		// loading: state.user.loading,
 		// error: state.user.error
   }

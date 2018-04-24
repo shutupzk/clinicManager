@@ -11,7 +11,7 @@ class SigninScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: 'admin',
+      username: 'lh_admin',
       password: '123456'
     }
   }
@@ -52,36 +52,35 @@ class SigninScreen extends Component {
         </section>
         <style jsx>{`
           section {
-            background: #ffffff;
-            height: auto;
             border: 1px solid #d8d8d8;
-            border-radius: 10px;
             position: absolute;
-            top: 30%;
-            right: 20%;
-            box-shadow: 0 0 10px #bcbcbc;
-            width: 310px;
-            height: 380px;
+            top: 276px;
+            right: 120px;
+            width:420px;
+            height:440px; 
+            background:rgba(255,255,255,1);
+            box-shadow: 0px 4px 15px 0px rgba(0,0,0,0.13) ;
+            border-radius: 13px ; 
           }
           ul {
-            width: 250px;
+            width: 284px;
+            height: auto;
             float: left;
-            margin: 10px 30px;
+            margin: 25px 68px;
+            // background: #909090;
           }
           ul li {
             float: left;
-            height: 70px;
+            height: 72px;
           }
           .loginTxt {
-            font-size: 25px;
             text-align: left;
             float: left;
-            line-height: 51px;
             color: #333333;
-            width: 100%;
-            height: 80px;
-            line-height: 80px;
-            text-indent: 30px;
+            margin: 42px 60px;
+            font-size: 28px;
+            font-family: MicrosoftYaHei;
+            color: rgba(51,51,51,1);
           }
           .loginTop {
             padding: 10px;
@@ -108,7 +107,7 @@ class SigninScreen extends Component {
             background: url('/static/login/u35.png') top center no-repeat;
             // background:#ffffff;
             position: fixed;
-            background-size: 100% 60%;
+            background-size: 100% 587px;
             top: 0;
             right: 0;
             bottom: 0;
@@ -116,10 +115,7 @@ class SigninScreen extends Component {
           }
           .loginCon {
             background: #ffffff;
-            // box-shadow: 0px 10px 28px 0px rgba(0, 0, 0, 0.3);
             border-radius: 6px;
-            // width: 30%;
-            // height: auto;
             width: 1000px;
             height: 665px;
             margin: 5% auto 0;
@@ -149,16 +145,17 @@ class SigninScreen extends Component {
           input {
             left: 0px;
             top: 0px;
-            width: 250px;
-            height: 40px;
+            width: 284px;
+            height: 44px;
             font-family: 'ArialMT', 'Arial';
             font-weight: 400;
             font-style: normal;
-            font-size: 13px;
+            font-size: 14px;
             text-decoration: none;
             color: #000000;
             text-align: left;
-            // border: 1px solid #909090;
+            border-bottom: 1px solid rgba(213,213,213,1);
+            text-indent:10px;
           }
           .forgetpass {
             color: ${theme.maincolor};
@@ -166,21 +163,17 @@ class SigninScreen extends Component {
             padding-left: 26px;
           }
           .loginBtn {
-            width: 140px;
-            height: 40px;
-            background: inherit;
-            background-color: rgba(22, 155, 213, 1);
+            width:286px;
+            height:50px; 
+            background:rgba(42,205,200,1);
             border: none;
-            border-radius: 5px;
-            -moz-box-shadow: none;
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            font-family: 'PingFangSC-Regular', 'PingFang SC';
-            font-weight: 400;
-            font-style: normal;
-            color: #ffffff;
-            padding: 0;
-            margin: 20px 85px;
+            border-radius: 25px ; 
+            font-size:16px;
+            font-family:MicrosoftYaHei-Bold;
+            color:rgba(255,255,255,1);
+            margin: 0 auto;
+            display: table;
+            cursor: pointer;
           }
         `}</style>
         {styles()}

@@ -13,8 +13,12 @@ class AddNewRegistrationScreen extends Component {
     this.state = {
       pageType: 1,
       patientKeyword: '',
-      patientInfo: {},
-      department_id: ''
+      patientInfo: {
+        department_id: '0',
+        visit_type: 1,
+        patient_channel_id: 1
+      },
+      department_id: '0'
     }
   }
 
@@ -28,11 +32,13 @@ class AddNewRegistrationScreen extends Component {
     let patientInfo = this.state.patientInfo
     patientInfo.clinic_id = clinic_id
     patientInfo.personnel_id = personnel_id
-		// console.log(patientInfo)
-    addTriagePatientsList({ patientInfo })
-    this.setState({ patientInfo: {} })
-    this.setState({ pageType: 2 })
-    this.queryPatients()
+    let error = await addTriagePatientsList({ patientInfo })
+    if (error) {
+      alert(error)
+    } else {
+      this.setState({ patientInfo: {}, patientKeyword: '', pageType: 2 })
+      this.queryPatients()
+    }
   }
 	// 改变显示内容
   changeContent({ type }) {
@@ -103,6 +109,8 @@ class AddNewRegistrationScreen extends Component {
                 onChange={e => {
                   let newPatient = patient
                   newPatient.cert_no = e.target.value
+                  newPatient.birthday = e.target.value.substring(6, 14)
+									// console.log(newPatient.birthday)
                   this.setState({ patientInfo: newPatient })
                 }}
 							/>
@@ -132,7 +140,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='sex'
                   value={'1'}
-                  checked={patient.sex === '1'}
+                  checked={patient.sex + '' === '1'}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.sex = e.target.value
@@ -146,7 +154,7 @@ class AddNewRegistrationScreen extends Component {
                   name='sex'
                   value={'2'}
                   style={{ marginLeft: '15px' }}
-                  checked={patient.sex === '2'}
+                  checked={patient.sex + '' === '2'}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.sex = e.target.value
@@ -202,8 +210,8 @@ class AddNewRegistrationScreen extends Component {
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
-                      {item.name}
-                    </option>
+                    {item.name}
+                  </option>
                   )
                 })}
               </select>
@@ -218,6 +226,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={1}
+                  checked={patient.visit_type === 1}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
@@ -230,6 +239,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={2}
+                  checked={patient.visit_type === 2}
                   style={{ marginLeft: '15px' }}
                   onChange={e => {
                     let newPatient = patient
@@ -243,6 +253,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={3}
+                  checked={patient.visit_type === 3}
                   style={{ marginLeft: '15px' }}
                   onChange={e => {
                     let newPatient = patient
@@ -268,6 +279,7 @@ class AddNewRegistrationScreen extends Component {
             <li>
               <label>就诊人来源：</label>
               <select
+                value={patient.patient_channel_id}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.patient_channel_id = e.target.value
@@ -343,7 +355,7 @@ class AddNewRegistrationScreen extends Component {
                 <li key={index}>
                   <div className={'liTop'}>
                     <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                    <span className={'status'}>待分诊</span>
+                    <span className={'status'}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div>
 										就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
