@@ -6,125 +6,162 @@ import { theme } from '../../../components'
 // import { queryBaseApis, selectBaseApi, removeBaseApi } from '../../../ducks'
 
 class AddReservation extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
-      pageType:1
+      pageType: 1
     }
   }
-  async submit () {
-
-  }
-  back () {
+  async submit() {}
+  back() {
     Router.push('/treatment')
   }
-  componentWillMount () {
+  componentWillMount() {
     // const { queryBaseApis } = this.props
     // queryBaseApis()
   }
-  showBaseInfo(){
-    return(
+  showBaseInfo() {
+    return (
       <div className={'formList'}>
+        <div className={'bgDiv'}>
           <ul>
-            <li>
-              <label for='patientName'>就诊人名称：<b style={{color:'red'}}> *</b></label>
-              <input type='text' id='patientName' value={'王俊凯'} />
-              <i>图标</i>
+            <li style={{ width: '48%' }}>
+              <label style={thisStyles.label}>
+                就诊人名称：<b style={{ color: 'red' }}> *</b>
+              </label>
+              <input style={thisStyles.input} type='text' value={''} />
             </li>
-            <li style={{width:'25%'}}>
-              <label>身份证号码：</label>
-              <a>110108199909211234</a>
+            <li style={{ width: '48%' }}>
+              <label style={thisStyles.label}>身份证号码：</label>
+              <input style={thisStyles.input} type='text' value={''} />
             </li>
-            <li style={{width:'25%'}}>
-              <label>门诊ID：</label>
-              <a>000989123654</a>
+            <li style={{ width: '24%' }}>
+              <label style={thisStyles.label}>
+                年龄：<b style={{ color: 'red' }}> *</b>
+              </label>
+              <input style={thisStyles.input} type='text' value={''} />
             </li>
-            <li style={{width:'20%'}}>
-              <label>年龄：<b style={{color:'red'}}> *</b></label>
-              <input type='text' style={{width:'120px'}} />
-            </li>
-            <li style={{width:'30%'}}>
-              <label>性别：<b style={{color:'red'}}> *</b></label>
-              <div>
+            <li style={{ width: '24%' }}>
+              <label style={thisStyles.label}>
+                性别：<b style={{ color: 'red' }}> *</b>
+              </label>
+              <div style={thisStyles.input}>
                 <input id='man' type='radio' name='sex' />
-                <label for='man'>男</label>
-                <input id='woman' type='radio' name='sex' style={{marginLeft:'15px'}} />
-                <label for='woman'>女</label>
+                <label htmlFor='man'>男</label>
+                <input id='woman' type='radio' name='sex' style={{ marginLeft: '15px' }} />
+                <label htmlFor='woman'>女</label>
               </div>
             </li>
-            <li>
-              <label>手机号码：<b style={{color:'red'}}> *</b></label>
-              <input type='text' />
+            <li style={{ width: '48%' }}>
+              <label style={thisStyles.label}>
+                手机号码：<b style={{ color: 'red' }}> *</b>
+              </label>
+              <input style={thisStyles.input} type='text' value={''} />
             </li>
-            <li style={{width:'100%'}}>
-              <label>住址：</label>
-              <input style={{width:'142px'}} type='text' value={'省'} />
-              <input style={{width:'142px',marginLeft:'20px'}} type='text' value={'市'} />
-              <input style={{width:'142px',marginLeft:'20px'}} type='text' value={'区'} />
-              <input style={{marginLeft:'20px'}} type='text' />
+            <li style={{ width: '100%' }}>
+              <label style={thisStyles.label}>住址：</label>
+              <div className={'innerDiv'} style={{ width: '100%', float: 'left' }}>
+                <select>
+                  <option>省</option>
+                </select>
+                <select>
+                  <option>市</option>
+                </select>
+                <select>
+                  <option>区</option>
+                </select>
+                <input type='text' value={''} />
+              </div>
             </li>
-            {/* <li>
-              <label>接诊科室：</label>
-              <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
-            </li> */}
-            <li style={{width:'100%'}}>
-              <label>就诊类型：<b style={{color:'red'}}> *</b></label>
-              <div>
+            <li style={{ width: '24%', marginRight: '1%' }}>
+              <label style={thisStyles.label}>预约科室</label>
+              <input style={thisStyles.input} type='text' value={''} />
+            </li>
+            <li style={{ width: '24%', marginRight: '1%' }}>
+              <label style={thisStyles.label}>预约医生</label>
+              <input style={thisStyles.input} type='text' value={''} />
+            </li>
+            <li style={{ width: '24%', marginRight: '1%' }}>
+              <label style={thisStyles.label}>
+                预约类型：<b style={{ color: 'red' }}> *</b>
+              </label>
+              <div style={thisStyles.input} type='text' value={''}>
                 <input id='first' type='radio' name='type' />
-                <label for='first'>首诊</label>
-                <input id='referral' type='radio' name='type' style={{marginLeft:'15px'}} />
-                <label for='referral'>复诊</label>
-                <input id='operate' type='radio' name='type' style={{marginLeft:'15px'}} />
-                <label for='operate'>术后复诊</label>
+                <label htmlFor='first'>首诊</label>
+                <input id='referral' type='radio' name='type' style={{ marginLeft: '15px' }} />
+                <label htmlFor='referral'>复诊</label>
+                <input id='operate' type='radio' name='type' style={{ marginLeft: '15px' }} />
+                <label htmlFor='operate'>术后复诊</label>
               </div>
             </li>
-            {/* <li style={{width:'100%',cursor:'pointer'}}>
-              更多：完善健康档案（收起、展开）
-            </li> */}
-            <li>
-              <label>会员卡号：</label>
-              <input type='text' />
-            </li>
-            <li>
-              <label>就诊人来源：</label>
-              <select>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
-            </li>
-            <li>
-              <label>职业：</label>
-              <input type='text' />
-            </li>
-            <li>
-              <label>备注：</label>
-              <input type='text' />
+            <li style={{ width: '24%', marginRight: '1%' }}>
+              <label style={thisStyles.label}>职业：</label>
+              <input style={thisStyles.input} type='text' value={''} />
             </li>
           </ul>
-          <div style={{float:'left',width:'1000px',height: '60px'}}>
-            <button className='commonBtn' style={{margin:'10px 0 0 300px'}} onClick={() => this.back(this.props)}>返回</button> 
-            <button className='saveBtn' style={{margin:'10px 0 0 30px',float:'left'}} onClick={() => this.submit(this.props)}>保存</button>  
+          <div style={{ float: 'left', width: '1000px', height: '60px' }}>
+            <button className='commonBtn' style={{ margin: '10px 0 0 300px' }} onClick={() => this.back(this.props)}>
+              返回
+            </button>
+            <button className='saveBtn' style={{ margin: '10px 0 0 30px', float: 'left' }} onClick={() => this.submit(this.props)}>
+              保存
+            </button>
           </div>
         </div>
+        <style>
+          {`
+            .bgDiv{
+              margin: 31px 0 0 66px;
+              width:1098px;
+              height:637px; 
+              background:rgba(255,255,255,1);
+              box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) 
+              border-radius: 4px ; 
+            }
+            .innerDiv{
+              width: '100%'; float: 'left';
+            }
+            .innerDiv input{
+              width: 600px;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              border: 1px solid #d9d9d9;
+            }
+            .innerDiv select{
+              width: 96px;
+              height: 34px;
+              background: rgba(255, 255, 255, 1);
+              border-radius: 4px;
+              float: left;
+              margin-right: 8px;
+              border: 1px solid #d9d9d9;
+            }
+          `}
+        </style>
+      </div>
     )
   }
- 
-  render () {
-    return(
-      <div>
-       <div className={'childTopBar'}>
-          <a style={{float:'left',lineHeight:'40px'}}>就诊人信息：</a>
-        </div>
+
+  render() {
+    return (
+      <div style={{width: '100%'}}>
         {this.showBaseInfo()}
       </div>
     )
   }
 }
+
+const thisStyles = {
+  label: {
+    float: 'left',
+    width: '50%'
+  },
+  input: {
+    float: 'left',
+    width: '90%',
+    marginTop: '17px'
+  }
+}
+
 export default connect(null)(AddReservation)
