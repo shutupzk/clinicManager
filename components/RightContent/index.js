@@ -62,11 +62,13 @@ class RightContent extends Component {
 	// logout() {
 	//   Router.push('/login')
 	// }
+  componentWillMount() {
+    this.setState({ windowWidth: window.innerWidth })
+  }
   componentDidMount() {
     window.addEventListener('resize', this.onWindowResize.bind(this))
   }
   componentWillUnmount() {
-    this.setState({ windowWidth: window.innerWidth })
     window.removeEventListener('resize', this.onWindowResize.bind(this))
   }
   onWindowResize() {
