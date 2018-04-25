@@ -228,6 +228,7 @@ class RightContent extends Component {
 					.contentBox {
 						float: left;
 						width: 100%;
+						overflow:auto;
 					}
 				`}</style>
       </div>
