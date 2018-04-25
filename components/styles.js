@@ -572,6 +572,7 @@ export function styles() {
         .formList ul li > input {
           width: 400px;
           height: 30px;
+          padding: 0px;
           background: rgba(245, 248, 249, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;

@@ -4,6 +4,7 @@ import Router from 'next/router'
 import moment from 'moment'
 import { triagePatientsList, triageDoctorsList, triagePatient } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
+import { PageCard } from '../../../components'
 
 class TriageScreen extends Component {
   constructor(props) {
@@ -824,6 +825,7 @@ class TriageScreen extends Component {
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
+        <PageCard limit={10} offset={20} total={100} />
       </div>
     )
   }

@@ -80,6 +80,22 @@ export const triagePatient = ({ doctor_visit_schedule_id, clinic_triage_patient_
   }
 }
 
+export const addAppointment = ({ cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id }) => async dispatch => {
+  try {
+    console.log('data ====', { cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id })
+    const data = await request('/appointment/create', { cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const triagePatientsSelect = ({ clinic_triage_patient_id }) => async dispatch => {
   try {
     dispatch({
