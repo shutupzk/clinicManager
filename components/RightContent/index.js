@@ -62,10 +62,9 @@ class RightContent extends Component {
 	// logout() {
 	//   Router.push('/login')
 	// }
-  componentWillMount() {
-    this.setState({ windowWidth: window.innerWidth })
-  }
+  componentWillMount() {}
   componentDidMount() {
+    this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight })
     window.addEventListener('resize', this.onWindowResize.bind(this))
   }
   componentWillUnmount() {
@@ -78,7 +77,7 @@ class RightContent extends Component {
 		// if(winHeight < window.outerHeight){
 		//   winWidth1 = winWidth1-17;
 		// }
-    this.setState({ windowWidth: winWidth1 })
+    this.setState({ windowWidth: winWidth1, windowHeight: window.innerHeight })
   }
 
   render() {
@@ -137,7 +136,7 @@ class RightContent extends Component {
 						</span>
           </div>
         </div>
-        <div className={'contentBox'}>{this.props.children}</div>
+        <div className={'contentBox'} style={{height: this.state.windowHeight - 64}}>{this.props.children}</div>
         <style jsx>{`
 					.rightContent {
 						// float: left;
@@ -146,7 +145,7 @@ class RightContent extends Component {
 						// background: #909090;
 						height: 100%;
 						top: 0;
-						overflow: auto;
+						overflow: hidden;
 					}
 					.right_nav_menu {
 						float: left;

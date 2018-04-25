@@ -11,7 +11,7 @@ class AddNewRegistrationScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1,
+      pageType: 2,
       patientKeyword: '',
       patientInfo: {
         department_id: '0',
@@ -23,6 +23,7 @@ class AddNewRegistrationScreen extends Component {
   }
 
   componentWillMount() {
+    this.queryPatients()
     const { departmentList, clinic_id } = this.props
     departmentList({ clinic_id })
   }
@@ -226,7 +227,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={1}
-                  // checked={patient.visit_type === 1}
+									// checked={patient.visit_type === 1}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
@@ -240,7 +241,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={2}
-                  // checked={patient.visit_type === 2}
+									// checked={patient.visit_type === 2}
                   style={{ marginLeft: '15px' }}
                   onChange={e => {
                     let newPatient = patient
@@ -255,7 +256,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={3}
-                  // checked={patient.visit_type === 3}
+									// checked={patient.visit_type === 3}
                   style={{ marginLeft: '15px' }}
                   onChange={e => {
                     let newPatient = patient
@@ -343,20 +344,26 @@ class AddNewRegistrationScreen extends Component {
   }
 	// 显示新增列表
   showNewList() {
+		// this.queryPatients()
     const array = this.getTriagePatientListData()
     return (
-      <div className={'formList'}>
-        <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-          <button className={'searchBtn'}>查询</button>
-          <a>注：当日登记就诊人列表</a>
+      <div className={'newList'}>
+        <div className={'newList_top'}>
+          <div className={'top_left'}>
+            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
+            <button>查询</button>
+          </div>
+          <div className={'top_right'}>
+            <button>新增挂号</button>
+          </div>
         </div>
-        <div className={'regisList'}>
+        <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
+              let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
-                  <div className={'liTop'}>
+                  {/* <div className={'liTop'}>
                     <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
                     <span className={'status'}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
                   </div>
@@ -370,15 +377,227 @@ class AddNewRegistrationScreen extends Component {
                   <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div className={'seeDetail'} onClick={() => this.seeDetail()}>
 										查看详情
-									</div>
+                  </div> */}
+                  <div className={'itemTop'}>
+                    <span>{patient.patient_name}</span>
+                    <span>{patient.sex === 0 ? '女' : '男'}</span>
+                    <span>{getAgeByBirthday(patient.birthday)}岁</span>
+                    <span style={{color: statusColor, border: '1px solid ' + statusColor}}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
+                  </div>
+                  <div className={'itemCenter'}>
+                    <span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
+                    <span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
+                    <span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
+                    <span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
+                    <span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
+                  </div>
+                  <div className={'itemBottom'}>
+                    <span>更新时间：2018-04-08 10:23:34</span>
+                    <span>查看详情》</span>
+                  </div>
                 </li>
               )
             })}
           </ul>
         </div>
-        <div className={'pagination'} />
+        <style jsx>{`
+					.newList_top {
+						// background: #909090;
+						height: 34px;
+						width: 1146px;
+						float: left;
+						margin: 30px 0 28px 40px;
+					}
+					.newList_top .top_left {
+						float: left;
+					}
+					.newList_top .top_left input {
+						width: 300px;
+						height: 32px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						padding: 0;
+						border: 1px solid #dcdcdc;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						text-indent: 10px;
+						float: left;
+					}
+					.newList_top .top_left button {
+						width: 80px;
+						height: 34px;
+						background: rgba(42, 205, 200, 1);
+						border: none;
+						border-radius: 17px;
+						cursor: pointer;
+						margin-left: 34px;
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(255, 255, 255, 1);
+					}
+					.newList_top .top_right {
+						float: right;
+					}
+					.newList_top .top_right button {
+						float: left;
+						width: 110px;
+						height: 34px;
+						background: rgba(238, 201, 6, 1);
+						border: none;
+						border-radius: 17px;
+						cursor: pointer;
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(255, 255, 255, 1);
+					}
+					.listContent {
+						width: 1146px;
+						float: left;
+						// background: #909090;
+						margin: 0 0 28px 40px;
+					}
+					.listContent ul {
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 260px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						float: left;
+						margin: 0 22px 20px 0;
+          }
+          .itemTop{
+            width: 332px;
+            border-bottom: 2px solid #F4F7F8;
+            // background: #e0e0e0;
+            margin: 20px auto 0 auto;
+            padding: 0 0 10px 0;
+            height: 20px;
+          }
+          .itemTop span{
+            float:left;
+          }
+          .itemTop span:nth-child(1){
+            width:auto;
+            height:19px; 
+            font-size:16px;
+            font-family:MicrosoftYaHei;
+            color:rgba(51,51,51,1);
+            margin-left:3px;
+          }
+          .itemTop span:nth-child(2){
+            font-size:14px;
+            font-family:MicrosoftYaHei;
+            color:rgba(102,102,102,1);
+            margin:2px 0 0 12px;
+          }
+          .itemTop span:nth-child(3){
+            font-size:14px;
+            font-family:MicrosoftYaHei;
+            color:rgba(102,102,102,1);
+            margin:2px 0 0 12px;
+          }
+          .itemTop span:nth-child(4){
+            width:60px;
+            height:20px; 
+            border-radius: 10px ; 
+            float:right;
+            text-align:center;
+          }
+          .itemCenter{
+            width: 332px;
+            // background: #e0e0e0;
+            margin: 0 auto 0 auto;
+            height: 168px;
+          }
+          .itemCenter span{
+            float:left;
+            width:100%;
+            height: 26px;
+            line-height: 26px;
+          }
+          .itemCenter span a:nth-child(1){
+            float:left;
+            width:75px;
+            color:#666666;
+            font-size:14px;
+          }
+          .itemCenter span a:nth-child(2){
+            float:left;
+            margin-left:20px;
+            color:#333333;
+            font-size:14px;
+          }
+          .itemBottom{
+            width: 332px;
+            // background: #e0e0e0;
+            margin: 0 auto 0 auto;
+          }
+          .itemBottom span{
+            float:left;
+            font-size:12px;
+            font-family:MicrosoftYaHei;
+          }
+          .itemBottom span:nth-child(1){
+            color:rgba(153,153,153,1);
+          }
+          .itemBottom span:nth-child(2){
+            float:right;
+            color:rgba(42,205,200,1);
+            cursor:pointer;
+          }
+				`}</style>
       </div>
-    )
+			// <div className={'formList'}>
+			//   <div className={'regisListTop'}>
+			//     <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
+			//     <button className={'searchBtn'}>查询</button>
+			//     <a>注：当日登记就诊人列表</a>
+			//   </div>
+			//   <div className={'regisList'}>
+			//     <ul>
+			//       {array.map((patient, index) => {
+			//         return (
+			//           <li key={index}>
+			//             <div className={'liTop'}>
+			//               <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
+			//               <span className={'status'}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
+			//             </div>
+			//             <div>
+			// 							就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
+			// 						</div>
+			//             <div>门诊ID：{patient.cert_no}</div>
+			//             <div>接诊科室：{patient.department_name}</div>
+			//             <div>接诊医生：{patient.doctor_name}</div>
+			//             <div>登记人员：{patient.register_personnel_name}</div>
+			//             <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
+			//             <div className={'seeDetail'} onClick={() => this.seeDetail()}>
+			// 							查看详情
+			// 						</div>
+			//           </li>
+			//         )
+			//       })}
+			//     </ul>
+			//   </div>
+			//   <div className={'pagination'} />
+			// </div>
+		)
   }
 	// 查看详情
   seeDetail() {
@@ -386,9 +605,11 @@ class AddNewRegistrationScreen extends Component {
   }
 
   render() {
+		// this.queryPatients()
     return (
       <div>
-        <div className={'childTopBar'}>
+        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
+        {/* <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
 						登记
 					</span>
@@ -402,7 +623,7 @@ class AddNewRegistrationScreen extends Component {
 						就诊人列表
 					</span>
         </div>
-        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
+        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()} */}
       </div>
     )
   }
