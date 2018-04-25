@@ -693,10 +693,10 @@ export function styles () {
           background: inherit;
           background-color: rgba(255, 255, 255, 1);
           box-sizing: border-box;
-          border-width: 1px;
-          border-style: solid;
+          // border-width: 1px;
+          // border-style: solid;
           border-color: rgba(204, 204, 204, 1);
-          border-radius: 4px;
+          border-radius: 7px;
           -moz-box-shadow: none;
           -webkit-box-shadow: none;
           box-shadow: none;
