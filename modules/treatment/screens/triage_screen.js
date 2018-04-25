@@ -4,6 +4,7 @@ import Router from 'next/router'
 import moment from 'moment'
 import { triagePatientsList, triageDoctorsList, triagePatient } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
+import { PageCard } from '../../../components'
 
 class TriageScreen extends Component {
   constructor(props) {
@@ -920,6 +921,7 @@ class TriageScreen extends Component {
             margin:16px 35px;
           } 
         `}</style>
+        <PageCard limit={10} offset={20} total={100} />
       </div>
     )
   }

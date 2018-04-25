@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { styles } from '../../../components/styles'
-import { theme } from '../../../components'
 // import { queryBaseApis, selectBaseApi, removeBaseApi } from '../../../ducks'
 
 class AddReservation extends Component {

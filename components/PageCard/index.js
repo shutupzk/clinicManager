@@ -8,78 +8,104 @@ import { connect } from 'react-redux'
  * @param {*page\clickPage\data} props
  */
 class PageCard extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      numberValue: props.page
+  getPageArray({ limit = 6, offset = 0, total = 0 }) {
+    let pageTotal = Math.ceil(total / limit)
+    let pageIndex = Math.floor(offset / limit) + 1
+    let array = []
+    let pre = false
+    let next = false
+    for (let i = 0; i < pageTotal; i++) {
+      if (pageTotal > 5) {
+        if (i > 2 && i < pageTotal - 2) {
+          if (pageIndex === i + 1) {
+            array.push({
+              offset: i * limit,
+              limit,
+              omitted: false,
+              iscurrent: pageIndex === i + 1,
+              page: i + 1
+            })
+          }
+          if (pageIndex < i + 1 && !pre) {
+            array.push({
+              offset: i * limit,
+              limit,
+              iscurrent: pageIndex === i + 1,
+              omitted: true,
+              page: i + 1
+            })
+            pre = true
+          }
+          if (pageIndex > i + 1 && !next) {
+            array.push({
+              offset: i * limit,
+              limit,
+              iscurrent: pageIndex === i + 1,
+              omitted: true,
+              page: i + 1
+            })
+            next = true
+          }
+          continue
+        }
+      }
+      array.push({
+        offset: i * limit,
+        limit,
+        omitted: false,
+        iscurrent: pageIndex === i + 1,
+        page: i + 1
+      })
     }
+    return array
   }
 
-  render () {
-    const props = this.props
-    const prevPage = parseInt(this.state.numberValue, 10)
+  render() {
+    const array = this.getPageArray(this.props)
+    const { offset, limit, total } = this.props
+    let pageTotal = Math.ceil(total / limit)
     return (
       <div>
         <footer className={'fenye flex tb-flex lr-flex'}>
-          {/* <article className="left">共 {pageInfo.count|| '0'} 条</article> */}
-          {/* <span>首页</span> */}
+          <article className='left'>共 {this.props.total} 条</article>
           <span
-            className='fenyeItem'
-            style={{ color: props.page === 1 ? theme.nfontcolor : theme.fontcolor }}
+            className={'fenyeItem otherPage'}
             onClick={() => {
-              if (props.page === 1) return
-              this.setState({ numberValue: prevPage - 1 })
-              props.clickPage('prev')
+              if (this.props.onItemClick) {
+                this.props.onItemClick({ offset: offset - limit < 0 ? 0 : offset - limit, limit })
+              }
             }}
-          >
-            上一页
-          </span>
-          {/* <span className={'fenyeItem otherPage'}>1</span> */}
-          <span className={'fenyeItem curPageCss'}>{props.page}</span>
-          <span
-            className='fenyeItem'
-            style={{ color: props.data.length < 10 ? theme.nfontcolor : theme.fontcolor }}
-            onClick={() => {
-              if (props.data.length < 10) return
-              this.setState({ numberValue: prevPage + 1 })
-              props.clickPage('next')
-            }}
-          >
-            下一页
-          </span>
-          {/* <article>
-            跳转至
-            {props.page === 1 && props.data.length < 10 ? (
-              <input type='number' disabled style={{ border: '1px solid #f2f2f2' }} />
-            ) : (
-              <input
-                type='number'
-                min='1'
-                value={this.state.numberValue}
-                onChange={e => {
-                  this.setState({
-                    numberValue: e.target.value
-                  })
-                }}
-                onKeyUp={e => {
-                  if (e.keyCode === 13) {
-                    if (e.target.value < 1) {
-                      this.setState({
-                        numberValue: props.page
-                      })
-                      this.props.showPrompt({ text: '页码不能小于1' })
-                      return
-                    }
-                    this.setState({
-                      numberValue: e.target.value
-                    })
-                    props.clickPage(e.target.value)
+          >{`pre`}</span>
+          {array.map(({ offset, limit, omitted, iscurrent, page }, index) => {
+            if (omitted) return <span>...</span>
+            let className = `fenyeItem otherPage`
+            if (iscurrent) {
+              className = 'fenyeItem curPageCss'
+            }
+            return (
+              <span
+                className={className}
+                onClick={() => {
+                  if (this.props.onItemClick) {
+                    let nextOffset = offset + limit > (pageTotal - 1) * limit ? (pageTotal - 1) * limit : offset + limit
+                    this.props.onItemClick({ offset: nextOffset, limit })
                   }
                 }}
-              />
-            )}
-            页
-          </article> */}
+              >
+                {page}
+              </span>
+            )
+          })}
+          <span
+            className={'fenyeItem otherPage lastItem'}
+            onClick={() => {
+              if (this.props.onItemClick) {
+                this.props.onItemClick({ offset, limit })
+              }
+            }}
+          >
+            {'next'}
+          </span>
         </footer>
         <style jsx>{`
           .fenye {
@@ -99,29 +125,33 @@ class PageCard extends Component {
             margin: 0 ${theme.midmargin};
           }
           .fenyeItem {
-            background: #f2f2f2;
-            border-radius: 2px;
-            padding: 0 18px;
-            display: inline-block;
-            margin: 0 6px;
-            cursor: pointer;
-            border: 1px solid #f2f2f2;
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin-right: 8px;
           }
           .fenyeItem.curPageCss {
-            background: #3464ca;
             color: #fff;
             border: 1px solid #3464ca;
+            background: rgba(16, 142, 233, 1);
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px;
+            border: 0;
           }
           .otherPage {
-            border: 1px solid #f2f2f2;
-            background: #fff;
+            border: 1px solid #d9d9d9;
+            background: rgba(255, 255, 255, 1);
+          }
+          .lastItem {
+            margin-right: 0px;
           }
         `}</style>
       </div>
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {}
 }
 
