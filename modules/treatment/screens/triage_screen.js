@@ -286,7 +286,7 @@ class TriageScreen extends Component {
     this.setState({ alertType: 2, clinic_triage_patient_id })
   }
 
-  getDoctorDatas () {
+  getDoctorDatas() {
     let array = []
     const { triageDoctors } = this.props
     for (let key in triageDoctors) {
@@ -318,15 +318,18 @@ class TriageScreen extends Component {
           <ul>
             {doctors.map((doctor, index) => {
               return (
-                <li key={index} onClick={async () => {
-                  let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
-                  let error = await triagePatient({doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id})
-                  if (error) {
-                    return alert('分诊失败', error)
-                  } else {
-                    return alert('分诊成功')
-                  }
-                }}>
+                <li
+                  key={index}
+                  onClick={async () => {
+                    let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
+                    let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
+                    if (error) {
+                      return alert('分诊失败', error)
+                    } else {
+                      return alert('分诊成功')
+                    }
+                  }}
+                >
                   <div>
                     <img src={'/static/login/u49.png'} />
                     <span>医生</span>
@@ -390,13 +393,14 @@ class TriageScreen extends Component {
   // 换诊
   changeDoctor() {}
 
-  getTriagePatientListData() {
+  getUnTriagePatientListData() {
     const { triagePatients } = this.props
     let array = []
     let today = moment().format('YYYY-MM-DD')
     for (let key in triagePatients) {
       const patient = triagePatients[key]
       if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
+      if (patient.treat_status) continue
       array.push(patient)
     }
     return array.sort((a, b) => {
@@ -407,7 +411,7 @@ class TriageScreen extends Component {
 
   // 显示分诊列表
   showTriageList() {
-    const array = this.getTriagePatientListData()
+    const array = this.getUnTriagePatientListData(false)
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -420,9 +424,7 @@ class TriageScreen extends Component {
             {array.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               return (
-                <li key={index} onClick={() => {
-
-                }}>
+                <li key={index}>
                   <div className={'liTop'}>
                     <span className={'updateTime'}>更新时间：{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
                     <span className={'status'}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
@@ -448,8 +450,24 @@ class TriageScreen extends Component {
       </div>
     )
   }
+
+  getTriagedPatientListData() {
+    const { triagePatients } = this.props
+    let array = []
+    let today = moment().format('YYYY-MM-DD')
+    for (let key in triagePatients) {
+      const patient = triagePatients[key]
+      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
+      array.push(patient)
+    }
+    return array.sort((a, b) => {
+      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
+      return 1
+    })
+  }
   // 显示分诊记录
   showTriageRecord() {
+    const array = this.getTriagedPatientListData()
     return (
       <div className={'formList'}>
         <div className={'regisListTop'}>
@@ -459,53 +477,29 @@ class TriageScreen extends Component {
         </div>
         <div className={'regisList'}>
           <ul>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'} onClick={() => this.seeDetail()}>
-                查看详情
-              </div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>
-                <a onClick={() => this.showCompleteHealthFile()}>完善健康档案</a>
-                <a onClick={() => this.changeDoctor()}>换诊</a>
-              </div>
-            </li>
-            <li>
-              <div className={'liTop'}>
-                <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                <span className={'status'}>待分诊</span>
-              </div>
-              <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-              <div>门诊ID：000989123654</div>
-              <div>接诊科室：</div>
-              <div>接诊医生：</div>
-              <div>登记人员：XXX</div>
-              <div>登记时间：20180410 10:23:23</div>
-              <div className={'seeDetail'}>
-                <a onClick={() => this.showCompleteHealthFile()}>完善健康档案</a>
-                <a onClick={() => this.changeDoctor()}>换诊</a>
-              </div>
-            </li>
+            {array.map((patient, index) => {
+              let updateTime = patient.complete_time || patient.reception_time || patient.register_time
+              return (
+                <li key={index}>
+                  <div className={'liTop'}>
+                    <span className={'updateTime'}>更新时间：{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+                    <span className={'status'}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
+                  </div>
+                  <div>
+                    就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
+                  </div>
+                  <div>身份证号：{patient.cert_no}</div>
+                  <div>接诊科室：{patient.department_name}</div>
+                  <div>接诊医生：{patient.doctor_name}</div>
+                  <div>登记人员：{patient.register_personnel_name}</div>
+                  <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
+                  <div className={'seeDetail'}>
+                    <a onClick={() => this.showCompleteHealthFile()}>完善健康档案</a>
+                    <a onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>选择医生</a>
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         </div>
         <div className={'pagination'} />
