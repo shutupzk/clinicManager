@@ -66,6 +66,7 @@ class RightContent extends Component {
     window.addEventListener('resize', this.onWindowResize.bind(this))
   }
   componentWillUnmount() {
+    this.setState({ windowWidth: window.innerWidth })
     window.removeEventListener('resize', this.onWindowResize.bind(this))
   }
   onWindowResize() {
@@ -125,9 +126,13 @@ class RightContent extends Component {
               <a>你好，{this.props.name}</a>
             </span>
             <span>消息中心</span>
-            <span onClick={() => {
-              this.doSignout()
-            }}>退出</span>
+            <span
+              onClick={() => {
+                this.doSignout()
+              }}
+						>
+							退出
+						</span>
           </div>
         </div>
         <div className={'contentBox'}>{this.props.children}</div>
