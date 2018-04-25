@@ -819,11 +819,107 @@ class TriageScreen extends Component {
             预约管理
           </span>
         </div>
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
+            <input type='text' placeholder='搜索科室' />
+            <button>查询</button>
+          </div>
+          <div className={'boxRight'}>
+            <button>新增预约</button>
+          </div>
+        </div>
         {this.state.pageType === 1 ? this.showTriageList() : ''}
         {this.state.pageType === 2 ? this.showTriageRecord() : ''}
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
+        <style jsx>{`
+          .childTopBar{
+            float:left;
+            width:100%;
+            // background:#909090;
+          }
+          .childTopBar span{
+            margin-top: 31px;
+            width:126px;
+            height:37px; 
+            background:rgba(255,255,255,1);
+            float: left;
+            text-align:center;
+            line-height:37px;
+            cursor:pointer;
+            margin-bottom: 10px;
+          }
+          .childTopBar span:nth-child(1) {
+            margin-left: 66px;
+          }
+          .childTopBar span:hover,
+          .childTopBar span.sel {
+            background:rgba(42,205,200,1);
+            border-radius: 4px 0px 0px 4px ;
+            font-size:14px;
+            font-family:MicrosoftYaHei-Bold;
+            color:rgba(255,255,255,1);
+          }
+          .childTopBar span:nth-child(2):hover,
+          .childTopBar span.sel {
+            border-radius: 0 ;
+          }
+          .childTopBar span:nth-child(3):hover,
+          .childTopBar span.sel {
+            border-radius: 4px 4px 0px 0px ;
+          }
+          .filterBox{
+            float:left;
+            width:1098px;
+            height:60px;
+            background:rgba(255,255,255,1);
+            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) 
+            border-radius: 4px;
+            margin-left:66px;
+          }
+          .filterBox .boxLeft{
+            float:left;
+          } 
+          .filterBox .boxLeft input{
+            float:left;
+            width:328px;
+            height:28px; 
+            background:rgba(255,255,255,1);
+            border-radius: 4px ;
+            border:1px solid #D9D9D9;
+            margin:16px 30px; 
+            text-indent:10px;
+            padding:0;
+          } 
+          .filterBox .boxLeft button{
+            float:left;
+            width:60px;
+            height:28px; 
+            border-radius: 4px ;
+            border:1px solid #2ACDC8;
+            color:rgba(42,205,200,1);
+            font-size:12px;
+            margin:16px 0;
+            background: none;
+            cursor: pointer;
+          } 
+          .filterBox .boxRight{
+            float:right;
+          } 
+          .filterBox .boxRight button{
+            float:left;
+            width:100px;
+            height:28px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+            border:none;
+            color:rgba(255,255,255,1);
+            font-size:12px;
+            cursor: pointer;
+            margin:16px 35px;
+          } 
+        `}</style>
       </div>
     )
   }

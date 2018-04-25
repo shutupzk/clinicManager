@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { theme } from '../../components'
 import { connect } from 'react-redux'
-import { showPrompt } from '../../ducks'
+// import { showPrompt } from '../../ducks'
 
 /**
  *
@@ -125,4 +125,4 @@ function mapStateToProps (state) {
   return {}
 }
 
-export default connect(mapStateToProps, { showPrompt })(PageCard)
+export default connect(mapStateToProps)(PageCard)

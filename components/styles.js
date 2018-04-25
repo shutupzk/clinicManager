@@ -488,12 +488,12 @@ export function styles() {
           width: 100%;
         }
         .childTopBar {
-          width: 100%;
-          height: 80px;
-          float: left;
+          // width: 100%;
+          // height: 80px;
+          // float: left;
           // background: #909090;
           // padding: 15px 20px;
-          border-bottom: 1px solid #d8d8d8;
+          // border-bottom: 1px solid #d8d8d8;
         }
         .regisListTop button.bigBtn {
           font-size: 13px;
@@ -514,38 +514,38 @@ export function styles() {
         }
 
         .childTopBar span {
-          font-size: 13px;
-          color: #ffffff;
-          width: 103px;
-          height: 40px;
-          font-family: 'PingFangSC-Regular', 'PingFang SC';
-          font-weight: 400;
-          font-style: normal;
-          float: left;
-          line-height: 40px;
-          text-align: center;
-          background: inherit;
-          color: #000000;
-          border-width: 1px;
-          border-style: solid;
-          border-color: rgba(204, 204, 204, 1);
-          border-radius: 5px;
-          cursor: pointer;
-          margin: 20px 0;
+          // font-size: 13px;
+          // color: #ffffff;
+          // width: 103px;
+          // height: 40px;
+          // font-family: 'PingFangSC-Regular', 'PingFang SC';
+          // font-weight: 400;
+          // font-style: normal;
+          // float: left;
+          // line-height: 40px;
+          // text-align: center;
+          // background: inherit;
+          // color: #000000;
+          // border-width: 1px;
+          // border-style: solid;
+          // border-color: rgba(204, 204, 204, 1);
+          // border-radius: 5px;
+          // cursor: pointer;
+          // margin: 20px 0;
         }
-        .childTopBar span:nth-child(1) {
-          margin-left: 20px;
-        }
-        .healthFile_menu span.sel,
-        .childTopBar span:hover,
-        .childTopBar span.sel {
-          background-color: rgba(0, 204, 102, 1);
-          color: #ffffff;
-          border: none;
-          -moz-box-shadow: none;
-          -webkit-box-shadow: none;
-          box-shadow: none;
-        }
+        // .childTopBar span:nth-child(1) {
+        //   margin-left: 20px;
+        // }
+        // .healthFile_menu span.sel,
+        // .childTopBar span:hover,
+        // .childTopBar span.sel {
+        //   background-color: rgba(0, 204, 102, 1);
+        //   color: #ffffff;
+        //   border: none;
+        //   -moz-box-shadow: none;
+        //   -webkit-box-shadow: none;
+        //   box-shadow: none;
+        // }
         .formList {
           float: left;
           width: 100%;

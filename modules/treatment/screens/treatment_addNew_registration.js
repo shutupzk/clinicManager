@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import moment from 'moment'
+import { PageCard } from '../../../components'
 
 class AddNewRegistrationScreen extends Component {
   constructor(props) {
@@ -83,6 +84,11 @@ class AddNewRegistrationScreen extends Component {
 						查询
 					</button>
           <button className={'searchBtn'}>读卡</button>
+          <button
+            onClick={() => {
+              this.changeContent({ type: 2 })
+            }}
+          >新增列表</button>
           {/* <a>注：当日登记就诊人列表</a> */}
         </div>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
@@ -211,8 +217,8 @@ class AddNewRegistrationScreen extends Component {
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
-                    {item.name}
-                  </option>
+                      {item.name}
+                    </option>
                   )
                 })}
               </select>
@@ -231,7 +237,7 @@ class AddNewRegistrationScreen extends Component {
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
-                    console.log(newPatient.visit_type)
+                    // console.log(newPatient.visit_type)
                     this.setState({ patientInfo: newPatient })
                   }}
 								/>
@@ -246,7 +252,7 @@ class AddNewRegistrationScreen extends Component {
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
-                    console.log(newPatient.visit_type)
+                    // console.log(newPatient.visit_type)
                     this.setState({ patientInfo: newPatient })
                   }}
 								/>
@@ -261,7 +267,7 @@ class AddNewRegistrationScreen extends Component {
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
-                    console.log(newPatient.visit_type)
+                    // console.log(newPatient.visit_type)
                     this.setState({ patientInfo: newPatient })
                   }}
 								/>
@@ -354,7 +360,13 @@ class AddNewRegistrationScreen extends Component {
             <button>查询</button>
           </div>
           <div className={'top_right'}>
-            <button>新增挂号</button>
+            <button
+              onClick={() => {
+                this.changeContent({ type: 1 })
+              }}
+						>
+							新增登记
+						</button>
           </div>
         </div>
         <div className={'listContent'}>
@@ -363,26 +375,11 @@ class AddNewRegistrationScreen extends Component {
               let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
-                  {/* <div className={'liTop'}>
-                    <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-                    <span className={'status'}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
-                  </div>
-                  <div>
-										就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
-									</div>
-                  <div>门诊ID：{patient.cert_no}</div>
-                  <div>接诊科室：{patient.department_name}</div>
-                  <div>接诊医生：{patient.doctor_name}</div>
-                  <div>登记人员：{patient.register_personnel_name}</div>
-                  <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-                  <div className={'seeDetail'} onClick={() => this.seeDetail()}>
-										查看详情
-                  </div> */}
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
-                    <span style={{color: statusColor, border: '1px solid ' + statusColor}}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -408,18 +405,20 @@ class AddNewRegistrationScreen extends Component {
                   </div>
                   <div className={'itemBottom'}>
                     <span>更新时间：2018-04-08 10:23:34</span>
-                    <span>查看详情》</span>
+                    <span onClick={() => this.seeDetail()}>查看详情》</span>
                   </div>
                 </li>
               )
             })}
           </ul>
+          {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
         <style jsx>{`
 					.newList_top {
 						// background: #909090;
 						height: 34px;
-						width: 1146px;
+						max-width: 1146px;
+						width: 100%;
 						float: left;
 						margin: 30px 0 28px 40px;
 					}
@@ -465,6 +464,7 @@ class AddNewRegistrationScreen extends Component {
 						font-size: 14px;
 						font-family: MicrosoftYaHei;
 						color: rgba(255, 255, 255, 1);
+						margin-right: 20px;
 					}
 					.listContent {
 						width: 1146px;
@@ -481,123 +481,90 @@ class AddNewRegistrationScreen extends Component {
 						border-radius: 7px;
 						float: left;
 						margin: 0 22px 20px 0;
-          }
-          .itemTop{
-            width: 332px;
-            border-bottom: 2px solid #F4F7F8;
-            // background: #e0e0e0;
-            margin: 20px auto 0 auto;
-            padding: 0 0 10px 0;
-            height: 20px;
-          }
-          .itemTop span{
-            float:left;
-          }
-          .itemTop span:nth-child(1){
-            width:auto;
-            height:19px; 
-            font-size:16px;
-            font-family:MicrosoftYaHei;
-            color:rgba(51,51,51,1);
-            margin-left:3px;
-          }
-          .itemTop span:nth-child(2){
-            font-size:14px;
-            font-family:MicrosoftYaHei;
-            color:rgba(102,102,102,1);
-            margin:2px 0 0 12px;
-          }
-          .itemTop span:nth-child(3){
-            font-size:14px;
-            font-family:MicrosoftYaHei;
-            color:rgba(102,102,102,1);
-            margin:2px 0 0 12px;
-          }
-          .itemTop span:nth-child(4){
-            width:60px;
-            height:20px; 
-            border-radius: 10px ; 
-            float:right;
-            text-align:center;
-          }
-          .itemCenter{
-            width: 332px;
-            // background: #e0e0e0;
-            margin: 0 auto 0 auto;
-            height: 168px;
-          }
-          .itemCenter span{
-            float:left;
-            width:100%;
-            height: 26px;
-            line-height: 26px;
-          }
-          .itemCenter span a:nth-child(1){
-            float:left;
-            width:75px;
-            color:#666666;
-            font-size:14px;
-          }
-          .itemCenter span a:nth-child(2){
-            float:left;
-            margin-left:20px;
-            color:#333333;
-            font-size:14px;
-          }
-          .itemBottom{
-            width: 332px;
-            // background: #e0e0e0;
-            margin: 0 auto 0 auto;
-          }
-          .itemBottom span{
-            float:left;
-            font-size:12px;
-            font-family:MicrosoftYaHei;
-          }
-          .itemBottom span:nth-child(1){
-            color:rgba(153,153,153,1);
-          }
-          .itemBottom span:nth-child(2){
-            float:right;
-            color:rgba(42,205,200,1);
-            cursor:pointer;
-          }
+					}
+					.itemTop {
+						width: 332px;
+						border-bottom: 2px solid #f4f7f8;
+						// background: #e0e0e0;
+						margin: 20px auto 0 auto;
+						padding: 0 0 10px 0;
+						height: 20px;
+					}
+					.itemTop span {
+						float: left;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 3px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+						width: 332px;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+						height: 168px;
+					}
+					.itemCenter span {
+						float: left;
+						width: 100%;
+						height: 26px;
+						line-height: 26px;
+					}
+					.itemCenter span a:nth-child(1) {
+						float: left;
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						float: left;
+						margin-left: 20px;
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+						width: 332px;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+					}
+					.itemBottom span {
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+					}
+					.itemBottom span:nth-child(1) {
+						color: rgba(153, 153, 153, 1);
+					}
+					.itemBottom span:nth-child(2) {
+						float: right;
+						color: rgba(42, 205, 200, 1);
+						cursor: pointer;
+					}
 				`}</style>
       </div>
-			// <div className={'formList'}>
-			//   <div className={'regisListTop'}>
-			//     <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-			//     <button className={'searchBtn'}>查询</button>
-			//     <a>注：当日登记就诊人列表</a>
-			//   </div>
-			//   <div className={'regisList'}>
-			//     <ul>
-			//       {array.map((patient, index) => {
-			//         return (
-			//           <li key={index}>
-			//             <div className={'liTop'}>
-			//               <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-			//               <span className={'status'}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
-			//             </div>
-			//             <div>
-			// 							就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
-			// 						</div>
-			//             <div>门诊ID：{patient.cert_no}</div>
-			//             <div>接诊科室：{patient.department_name}</div>
-			//             <div>接诊医生：{patient.doctor_name}</div>
-			//             <div>登记人员：{patient.register_personnel_name}</div>
-			//             <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-			//             <div className={'seeDetail'} onClick={() => this.seeDetail()}>
-			// 							查看详情
-			// 						</div>
-			//           </li>
-			//         )
-			//       })}
-			//     </ul>
-			//   </div>
-			//   <div className={'pagination'} />
-			// </div>
-		)
+    )
   }
 	// 查看详情
   seeDetail() {
@@ -635,7 +602,8 @@ const mapStateToProps = state => {
     patients: state.patients.data,
     departments: state.departments.data,
     triagePatients: state.triagePatients.data,
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    limit: state.triagePatients.page_info.limit
   }
 }
 export default connect(mapStateToProps, { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList })(AddNewRegistrationScreen)
