@@ -54,7 +54,7 @@ class SigninScreen extends Component {
           section {
             border: 1px solid #d8d8d8;
             position: absolute;
-            top: 276px;
+            top: 30%;
             right: 120px;
             width:420px;
             height:440px; 
@@ -107,7 +107,7 @@ class SigninScreen extends Component {
             background: url('/static/login/u35.png') top center no-repeat;
             // background:#ffffff;
             position: fixed;
-            background-size: 100% 587px;
+            background-size: 100% 60%;
             top: 0;
             right: 0;
             bottom: 0;
