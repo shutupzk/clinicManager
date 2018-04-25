@@ -226,10 +226,11 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={1}
-                  checked={patient.visit_type === 1}
+                  // checked={patient.visit_type === 1}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
+                    console.log(newPatient.visit_type)
                     this.setState({ patientInfo: newPatient })
                   }}
 								/>
@@ -239,11 +240,12 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={2}
-                  checked={patient.visit_type === 2}
+                  // checked={patient.visit_type === 2}
                   style={{ marginLeft: '15px' }}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
+                    console.log(newPatient.visit_type)
                     this.setState({ patientInfo: newPatient })
                   }}
 								/>
@@ -253,11 +255,12 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={3}
-                  checked={patient.visit_type === 3}
+                  // checked={patient.visit_type === 3}
                   style={{ marginLeft: '15px' }}
                   onChange={e => {
                     let newPatient = patient
                     newPatient.visit_type = e.target.value
+                    console.log(newPatient.visit_type)
                     this.setState({ patientInfo: newPatient })
                   }}
 								/>
