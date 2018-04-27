@@ -84,11 +84,11 @@ class AddNewRegistrationScreen extends Component {
 						查询
 					</button>
           <button className={'searchBtn'}>读卡</button>
-          <button
+          {/* <button
             onClick={() => {
               this.changeContent({ type: 2 })
             }}
-          >新增列表</button>
+          >新增列表</button> */}
           {/* <a>注：当日登记就诊人列表</a> */}
         </div>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
@@ -350,7 +350,6 @@ class AddNewRegistrationScreen extends Component {
   }
 	// 显示新增列表
   showNewList() {
-		// this.queryPatients()
     const array = this.getTriagePatientListData()
     return (
       <div className={'newList'}>
@@ -358,15 +357,6 @@ class AddNewRegistrationScreen extends Component {
           <div className={'top_left'}>
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button>查询</button>
-          </div>
-          <div className={'top_right'}>
-            <button
-              onClick={() => {
-                this.changeContent({ type: 1 })
-              }}
-						>
-							新增登记
-						</button>
           </div>
         </div>
         <div className={'listContent'}>
@@ -414,6 +404,34 @@ class AddNewRegistrationScreen extends Component {
           {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
         <style jsx>{`
+          .contentMenu{
+            width: 100%;
+            // background: #909090;
+            float: left;
+          }
+          .contentMenu span:nth-child(1){
+            margin:24px 0 0 32px;
+          }
+          .contentMenu span{
+            width:88px;
+            height:32px; 
+            background:rgba(255,255,255,1);
+            border-radius: 4px ; 
+            float:left;
+            text-align:center;
+            line-height:32px;
+            color:#000000;
+            cursor:pointer;
+            margin-top:24px;
+            margin-left:10px;
+          }
+          .contentMenu span.sel{
+            width:100px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+            color:#FFFFFF;
+          }
 					.newList_top {
 						// background: #909090;
 						height: 34px;
@@ -438,13 +456,13 @@ class AddNewRegistrationScreen extends Component {
 						float: left;
 					}
 					.newList_top .top_left button {
-						width: 80px;
-						height: 34px;
-						background: rgba(42, 205, 200, 1);
+            width:60px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
 						border: none;
-						border-radius: 17px;
 						cursor: pointer;
-						margin-left: 34px;
+						margin-left: 10px;
 						float: left;
 						font-size: 12px;
 						font-family: MicrosoftYaHei;
@@ -572,25 +590,50 @@ class AddNewRegistrationScreen extends Component {
   }
 
   render() {
-		// this.queryPatients()
     return (
       <div>
-        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
-        {/* <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						登记
-					</span>
-          <span
-            className={this.state.pageType === 2 ? 'sel' : ''}
+        <div className={'contentMenu'}>
+          <span className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
               this.queryPatients()
+              this.changeContent({ type: 1 })
+            }}>+ 新增登记</span>
+          <span className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
               this.changeContent({ type: 2 })
-            }}
-					>
-						就诊人列表
-					</span>
+            }}>登记列表</span>
         </div>
-        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()} */}
+        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
+        <style jsx>{`
+          .contentMenu{
+            width: 100%;
+            // background: #909090;
+            float: left;
+          }
+          .contentMenu span:nth-child(1){
+            margin:24px 0 0 32px;
+          }
+          .contentMenu span{
+            width:88px;
+            height:32px; 
+            background:rgba(255,255,255,1);
+            border-radius: 4px ; 
+            float:left;
+            text-align:center;
+            line-height:32px;
+            color:#000000;
+            cursor:pointer;
+            margin-top:24px;
+            margin-left:10px;
+          }
+          .contentMenu span.sel{
+            width:100px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+            color:#FFFFFF;
+          }
+        `}</style>
       </div>
     )
   }

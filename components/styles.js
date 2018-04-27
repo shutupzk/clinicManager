@@ -546,45 +546,45 @@ export function styles() {
         //   -webkit-box-shadow: none;
         //   box-shadow: none;
         // }
-        .formList {
-          float: left;
-          width: 100%;
-        }
-        .formList ul {
-          width: 1000px;
-          height: auto;
-          margin: 0 20px;
-        }
-        .formList ul li {
-          float: left;
-          margin-top: 30px;
-          width: 50%;
-          height: 65px;
-        }
-        .formList ul li > label {
-          width: 70px;
-          height: 18px;
-          font-size: 10px;
-          font-family: PingFangSC-Regular;
-          color: rgba(102, 102, 102, 1);
-          line-height: 18px;
-        }
-        .formList ul li > input {
-          width: 400px;
-          height: 30px;
-          padding: 0px;
-          background: rgba(245, 248, 249, 1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-        }
-        .formList ul li > select {
-          width: 100px;
-          height: 30px;
-          background: rgba(255, 255, 255, 1);
-          border-radius: 4px;
-          float: left;
-          border: 1px solid #d9d9d9;
-        }
+        // .formList {
+        //   float: left;
+        //   width: 100%;
+        // }
+        // .formList ul {
+        //   width: 1000px;
+        //   height: auto;
+        //   margin: 0 20px;
+        // }
+        // .formList ul li {
+        //   float: left;
+        //   margin-top: 30px;
+        //   width: 50%;
+        //   height: 65px;
+        // }
+        // .formList ul li > label {
+        //   width: 70px;
+        //   height: 18px;
+        //   font-size: 10px;
+        //   font-family: PingFangSC-Regular;
+        //   color: rgba(102, 102, 102, 1);
+        //   line-height: 18px;
+        // }
+        // .formList ul li > input {
+        //   width: 400px;
+        //   height: 30px;
+        //   padding: 0px;
+        //   background: rgba(245, 248, 249, 1);
+        //   border-radius: 4px;
+        //   border: 1px solid #d9d9d9;
+        // }
+        // .formList ul li > select {
+        //   width: 100px;
+        //   height: 30px;
+        //   background: rgba(255, 255, 255, 1);
+        //   border-radius: 4px;
+        //   float: left;
+        //   border: 1px solid #d9d9d9;
+        // }
         .saveBtn {
           border-width: 0px;
           // position: absolute;
@@ -756,8 +756,9 @@ export function styles() {
           position: fixed;
           width: 100%;
           height: 100%;
-          background: rgba(255, 255, 255, 0.5);
+          background: rgba(0, 0, 0, 0.5);
           top: 0;
+          left: 0;
           z-index: 1000;
         }
 
@@ -777,24 +778,18 @@ export function styles() {
           position: absolute;
         }
         .doctorList {
-          width: 853px;
-          min-height: 617px;
-          background: inherit;
-          background-color: rgba(255, 255, 255, 1);
-          box-sizing: border-box;
-          border-width: 1px;
-          border-style: solid;
-          border-color: rgba(204, 204, 204, 1);
-          border-radius: 0px;
-          -moz-box-shadow: none;
-          -webkit-box-shadow: none;
-          box-shadow: none;
+          width:950px;
+          height:683px; 
+          background:rgba(244,247,248,1);
+          box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
           position: absolute;
+          left: 324px;
+          top: 146px;
         }
         .doctorList_top {
           border-bottom: 1px solid #d8d8d8;
           width: 100%;
-          height: 50px;
+          height: 93px;
         }
 
         .healthFile_top {
@@ -802,18 +797,18 @@ export function styles() {
           height: 30px;
           // background: #909090;
         }
-        .doctorList_top span:nth-child(1),
+        // .doctorList_top span:nth-child(1),
         .healthFile_top span:nth-child(1) {
           float: left;
           height: 30px;
           line-height: 30px;
           text-indent: 10px;
         }
-        .doctorList_top span:nth-child(1) {
-          height: 60px;
-          line-height: 60px;
-        }
-        .doctorList_top span:last-child,
+        // .doctorList_top span:nth-child(1) {
+        //   height: 60px;
+        //   line-height: 60px;
+        // }
+        // .doctorList_top span:last-child,
         .healthFile_top span:nth-child(2) {
           float: right;
           height: 20px;

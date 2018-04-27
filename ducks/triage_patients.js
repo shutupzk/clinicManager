@@ -3,7 +3,7 @@ const TRIAGE_PATIENTS_ADD = 'TRIAGE_PATIENTS_ADD'
 const TRIAGE_PATIENTS_SELECT = 'TRIAGE_PATIENTS_SELECT'
 
 const initState = {
-  data: {},
+  data: [],
   page_info: {},
   selectId: null
 }
@@ -11,7 +11,8 @@ const initState = {
 export function triagePatients(state = initState, action = {}) {
   switch (action.type) {
     case TRIAGE_PATIENTS_ADD:
-      return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
+			// ...state.data,
+      return { ...state, data: { ...action.data }, page_info: action.page_info }
     case TRIAGE_PATIENTS_SELECT:
       return { ...state, selectId: action.selectId }
     default:
@@ -32,13 +33,13 @@ export const triagePatientsList = ({ clinic_id, keyword, is_today, register_type
     console.log(data)
     const docs = data.data || []
     const page_info = data.page_info || {}
-    let json = {}
-    for (let doc of docs) {
-      json[doc.clinic_triage_patient_id] = doc
-    }
+    // let json = {}
+    // for (let doc of docs) {
+    //   json[doc.clinic_triage_patient_id] = doc
+    // }
     dispatch({
       type: TRIAGE_PATIENTS_ADD,
-      data: json,
+      data: docs,
       page_info
     })
     return null
