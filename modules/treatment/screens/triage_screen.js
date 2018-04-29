@@ -670,7 +670,7 @@ class TriageScreen extends Component {
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
-                    <span>{patient.sex === 0 ? '女' : '男'}</span>
+                    <span>{patient.sex === 0 ? '女' : '男 '}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
                   </div>
