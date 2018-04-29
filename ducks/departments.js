@@ -45,11 +45,10 @@ export const departmentList = ({ clinic_id }) => async dispatch => {
   }
 }
 
-export const departmentCreate = ({ clinic_id, code, name, weight }) => async dispatch => {
+export const departmentCreate = ({ departInfo }) => async dispatch => {
   try {
-    const data = await request('/department/create', {
-      clinic_id, code, name, weight
-    })
+    console.log('departInfo', departInfo)
+    const data = await request('/department/create', departInfo)
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
