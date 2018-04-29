@@ -372,10 +372,10 @@ class AddNewRegistrationScreen extends Component {
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
-                    <span>
+                    {/* <span>
                       <a>门诊ID：</a>
                       <a>{patient.cert_no}</a>
-                    </span>
+                    </span> */}
                     <span>
                       <a>接诊科室：</a>
                       <a>{patient.department_name}</a>
