@@ -30,7 +30,7 @@ export const doctorList = ({ clinic_id, personnel_type, keyword }) => async disp
       personnel_type,
       keyword
     })
-    console.log(data)
+    console.log('personnel ======', data)
     const docs = data.data || []
     let json = {}
     for (let doc of docs) {
@@ -47,18 +47,32 @@ export const doctorList = ({ clinic_id, personnel_type, keyword }) => async disp
   }
 }
 
-export const doctorCreate = ({ clinic_id, department_id, code, weight, title, personnel_type, username, password }) => async dispatch => {
+export const doctorCreate = ({ clinic_id, department_id, code, name, weight, title, personnel_type, username, password }) => async dispatch => {
   try {
     const data = await request('/personnel/create', {
       clinic_id,
       department_id,
       code,
+      name,
       weight,
       title,
       personnel_type,
       username,
       password
     })
+    console.log(
+      {
+        clinic_id,
+        department_id,
+        code,
+        weight,
+        title,
+        personnel_type,
+        username,
+        password
+      },
+      data
+    )
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
