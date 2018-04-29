@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { doctorList } from '../../../../ducks'
+import { departmentList, departmentCreate } from '../../../../ducks'
 
 class DepartmentListScreen extends Component {
   constructor(props) {
@@ -19,15 +19,15 @@ class DepartmentListScreen extends Component {
   }
 
   componentWillMount() {
-    const { doctorList, clinic_code } = this.props
-    doctorList({ clinic_code })
+    const { departmentList, clinic_code } = this.props
+    departmentList({ clinic_code })
   }
 
   getListData() {
-    const { doctors } = this.props
+    const { departments } = this.props
     let array = []
-    for (let key in doctors) {
-      array.push(doctors[key])
+    for (let key in departments) {
+      array.push(departments[key])
     }
     return array
   }
@@ -94,6 +94,7 @@ class DepartmentListScreen extends Component {
     this.setState({ pageType: type })
   }
   showDoctor() {
+    if (this.state.pageType !== 1) return null
     let exercises = this.getListData()
     return (
       <div>
@@ -119,13 +120,28 @@ class DepartmentListScreen extends Component {
     )
   }
 	// 保存添加
-  saveAdd() {}
+  async saveAdd() {
+    const { departmentCreate, clinic_id } = this.props
+    let departInfo = this.state.departInfo
+    departInfo.clinic_id = clinic_id
+    let error = await departmentCreate({ departInfo })
+    if (error) {
+      alert(error)
+    } else {
+      this.setState({ alertType: 0 })
+    }
+  }
+  setDeaprtInfo(e, key) {
+    let newDepart = this.state.departInfo
+    newDepart[key] = e.target.value
+    this.setState({ departInfo: newDepart })
+  }
 	// 显示新增科室
   showAddDepart() {
-    let departInfo = this.state.departInfo
+    // let departInfo = this.state.departInfo
     return (
       <div className={'mask'}>
-        <div className={'doctorList'} style={{ width: '400px', height: '450px', left: '500px' }}>
+        <div className={'doctorList'} style={{ width: '700px', height: '480px', left: '500px' }}>
           <div className={'doctorList_top'}>
             <span>新增科室</span>
             <div />
@@ -138,11 +154,7 @@ class DepartmentListScreen extends Component {
                 <input
                   placeholder='请填写科室编码'
                   defaultValue=''
-                  onChange={e => {
-                    let newDepart = departInfo
-                    newDepart.code = e.target.value
-                    this.setState({ departInfo: newDepart })
-                  }}
+                  onChange={e => this.setDeaprtInfo(e, 'code')}
 								/>
               </li>
               <li>
@@ -150,11 +162,7 @@ class DepartmentListScreen extends Component {
                 <input
                   placeholder='请填写科室名称'
                   defaultValue=''
-                  onChange={e => {
-                    let newDepart = departInfo
-                    newDepart.name = e.target.value
-                    this.setState({ departInfo: newDepart })
-                  }}
+                  onChange={e => this.setDeaprtInfo(e, 'name')}
 								/>
               </li>
               <li>
@@ -166,11 +174,7 @@ class DepartmentListScreen extends Component {
                 <input
                   placeholder='请填写科室权重'
                   defaultValue=''
-                  onChange={e => {
-                    let newDepart = departInfo
-                    newDepart.right = e.target.value
-                    this.setState({ departInfo: newDepart })
-                  }}
+                  onChange={e => this.setDeaprtInfo(e, 'weight')}
 								/>
               </li>
             </ul>
@@ -189,13 +193,14 @@ class DepartmentListScreen extends Component {
           <style jsx global>
             {`
 							.doctorList_top span:nth-child(1) {
-								font-size: 14px;
+								font-size: 16px;
 								font-family: MicrosoftYaHei;
 								color: rgba(102, 102, 102, 1);
 								line-height: 17px;
 								height: 17px;
 								text-indent: 0;
-								margin: 40px 0 0 60px;
+                margin: 40px 0 0 50px;
+                font-weight:bold;
 								float: left;
 							}
 							.doctorList_top span:last-child {
@@ -220,20 +225,21 @@ class DepartmentListScreen extends Component {
 								// background: #909090;
 							}
 							.doctorList_content ul li {
-                margin: 10px 0;
-                display: flex;
+								margin: 10px 0;
+								display: flex;
 							}
 							.doctorList_content ul li label {
-								width: 25%;
-                vertical-align: middle;
-                line-height:30px;
+								// width: 25%;
+								vertical-align: middle;
+                line-height: 40px;
+                flex: 1;
 							}
 							.doctorList_content ul li input {
-								height: 30px;
-								width: 75%;
-								border-radius: 5px;
-								border: 1px solid #d8d8d8;
-								text-indent: 10px;
+								height: 40px;
+                border-radius: 5px;
+                border: 1px solid #d8d8d8;
+                text-indent: 10px;
+                flex: 6;
 							}
 							.buttonBtn {
 								display: block;
@@ -276,7 +282,7 @@ class DepartmentListScreen extends Component {
             职员
           </span>
         </div> */}
-        {this.state.pageType === 1 ? this.showDoctor() : ''}
+        {this.showDoctor()}
         {this.state.alertType === 1 ? this.showAddDepart() : ''}
         {/* {this.state.pageType==2?this.showEmployee():''} */}
       </div>
@@ -317,9 +323,10 @@ const styles = {
 
 const mapStateToProps = state => {
   return {
-    doctors: state.doctors.data,
+    departments: state.departments.data,
+    clinic_id: state.user.data.clinic_id,
     clinic_code: '00000001'
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(DepartmentListScreen)
+export default connect(mapStateToProps, { departmentList, departmentCreate })(DepartmentListScreen)
