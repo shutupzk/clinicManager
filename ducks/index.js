@@ -1,5 +1,5 @@
 import { user, signin, signout } from './user'
-import { doctors, doctorList, doctorSelect } from './doctors'
+import { doctors, doctorList, doctorSelect, doctorCreate } from './doctors'
 import { triagePatients, triagePatientsList, triagePatientsSelect, addTriagePatientsList, triagePatient, addAppointment } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect } from './patients'
 import { departments, departmentList, departmentSelect, departmentCreate } from './departments'
@@ -28,5 +28,6 @@ export {
   addAppointment,
   queryScheduleDepartments,
   queryScheduleDoctors,
-  departmentCreate
+  departmentCreate,
+  doctorCreate
 }

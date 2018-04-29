@@ -8,7 +8,7 @@ const initState = {
   selectId: null
 }
 
-export function doctors (state = initState, action = {}) {
+export function doctors(state = initState, action = {}) {
   switch (action.type) {
     case DOCTOR_ADD:
       return Object.assign({}, state, { data: Object.assign({}, state.data, action.data) })
@@ -41,6 +41,26 @@ export const doctorList = ({ clinic_id, personnel_type, keyword }) => async disp
       data: json
     })
     return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const doctorCreate = ({ clinic_id, department_id, code, weight, title, personnel_type, username, password }) => async dispatch => {
+  try {
+    const data = await request('/personnel/create', {
+      clinic_id,
+      department_id,
+      code,
+      weight,
+      title,
+      personnel_type,
+      username,
+      password
+    })
+    if (data.code === '200') return null
+    return data.msg
   } catch (e) {
     console.log(e)
     return e.message
