@@ -9,7 +9,9 @@ class DoctorListScreen extends Component {
     this.state = {
       personnel_type: 2,
       doctorKeyword: '',
-      employeeKeyword: ''
+      employeeKeyword: '',
+      showPersonnel: false,
+      doctorInfo: {}
     }
   }
 
@@ -101,10 +103,10 @@ class DoctorListScreen extends Component {
         <li style={{ flex: 3 }}>{clinic_name}</li>
         <li style={{ flex: 5 }}>{is_appointment ? '是' : '否'}</li>
         <li style={{ flex: 3, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({})}>
             编辑
           </button>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({})}>
             删除
           </button>
         </li>
@@ -123,10 +125,10 @@ class DoctorListScreen extends Component {
         <li style={{ flex: 3 }}>{clinic_name}</li>
         <li style={{ flex: 3 }}>{is_appointment ? '是' : '否'}</li>
         <li style={{ flex: 3, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({ })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({})}>
             编辑
           </button>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({ })}>
+          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({})}>
             删除
           </button>
         </li>
@@ -154,7 +156,9 @@ class DoctorListScreen extends Component {
           </button>
         </div>
         <div className={'listBox'}>
-          <button className={'addBtn'}>新增医生</button>
+          <button className={'addBtn'} onClick={() => this.setState({ showPersonnel: true })}>
+            新增医生
+          </button>
           {this.renderTitle()}
           {exercises.map((item, index) => {
             return this.renderRow(item, index)
@@ -181,7 +185,9 @@ class DoctorListScreen extends Component {
           </button>
         </div>
         <div className={'listBox'}>
-          <button className={'addBtn'}>新增职员</button>
+          <button className={'addBtn'} onClick={() => this.setState({ showPersonnel: true })}>
+            新增职员
+          </button>
           {this.renderTitle1()}
           {exercises.map((item, index) => {
             return this.renderRow1(item, index)
@@ -190,6 +196,151 @@ class DoctorListScreen extends Component {
       </div>
     )
   }
+
+  // 保存添加
+  saveAdd() {
+    this.setState({ showPersonnel: false })
+  }
+
+  setDoctorInfo(e, key) {
+    let newDoctor = doctorInfo
+    newDoctor[key] = e.target.value
+    this.setState({ doctorInfo: newDoctor })
+  }
+
+  showAddDepart() {
+    const { showPersonnel, doctorInfo } = this.state
+    if (!showPersonnel) return null
+    return (
+      <div className={'mask'}>
+        <div className={'doctorList'} style={{ width: '400px', height: '450px', left: '500px' }}>
+          <div className={'doctorList_top'}>
+            <span>新增科室</span>
+            <div />
+            <span onClick={() => this.setState({ alertType: 0 })}>×</span>
+          </div>
+          <div className={'doctorList_content'}>
+            <ul>
+              <li>
+                <label>医生编码：</label>
+                <input
+                  placeholder='请填写科室编码'
+                  defaultValue=''
+                  onChange={e => this.setDoctorInfo(e, 'code')}
+                />
+              </li>
+              <li>
+                <label>医生名称</label>
+                <input
+                  placeholder='请填写科室名称'
+                  defaultValue=''
+                  onChange={e => this.setDoctorInfo(e, 'name')}
+                />
+              </li>
+              <li>
+                <label>所属诊所：</label>
+                <input placeholder='请填写所属诊所' value='龙华诊所' />
+              </li>
+              <li>
+                <label>科室权重：</label>
+                <input
+                  placeholder='请填写科室权重'
+                  defaultValue=''
+                  onChange={e => this.setDoctorInfo(e, 'weight')}
+                />
+              </li>
+            </ul>
+            <div className={'buttonBtn'}>
+              <button>取消</button>
+              <button
+                onClick={() => {
+                  this.saveAdd()
+                }}
+              >
+                保存
+              </button>
+            </div>
+          </div>
+          <div className={'pagination'} />
+          <style jsx global>
+            {`
+              .doctorList_top span:nth-child(1) {
+                font-size: 14px;
+                font-family: MicrosoftYaHei;
+                color: rgba(102, 102, 102, 1);
+                line-height: 17px;
+                height: 17px;
+                text-indent: 0;
+                margin: 40px 0 0 60px;
+                float: left;
+              }
+              .doctorList_top span:last-child {
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 95, 87, 1);
+                float: right;
+                color: #ffffff;
+                font-size: 20px;
+                text-align: center;
+                text-indent: 10px;
+                line-height: 35px;
+                border-bottom-left-radius: 100%;
+                cursor: pointer;
+              }
+              .doctorList_content ul {
+                margin: 0 50px;
+                display: flex;
+                width: auto;
+                flex-direction: column;
+                // height: 400px;
+                // background: #909090;
+              }
+              .doctorList_content ul li {
+                margin: 10px 0;
+                display: flex;
+              }
+              .doctorList_content ul li label {
+                width: 25%;
+                vertical-align: middle;
+                line-height: 30px;
+              }
+              .doctorList_content ul li input {
+                height: 30px;
+                width: 75%;
+                border-radius: 5px;
+                border: 1px solid #d8d8d8;
+                text-indent: 10px;
+              }
+              .buttonBtn {
+                display: block;
+                margin: 50px auto;
+                width: 150px;
+              }
+              .buttonBtn button {
+                width: 65px;
+                height: 32px;
+                background: rgba(255, 255, 255, 1);
+                border-radius: 4px;
+                font-size: 14px;
+                font-family: PingFangSC-Regular;
+                color: rgba(0, 0, 0, 0.65);
+                border: 1px solid #d9d9d9;
+              }
+              .buttonBtn button:nth-child(1) {
+                float: left;
+              }
+              .buttonBtn button:nth-child(2) {
+                float: right;
+                background: rgba(42, 205, 200, 1);
+                color: rgba(255, 255, 255, 1);
+              }
+            `}
+          </style>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     // const { fenyeItem, buttonLarge } = styles
     return (
@@ -204,6 +355,7 @@ class DoctorListScreen extends Component {
         </div>
         {this.state.personnel_type === 2 ? this.showDoctor() : ''}
         {this.state.personnel_type === 1 ? this.showEmployee() : ''}
+        {this.showAddDepart()}
       </div>
     )
   }
