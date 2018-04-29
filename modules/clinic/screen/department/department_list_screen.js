@@ -220,11 +220,13 @@ class DepartmentListScreen extends Component {
 								// background: #909090;
 							}
 							.doctorList_content ul li {
-								margin: 10px 0;
+                margin: 10px 0;
+                display: flex;
 							}
 							.doctorList_content ul li label {
 								width: 25%;
-								vertical-align: middle;
+                vertical-align: middle;
+                line-height:30px;
 							}
 							.doctorList_content ul li input {
 								height: 30px;
