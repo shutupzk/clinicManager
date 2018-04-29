@@ -1,40 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-let timer
 
 class Prompt extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-    this.state = {
-      closeTime: 2,
-      autoClose: false,
-      show: true,
-      promptContent: ''
-    }
+    this.state = {}
   }
 
-  componentWillMount () {}
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.text) {
-      this.setState({ show: true })
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        this.setState({ show: false })
-        // this.props.hidePrompt()
-      }, nextProps.timer)
-    }
-  }
-
-  componentWillUpdate () {}
-
-  componentWillUnMount () {
-    clearTimeout(timer)
-  }
-
-  render () {
+  render() {
     return (
-      <div className={`promptDiv ${this.state.show === true && this.props.text ? 'show' : ''}`}>
+      <div className={`promptDiv ${this.props.show === true ? 'show' : ''}`}>
         {this.props.text}
         {this.props.children}
         <style jsx>
@@ -66,10 +41,9 @@ class Prompt extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    text: state.prompt.data.text,
-    timer: state.prompt.data.timer
+    show: state.prompt.show
   }
 }
 

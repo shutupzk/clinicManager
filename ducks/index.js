@@ -4,8 +4,10 @@ import { triagePatients, triagePatientsList, triagePatientsSelect, addTriagePati
 import { patients, getPatientByCertNo, patientSelect } from './patients'
 import { departments, departmentList, departmentSelect } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
+import { schedules, queryScheduleDepartments, queryScheduleDoctors } from './schedules'
+
 // keys
-export { user, doctors, triagePatients, patients, departments, triageDoctors }
+export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules }
 
 // actions
 export {
@@ -23,5 +25,7 @@ export {
   triageDoctorsList,
   triageDoctorsSelect,
   triagePatient,
-  addAppointment
+  addAppointment,
+  queryScheduleDepartments,
+  queryScheduleDoctors
 }
