@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { doctorList } from '../../../../ducks'
+import { doctorList, doctorCreate, departmentList } from '../../../../ducks'
 
 class DoctorListScreen extends Component {
   constructor(props) {
@@ -16,6 +16,8 @@ class DoctorListScreen extends Component {
   }
 
   componentWillMount() {
+    const { departmentList, clinic_id } = this.props
+    departmentList({ clinic_id })
     this.queryList()
   }
 
@@ -26,6 +28,7 @@ class DoctorListScreen extends Component {
 
   getListData(personnel_type) {
     const { doctors } = this.props
+    console.log('doctors ======', doctors)
     const { doctorKeyword, employeeKeyword } = this.state
     const keyword = personnel_type === 2 ? doctorKeyword : employeeKeyword
     let array = []
@@ -37,6 +40,15 @@ class DoctorListScreen extends Component {
         if (!pattern.test(code) && !pattern.test(name)) continue
       }
       array.push(doctors[key])
+    }
+    return array
+  }
+
+  getDepartmentList() {
+    const { departments } = this.props
+    let array = []
+    for (let key in departments) {
+      array.push(departments[key])
     }
     return array
   }
@@ -198,60 +210,86 @@ class DoctorListScreen extends Component {
   }
 
   // 保存添加
-  saveAdd() {
+  async saveAdd() {
+    const { doctorCreate, clinic_id } = this.props
+    const { doctorInfo, personnel_type } = this.state
+    let error = await doctorCreate({ ...doctorInfo, clinic_id, personnel_type })
+    if (error) {
+      return alert('添加失败', error)
+    }
+    this.queryList()
+    alert('添加成功')
     this.setState({ showPersonnel: false })
   }
 
   setDoctorInfo(e, key) {
-    let newDoctor = doctorInfo
+    let newDoctor = this.state.doctorInfo
     newDoctor[key] = e.target.value
     this.setState({ doctorInfo: newDoctor })
   }
 
   showAddDepart() {
-    const { showPersonnel, doctorInfo } = this.state
+    const { showPersonnel } = this.state
     if (!showPersonnel) return null
+    const departments = this.getDepartmentList()
     return (
       <div className={'mask'}>
-        <div className={'doctorList'} style={{ width: '400px', height: '450px', left: '500px' }}>
+        <div className={'doctorList'} style={{ width: '700px', height: '800px', left: '450px', top: '50px' }}>
           <div className={'doctorList_top'}>
-            <span>新增科室</span>
+            <span>新增医生</span>
             <div />
-            <span onClick={() => this.setState({ alertType: 0 })}>×</span>
+            <span onClick={() => this.setState({ showPersonnel: false })}>×</span>
           </div>
           <div className={'doctorList_content'}>
             <ul>
               <li>
                 <label>医生编码：</label>
-                <input
-                  placeholder='请填写科室编码'
-                  defaultValue=''
-                  onChange={e => this.setDoctorInfo(e, 'code')}
-                />
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'code')} />
               </li>
               <li>
                 <label>医生名称</label>
-                <input
-                  placeholder='请填写科室名称'
-                  defaultValue=''
-                  onChange={e => this.setDoctorInfo(e, 'name')}
-                />
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'name')} />
               </li>
               <li>
-                <label>所属诊所：</label>
-                <input placeholder='请填写所属诊所' value='龙华诊所' />
+                <label>所属诊所</label>
+                <label>{this.props.clinic_name}</label>
               </li>
               <li>
-                <label>科室权重：</label>
-                <input
-                  placeholder='请填写科室权重'
-                  defaultValue=''
-                  onChange={e => this.setDoctorInfo(e, 'weight')}
-                />
+                <label>科室名称</label>
+                <select onChange={e => this.setDoctorInfo(e, 'department_id')}>
+                  <option>请选择</option>
+                  {departments.map(({ id, name }, index) => {
+                    return (
+                      <option key={index} value={id}>
+                        {name}
+                      </option>
+                    )
+                  })}
+                </select>
+              </li>
+              <li>
+                <label>医生权重</label>
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'weight')} />
+              </li>
+              <li>
+                <label>医生职称</label>
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'title')} />
+              </li>
+              <li>
+                <label>登录账号</label>
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'username')} />
+              </li>
+              <li>
+                <label>设置密码</label>
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'password')} />
+              </li>
+              <li>
+                <label>确认密码</label>
+                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'passwordConfirm')} />
               </li>
             </ul>
             <div className={'buttonBtn'}>
-              <button>取消</button>
+              <button onClick={() => this.setState({ showPersonnel: false })}>取消</button>
               <button
                 onClick={() => {
                   this.saveAdd()
@@ -265,13 +303,14 @@ class DoctorListScreen extends Component {
           <style jsx global>
             {`
               .doctorList_top span:nth-child(1) {
-                font-size: 14px;
+                font-size: 16px;
                 font-family: MicrosoftYaHei;
                 color: rgba(102, 102, 102, 1);
                 line-height: 17px;
                 height: 17px;
                 text-indent: 0;
-                margin: 40px 0 0 60px;
+                margin: 40px 0 0 50px;
+                font-weight: bold;
                 float: left;
               }
               .doctorList_top span:last-child {
@@ -300,16 +339,24 @@ class DoctorListScreen extends Component {
                 display: flex;
               }
               .doctorList_content ul li label {
-                width: 25%;
+                // width: 25%;
                 vertical-align: middle;
-                line-height: 30px;
+                line-height: 40px;
+                flex: 1;
               }
               .doctorList_content ul li input {
-                height: 30px;
-                width: 75%;
+                height: 40px;
                 border-radius: 5px;
                 border: 1px solid #d8d8d8;
                 text-indent: 10px;
+                flex: 6;
+              }
+              .doctorList_content ul li select {
+                height: 40px;
+                border-radius: 5px;
+                border: 1px solid #d8d8d8;
+                text-indent: 10px;
+                flex: 6;
               }
               .buttonBtn {
                 display: block;
@@ -396,8 +443,10 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     doctors: state.doctors.data,
-    clinic_id: state.user.data.clinic_id
+    departments: state.departments.data,
+    clinic_id: state.user.data.clinic_id,
+    clinic_name: state.user.data.clinic_name
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(DoctorListScreen)
+export default connect(mapStateToProps, { doctorList, doctorCreate, departmentList })(DoctorListScreen)
