@@ -45,6 +45,18 @@ export const departmentList = ({ clinic_id }) => async dispatch => {
   }
 }
 
+export const departmentCreate = ({ clinic_id, code, name, weight }) => async dispatch => {
+  try {
+    const data = await request('/department/create', {
+      clinic_id, code, name, weight
+    })
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    return e.message
+  }
+}
+
 export const departmentSelect = ({ department_id }) => async dispatch => {
   try {
     dispatch({
