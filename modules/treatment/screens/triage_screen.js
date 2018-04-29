@@ -420,7 +420,8 @@ class TriageScreen extends Component {
 								box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
 								float: left;
 								margin-left: 40px;
-								margin-top: 26px;
+                margin-top: 26px;
+                display: flex;
 							}
 							.doctorList_content ul li img {
 								width: 40px;
@@ -431,7 +432,8 @@ class TriageScreen extends Component {
 							.doctorList_content ul li > div:nth-child(1) {
 								float: left;
 								width: 100px;
-								margin: 25px 0;
+                margin: 25px 0;
+                flex:2;
 							}
 							.doctorList_content ul li > div:nth-child(1) > span {
 								width: 100%;
@@ -443,7 +445,8 @@ class TriageScreen extends Component {
 							.doctorList_content ul li > div:nth-child(2) {
 								float: left;
 								width: 100px;
-								margin: 25px 0;
+                margin: 25px 0;
+                flex:3;
 							}
 							.doctorList_content ul li > div:nth-child(2) > span {
 								float: left;

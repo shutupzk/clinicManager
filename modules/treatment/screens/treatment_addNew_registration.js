@@ -394,7 +394,7 @@ class AddNewRegistrationScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>更新时间：2018-04-08 10:23:34</span>
+                    <span>更新时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</span>
                     <span onClick={() => this.seeDetail()}>查看详情》</span>
                   </div>
                 </li>

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import { departmentList, departmentCreate } from '../../../../ducks'
+import moment from 'moment'
 
 class DepartmentListScreen extends Component {
   constructor(props) {
@@ -19,8 +20,8 @@ class DepartmentListScreen extends Component {
   }
 
   componentWillMount() {
-    const { departmentList, clinic_code } = this.props
-    departmentList({ clinic_code })
+    const { departmentList, clinic_id } = this.props
+    departmentList({ clinic_id })
   }
 
   getListData() {
@@ -97,26 +98,261 @@ class DepartmentListScreen extends Component {
     if (this.state.pageType !== 1) return null
     let exercises = this.getListData()
     return (
-      <div>
-        <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索科室名称/科室编号' />
-          <button className={'searchBtn'}>查询</button>
-        </div>
-        <div className={'listBox'}>
-          <button
-            className={'addBtn'}
-            onClick={() => {
+      <div className={'newList'}>
+        <div className={'newList_top'}>
+          <div className={'top_left'}>
+            <input type='text' placeholder='搜索科室名称/科室编号' />
+            <button>查询</button>
+          </div>
+          <div className={'top_right'}>
+            <button onClick={() => {
               this.setState({ alertType: 1 })
-            }}
-					>
-						新增科室
-					</button>
-          {this.renderTitle()}
-          {exercises.map((item, index) => {
-            return this.renderRow(item, index)
-          })}
+            }}>新增科室</button>
+          </div>
         </div>
+        <div className={'listContent'}>
+          <ul>
+            {exercises.map((depart, index) => {
+              return (
+                <li key={index}>
+                  <div className={'itemTop'}>
+                    <span>{depart.name}</span>
+                  </div>
+                  <div className={'itemCenter'}>
+                    <span>
+                      <a>科室编号：</a>
+                      <a>{depart.code}</a>
+                    </span>
+                    <span>
+                      <a>可否挂号：</a>
+                      <a>{depart.is_appointment === true ? '可以' : '不可以'}</a>
+                    </span>
+                    <span>
+                      <a>创建时间：</a>
+                      <a>{moment(depart.created_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
+                    <span>
+                      <a>更新时间：</a>
+                      <a>{moment(depart.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
+                  </div>
+                  <div className={'itemBottom'}>
+                    <span onClick={() => this.showCompleteHealthFile()}>查看</span>
+                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>编辑</span>
+                    <span onClick={() => this.showCompleteHealthFile()}>删除</span>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+          {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
+        </div>
+        <style jsx>{`
+          .contentMenu{
+            width: 100%;
+            // background: #909090;
+            float: left;
+          }
+          .contentMenu span:nth-child(1){
+            margin:24px 0 0 32px;
+          }
+          .contentMenu span{
+            width:88px;
+            height:32px; 
+            background:rgba(255,255,255,1);
+            border-radius: 4px ; 
+            float:left;
+            text-align:center;
+            line-height:32px;
+            color:#000000;
+            cursor:pointer;
+            margin-top:24px;
+            margin-left:10px;
+          }
+          .contentMenu span.sel{
+            width:100px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+            color:#FFFFFF;
+          }
+					.newList_top {
+						// background: #909090;
+						height: 34px;
+						max-width: 1146px;
+						width: 100%;
+						float: left;
+						margin: 30px 0 28px 40px;
+					}
+					.newList_top .top_left {
+						float: left;
+					}
+					.newList_top .top_left input {
+						width: 300px;
+						height: 32px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						padding: 0;
+						border: 1px solid #dcdcdc;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						text-indent: 10px;
+						float: left;
+					}
+					.newList_top .top_left button {
+            width:60px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+						border: none;
+						cursor: pointer;
+						margin-left: 10px;
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(255, 255, 255, 1);
+					}
+					.newList_top .top_right {
+						float: right;
+					}
+					.newList_top .top_right button {
+						float: left;
+						width: 110px;
+						height: 34px;
+						background: rgba(238, 201, 6, 1);
+						border: none;
+						border-radius: 17px;
+						cursor: pointer;
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(255, 255, 255, 1);
+						margin-right: 20px;
+					}
+					.listContent {
+						float: left;
+            width: 1146px;
+						// background: #909090;
+					}
+					.listContent ul {
+						float: left;
+            margin: 10px 0 0 36px;
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 270px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						margin: 10px 10px 0 0;
+						float: left;
+					}
+					.itemTop {
+						width: 332px;
+						border-bottom: 2px solid #f4f7f8;
+						// background: #e0e0e0;
+						margin: 20px auto 0 auto;
+						padding: 0 0 10px 0;
+						height: 20px;
+					}
+					.itemTop span {
+						float: left;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 3px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+						width: 332px;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+						height: 168px;
+					}
+					.itemCenter span {
+						float: left;
+						width: 100%;
+						height: 26px;
+						line-height: 26px;
+					}
+					.itemCenter span a:nth-child(1) {
+						float: left;
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						float: left;
+						margin-left: 20px;
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+						width: 100%;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+            border-top: 1px solid #42b7ba;
+            display: flex;
+					}
+					.itemBottom span {
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(49, 176, 179, 1);
+						width: 49.5%;
+						text-align: center;
+						line-height: 50px;
+            cursor: pointer;
+            flext:1;
+					}
+					.itemBottom span:nth-child(1) {
+						border-right: 1px solid #42b7ba;
+					}
+					.itemBottom span:nth-child(2) {
+            border-right: 1px solid #42b7ba;
+					}
+				`}</style>
       </div>
+      // <div>
+      //   <div className={'regisListTop'}>
+      //     <input type='text' placeholder='搜索科室名称/科室编号' />
+      //     <button className={'searchBtn'}>查询</button>
+      //   </div>
+      //   <div className={'listBox'}>
+      //     <button
+      //       className={'addBtn'}
+      //       onClick={() => {
+      //         this.setState({ alertType: 1 })
+      //       }}
+			// 		>
+			// 			新增科室
+			// 		</button>
+      //     {this.renderTitle()}
+      //     {exercises.map((item, index) => {
+      //       return this.renderRow(item, index)
+      //     })}
+      //   </div>
+      // </div>
     )
   }
 	// 保存添加
@@ -128,6 +364,8 @@ class DepartmentListScreen extends Component {
     if (error) {
       alert(error)
     } else {
+      const { departmentList, clinic_id } = this.props
+      departmentList({ clinic_id })
       this.setState({ alertType: 0 })
     }
   }
@@ -139,6 +377,7 @@ class DepartmentListScreen extends Component {
 	// 显示新增科室
   showAddDepart() {
     // let departInfo = this.state.departInfo
+    if (this.state.alertType !== 1) return null
     return (
       <div className={'mask'}>
         <div className={'doctorList'} style={{ width: '700px', height: '480px', left: '500px' }}>
@@ -271,20 +510,10 @@ class DepartmentListScreen extends Component {
     )
   }
   render() {
-		// const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
-        {/* <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-            医生
-          </span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-            职员
-          </span>
-        </div> */}
         {this.showDoctor()}
-        {this.state.alertType === 1 ? this.showAddDepart() : ''}
-        {/* {this.state.pageType==2?this.showEmployee():''} */}
+        {this.showAddDepart()}
       </div>
     )
   }
