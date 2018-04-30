@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import moment from 'moment'
+import { provinces } from '../../../config/provinces'
 import { PageCard } from '../../../components'
 
 class AddNewRegistrationScreen extends Component {
@@ -19,7 +20,16 @@ class AddNewRegistrationScreen extends Component {
         visit_type: 1,
         patient_channel_id: 1
       },
-      department_id: '0'
+      department_id: '0',
+      cities: [],
+      counties: [],
+      province: '请选择',
+      city: '请选择',
+      county: '请选择',
+      visit_date: moment()
+				.add(1, 'day')
+				.format('YYYYMMDD'),
+      searchView: 0
     }
   }
 
@@ -63,50 +73,27 @@ class AddNewRegistrationScreen extends Component {
 		// console.log('array', array)
     return array
   }
+  setPatientInfo(e, key) {
+    let newPatient = this.state.patientInfo
+    newPatient[key] = e.target.value
+    this.setState({ patientInfo: newPatient })
+  }
 	// 显示添加新增
   showAddNew() {
     let patient = this.state.patientInfo
 		// console.log('patient', patient)
+    const { cities, counties } = this.state
+		// const searchView = this.state.searchView
     let departments = this.queryDepartment()
     return (
       <div className={'formList'}>
-        <div className={'regisListTop'}>
-          <label style={{ float: 'left', marginLeft: '20px', height: '60px', lineHeight: '60px' }}>就诊人登记</label>
-          <input ref='patientKeywordInput' type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' defaultValue={this.state.patientKeyword} />
-          <button
-            className={'searchBtn'}
-            onClick={() => {
-              const patientKeyword = this.refs.patientKeywordInput.value
-              this.setState({ patientKeyword })
-              this.queryOne(patientKeyword)
-            }}
-					>
-						查询
-					</button>
-          <button className={'searchBtn'}>读卡</button>
-          {/* <button
-            onClick={() => {
-              this.changeContent({ type: 2 })
-            }}
-          >新增列表</button> */}
-          {/* <a>注：当日登记就诊人列表</a> */}
-        </div>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
           <ul>
             <li>
               <label htmlFor='patientName'>
 								就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input
-                type='text'
-                id='patientName'
-                value={patient.name}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.name = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
-							/>
+              <input type='text' id='patientName' value={patient.name} onChange={e => this.setPatientInfo(e, 'name')} />
             </li>
             <li>
               <label>身份证号码：</label>
@@ -115,14 +102,13 @@ class AddNewRegistrationScreen extends Component {
                 value={patient.cert_no}
                 onChange={e => {
                   let newPatient = patient
-                  newPatient.cert_no = e.target.value
                   newPatient.birthday = e.target.value.substring(6, 14)
-									// console.log(newPatient.birthday)
                   this.setState({ patientInfo: newPatient })
+                  this.setPatientInfo(e, 'cert_no')
                 }}
 							/>
             </li>
-            <li style={{ width: '20%' }}>
+            <li style={{ width: '24%' }}>
               <label>
 								生日：<b style={{ color: 'red' }}> *</b>
               </label>
@@ -137,36 +123,28 @@ class AddNewRegistrationScreen extends Component {
                 }}
 							/>
             </li>
-            <li style={{ width: '30%' }}>
+            <li style={{ width: '24%' }}>
               <label>
 								性别：<b style={{ color: 'red' }}> *</b>
               </label>
-              <div>
+              <div className='liDiv'>
                 <input
                   id='man'
                   type='radio'
                   name='sex'
                   value={'1'}
                   checked={patient.sex + '' === '1'}
-                  onChange={e => {
-                    let newPatient = patient
-                    newPatient.sex = e.target.value
-                    this.setState({ patientInfo: newPatient })
-                  }}
+                  onChange={e => this.setPatientInfo(e, 'sex')}
 								/>
                 <label htmlFor='man'>男</label>
                 <input
                   id='woman'
                   type='radio'
                   name='sex'
-                  value={'2'}
+                  value={'0'}
                   style={{ marginLeft: '15px' }}
-                  checked={patient.sex + '' === '2'}
-                  onChange={e => {
-                    let newPatient = patient
-                    newPatient.sex = e.target.value
-                    this.setState({ patientInfo: newPatient })
-                  }}
+                  checked={patient.sex + '' === '0'}
+                  onChange={e => this.setPatientInfo(e, 'sex')}
 								/>
                 <label htmlFor='woman'>女</label>
               </div>
@@ -178,38 +156,68 @@ class AddNewRegistrationScreen extends Component {
               <input
                 type='text'
                 value={patient.phone}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.phone = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
+                onChange={e => this.setPatientInfo(e, 'phone')}
 							/>
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
-              <input style={{ width: '142px' }} type='text' defaultValue={'省'} />
-              <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'市'} />
-              <input style={{ width: '142px', marginLeft: '20px' }} type='text' defaultValue={'区'} />
-              <input
-                style={{ marginLeft: '20px' }}
-                type='text'
-                value={patient.address}
-                onChange={e => {
+              <div className='liDiv'>
+                <select
+                  onChange={item => {
+                    let province = JSON.parse(item.target.value)
+                    this.setState({ province: province.name, cities: province.city })
+                  }}
+								>
+                  <option>省</option>
+                  {provinces.map((province, index) => {
+                    return (
+                    <option key={index} value={JSON.stringify(province)}>
+                    {province.name}
+                  </option>
+                  )
+                  })}
+                </select>
+                <select
+                  onChange={item => {
+                    let city = JSON.parse(item.target.value)
+                    this.setState({ city: city.name, counties: city.area })
+                  }}
+								>
+                  <option>市</option>
+                  {cities.map((city, index) => {
+                    return (
+                    <option key={index} value={JSON.stringify(city)}>
+                    {city.name}
+                  </option>
+                  )
+                  })}
+                </select>
+                <select
+                  onChange={item => {
+                    this.setState({ county: item.target.value })
+                  }}
+								>
+                  <option>区</option>
+                  {counties.map((name, index) => {
+                    return (
+                    <option key={index} value={name}>
+                    {name}
+                  </option>
+                  )
+                  })}
+                </select>
+                <input type='text' value={''} onChange={e => {
                   let newPatient = patient
                   newPatient.address = e.target.value
                   this.setState({ patientInfo: newPatient })
-                }}
-							/>
+                }} />
+              </div>
             </li>
             <li>
               <label>接诊科室：</label>
               <select
                 value={patient.department_id}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.department_id = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
+                onChange={e => this.setPatientInfo(e, 'department_id')}
 							>
                 <option value={'0'} key={'0'}>
 									请选择
@@ -217,8 +225,8 @@ class AddNewRegistrationScreen extends Component {
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
-                      {item.name}
-                    </option>
+                    {item.name}
+                  </option>
                   )
                 })}
               </select>
@@ -227,19 +235,14 @@ class AddNewRegistrationScreen extends Component {
               <label>
 								就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
-              <div>
+              <div className='liDiv'>
                 <input
                   id='first'
                   type='radio'
                   name='type'
                   value={1}
-									// checked={patient.visit_type === 1}
-                  onChange={e => {
-                    let newPatient = patient
-                    newPatient.visit_type = e.target.value
-                    // console.log(newPatient.visit_type)
-                    this.setState({ patientInfo: newPatient })
-                  }}
+                  // checked={patient.visit_type === 1}
+                  onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
                 <label htmlFor='first'>首诊</label>
                 <input
@@ -249,12 +252,7 @@ class AddNewRegistrationScreen extends Component {
                   value={2}
 									// checked={patient.visit_type === 2}
                   style={{ marginLeft: '15px' }}
-                  onChange={e => {
-                    let newPatient = patient
-                    newPatient.visit_type = e.target.value
-                    // console.log(newPatient.visit_type)
-                    this.setState({ patientInfo: newPatient })
-                  }}
+                  onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
                 <label htmlFor='referral'>复诊</label>
                 <input
@@ -264,12 +262,7 @@ class AddNewRegistrationScreen extends Component {
                   value={3}
 									// checked={patient.visit_type === 3}
                   style={{ marginLeft: '15px' }}
-                  onChange={e => {
-                    let newPatient = patient
-                    newPatient.visit_type = e.target.value
-                    // console.log(newPatient.visit_type)
-                    this.setState({ patientInfo: newPatient })
-                  }}
+                  onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
                 <label htmlFor='operate'>术后复诊</label>
               </div>
@@ -279,50 +272,37 @@ class AddNewRegistrationScreen extends Component {
               <label>会员卡号：</label>
               <input
                 type='text'
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.member_card_number = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
+                onChange={e => this.setPatientInfo(e, 'member_card_number')}
 							/>
             </li>
             <li>
               <label>就诊人来源：</label>
-              <select
-                value={patient.patient_channel_id}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.patient_channel_id = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
-							>
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-              </select>
+              <div className='liDiv' style={{ height: '44px' }}>
+                <select
+                  style={{ width: '100%' }}
+                  value={patient.patient_channel_id}
+                  onChange={e => this.setPatientInfo(e, 'patient_channel_id')}
+								>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                </select>
+              </div>
             </li>
             <li>
               <label>职业：</label>
               <input
                 type='text'
                 value={patient.profession}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.profession = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
+                onChange={e => this.setPatientInfo(e, 'profession')}
 							/>
             </li>
             <li>
               <label>备注：</label>
               <input
                 type='text'
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.remark = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
+                onChange={e => this.setPatientInfo(e, 'remark')}
 							/>
             </li>
           </ul>
@@ -332,6 +312,125 @@ class AddNewRegistrationScreen extends Component {
 						</button>
           </div>
         </div>
+        <style>
+          {`
+            .saveBtn{
+              width:100px;
+              height:28px; 
+              background:rgba(42,205,200,1);
+              border-radius: 4px ; 
+            }
+            .formList{
+              width: 1098px;
+              align-items: center;
+              margin: 31px 66px 33px 32px;
+              background: rgba(255,255,255,1);
+              box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+              border-radius: 4px;
+              display: block;
+              float: left;
+            }
+            .titleLabel{
+              height:19px; 
+              float: left;
+              font-size:16px;
+              font-family:MicrosoftYaHei;
+              color:rgba(102,102,102,1);
+              line-height:19px;
+            }
+            .line{
+              height:1px; 
+              width: 1000px;
+              background:rgba(238,238,238,1);
+              margin: 21px 0 0 0;
+            }
+            .formList ul {
+              width: 1000px;
+              height: auto;
+              margin: 0 auto;
+            }
+            .formList ul li {
+              float: left;
+              margin-top: 30px;
+              display:flex;
+              flex-direction: column;
+              position:relative;
+              width: 49%;
+              // background: #909090;
+              margin-left: 1%;
+            }
+            .formList ul li > label {
+              height:14px; 
+              font-size:14px;
+              font-family:MicrosoftYaHei;
+              color:rgba(102,102,102,1);
+              line-height:14px;
+            }
+            .formList ul li > input {
+              flex: 1;
+              height:40px; 
+              margin-top: 17px;
+              background:rgba(245,248,249,1);
+              border-radius: 4px ; 
+              border: 1px solid #d9d9d9;
+            }
+            .formList ul li > select {
+              margin-top: 17px;
+              line-height:40px;
+              height:40px;
+              background:rgba(255,255,255,1);
+              border-radius: 4px ; 
+              border: 1px solid #d9d9d9;
+              margin-right: 8px;
+            }
+            .liDiv {
+              display:flex;
+              flex-direction:row;
+              align-items:center;
+              height: 40px;
+              with: 100%;
+              margin-top: 17px;
+            }
+            .liDiv select {
+              line-height:40px;
+              width:100px;
+              height:40px; 
+              background:rgba(255,255,255,1);
+              border-radius: 4px ; 
+              border: 1px solid #d9d9d9;
+              margin-right: 8px;
+            }
+            .liDiv input[type='text'] {
+              flex: 1;
+              height:40px;
+              background:rgba(245,248,249,1);
+              border-radius: 4px ; 
+              border: 1px solid #d9d9d9;
+            }
+            .liDiv input[type='radio'] {
+              width:14px;
+              height:14px; 
+              background:rgba(255,255,255,1);
+              box-sizing: inherit;
+              border: 1px solid #108EE9;
+            }
+            .liDiv label {
+              height:18px; 
+              font-size:10px;
+              font-family:MicrosoftYaHei;
+              color:rgba(102,102,102,1);
+              line-height:18px;
+            }
+            .subButton {
+              width:100px;
+              height:28px; 
+              background:rgba(42,205,200,1);
+              border-radius: 4px ; 
+              color: #FFFFFF;
+              border: 0
+            }
+            `}
+        </style>
       </div>
     )
   }
@@ -377,21 +476,21 @@ class AddNewRegistrationScreen extends Component {
                       <a>{patient.cert_no}</a>
                     </span> */}
                     <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
+                    <a>接诊科室：</a>
+                    <a>{patient.department_name}</a>
+                  </span>
                     <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
+                    <a>接诊医生：</a>
+                    <a>{patient.doctor_name}</a>
+                  </span>
                     <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
+                    <a>登记人员：</a>
+                    <a>{patient.register_personnel_name}</a>
+                  </span>
                     <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a>登记时间：</a>
+                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span>更新时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</span>
@@ -404,34 +503,34 @@ class AddNewRegistrationScreen extends Component {
           {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
         <style jsx>{`
-          .contentMenu{
-            width: 100%;
-            // background: #909090;
-            float: left;
-          }
-          .contentMenu span:nth-child(1){
-            margin:24px 0 0 32px;
-          }
-          .contentMenu span{
-            width:88px;
-            height:32px; 
-            background:rgba(255,255,255,1);
-            border-radius: 4px ; 
-            float:left;
-            text-align:center;
-            line-height:32px;
-            color:#000000;
-            cursor:pointer;
-            margin-top:24px;
-            margin-left:10px;
-          }
-          .contentMenu span.sel{
-            width:100px;
-            height:32px; 
-            background:rgba(42,205,200,1);
-            border-radius: 4px ; 
-            color:#FFFFFF;
-          }
+					.contentMenu {
+						width: 100%;
+						// background: #909090;
+						float: left;
+					}
+					.contentMenu span:nth-child(1) {
+						margin: 24px 0 0 32px;
+					}
+					.contentMenu span {
+						width: 88px;
+						height: 32px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						float: left;
+						text-align: center;
+						line-height: 32px;
+						color: #000000;
+						cursor: pointer;
+						margin-top: 24px;
+						margin-left: 10px;
+					}
+					.contentMenu span.sel {
+						width: 100px;
+						height: 32px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						color: #ffffff;
+					}
 					.newList_top {
 						// background: #909090;
 						height: 34px;
@@ -456,10 +555,10 @@ class AddNewRegistrationScreen extends Component {
 						float: left;
 					}
 					.newList_top .top_left button {
-            width:60px;
-            height:32px; 
-            background:rgba(42,205,200,1);
-            border-radius: 4px ; 
+						width: 60px;
+						height: 32px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
 						border: none;
 						cursor: pointer;
 						margin-left: 10px;
@@ -593,47 +692,55 @@ class AddNewRegistrationScreen extends Component {
     return (
       <div>
         <div className={'contentMenu'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''}
+          <span
+            className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
               this.queryPatients()
               this.changeContent({ type: 1 })
-            }}>+ 新增登记</span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''}
+            }}
+					>
+						+ 新增登记
+					</span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
               this.changeContent({ type: 2 })
-            }}>登记列表</span>
+            }}
+					>
+						登记列表
+					</span>
         </div>
         {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
         <style jsx>{`
-          .contentMenu{
-            width: 100%;
-            // background: #909090;
-            float: left;
-          }
-          .contentMenu span:nth-child(1){
-            margin:24px 0 0 32px;
-          }
-          .contentMenu span{
-            width:88px;
-            height:32px; 
-            background:rgba(255,255,255,1);
-            border-radius: 4px ; 
-            float:left;
-            text-align:center;
-            line-height:32px;
-            color:#000000;
-            cursor:pointer;
-            margin-top:24px;
-            margin-left:10px;
-          }
-          .contentMenu span.sel{
-            width:100px;
-            height:32px; 
-            background:rgba(42,205,200,1);
-            border-radius: 4px ; 
-            color:#FFFFFF;
-          }
-        `}</style>
+					.contentMenu {
+						width: 100%;
+						// background: #909090;
+						float: left;
+					}
+					.contentMenu span:nth-child(1) {
+						margin: 24px 0 0 32px;
+					}
+					.contentMenu span {
+						width: 88px;
+						height: 32px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						float: left;
+						text-align: center;
+						line-height: 32px;
+						color: #000000;
+						cursor: pointer;
+						margin-top: 24px;
+						margin-left: 10px;
+					}
+					.contentMenu span.sel {
+						width: 100px;
+						height: 32px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						color: #ffffff;
+					}
+				`}</style>
       </div>
     )
   }

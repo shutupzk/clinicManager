@@ -27,15 +27,15 @@ class TriageScreen extends Component {
     triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
   }
 
-  // 改变显示内容
+	// 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
-  // 完善健康档案
+	// 完善健康档案
   showCompleteHealthFile() {
     this.setState({ alertType: 1 })
   }
-  // 显示体征表单
+	// 显示体征表单
   showBodySigns() {
     return (
       <div>
@@ -147,16 +147,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-            保存
-          </button>
+						保存
+					</button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-            取消
-          </button>
+						取消
+					</button>
         </div>
       </div>
     )
   }
-  // 显示诊前病历
+	// 显示诊前病历
   showPreMedicalRecords() {
     return (
       <div>
@@ -169,10 +169,10 @@ class TriageScreen extends Component {
               <label>过敏史</label>
               <label style={{ width: '150px', lineHeight: '30px' }}>
                 <input type='radio' name='allergy' style={{ width: 'auto', height: 'auto' }} />是
-              </label>
+							</label>
               <label style={{ width: '150px', lineHeight: '30px' }}>
                 <input type='radio' name='allergy' style={{ width: 'auto', height: 'auto' }} />否
-              </label>
+							</label>
               <input type='text' placeholder={'对什么过敏'} />
             </li>
             <li>
@@ -203,16 +203,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-            保存
-          </button>
+						保存
+					</button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-            取消
-          </button>
+						取消
+					</button>
         </div>
       </div>
     )
   }
-  // 诊前预诊
+	// 诊前预诊
   showPreDiagnosisRecords() {
     return (
       <div>
@@ -223,7 +223,7 @@ class TriageScreen extends Component {
           <ul>
             <li>
               <label>
-                主诉<b style={{ color: 'red' }}>*</b>
+								主诉<b style={{ color: 'red' }}>*</b>
               </label>
               <textarea style={{ height: '70px' }}>asda</textarea>
             </li>
@@ -247,11 +247,11 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-            保存
-          </button>
+						保存
+					</button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-            取消
-          </button>
+						取消
+					</button>
         </div>
       </div>
     )
@@ -265,14 +265,14 @@ class TriageScreen extends Component {
         </div>
         <div className={'healthFile_menu'}>
           <span className={this.state.alertPageType === 1 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 1 })}>
-            体征
-          </span>
+						体征
+					</span>
           <span className={this.state.alertPageType === 2 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 2 })}>
-            诊前病历
-          </span>
+						诊前病历
+					</span>
           <span className={this.state.alertPageType === 3 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 3 })}>
-            诊前预诊
-          </span>
+						诊前预诊
+					</span>
         </div>
         {this.state.alertPageType === 1 ? this.showBodySigns() : ''}
         {this.state.alertPageType === 2 ? this.showPreMedicalRecords() : ''}
@@ -280,7 +280,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-  // 选择医生
+	// 选择医生
   showChooseDoctor(clinic_triage_patient_id) {
     const { triageDoctorsList, clinic_id } = this.props
     triageDoctorsList({ clinic_id })
@@ -324,25 +324,25 @@ class TriageScreen extends Component {
                   <li
                     key={index}
                     onClick={async () => {
-                      let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
-                      let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
-                      if (error) {
-                        return alert('分诊失败', error)
-                      } else {
-                        return alert('分诊成功')
-                      }
-                    }}
-                  >
+                    let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
+                    let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
+                    if (error) {
+                    return alert('分诊失败', error)
+                  } else {
+                    return alert('分诊成功')
+                  }
+                  }}
+									>
                     <div>
-                      <img src={'/static/login/u49.png'} />
-                      <span>医生</span>
-                      <span>{doctor.doctor_name}</span>
-                    </div>
+                    <img src={'/static/login/u49.png'} />
+                    <span>医生</span>
+                    <span>{doctor.doctor_name}</span>
+                  </div>
                     <div>
-                      <span>科室名称：{doctor.department_name}</span>
-                      <span>今日待接诊：{doctor.wait_total}人</span>
-                      <span>今日已接诊：{doctor.triaged_total}人</span>
-                    </div>
+                    <span>科室名称：{doctor.department_name}</span>
+                    <span>今日待接诊：{doctor.wait_total}人</span>
+                    <span>今日已接诊：{doctor.triaged_total}人</span>
+                  </div>
                   </li>
                 )
               })}
@@ -420,8 +420,8 @@ class TriageScreen extends Component {
 								box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
 								float: left;
 								margin-left: 40px;
-                margin-top: 26px;
-                display: flex;
+								margin-top: 26px;
+								display: flex;
 							}
 							.doctorList_content ul li img {
 								width: 40px;
@@ -432,8 +432,8 @@ class TriageScreen extends Component {
 							.doctorList_content ul li > div:nth-child(1) {
 								float: left;
 								width: 100px;
-                margin: 25px 0;
-                flex:2;
+								margin: 25px 0;
+								flex: 2;
 							}
 							.doctorList_content ul li > div:nth-child(1) > span {
 								width: 100%;
@@ -445,8 +445,8 @@ class TriageScreen extends Component {
 							.doctorList_content ul li > div:nth-child(2) {
 								float: left;
 								width: 100px;
-                margin: 25px 0;
-                flex:3;
+								margin: 25px 0;
+								flex: 3;
 							}
 							.doctorList_content ul li > div:nth-child(2) > span {
 								float: left;
@@ -461,7 +461,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-  // 换诊
+	// 换诊
   changeDoctor() {}
 
   getUnTriagePatientListData() {
@@ -480,16 +480,20 @@ class TriageScreen extends Component {
     })
   }
 
-  // 显示分诊列表
+	// 显示分诊列表
   showTriageList() {
     const array = this.getUnTriagePatientListData(false)
     return (
       <div>
-        {/* <div className={'mask'}></div> */}
-        {/* <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-          <button className={'searchBtn'}>查询</button>
-        </div> */}
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
+            <input type='text' placeholder='搜索科室' />
+            <button>查询</button>
+          </div>
+          <div className={'boxRight'}>
+            <button>新增预约</button>
+          </div>
+        </div>
         <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
@@ -505,29 +509,29 @@ class TriageScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>门诊ID：</a>
-                      <a>{patient.cert_no}</a>
-                    </span>
+                    <a>门诊ID：</a>
+                    <a>{patient.cert_no}</a>
+                  </span>
                     <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
+                    <a>接诊科室：</a>
+                    <a>{patient.department_name}</a>
+                  </span>
                     <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
+                    <a>接诊医生：</a>
+                    <a>{patient.doctor_name}</a>
+                  </span>
                     <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
+                    <a>登记人员：</a>
+                    <a>{patient.register_personnel_name}</a>
+                  </span>
                     <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a>登记时间：</a>
+                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
@@ -540,107 +544,157 @@ class TriageScreen extends Component {
         </div>
         <div className={'pagination'} />
         <style jsx>{`
-          .listContent {
-            float: left;
-            width: 100%;
-            // background: #909090;
-          }
-          .listContent ul {
-            float: left;
-            margin: 10px 66px;
-          }
-          .listContent ul li {
-            width: 360px;
-            height: 270px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 7px;
-            margin: 10px 10px 0 0;
-            float: left;
-          }
-          .itemTop {
-            width: 332px;
-            border-bottom: 2px solid #f4f7f8;
-            // background: #e0e0e0;
-            margin: 20px auto 0 auto;
-            padding: 0 0 10px 0;
-            height: 20px;
-          }
-          .itemTop span {
-            float: left;
-          }
-          .itemTop span:nth-child(1) {
-            width: auto;
-            height: 19px;
-            font-size: 16px;
-            font-family: MicrosoftYaHei;
-            color: rgba(51, 51, 51, 1);
-            margin-left: 3px;
-          }
-          .itemTop span:nth-child(2) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(3) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(4) {
-            width: 60px;
-            height: 20px;
-            border-radius: 10px;
-            float: right;
-            text-align: center;
-          }
-          .itemCenter {
-            width: 332px;
-            // background: #e0e0e0;
-            margin: 0 auto 0 auto;
-            height: 168px;
-          }
-          .itemCenter span {
-            float: left;
-            width: 100%;
-            height: 26px;
-            line-height: 26px;
-          }
-          .itemCenter span a:nth-child(1) {
-            float: left;
-            width: 75px;
-            color: #666666;
-            font-size: 14px;
-          }
-          .itemCenter span a:nth-child(2) {
-            float: left;
-            margin-left: 20px;
-            color: #333333;
-            font-size: 14px;
-          }
-          .itemBottom {
-            width: 100%;
-            // background: #e0e0e0;
-            margin: 0 auto 0 auto;
-            border-top: 1px solid #42b7ba;
-          }
-          .itemBottom span {
-            float: left;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            width: 49.5%;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-          }
-          .itemBottom span:nth-child(1) {
-            border-right: 1px solid #42b7ba;
-          }
-          .itemBottom span:nth-child(2) {
-          }
-        `}</style>
+					.filterBox {
+						float: left;
+						width: 1098px;
+						height: 60px;
+						background: rgba(255, 255, 255, 1);
+						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+						border-radius: 4px;
+						margin-left: 66px;
+					}
+					.filterBox .boxLeft {
+						float: left;
+					}
+					.filterBox .boxLeft input {
+						float: left;
+						width: 328px;
+						height: 28px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						border: 1px solid #d9d9d9;
+						margin: 16px 30px;
+						text-indent: 10px;
+						padding: 0;
+					}
+					.filterBox .boxLeft button {
+						float: left;
+						width: 60px;
+						height: 28px;
+						border-radius: 4px;
+						border: 1px solid #2acdc8;
+						color: rgba(42, 205, 200, 1);
+						font-size: 12px;
+						margin: 16px 0;
+						background: none;
+						cursor: pointer;
+					}
+					.filterBox .boxRight {
+						float: right;
+					}
+					.filterBox .boxRight button {
+						float: left;
+						width: 100px;
+						height: 28px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						border: none;
+						color: rgba(255, 255, 255, 1);
+						font-size: 12px;
+						cursor: pointer;
+						margin: 16px 35px;
+					}
+					.listContent {
+						float: left;
+						width: 100%;
+						// background: #909090;
+					}
+					.listContent ul {
+						float: left;
+						margin: 10px 66px;
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 270px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						margin: 10px 10px 0 0;
+						float: left;
+					}
+					.itemTop {
+						width: 332px;
+						border-bottom: 2px solid #f4f7f8;
+						// background: #e0e0e0;
+						margin: 20px auto 0 auto;
+						padding: 0 0 10px 0;
+						height: 20px;
+					}
+					.itemTop span {
+						float: left;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 3px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+						width: 332px;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+						height: 168px;
+					}
+					.itemCenter span {
+						float: left;
+						width: 100%;
+						height: 26px;
+						line-height: 26px;
+					}
+					.itemCenter span a:nth-child(1) {
+						float: left;
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						float: left;
+						margin-left: 20px;
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+						width: 100%;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+						border-top: 1px solid #42b7ba;
+					}
+					.itemBottom span {
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(49, 176, 179, 1);
+						width: 49.5%;
+						text-align: center;
+						line-height: 50px;
+						cursor: pointer;
+					}
+					.itemBottom span:nth-child(1) {
+						border-right: 1px solid #42b7ba;
+					}
+					.itemBottom span:nth-child(2) {
+					}
+				`}</style>
       </div>
     )
   }
@@ -659,11 +713,20 @@ class TriageScreen extends Component {
       return 1
     })
   }
-  // 显示分诊记录
+	// 显示分诊记录
   showTriageRecord() {
     const array = this.getTriagedPatientListData()
     return (
       <div>
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
+            <input type='text' placeholder='搜索科室' />
+            <button>查询</button>
+          </div>
+          <div className={'boxRight'}>
+            <button>新增预约</button>
+          </div>
+        </div>
         <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
@@ -676,34 +739,34 @@ class TriageScreen extends Component {
                     <span>{patient.sex === 0 ? '女' : '男 '}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>
-                      {!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
-                    </span>
+                    {!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
+                  </span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>门诊ID：</a>
-                      <a>{patient.cert_no}</a>
-                    </span>
+                    <a>门诊ID：</a>
+                    <a>{patient.cert_no}</a>
+                  </span>
                     <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
+                    <a>接诊科室：</a>
+                    <a>{patient.department_name}</a>
+                  </span>
                     <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
+                    <a>接诊医生：</a>
+                    <a>{patient.doctor_name}</a>
+                  </span>
                     <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
+                    <a>登记人员：</a>
+                    <a>{patient.register_personnel_name}</a>
+                  </span>
                     <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a>登记时间：</a>
+                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
@@ -716,140 +779,190 @@ class TriageScreen extends Component {
         </div>
         <div className={'pagination'} />
         <style jsx>{`
-          .listContent {
-            float: left;
-            width: 100%;
-            // background: #909090;
-          }
-          .listContent ul {
-            float: left;
-            margin: 10px 66px;
-          }
-          .listContent ul li {
-            width: 360px;
-            height: 270px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 7px;
-            margin: 10px 10px 0 0;
-            float: left;
-          }
-          .itemTop {
-            width: 332px;
-            border-bottom: 2px solid #f4f7f8;
-            // background: #e0e0e0;
-            margin: 20px auto 0 auto;
-            padding: 0 0 10px 0;
-            height: 20px;
-          }
-          .itemTop span {
-            float: left;
-          }
-          .itemTop span:nth-child(1) {
-            width: auto;
-            height: 19px;
-            font-size: 16px;
-            font-family: MicrosoftYaHei;
-            color: rgba(51, 51, 51, 1);
-            margin-left: 3px;
-          }
-          .itemTop span:nth-child(2) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(3) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(4) {
-            width: 60px;
-            height: 20px;
-            border-radius: 10px;
-            float: right;
-            text-align: center;
-          }
-          .itemCenter {
-            width: 332px;
-            // background: #e0e0e0;
-            margin: 0 auto 0 auto;
-            height: 168px;
-          }
-          .itemCenter span {
-            float: left;
-            width: 100%;
-            height: 26px;
-            line-height: 26px;
-          }
-          .itemCenter span a:nth-child(1) {
-            float: left;
-            width: 75px;
-            color: #666666;
-            font-size: 14px;
-          }
-          .itemCenter span a:nth-child(2) {
-            float: left;
-            margin-left: 20px;
-            color: #333333;
-            font-size: 14px;
-          }
-          .itemBottom {
-            width: 100%;
-            // background: #e0e0e0;
-            margin: 0 auto 0 auto;
-            border-top: 1px solid #42b7ba;
-          }
-          .itemBottom span {
-            float: left;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            width: 49.5%;
-            text-align: center;
-            line-height: 50px;
-            cursor: pointer;
-          }
-          .itemBottom span:nth-child(1) {
-            border-right: 1px solid #42b7ba;
-          }
-          .itemBottom span:nth-child(2) {
-          }
-        `}</style>
+					.filterBox {
+						float: left;
+						width: 1098px;
+						height: 60px;
+						background: rgba(255, 255, 255, 1);
+						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+						border-radius: 4px;
+						margin-left: 66px;
+					}
+					.filterBox .boxLeft {
+						float: left;
+					}
+					.filterBox .boxLeft input {
+						float: left;
+						width: 328px;
+						height: 28px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						border: 1px solid #d9d9d9;
+						margin: 16px 30px;
+						text-indent: 10px;
+						padding: 0;
+					}
+					.filterBox .boxLeft button {
+						float: left;
+						width: 60px;
+						height: 28px;
+						border-radius: 4px;
+						border: 1px solid #2acdc8;
+						color: rgba(42, 205, 200, 1);
+						font-size: 12px;
+						margin: 16px 0;
+						background: none;
+						cursor: pointer;
+					}
+					.filterBox .boxRight {
+						float: right;
+					}
+					.filterBox .boxRight button {
+						float: left;
+						width: 100px;
+						height: 28px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						border: none;
+						color: rgba(255, 255, 255, 1);
+						font-size: 12px;
+						cursor: pointer;
+						margin: 16px 35px;
+					}
+					.listContent {
+						float: left;
+						width: 100%;
+						// background: #909090;
+					}
+					.listContent ul {
+						float: left;
+						margin: 10px 66px;
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 270px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						margin: 10px 10px 0 0;
+						float: left;
+					}
+					.itemTop {
+						width: 332px;
+						border-bottom: 2px solid #f4f7f8;
+						// background: #e0e0e0;
+						margin: 20px auto 0 auto;
+						padding: 0 0 10px 0;
+						height: 20px;
+					}
+					.itemTop span {
+						float: left;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 3px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+						width: 332px;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+						height: 168px;
+					}
+					.itemCenter span {
+						float: left;
+						width: 100%;
+						height: 26px;
+						line-height: 26px;
+					}
+					.itemCenter span a:nth-child(1) {
+						float: left;
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						float: left;
+						margin-left: 20px;
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+						width: 100%;
+						// background: #e0e0e0;
+						margin: 0 auto 0 auto;
+						border-top: 1px solid #42b7ba;
+					}
+					.itemBottom span {
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(49, 176, 179, 1);
+						width: 49.5%;
+						text-align: center;
+						line-height: 50px;
+						cursor: pointer;
+					}
+					.itemBottom span:nth-child(1) {
+						border-right: 1px solid #42b7ba;
+					}
+					.itemBottom span:nth-child(2) {
+					}
+				`}</style>
       </div>
     )
   }
 
-  // 切换显示列表
+	// 切换显示列表
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
-  // 显示日历列表
+	// 显示日历列表
   showCalendarList() {
-    // const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+		// const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     let nowWeekNum = this.state.nowWeekNum
 
     return (
       <div className={'regisList'}>
         <div className={'calenderFilter'}>
           <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>
-            上周
-          </button>
+						上周
+					</button>
           <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
-            下周
-          </button>
+						下周
+					</button>
           <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: 1 })}>
-            本周
-          </button>
+						本周
+					</button>
         </div>
         <div className={'calenderBox'}>
           <h4>
             {moment()
-              .day(nowWeekNum)
-              .format('YYYY年MM月DD日')}至{moment()
-              .day(nowWeekNum + 6)
-              .format('MM月DD日')}
+							.day(nowWeekNum)
+							.format('YYYY年MM月DD日')}至{moment()
+							.day(nowWeekNum + 6)
+							.format('MM月DD日')}
           </h4>
           <div className={'calendarContent'}>
             <table>
@@ -857,66 +970,66 @@ class TriageScreen extends Component {
                 <tr>
                   <td />
                   <td>
-                    周一（{moment()
-                      .day(nowWeekNum)
-                      .format('MM-DD')}）
-                  </td>
+										周一（{moment()
+											.day(nowWeekNum)
+											.format('MM-DD')}）
+									</td>
                   <td>
-                    周二（{moment()
-                      .day(nowWeekNum + 1)
-                      .format('MM-DD')}）
-                  </td>
+										周二（{moment()
+											.day(nowWeekNum + 1)
+											.format('MM-DD')}）
+									</td>
                   <td>
-                    周三（{moment()
-                      .day(nowWeekNum + 2)
-                      .format('MM-DD')}）
-                  </td>
+										周三（{moment()
+											.day(nowWeekNum + 2)
+											.format('MM-DD')}）
+									</td>
                   <td>
-                    周四（{moment()
-                      .day(nowWeekNum + 3)
-                      .format('MM-DD')}）
-                  </td>
+										周四（{moment()
+											.day(nowWeekNum + 3)
+											.format('MM-DD')}）
+									</td>
                   <td>
-                    周五（{moment()
-                      .day(nowWeekNum + 4)
-                      .format('MM-DD')}）
-                  </td>
+										周五（{moment()
+											.day(nowWeekNum + 4)
+											.format('MM-DD')}）
+									</td>
                   <td>
-                    周六（{moment()
-                      .day(nowWeekNum + 5)
-                      .format('MM-DD')}）
-                  </td>
+										周六（{moment()
+											.day(nowWeekNum + 5)
+											.format('MM-DD')}）
+									</td>
                   <td>
-                    周日（{moment()
-                      .day(nowWeekNum + 6)
-                      .format('MM-DD')}）
-                  </td>
+										周日（{moment()
+											.day(nowWeekNum + 6)
+											.format('MM-DD')}）
+									</td>
                 </tr>
               </thead>
               <tbody>
                 <tr style={{ height: '58px' }}>
                   <td>预约</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                   <td>
-                    上午5人<br />下午5人
-                  </td>
+										上午5人<br />下午5人
+									</td>
                 </tr>
                 <tr>
                   <td>07:00-08:00</td>
@@ -1025,7 +1138,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-  // 显示就诊人列表
+	// 显示就诊人列表
   showPatientList() {
     return (
       <div className={'regisList'}>
@@ -1083,15 +1196,24 @@ class TriageScreen extends Component {
     )
   }
 
-  // 新增预约
+	// 新增预约
   addNewReservation() {
     Router.push('/treatment/reservation_add')
   }
-  // 预约管理
+	// 预约管理
   showReservation() {
     return (
       <div className={'formList'}>
-        <div className={'regisListTop'}>
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
+            <input type='text' placeholder='搜索科室' />
+            <button>查询</button>
+          </div>
+          <div className={'boxRight'}>
+            <button>新增预约</button>
+          </div>
+        </div>
+        {/* <div className={'regisListTop'}>
           <button className={'bigBtn'} onClick={() => this.addNewReservation()}>
             新增预约
           </button>
@@ -1111,11 +1233,166 @@ class TriageScreen extends Component {
           <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
           <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
           <button className={'searchBtn'}>查询</button>
-          {/* <a>注：当日登记就诊人列表</a> */}
-        </div>
+        </div> */}
+
         {this.state.showType === 1 ? this.showCalendarList() : ''}
         {this.state.showType === 2 ? this.showPatientList() : ''}
         <div className={'pagination'} />
+        <style jsx>{`
+        .filterBox {
+          float: left;
+          width: 1098px;
+          height: 60px;
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+          margin-left: 66px;
+        }
+        .filterBox .boxLeft {
+          float: left;
+        }
+        .filterBox .boxLeft input {
+          float: left;
+          width: 328px;
+          height: 28px;
+          background: rgba(255, 255, 255, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          margin: 16px 30px;
+          text-indent: 10px;
+          padding: 0;
+        }
+        .filterBox .boxLeft button {
+          float: left;
+          width: 60px;
+          height: 28px;
+          border-radius: 4px;
+          border: 1px solid #2acdc8;
+          color: rgba(42, 205, 200, 1);
+          font-size: 12px;
+          margin: 16px 0;
+          background: none;
+          cursor: pointer;
+        }
+        .filterBox .boxRight {
+          float: right;
+        }
+        .filterBox .boxRight button {
+          float: left;
+          width: 100px;
+          height: 28px;
+          background: rgba(42, 205, 200, 1);
+          border-radius: 4px;
+          border: none;
+          color: rgba(255, 255, 255, 1);
+          font-size: 12px;
+          cursor: pointer;
+          margin: 16px 35px;
+        }
+					.listContent {
+						float: left;
+						width: 1120px;
+						margin-left: 66px;
+						// background: #909090;
+					}
+					.listContent ul {
+						float: left;
+						margin: 10px 0 0 0;
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 270px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						margin: 10px 10px 0 0;
+						float: left;
+						display: flex;
+						flex-direction: column;
+					}
+					.itemTop {
+						border-bottom: 2px solid #f4f7f8;
+						margin: 10px 14px 0 14px;
+						height: 37px;
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 12px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						width: 332px;
+						margin: 10px auto 0 auto;
+						justify-content: center;
+					}
+					.itemCenter span {
+						display: flex;
+						flex-direction: row;
+						height: 35px;
+						line-height: 26px;
+						margin: 0px 0px 0 12px;
+					}
+					.itemCenter span a:nth-child(1) {
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+						width: 100%;
+						height: 39px;
+						border-top: 2px solid #42b7ba;
+						display: flex;
+						flex-direction: row;
+						justify-content: center;
+						align-items: center;
+					}
+					.itemBottom span {
+						flex: 1;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(49, 176, 179, 1);
+						height: 39px;
+						line-height: 39px;
+						text-align: center;
+					}
+					.itemBottom span:nth-child(1) {
+						border-right: 2px solid #31b0b3;
+					}
+					.itemBottom span:nth-child(2) {
+						border-right: 2px solid #31b0b3;
+					}
+				`}</style>
       </div>
     )
   }
@@ -1124,23 +1401,14 @@ class TriageScreen extends Component {
       <div>
         <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-            分诊
-          </span>
+						分诊
+					</span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-            分诊记录
-          </span>
+						分诊记录
+					</span>
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
-            预约管理
-          </span>
-        </div>
-        <div className={'filterBox'}>
-          <div className={'boxLeft'}>
-            <input type='text' placeholder='搜索科室' />
-            <button>查询</button>
-          </div>
-          <div className={'boxRight'}>
-            <button>新增预约</button>
-          </div>
+						预约管理
+					</span>
         </div>
         {this.state.pageType === 1 ? this.showTriageList() : ''}
         {this.state.pageType === 2 ? this.showTriageRecord() : ''}
@@ -1148,92 +1416,92 @@ class TriageScreen extends Component {
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
         <style jsx>{`
-          .childTopBar {
-            float: left;
-            width: 100%;
-            // background:#909090;
-          }
-          .childTopBar span {
-            margin-top: 31px;
-            width: 126px;
-            height: 37px;
-            background: rgba(255, 255, 255, 1);
-            float: left;
-            text-align: center;
-            line-height: 37px;
-            cursor: pointer;
-            margin-bottom: 10px;
-          }
-          .childTopBar span:nth-child(1) {
-            margin-left: 66px;
-          }
-          .childTopBar span:hover,
-          .childTopBar span.sel {
-            background: rgba(42, 205, 200, 1);
-            border-radius: 4px 0px 0px 4px;
-            font-size: 14px;
-            font-family: MicrosoftYaHei-Bold;
-            color: rgba(255, 255, 255, 1);
-          }
-          .childTopBar span:nth-child(2):hover,
-          .childTopBar span.sel {
-            border-radius: 0;
-          }
-          .childTopBar span:nth-child(3):hover,
-          .childTopBar span.sel {
-            border-radius: 4px 4px 0px 0px;
-          }
-          .filterBox {
-            float: left;
-            width: 1098px;
-            height: 60px;
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            margin-left: 66px;
-          }
-          .filterBox .boxLeft {
-            float: left;
-          }
-          .filterBox .boxLeft input {
-            float: left;
-            width: 328px;
-            height: 28px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 4px;
-            border: 1px solid #d9d9d9;
-            margin: 16px 30px;
-            text-indent: 10px;
-            padding: 0;
-          }
-          .filterBox .boxLeft button {
-            float: left;
-            width: 60px;
-            height: 28px;
-            border-radius: 4px;
-            border: 1px solid #2acdc8;
-            color: rgba(42, 205, 200, 1);
-            font-size: 12px;
-            margin: 16px 0;
-            background: none;
-            cursor: pointer;
-          }
-          .filterBox .boxRight {
-            float: right;
-          }
-          .filterBox .boxRight button {
-            float: left;
-            width: 100px;
-            height: 28px;
-            background: rgba(42, 205, 200, 1);
-            border-radius: 4px;
-            border: none;
-            color: rgba(255, 255, 255, 1);
-            font-size: 12px;
-            cursor: pointer;
-            margin: 16px 35px;
-          }
-        `}</style>
+					.childTopBar {
+						float: left;
+						width: 100%;
+						// background:#909090;
+					}
+					.childTopBar span {
+						margin-top: 31px;
+						width: 126px;
+						height: 37px;
+						background: rgba(255, 255, 255, 1);
+						float: left;
+						text-align: center;
+						line-height: 37px;
+						cursor: pointer;
+						margin-bottom: 10px;
+					}
+					.childTopBar span:nth-child(1) {
+						margin-left: 66px;
+					}
+					.childTopBar span:hover,
+					.childTopBar span.sel {
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px 0px 0px 4px;
+						font-size: 14px;
+						font-family: MicrosoftYaHei-Bold;
+						color: rgba(255, 255, 255, 1);
+					}
+					.childTopBar span:nth-child(2):hover,
+					.childTopBar span.sel {
+						border-radius: 0;
+					}
+					.childTopBar span:nth-child(3):hover,
+					.childTopBar span.sel {
+						border-radius: 4px 4px 0px 0px;
+					}
+					.filterBox {
+						float: left;
+						width: 1098px;
+						height: 60px;
+						background: rgba(255, 255, 255, 1);
+						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+						border-radius: 4px;
+						margin-left: 66px;
+					}
+					.filterBox .boxLeft {
+						float: left;
+					}
+					.filterBox .boxLeft input {
+						float: left;
+						width: 328px;
+						height: 28px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						border: 1px solid #d9d9d9;
+						margin: 16px 30px;
+						text-indent: 10px;
+						padding: 0;
+					}
+					.filterBox .boxLeft button {
+						float: left;
+						width: 60px;
+						height: 28px;
+						border-radius: 4px;
+						border: 1px solid #2acdc8;
+						color: rgba(42, 205, 200, 1);
+						font-size: 12px;
+						margin: 16px 0;
+						background: none;
+						cursor: pointer;
+					}
+					.filterBox .boxRight {
+						float: right;
+					}
+					.filterBox .boxRight button {
+						float: left;
+						width: 100px;
+						height: 28px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						border: none;
+						color: rgba(255, 255, 255, 1);
+						font-size: 12px;
+						cursor: pointer;
+						margin: 16px 35px;
+					}
+				`}</style>
         {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
     )
