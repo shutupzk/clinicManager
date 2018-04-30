@@ -1413,6 +1413,123 @@ export function styles() {
 				.calenderBox table thead tr td{
 					background:rgba(240,240,240,1);
 				}
+
+				//新增登记
+				.saveBtn {
+					width: 100px;
+					height: 28px;
+					background: rgba(42, 205, 200, 1);
+					border-radius: 4px;
+				}
+				.formList {
+					width: 1098px;
+					align-items: center;
+					margin: 31px 66px 33px 32px;
+					background: rgba(255, 255, 255, 1);
+					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+					border-radius: 4px;
+					display: block;
+					float: left;
+				}
+				.titleLabel {
+					height: 19px;
+					float: left;
+					font-size: 16px;
+					font-family: MicrosoftYaHei;
+					color: rgba(102, 102, 102, 1);
+					line-height: 19px;
+				}
+				.line {
+					height: 1px;
+					width: 1000px;
+					background: rgba(238, 238, 238, 1);
+					margin: 21px 0 0 0;
+				}
+				.formList ul {
+					width: 1000px;
+					height: auto;
+					margin: 0 auto;
+				}
+				.formList ul li {
+					float: left;
+					margin-top: 30px;
+					display: flex;
+					flex-direction: column;
+					position: relative;
+					width: 49%;
+					// background: #909090;
+					margin-left: 1%;
+				}
+				.formList ul li > label {
+					height: 14px;
+					font-size: 14px;
+					font-family: MicrosoftYaHei;
+					color: rgba(102, 102, 102, 1);
+					line-height: 14px;
+				}
+				.formList ul li > input {
+					flex: 1;
+					height: 40px;
+					margin-top: 17px;
+					background: rgba(245, 248, 249, 1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+				}
+				.formList ul li > select {
+					margin-top: 17px;
+					line-height: 40px;
+					height: 40px;
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					margin-right: 8px;
+				}
+				.liDiv {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					height: 40px;
+					with: 100%;
+					margin-top: 17px;
+				}
+				.liDiv select {
+					line-height: 40px;
+					width: 100px;
+					height: 40px;
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					margin-right: 8px;
+				}
+				.liDiv input[type='text'] {
+					flex: 1;
+					height: 40px;
+					background: rgba(245, 248, 249, 1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+				}
+				.liDiv input[type='radio'] {
+					width: 14px;
+					height: 14px;
+					background: rgba(255, 255, 255, 1);
+					box-sizing: inherit;
+					border: 1px solid #108ee9;
+				}
+				.liDiv label {
+					height: 18px;
+					font-size: 10px;
+					font-family: MicrosoftYaHei;
+					color: rgba(102, 102, 102, 1);
+					line-height: 18px;
+				}
+				.subButton {
+					width: 100px;
+					height: 28px;
+					background: rgba(42, 205, 200, 1);
+					border-radius: 4px;
+					color: #ffffff;
+					border: 0;
+				}
 			`}
     </style>
   )
