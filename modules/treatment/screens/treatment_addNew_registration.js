@@ -271,6 +271,8 @@ class AddNewRegistrationScreen extends Component {
 
   // 显示新增列表
   showNewList() {
+    const { pageType } = this.state
+    if (pageType !== 2) return null
     const { triagePatients, patient_page_info } = this.props
     return (
       <div>
