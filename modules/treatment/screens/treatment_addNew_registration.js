@@ -14,7 +14,7 @@ class AddNewRegistrationScreen extends Component {
     super(props)
     this.state = {
       pageType: 2,
-      patientKeyword: '',
+      keyword: '',
       patientInfo: {
         department_id: '0',
         visit_type: 1,
@@ -27,18 +27,17 @@ class AddNewRegistrationScreen extends Component {
       city: '请选择',
       county: '请选择',
       visit_date: moment()
-				.add(1, 'day')
-				.format('YYYYMMDD'),
+        .add(1, 'day')
+        .format('YYYYMMDD'),
       searchView: 0
     }
   }
 
   componentWillMount() {
-    this.queryPatients()
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id })
   }
-	// 保存新增登记
+  // 保存新增登记
   async submit() {
     const { addTriagePatientsList, clinic_id, personnel_id } = this.props
     let patientInfo = this.state.patientInfo
@@ -48,22 +47,22 @@ class AddNewRegistrationScreen extends Component {
     if (error) {
       alert(error)
     } else {
-      this.setState({ patientInfo: {}, patientKeyword: '', pageType: 2 })
-      this.queryPatients()
+      this.setState({ patientInfo: {}, keyword: '', pageType: 2 })
+      this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
     }
   }
-	// 改变显示内容
+  // 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
 
-	// 查询就诊人信息
+  // 查询就诊人信息
   async queryOne(cert_no = '') {
     const { getPatientByCertNo } = this.props
     let patient = await getPatientByCertNo({ cert_no })
     this.setState({ patientInfo: patient || {} })
   }
-	// 科室
+  // 科室
   queryDepartment() {
     const array = []
     const { departments } = this.props
@@ -77,7 +76,7 @@ class AddNewRegistrationScreen extends Component {
     newPatient[key] = e.target.value
     this.setState({ patientInfo: newPatient })
   }
-	// 显示添加新增
+  // 显示添加新增
   showAddNew() {
     let patient = this.state.patientInfo
     const { cities, counties } = this.state
@@ -88,7 +87,7 @@ class AddNewRegistrationScreen extends Component {
           <ul>
             <li>
               <label htmlFor='patientName'>
-								就诊人名称：<b style={{ color: 'red' }}> *</b>
+                就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
               <input type='text' id='patientName' value={patient.name} onChange={e => this.setPatientInfo(e, 'name')} />
             </li>
@@ -103,11 +102,11 @@ class AddNewRegistrationScreen extends Component {
                   this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
                 }}
-							/>
+              />
             </li>
             <li style={{ width: '24%' }}>
               <label>
-								生日：<b style={{ color: 'red' }}> *</b>
+                生日：<b style={{ color: 'red' }}> *</b>
               </label>
               <input
                 type='date'
@@ -118,11 +117,11 @@ class AddNewRegistrationScreen extends Component {
                   newPatient.birthday = moment(e.target.value).format('YYYYMMDD')
                   this.setState({ patientInfo: newPatient })
                 }}
-							/>
+              />
             </li>
             <li style={{ width: '24%' }}>
               <label>
-								性别：<b style={{ color: 'red' }}> *</b>
+                性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
                 <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
@@ -133,7 +132,7 @@ class AddNewRegistrationScreen extends Component {
             </li>
             <li>
               <label>
-								手机号码：<b style={{ color: 'red' }}> *</b>
+                手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
               <input type='text' value={patient.phone} onChange={e => this.setPatientInfo(e, 'phone')} />
             </li>
@@ -145,14 +144,14 @@ class AddNewRegistrationScreen extends Component {
                     let province = JSON.parse(item.target.value)
                     this.setState({ province: province.name, cities: province.city })
                   }}
-								>
+                >
                   <option>省</option>
                   {provinces.map((province, index) => {
                     return (
-                    <option key={index} value={JSON.stringify(province)}>
-                    {province.name}
-                  </option>
-                  )
+                      <option key={index} value={JSON.stringify(province)}>
+                        {province.name}
+                      </option>
+                    )
                   })}
                 </select>
                 <select
@@ -160,28 +159,28 @@ class AddNewRegistrationScreen extends Component {
                     let city = JSON.parse(item.target.value)
                     this.setState({ city: city.name, counties: city.area })
                   }}
-								>
+                >
                   <option>市</option>
                   {cities.map((city, index) => {
                     return (
-                    <option key={index} value={JSON.stringify(city)}>
-                    {city.name}
-                  </option>
-                  )
+                      <option key={index} value={JSON.stringify(city)}>
+                        {city.name}
+                      </option>
+                    )
                   })}
                 </select>
                 <select
                   onChange={item => {
                     this.setState({ county: item.target.value })
                   }}
-								>
+                >
                   <option>区</option>
                   {counties.map((name, index) => {
                     return (
-                    <option key={index} value={name}>
-                    {name}
-                  </option>
-                  )
+                      <option key={index} value={name}>
+                        {name}
+                      </option>
+                    )
                   })}
                 </select>
                 <input
@@ -192,54 +191,34 @@ class AddNewRegistrationScreen extends Component {
                     newPatient.address = this.state.province + this.state.city + this.state.county + e.target.value
                     this.setState({ patientInfo: newPatient })
                   }}
-								/>
+                />
               </div>
             </li>
             <li>
               <label>接诊科室：</label>
               <select value={patient.department_id} onChange={e => this.setPatientInfo(e, 'department_id')}>
                 <option value={'0'} key={'0'}>
-									请选择
-								</option>
+                  请选择
+                </option>
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
-                    {item.name}
-                  </option>
+                      {item.name}
+                    </option>
                   )
                 })}
               </select>
             </li>
             <li>
               <label>
-								就诊类型：<b style={{ color: 'red' }}> *</b>
+                就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
-                <input
-                  id='first'
-                  type='radio'
-                  name='type'
-                  value={1}
-                  onChange={e => this.setPatientInfo(e, 'visit_type')}
-								/>
+                <input id='first' type='radio' name='type' value={1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='first'>首诊</label>
-                <input
-                  id='referral'
-                  type='radio'
-                  name='type'
-                  value={2}
-                  style={{ marginLeft: '15px' }}
-                  onChange={e => this.setPatientInfo(e, 'visit_type')}
-								/>
+                <input id='referral' type='radio' name='type' value={2} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='referral'>复诊</label>
-                <input
-                  id='operate'
-                  type='radio'
-                  name='type'
-                  value={3}
-                  style={{ marginLeft: '15px' }}
-                  onChange={e => this.setPatientInfo(e, 'visit_type')}
-								/>
+                <input id='operate' type='radio' name='type' value={3} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='operate'>术后复诊</label>
               </div>
             </li>
@@ -270,40 +249,52 @@ class AddNewRegistrationScreen extends Component {
           </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
             <button className='saveBtn' onClick={() => this.submit()}>
-							保存
-						</button>
+              保存
+            </button>
           </div>
         </div>
       </div>
     )
   }
-  queryPatients() {
+
+  quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit }) {
     const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id })
-  }
-  getTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      array.push(patient)
+    let params = { clinic_id, is_today: true, offset, limit, keyword }
+    if (status_start && status_end) {
+      params.status_start = status_start
+      params.status_end = status_end
     }
-    return array
+    triagePatientsList(params)
   }
-	// 显示新增列表
+
+  // 显示新增列表
   showNewList() {
-    const array = this.getTriagePatientListData()
+    const { triagePatients, patient_page_info } = this.props
     return (
-      <div className={'newList'}>
-        <div className={'newList_top'}>
-          <div className={'top_left'}>
-            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-            <button>查询</button>
+      <div>
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
+            <input
+              type='text'
+              placeholder='搜索就诊人姓名/身份证号码/手机号码'
+              value={this.state.keyword}
+              onChange={e => {
+                this.setState({ keyword: e.target.value })
+              }}
+            />
+            <button
+              onClick={() => {
+                let keyword = this.state.keyword
+                this.quetryTriagePatientsList({ keyword, status_start: 10, status_end: 100 })
+              }}
+            >
+              查询
+            </button>
           </div>
         </div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
+            {triagePatients.map((patient, index) => {
               let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
@@ -315,36 +306,44 @@ class AddNewRegistrationScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>更新时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</span>
-                    <span onClick={() => this.seeDetail()}>查看详情》</span>
+                    <span>更新时间：{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+                    <span onClick={() => this.seeDetail()}>查看详情 >></span>
                   </div>
                 </li>
               )
             })}
           </ul>
-          {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
+        <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            const keyword = this.state.keyword
+            this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
+          }}
+        />
       </div>
     )
   }
-	// 查看详情
+  // 查看详情
   seeDetail() {
     Router.push('/treatment/newListDetail')
   }
@@ -352,202 +351,268 @@ class AddNewRegistrationScreen extends Component {
   render() {
     return (
       <div>
-        <div className={'contentMenu'}>
+        <div className={'childTopBar'}>
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
-              this.queryPatients()
               this.changeContent({ type: 1 })
             }}
-					>
-						+ 新增登记
-					</span>
+          >
+            + 新增登记
+          </span>
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
               this.changeContent({ type: 2 })
+              const keyword = this.state.keyword
+              this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
             }}
-					>
-						登记列表
-					</span>
+          >
+            登记列表
+          </span>
         </div>
         {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
         <style jsx global>{`
-					.contentMenu {
-						width: 100%;
-						// background: #909090;
-						float: left;
-					}
-					.contentMenu span:nth-child(1) {
-						margin: 24px 0 0 32px;
-					}
-					.contentMenu span {
-						width: 88px;
-						height: 32px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						float: left;
-						text-align: center;
-						line-height: 32px;
-						color: #000000;
-						cursor: pointer;
-						margin-top: 24px;
-						margin-left: 10px;
-					}
-					.contentMenu span.sel {
-						width: 100px;
-						height: 32px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						color: #ffffff;
+          .childTopBar {
+            float: left;
+            width: 100%;
+            // background:#909090;
+          }
+          .childTopBar span {
+            margin-top: 31px;
+            width: 126px;
+            height: 37px;
+            background: rgba(255, 255, 255, 1);
+            float: left;
+            text-align: center;
+            line-height: 37px;
+            cursor: pointer;
+            margin-bottom: 10px;
+          }
+          .childTopBar span:nth-child(1) {
+            margin-left: 66px;
+          }
+          .childTopBar span:hover,
+          .childTopBar span.sel {
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px 0px 0px 4px;
+            font-size: 14px;
+            font-family: MicrosoftYaHei-Bold;
+            color: rgba(255, 255, 255, 1);
+          }
+          .childTopBar span:nth-child(2):hover,
+          .childTopBar span.sel {
+            border-radius: 0;
+          }
+          .childTopBar span:nth-child(3):hover,
+          .childTopBar span.sel {
+            border-radius: 4px 4px 0px 0px;
+          }
+          .filterBox {
+            float: left;
+            width: 1098px;
+            height: 60px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            margin-left: 66px;
+          }
+          .filterBox .boxLeft {
+            float: left;
+          }
+          .filterBox .boxLeft input {
+            float: left;
+            width: 328px;
+            height: 28px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            margin: 16px 30px;
+            text-indent: 10px;
+            padding: 0;
+          }
+          .filterBox .boxLeft button {
+            float: left;
+            width: 60px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42, 205, 200, 1);
+            font-size: 12px;
+            margin: 16px 0;
+            background: none;
+            cursor: pointer;
+          }
+          .filterBox .boxRight {
+            float: right;
+          }
+          .filterBox .boxRight button {
+            float: left;
+            width: 100px;
+            height: 28px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px;
+            border: none;
+            color: rgba(255, 255, 255, 1);
+            font-size: 12px;
+            cursor: pointer;
+            margin: 16px 35px;
           }
           .newList_top {
-						// background: #909090;
-						height: 34px;
-						max-width: 1146px;
-						width: 100%;
-						float: left;
-						margin: 30px 0 28px 40px;
-					}
-					.newList_top .top_left {
-						float: left;
-					}
-					.newList_top .top_left input {
-						width: 300px;
-						height: 32px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						padding: 0;
-						border: 1px solid #dcdcdc;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-						text-indent: 10px;
-						float: left;
-					}
-					.newList_top .top_left button {
-						width: 60px;
-						height: 32px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						border: none;
-						cursor: pointer;
-						margin-left: 10px;
-						float: left;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-						color: rgba(255, 255, 255, 1);
-					}
-					.newList_top .top_right {
-						float: right;
-					}
-					.newList_top .top_right button {
-						float: left;
-						width: 110px;
-						height: 34px;
-						background: rgba(238, 201, 6, 1);
-						border: none;
-						border-radius: 17px;
-						cursor: pointer;
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(255, 255, 255, 1);
-						margin-right: 20px;
-					}
-					.listContent {
-						width: 1146px;
-						float: left;
-						// background: #909090;
-						margin: 0 0 28px 40px;
-					}
-					.listContent ul {
-					}
-					.listContent ul li {
-						width: 360px;
-						height: 260px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 7px;
-						float: left;
-						margin: 0 22px 20px 0;
-					}
-					.itemTop {
-						width: 332px;
-						border-bottom: 2px solid #f4f7f8;
-						// background: #e0e0e0;
-						margin: 20px auto 0 auto;
-						padding: 0 0 10px 0;
-						height: 20px;
-					}
-					.itemTop span {
-						float: left;
-					}
-					.itemTop span:nth-child(1) {
-						width: auto;
-						height: 19px;
-						font-size: 16px;
-						font-family: MicrosoftYaHei;
-						color: rgba(51, 51, 51, 1);
-						margin-left: 3px;
-					}
-					.itemTop span:nth-child(2) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(3) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(4) {
-						width: 60px;
-						height: 20px;
-						border-radius: 10px;
-						float: right;
-						text-align: center;
-					}
-					.itemCenter {
-						width: 332px;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-						height: 168px;
-					}
-					.itemCenter span {
-						float: left;
-						width: 100%;
-						height: 26px;
-						line-height: 26px;
-					}
-					.itemCenter span a:nth-child(1) {
-						float: left;
-						width: 75px;
-						color: #666666;
-						font-size: 14px;
-					}
-					.itemCenter span a:nth-child(2) {
-						float: left;
-						margin-left: 20px;
-						color: #333333;
-						font-size: 14px;
-					}
-					.itemBottom {
-						width: 332px;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-					}
-					.itemBottom span {
-						float: left;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-					}
-					.itemBottom span:nth-child(1) {
-						color: rgba(153, 153, 153, 1);
-					}
-					.itemBottom span:nth-child(2) {
-						float: right;
-						color: rgba(42, 205, 200, 1);
-						cursor: pointer;
+            // background: #909090;
+            height: 34px;
+            max-width: 1146px;
+            width: 100%;
+            float: left;
+            margin: 30px 0 28px 40px;
+          }
+          .newList_top .top_left {
+            float: left;
+          }
+          .newList_top .top_left input {
+            width: 300px;
+            height: 32px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            padding: 0;
+            border: 1px solid #dcdcdc;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            text-indent: 10px;
+            float: left;
+          }
+          .newList_top .top_left button {
+            width: 60px;
+            height: 32px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+            float: left;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: rgba(255, 255, 255, 1);
+          }
+          .newList_top .top_right {
+            float: right;
+          }
+          .newList_top .top_right button {
+            float: left;
+            width: 110px;
+            height: 34px;
+            background: rgba(238, 201, 6, 1);
+            border: none;
+            border-radius: 17px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(255, 255, 255, 1);
+            margin-right: 20px;
+          }
+          .listContent {
+            float: left;
+            width: 1120px;
+            margin-left: 66px;
+            // background: #909090;
+          }
+          .listContent ul {
+            float: left;
+            margin: 10px 0 0 0;
+          }
+          .listContent ul li {
+            width: 360px;
+            height: 270px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 7px;
+            margin: 10px 10px 0 0;
+            float: left;
+            display: flex;
+            flex-direction: column;
+          }
+          .itemTop {
+            border-bottom: 2px solid #f4f7f8;
+            margin: 10px 14px 0 14px;
+            height: 37px;
+            // display: flex;
+            // flex-direction: row;
+            // align-items: center;
+          }
+          .itemTop span:nth-child(1) {
+            width: auto;
+            height: 19px;
+            font-size: 16px;
+            font-family: MicrosoftYaHei;
+            color: rgba(51, 51, 51, 1);
+            margin-left: 12px;
+          }
+          .itemTop span:nth-child(2) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            margin: 2px 0 0 12px;
+          }
+          .itemTop span:nth-child(3) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            margin: 2px 0 0 12px;
+          }
+          .itemTop span:nth-child(4) {
+            width: 60px;
+            height: 20px;
+            border-radius: 10px;
+            float: right;
+            text-align: center;
+          }
+          .itemCenter {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 332px;
+            margin: 10px auto 0 auto;
+            justify-content: center;
+          }
+          .itemCenter span {
+            display: flex;
+            flex-direction: row;
+            height: 35px;
+            line-height: 26px;
+            margin: 0px 0px 0 12px;
+          }
+          .itemCenter span a:nth-child(1) {
+            width: 75px;
+            color: #666666;
+            font-size: 14px;
+          }
+          .itemCenter span a:nth-child(2) {
+            color: #333333;
+            font-size: 14px;
+          }
+          .itemBottom {
+            width: 100%;
+            height: 39px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+          .itemBottom span {
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            height: 39px;
+            line-height: 39px;
+          }
+          .itemBottom span:nth-child(1) {
+            flex: 1;
+            margin-left: 26px;
+            // border-right: 2px solid #31b0b3;
+            color: rgba(153, 153, 153, 1);
+          }
+          .itemBottom span:nth-child(2) {
+            // border-right: 2px solid #31b0b3;
+            color: rgba(49, 176, 179, 1);
+            margin-right: 23px;
           }
           .saveBtn {
             width: 100px;
@@ -664,7 +729,7 @@ class AddNewRegistrationScreen extends Component {
             color: #ffffff;
             border: 0;
           }
-				`}</style>
+        `}</style>
       </div>
     )
   }
@@ -676,6 +741,7 @@ const mapStateToProps = state => {
     patients: state.patients.data,
     departments: state.departments.data,
     triagePatients: state.triagePatients.data,
+    patient_page_info: state.triagePatients.page_info,
     clinic_id: state.user.data.clinic_id,
     limit: state.triagePatients.page_info.limit
   }

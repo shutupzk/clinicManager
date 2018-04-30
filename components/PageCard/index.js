@@ -71,7 +71,7 @@ class PageCard extends Component {
     total = total * 1
     let pageTotal = Math.ceil(total / limit)
     return (
-      <div>
+      <div >
         <footer className={'fenye flex tb-flex lr-flex'}>
           <article className='left'>共 {this.props.total} 条</article>
           <span
