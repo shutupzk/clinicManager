@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import Router from 'next/router'
+// import Router from 'next/router'
 import { connect } from 'react-redux'
 import { doctorList, doctorCreate, departmentList } from '../../../../ducks'
+// import moment from 'moment'
 
 class DoctorListScreen extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class DoctorListScreen extends Component {
       personnel_type: 2,
       doctorKeyword: '',
       employeeKeyword: '',
-      showPersonnel: false,
+      showAddPersonnel: false,
       doctorInfo: {}
     }
   }
@@ -53,158 +54,247 @@ class DoctorListScreen extends Component {
     return array
   }
 
-  goToDetail({ apiName }) {
-    const { selectBaseApi } = this.props
-    selectBaseApi({ apiName })
-    Router.push('/apis/detail')
-  }
-
-  goToEdit({ apiName }) {
-    const { selectBaseApi } = this.props
-    selectBaseApi({ apiName })
-    Router.push('/apis/edit')
-  }
-
-  async toRemove({ apiName }) {
-    const confirmed = confirm('确定要删除  ' + apiName + '?')
-    if (confirmed) {
-      const { removeBaseApi } = this.props
-      const error = await removeBaseApi({ apiName })
-      if (error) {
-        alert(error)
-      }
-    }
-  }
-
-  renderTitle() {
-    return (
-      <ul className='flex tb-flex'>
-        <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生编码 </li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>医生名称</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属科室</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属诊所</li>
-        <li style={{ flex: 5, height: '40px', lineHeight: '40px' }}>是否开放预约挂号</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>操作</li>
-      </ul>
-    )
-  }
-
-  renderTitle1() {
-    return (
-      <ul className='flex tb-flex'>
-        <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员编码 </li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职员名称</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属科室(部门)</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>所属诊所</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>职位</li>
-        <li style={{ flex: 3, height: '40px', lineHeight: '40px' }}>操作</li>
-      </ul>
-    )
-  }
-
-  renderRow({ code, name, department_name, clinic_name, is_appointment }, index) {
-    const { fenyeItem, buttonMiddle } = styles
-    return (
-      <ul className='flex tb-flex' key={index}>
-        <li style={{ flex: 1 }}>{`${index + 1}`}</li>
-        <li style={{ flex: 3 }}>{code}</li>
-        <li style={{ flex: 3 }}>{name}</li>
-        <li style={{ flex: 3 }}>{department_name}</li>
-        <li style={{ flex: 3 }}>{clinic_name}</li>
-        <li style={{ flex: 5 }}>{is_appointment ? '是' : '否'}</li>
-        <li style={{ flex: 3, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({})}>
-            编辑
-          </button>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({})}>
-            删除
-          </button>
-        </li>
-      </ul>
-    )
-  }
-
-  renderRow1({ code, name, department_name, clinic_name, is_appointment }, index) {
-    const { fenyeItem, buttonMiddle } = styles
-    return (
-      <ul className='flex tb-flex' key={index}>
-        <li style={{ flex: 1 }}>{`${index + 1}`}</li>
-        <li style={{ flex: 3 }}>{code}</li>
-        <li style={{ flex: 3 }}>{name}</li>
-        <li style={{ flex: 3 }}>{department_name}</li>
-        <li style={{ flex: 3 }}>{clinic_name}</li>
-        <li style={{ flex: 3 }}>{is_appointment ? '是' : '否'}</li>
-        <li style={{ flex: 3, textAlign: 'center' }}>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px' }} onClick={() => this.goToEdit({})}>
-            编辑
-          </button>
-          <button style={{ ...fenyeItem, ...buttonMiddle, marginLeft: '5px', background: '#F26C55', border: '1px solid #F26C55' }} onClick={() => this.toRemove({})}>
-            删除
-          </button>
-        </li>
-      </ul>
-    )
-  }
   changeContent({ personnel_type }) {
     this.setState({ personnel_type })
   }
-  showDoctor() {
-    let exercises = this.getListData(2)
+
+  renderPersonnelList() {
+    const { personnel_type } = this.state
+    let doctors = this.getListData(personnel_type)
     return (
       <div>
-        <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索医生名称/医生编号' ref='doctorKeywordInput' defaultValue={this.state.doctorKeyword} />
-          <button
-            className={'searchBtn'}
-            onClick={() => {
-              const doctorKeyword = this.refs.doctorKeywordInput.value
-              this.setState({ doctorKeyword })
-              this.queryList(doctorKeyword, 2)
-            }}
-          >
-            查询
-          </button>
+        <div className={'newList_top'}>
+          <div className={'top_left'}>
+            <input type='text' placeholder='搜索医生名称/医生编号' />
+            <button>查询</button>
+          </div>
+          <div className={'top_right'}>
+            <button onClick={() => {
+              this.setState({ showAddPersonnel: true })
+            }}>新增医生</button>
+          </div>
         </div>
-        <div className={'listBox'}>
-          <button className={'addBtn'} onClick={() => this.setState({ showPersonnel: true })}>
-            新增医生
-          </button>
-          {this.renderTitle()}
-          {exercises.map((item, index) => {
-            return this.renderRow(item, index)
-          })}
+        <div className={'listContent'}>
+          <ul>
+            {doctors.map((doctor, index) => {
+              return (
+                <li key={index}>
+                  <div className={'itemTop'}>
+                    <span>{doctor.name}</span>
+                  </div>
+                  <div className={'itemCenter'}>
+                    <span>
+                      <a>医生编号：</a>
+                      <a>{doctor.code}</a>
+                    </span>
+                    <span>
+                      <a>所属科室：</a>
+                      <a>{doctor.department_name}</a>
+                    </span>
+                    <span>
+                      <a>所属诊所：</a>
+                      <a>{doctor.clinic_name}</a>
+                    </span>
+                    <span>
+                      <a>可否挂号：</a>
+                      <a>{doctor.is_appointment === true ? '可以' : '不可以'}</a>
+                    </span>
+                  </div>
+                  <div className={'itemBottom'}>
+                    <span onClick={() => this.showCompleteHealthFile()}>查看</span>
+                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>编辑</span>
+                    <span onClick={() => this.showCompleteHealthFile()}>删除</span>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+          {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
-      </div>
-    )
-  }
-  showEmployee() {
-    let exercises = this.getListData(1)
-    return (
-      <div>
-        <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索职员名称/职员编号' ref='employeeKeywordInput' defaultValue={this.state.employeeKeyword} />
-          <button
-            className={'searchBtn'}
-            onClick={() => {
-              const employeeKeyword = this.refs.employeeKeywordInput.value
-              this.setState({ employeeKeyword })
-              this.queryList(employeeKeyword, 1)
-            }}
-          >
-            查询
-          </button>
-        </div>
-        <div className={'listBox'}>
-          <button className={'addBtn'} onClick={() => this.setState({ showPersonnel: true })}>
-            新增职员
-          </button>
-          {this.renderTitle1()}
-          {exercises.map((item, index) => {
-            return this.renderRow1(item, index)
-          })}
-        </div>
+        <style jsx>{`
+          .contentMenu{
+            width: 100%;
+            // background: #909090;
+            float: left;
+          }
+          .contentMenu span:nth-child(1){
+            margin:24px 0 0 32px;
+          }
+          .contentMenu span{
+            width:88px;
+            height:32px; 
+            background:rgba(255,255,255,1);
+            border-radius: 4px ; 
+            float:left;
+            text-align:center;
+            line-height:32px;
+            color:#000000;
+            cursor:pointer;
+            margin-top:24px;
+            margin-left:10px;
+          }
+          .contentMenu span.sel{
+            width:100px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+            color:#FFFFFF;
+          }
+					.newList_top {
+						// background: #909090;
+						height: 34px;
+						max-width: 1146px;
+						width: 100%;
+						float: left;
+						margin: 30px 0 28px 40px;
+					}
+					.newList_top .top_left {
+						float: left;
+					}
+					.newList_top .top_left input {
+						width: 300px;
+						height: 32px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						padding: 0;
+						border: 1px solid #dcdcdc;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						text-indent: 10px;
+						float: left;
+					}
+					.newList_top .top_left button {
+            width:60px;
+            height:32px; 
+            background:rgba(42,205,200,1);
+            border-radius: 4px ; 
+						border: none;
+						cursor: pointer;
+						margin-left: 10px;
+						float: left;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(255, 255, 255, 1);
+					}
+					.newList_top .top_right {
+						float: right;
+					}
+					.newList_top .top_right button {
+						float: left;
+						width: 110px;
+						height: 34px;
+						background: rgba(238, 201, 6, 1);
+						border: none;
+						border-radius: 17px;
+						cursor: pointer;
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(255, 255, 255, 1);
+						margin-right: 20px;
+					}
+					.listContent {
+						float: left;
+            width: 1146px;
+						// background: #909090;
+					}
+					.listContent ul {
+						float: left;
+            margin: 10px 0 0 36px;
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 270px;
+            background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						margin: 10px 10px 0 0;
+            float: left;
+            display: flex;
+            flex-direction: column;
+					}
+					.itemTop {
+						border-bottom: 2px solid #f4f7f8;
+						margin: 10px 14px 0 14px;
+            height: 37px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+            color: rgba(51, 51, 51, 1);
+            margin-left: 12px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 332px;
+            margin: 10px auto 0 auto;
+            justify-content: center;
+					}
+					.itemCenter span {
+            display: flex;
+            flex-direction: row;
+						height: 35px;
+            line-height: 26px;
+            margin: 0px 0px 0 12px;
+					}
+					.itemCenter span a:nth-child(1) {
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+            width: 100%;
+						height: 39px;
+            border-top: 2px solid #42B7BA;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+					}
+					.itemBottom span {
+            flex: 1;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+            color: rgba(49, 176, 179, 1);
+            height: 39px;
+            line-height: 39px;
+						text-align: center;
+					}
+					.itemBottom span:nth-child(1) {
+						border-right: 2px solid #31B0B3;
+					}
+					.itemBottom span:nth-child(2) {
+            border-right: 2px solid #31B0B3;
+					}
+				`}</style>
       </div>
     )
   }
@@ -219,7 +309,7 @@ class DoctorListScreen extends Component {
     }
     this.queryList()
     alert('添加成功')
-    this.setState({ showPersonnel: false })
+    this.setState({ showAddPersonnel: false })
   }
 
   setDoctorInfo(e, key) {
@@ -228,9 +318,9 @@ class DoctorListScreen extends Component {
     this.setState({ doctorInfo: newDoctor })
   }
 
-  showAddDepart() {
-    const { showPersonnel } = this.state
-    if (!showPersonnel) return null
+  showAddPersonnelDiv() {
+    const { showAddPersonnel } = this.state
+    if (!showAddPersonnel) return null
     const departments = this.getDepartmentList()
     return (
       <div className={'mask'}>
@@ -238,7 +328,7 @@ class DoctorListScreen extends Component {
           <div className={'doctorList_top'}>
             <span>新增医生</span>
             <div />
-            <span onClick={() => this.setState({ showPersonnel: false })}>×</span>
+            <span onClick={() => this.setState({ showAddPersonnel: false })}>×</span>
           </div>
           <div className={'doctorList_content'}>
             <ul>
@@ -289,7 +379,7 @@ class DoctorListScreen extends Component {
               </li>
             </ul>
             <div className={'buttonBtn'}>
-              <button onClick={() => this.setState({ showPersonnel: false })}>取消</button>
+              <button onClick={() => this.setState({ showAddPersonnel: false })}>取消</button>
               <button
                 onClick={() => {
                   this.saveAdd()
@@ -400,47 +490,14 @@ class DoctorListScreen extends Component {
             职员
           </span>
         </div>
-        {this.state.personnel_type === 2 ? this.showDoctor() : ''}
-        {this.state.personnel_type === 1 ? this.showEmployee() : ''}
-        {this.showAddDepart()}
+        {this.renderPersonnelList()}
+        {this.showAddPersonnelDiv()}
       </div>
     )
   }
 }
 
-const styles = {
-  titleText: {
-    fontSize: '16px'
-  },
-  liPadding: {
-    padding: '10px 15px'
-  },
-  orderTitle: {
-    color: '#797979',
-    background: '#f2f2f2',
-    borderRadius: '3px'
-  },
-  buttonMiddle: {
-    height: '30px',
-    width: '50px'
-  },
-  buttonLarge: {
-    height: '40px',
-    width: '80px',
-    fontSize: '20px'
-  },
-  fenyeItem: {
-    background: '#3ca0ff',
-    borderRadius: '2px',
-    display: 'inline-block',
-    cursor: 'pointer',
-    border: '1px solid #3ca0ff',
-    color: '#fff'
-  }
-}
-
 const mapStateToProps = state => {
-  console.log(state)
   return {
     doctors: state.doctors.data,
     departments: state.departments.data,

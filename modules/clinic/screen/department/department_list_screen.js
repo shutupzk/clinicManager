@@ -240,29 +240,28 @@ class DepartmentListScreen extends Component {
 					.listContent ul li {
 						width: 360px;
 						height: 270px;
-						background: rgba(255, 255, 255, 1);
+            background: rgba(255, 255, 255, 1);
 						border-radius: 7px;
 						margin: 10px 10px 0 0;
-						float: left;
+            float: left;
+            display: flex;
+            flex-direction: column;
 					}
 					.itemTop {
-						width: 332px;
 						border-bottom: 2px solid #f4f7f8;
-						// background: #e0e0e0;
-						margin: 20px auto 0 auto;
-						padding: 0 0 10px 0;
-						height: 20px;
-					}
-					.itemTop span {
-						float: left;
+						margin: 10px 14px 0 14px;
+            height: 37px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
 					}
 					.itemTop span:nth-child(1) {
 						width: auto;
 						height: 19px;
 						font-size: 16px;
 						font-family: MicrosoftYaHei;
-						color: rgba(51, 51, 51, 1);
-						margin-left: 3px;
+            color: rgba(51, 51, 51, 1);
+            margin-left: 12px;
 					}
 					.itemTop span:nth-child(2) {
 						font-size: 14px;
@@ -284,52 +283,52 @@ class DepartmentListScreen extends Component {
 						text-align: center;
 					}
 					.itemCenter {
-						width: 332px;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-						height: 168px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 332px;
+            margin: 10px auto 0 auto;
+            justify-content: center;
 					}
 					.itemCenter span {
-						float: left;
-						width: 100%;
-						height: 26px;
-						line-height: 26px;
+            display: flex;
+            flex-direction: row;
+						height: 35px;
+            line-height: 26px;
+            margin: 0px 0px 0 12px;
 					}
 					.itemCenter span a:nth-child(1) {
-						float: left;
 						width: 75px;
 						color: #666666;
 						font-size: 14px;
 					}
 					.itemCenter span a:nth-child(2) {
-						float: left;
-						margin-left: 20px;
 						color: #333333;
 						font-size: 14px;
 					}
 					.itemBottom {
-						width: 100%;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-            border-top: 1px solid #42b7ba;
+            width: 100%;
+						height: 39px;
+            border-top: 2px solid #42B7BA;
             display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
 					}
 					.itemBottom span {
-						float: left;
+            flex: 1;
 						font-size: 12px;
 						font-family: MicrosoftYaHei;
-						color: rgba(49, 176, 179, 1);
-						width: 49.5%;
+            color: rgba(49, 176, 179, 1);
+            height: 39px;
+            line-height: 39px;
 						text-align: center;
-						line-height: 50px;
-            cursor: pointer;
-            flext:1;
 					}
 					.itemBottom span:nth-child(1) {
-						border-right: 1px solid #42b7ba;
+						border-right: 2px solid #31B0B3;
 					}
 					.itemBottom span:nth-child(2) {
-            border-right: 1px solid #42b7ba;
+            border-right: 2px solid #31B0B3;
 					}
 				`}</style>
       </div>
