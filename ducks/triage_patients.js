@@ -11,8 +11,7 @@ const initState = {
 export function triagePatients(state = initState, action = {}) {
   switch (action.type) {
     case TRIAGE_PATIENTS_ADD:
-			// ...state.data,
-      return { ...state, data: { ...action.data }, page_info: action.page_info }
+      return { ...state, data: action.data, page_info: action.page_info }
     case TRIAGE_PATIENTS_SELECT:
       return { ...state, selectId: action.selectId }
     default:
@@ -20,15 +19,19 @@ export function triagePatients(state = initState, action = {}) {
   }
 }
 
-export const triagePatientsList = ({ clinic_id, keyword, is_today, register_type, startDate, endDate }) => async dispatch => {
+export const triagePatientsList = ({ clinic_id, status_start, status_end, keyword, is_today, register_type, startDate, endDate, offset = 0, limit = 6 }) => async dispatch => {
   try {
     const data = await request('/triage/patientlist', {
       clinic_id,
+      status_start,
+      status_end,
       keyword,
       is_today,
       register_type,
       startDate,
-      endDate
+      endDate,
+      offset,
+      limit
     })
     console.log(data)
     const docs = data.data || []

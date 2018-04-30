@@ -4,7 +4,7 @@ import Router from 'next/router'
 import moment from 'moment'
 import { triagePatientsList, triageDoctorsList, triagePatient } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
-// import { PageCard } from '../../../components'
+import { PageCard } from '../../../components'
 
 class TriageScreen extends Component {
   constructor(props) {
@@ -13,18 +13,35 @@ class TriageScreen extends Component {
       pageType: 1,
       showType: 1,
       alertType: 0,
+      status: 10,
       alertPageType: 1,
-      nowWeekNum: 1
+      nowWeekNum: 1,
+      dateTime: [
+				{ time: '08:00-09:00' },
+				{ time: '09:00-10:00' },
+				{ time: '10:00-11:00' },
+				{ time: '11:00-12:00' },
+				{ time: '13:00-14:00' },
+				{ time: '14:00-15:00' },
+				{ time: '15:00-16:00' },
+				{ time: '16:00-17:00' },
+				{ time: '17:00-18:00' }
+      ]
     }
   }
 
   componentDidMount() {
-    this.queryList()
+    this.quetryTriagePatientsList({ status_start: 10, status_end: 10 })
   }
 
-  queryList() {
+  quetryTriagePatientsList({ status_start, status_end, offset, limit }) {
     const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
+    let params = { clinic_id, is_today: true, offset, limit }
+    if (status_start && status_end) {
+      params.status_start = status_start
+      params.status_end = status_end
+    }
+    triagePatientsList(params)
   }
 
 	// 改变显示内容
@@ -256,6 +273,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
+
   completeHealthFile() {
     return (
       <div className={'healthFile'}>
@@ -326,8 +344,9 @@ class TriageScreen extends Component {
                     onClick={async () => {
                     let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
                     let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
+
                     if (error) {
-                    return alert('分诊失败', error)
+                    return alert('分诊失败: ' + error)
                   } else {
                     return alert('分诊成功')
                   }
@@ -356,25 +375,11 @@ class TriageScreen extends Component {
 	// 换诊
   changeDoctor() {}
 
-  getUnTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (patient.treat_status) continue
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
-      return 1
-    })
-  }
-
 	// 显示分诊列表
   showTriageList() {
-    const array = this.getUnTriagePatientListData(false)
+    const { triagePatients, patient_page_info } = this.props
+    const { pageType } = this.state
+    if (pageType !== 1) return
     return (
       <div>
         <div className={'filterBox'}>
@@ -382,13 +387,10 @@ class TriageScreen extends Component {
             <input type='text' placeholder='搜索科室' />
             <button>查询</button>
           </div>
-          <div className={'boxRight'}>
-            <button onClick={() => this.addNewReservation()}>新增预约</button>
-          </div>
         </div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
+            {triagePatients.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
@@ -435,6 +437,15 @@ class TriageScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
+        <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            const keyword = this.state.keyword
+            this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 10 })
+          }}
+				/>
       </div>
     )
   }
@@ -455,7 +466,9 @@ class TriageScreen extends Component {
   }
 	// 显示分诊记录
   showTriageRecord() {
-    const array = this.getTriagedPatientListData()
+    const { triagePatients, patient_page_info } = this.props
+    const { pageType } = this.state
+    if (pageType !== 2) return
     return (
       <div>
         <div className={'filterBox'}>
@@ -463,13 +476,10 @@ class TriageScreen extends Component {
             <input type='text' placeholder='搜索科室' />
             <button>查询</button>
           </div>
-          <div className={'boxRight'}>
-            <button onClick={() => this.addNewReservation()}>新增预约</button>
-          </div>
         </div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
+            {triagePatients.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
@@ -510,7 +520,7 @@ class TriageScreen extends Component {
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
-                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>选择医生</span>
+                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>换诊</span>
                   </div>
                 </li>
               )
@@ -518,6 +528,15 @@ class TriageScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
+        <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            const keyword = this.state.keyword
+            this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 20, status_end: 90 })
+          }}
+				/>
       </div>
     )
   }
@@ -530,22 +549,29 @@ class TriageScreen extends Component {
   showCalendarList() {
 		// const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     let nowWeekNum = this.state.nowWeekNum
+    const dateTime = this.state.dateTime
     return (
       <div className={'listContent'}>
         <div className={'calendarCotent'}>
           <div className={'calenderFilter'}>
             <div className={'filterCnter'}>
-              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>{'上一周'}</span>
+              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>
+                {'上一周'}
+              </span>
               <span style={{ flex: 1 }}>{'《'}</span>
               <span style={{ flex: 1 }}>{'<'}</span>
-              <span style={{ flex: 11 }} onClick={() => this.setState({ nowWeekNum: 1 })}>本周（{moment()
-								.day(nowWeekNum)
-								.format('YYYY年MM月DD日')}至{moment()
-								.day(nowWeekNum + 6)
-								.format('MM月DD日')}）</span>
+              <span style={{ flex: 11 }} onClick={() => this.setState({ nowWeekNum: 1 })}>
+								本周（{moment()
+									.day(nowWeekNum)
+									.format('YYYY年MM月DD日')}至{moment()
+									.day(nowWeekNum + 6)
+									.format('MM月DD日')}）
+							</span>
               <span style={{ flex: 1 }}>{'>'}</span>
               <span style={{ flex: 1 }}>{'》'}</span>
-              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>下一周</span>
+              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
+								下一周
+							</span>
             </div>
           </div>
           <div className={'calenderBox'}>
@@ -626,143 +652,45 @@ class TriageScreen extends Component {
                     <td>13</td>
                     <td>14</td>
                   </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
+                  {dateTime.map((item, index) => {
+                    return (
+                    <tr>
+                    <td colSpan={2}>{item.time}</td>
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
                   </tr>
+                  )
+                  })}
                   <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
+                    <td />
                   </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  <tr>
-                    <td colSpan={2}>07:00-08:00</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  
                 </tbody>
               </table>
             </div>
@@ -912,18 +840,30 @@ class TriageScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
+          <span
+            className={this.state.pageType === 1 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({ pageType: 1 })
+              this.quetryTriagePatientsList({ status_start: 10, status_end: 10 })
+            }}
+					>
 						分诊
 					</span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({ pageType: 2 })
+              this.quetryTriagePatientsList({ status_start: 20, status_end: 90 })
+            }}
+					>
 						分诊记录
 					</span>
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
 						预约管理
 					</span>
         </div>
-        {this.state.pageType === 1 ? this.showTriageList() : ''}
-        {this.state.pageType === 2 ? this.showTriageRecord() : ''}
+        {this.showTriageList()}
+        {this.showTriageRecord()}
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}

@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import Router from 'next/router'
+import Router from 'next/router'
 import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 
-class AddmisionScreen extends Component {
+class ChargeScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -60,54 +60,12 @@ class AddmisionScreen extends Component {
     })
   }
 
-	// 显示分诊记录
-  showTriageRecord() {
-    const array = this.getTriagePatientListData(true)
-    return (
-      <div className={'formList'}>
-        <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-          <button className={'searchBtn'}>查询</button>
-          {/* <a>注：当日登记就诊人列表</a> */}
-        </div>
-        <div className={'regisList'}>
-          <ul>
-            {array.map((patient, index) => {
-              let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-              return (
-                <li key={index} onClick={() => {}}>
-                  <div className={'liTop'}>
-                    <span className={'updateTime'}>更新时间：{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-                    <span className={'status'}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
-                  </div>
-                  <div>
-										就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
-									</div>
-                  <div>身份证号：{patient.cert_no}</div>
-                  <div>接诊科室：{patient.department_name}</div>
-                  <div>接诊医生：{patient.doctor_name}</div>
-                  <div>登记人员：{patient.register_personnel_name}</div>
-                  <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-                  <div className={'seeDetail'}>
-                    <a onClick={() => this.showCompleteHealthFile()}>完善健康档案</a>
-                    <a onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>选择医生</a>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <div className={'pagination'} />
-      </div>
-    )
-  }
-
 	// 切换显示列表
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
 	// 显示分诊列表
-  showTriageList() {
+  showTobeCharged() {
     const array = this.getUnTriagePatientListData(false)
     return (
       <div>
@@ -151,9 +109,8 @@ class AddmisionScreen extends Component {
                   </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span onClick={() => this.showCompleteHealthFile()}>接诊</span>
-                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>查看健康档案</span>
-                    <span onClick={() => this.showCompleteHealthFile()}>操作</span>
+                    <span>￥337.0</span>
+                    <span onClick={() => this.gotoChargeDetail()}>收费</span>
                   </div>
                 </li>
               )
@@ -162,40 +119,49 @@ class AddmisionScreen extends Component {
         </div>
         <div className={'pagination'} />
         <style jsx>{`
-					.itemBottom span:nth-child(2) {
-						border-right: 2px solid #31b0b3;
-					}
+					// .itemBottom span:nth-child(2) {
+					// 	border-right: 2px solid #31b0b3;
+					// }
 				`}</style>
       </div>
     )
+  }
+  gotoChargeDetail() {
+    Router.push('/treatment/reservation_add')
   }
   render() {
     return (
       <div>
         <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						今日待接诊
+						待收费
 					</span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-						今日已接诊
+						已收费
+					</span>
+          <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
+						已挂账
+					</span>
+          <span className={this.state.pageType === 4 ? 'sel' : ''} onClick={() => this.changeContent({ type: 4 })}>
+						已退款
+					</span>
+          <span className={this.state.pageType === 5 ? 'sel' : ''} onClick={() => this.changeContent({ type: 5 })}>
+						订单管理
 					</span>
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
+            <input type='date' placeholder='选择日期' />
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>
-          <div className={'boxRight'}>
-            <button>快速接诊</button>
-          </div>
         </div>
-        {this.state.pageType === 1 ? this.showTriageList() : ''}
-        {this.state.pageType === 2 ? this.showTriageRecord() : ''}
-        {this.state.pageType === 3 ? this.showReservation() : ''}
-        {this.state.alertType === 1 ? this.completeHealthFile() : ''}
-        {this.state.alertType === 2 ? this.chooseDoctor() : ''}
-        <style jsx>{`
-				`}</style>
+        {this.state.pageType === 1 ? this.showTobeCharged() : ''}
+        {/* {this.state.pageType === 2 ? this.showTriageRecord() : ''} */}
+        {/* {this.state.pageType === 3 ? this.showReservation() : ''} */}
+        {/* {this.state.alertType === 1 ? this.completeHealthFile() : ''}
+        {this.state.alertType === 2 ? this.chooseDoctor() : ''} */}
+        <style jsx>{``}</style>
         {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
     )
@@ -214,4 +180,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(AddmisionScreen)
+export default connect(mapStateToProps, { triagePatientsList })(ChargeScreen)
