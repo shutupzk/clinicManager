@@ -9,6 +9,9 @@ import { connect } from 'react-redux'
  */
 class PageCard extends Component {
   getPageArray({ limit = 6, offset = 0, total = 0 }) {
+    offset = offset * 1
+    limit = limit * 1
+    total = total * 1
     let pageTotal = Math.ceil(total / limit)
     let pageIndex = Math.floor(offset / limit) + 1
     let array = []
@@ -62,7 +65,10 @@ class PageCard extends Component {
 
   render() {
     const array = this.getPageArray(this.props)
-    const { offset, limit, total } = this.props
+    let { offset, limit, total } = this.props
+    offset = offset * 1
+    limit = limit * 1
+    total = total * 1
     let pageTotal = Math.ceil(total / limit)
     return (
       <div>
@@ -87,8 +93,7 @@ class PageCard extends Component {
                 className={className}
                 onClick={() => {
                   if (this.props.onItemClick) {
-                    let nextOffset = offset + limit > (pageTotal - 1) * limit ? (pageTotal - 1) * limit : offset + limit
-                    this.props.onItemClick({ offset: nextOffset, limit })
+                    this.props.onItemClick({ offset, limit })
                   }
                 }}
               >
@@ -100,7 +105,8 @@ class PageCard extends Component {
             className={'fenyeItem otherPage lastItem'}
             onClick={() => {
               if (this.props.onItemClick) {
-                this.props.onItemClick({ offset, limit })
+                let nextOffset = offset + limit > (pageTotal - 1) * limit ? (pageTotal - 1) * limit : offset + limit
+                this.props.onItemClick({ offset: nextOffset, limit })
               }
             }}
           >
@@ -130,6 +136,7 @@ class PageCard extends Component {
             background: rgba(255, 255, 255, 1);
             border-radius: 4px;
             margin-right: 8px;
+            cursor:pointer;
           }
           .fenyeItem.curPageCss {
             color: #fff;
