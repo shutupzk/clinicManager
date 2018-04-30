@@ -36,6 +36,7 @@ class AddNewRegistrationScreen extends Component {
   componentWillMount() {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id })
+    this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
   }
   // 保存新增登记
   async submit() {
