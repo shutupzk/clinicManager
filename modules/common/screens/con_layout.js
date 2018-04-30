@@ -14,7 +14,7 @@ class ConLayout extends Component {
 			// className={'appContent'} style={{ background: '#fff',minWidth: 1000 }}
       <div className={'leftBar'}>
         <div className={'logoBox'}>
-          <img src={'/static/login/u49.png'} />
+          <img src={'/static/home/index_logo.png'} />
           <div className={'logoTxt'}>
             <span>{`${TITLE}`}</span>
             <span>深圳市龙华店</span>
