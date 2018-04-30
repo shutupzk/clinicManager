@@ -901,49 +901,49 @@ export function styles() {
 				}
 				.calenderFilter {
 					float: left;
-					margin: 10px 0;
-					width: 99%;
+					// margin: 10px 0;
+					// width: 99%;
 				}
-				.calenderFilterBtn {
-					width: 103px;
-					height: 30px;
-					background: inherit;
-					background-color: rgba(0, 204, 102, 1);
-					border: none;
-					border-radius: 5px;
-					-moz-box-shadow: none;
-					-webkit-box-shadow: none;
-					box-shadow: none;
-					font-family: 'PingFangSC-Regular', 'PingFang SC';
-					font-weight: 400;
-					font-style: normal;
-					color: #ffffff;
-					margin-left: 30px;
-					cursor: pointer;
-				}
-				.calenderBox h4 {
-					float: left;
-					width: 1000px;
-					text-align: center;
-				}
-				.calendarContent {
-					float: left;
-					width: 1000px;
-				}
-				.calendarContent table {
-					border: 1px solid;
-					border-collapse: collapse;
-					margin: 0 auto;
-				}
-				.calendarContent table tr {
-					border-bottom: 1px solid;
-					height: 30px;
-				}
-				.calendarContent table tr td {
-					border: 1px solid;
-					width: 100px;
-					text-align: center;
-				}
+				// .calenderFilterBtn {
+				// 	width: 103px;
+				// 	height: 30px;
+				// 	background: inherit;
+				// 	background-color: rgba(0, 204, 102, 1);
+				// 	border: none;
+				// 	border-radius: 5px;
+				// 	-moz-box-shadow: none;
+				// 	-webkit-box-shadow: none;
+				// 	box-shadow: none;
+				// 	font-family: 'PingFangSC-Regular', 'PingFang SC';
+				// 	font-weight: 400;
+				// 	font-style: normal;
+				// 	color: #ffffff;
+				// 	margin-left: 30px;
+				// 	cursor: pointer;
+				// }
+				// .calenderBox h4 {
+				// 	float: left;
+				// 	width: 1000px;
+				// 	text-align: center;
+				// }
+				// .calendarContent {
+				// 	float: left;
+				// 	width: 1000px;
+				// }
+				// .calendarContent table {
+				// 	border: 1px solid;
+				// 	border-collapse: collapse;
+				// 	margin: 0 auto;
+				// }
+				// .calendarContent table tr {
+				// 	border-bottom: 1px solid;
+				// 	height: 30px;
+				// }
+				// .calendarContent table tr td {
+				// 	border: 1px solid;
+				// 	width: 100px;
+				// 	text-align: center;
+				// }
 				.listBox {
 					float: left;
 					margin: 10px 20px;
@@ -1057,8 +1057,362 @@ export function styles() {
 					float: left;
 					margin-left: 20px;
         }
-        
-        
+				//子页面顶部菜单
+				.childTopBar {
+					float: left;
+					width: 100%;
+					// background:#909090;
+				}
+				.childTopBar span {
+					margin-top: 31px;
+					width: 126px;
+					height: 37px;
+					background: rgba(255, 255, 255, 1);
+					float: left;
+					text-align: center;
+					line-height: 37px;
+					cursor: pointer;
+					margin-bottom: 10px;
+				}
+				.childTopBar span:nth-child(1) {
+					margin-left: 66px;
+				}
+				.childTopBar span:hover,
+				.childTopBar span.sel {
+					background: rgba(42, 205, 200, 1);
+					border-radius: 4px 0px 0px 4px;
+					font-size: 14px;
+					font-family: MicrosoftYaHei-Bold;
+					color: rgba(255, 255, 255, 1);
+				}
+				.childTopBar span:nth-child(2):hover,
+				.childTopBar span.sel {
+					border-radius: 0;
+				}
+				.childTopBar span:nth-child(3):hover,
+				.childTopBar span.sel {
+					border-radius: 4px 4px 0px 0px;
+				}
+				//子页面数据列表
+				.listContent ul {
+					float: left;
+					margin: 10px 0 0 0;
+				}
+				.listContent ul li {
+					width: 360px;
+					height: 270px;
+					background: rgba(255, 255, 255, 1);
+					border-radius: 7px;
+					margin: 10px 10px 0 0;
+					float: left;
+					display: flex;
+					flex-direction: column;
+				}
+				.itemTop {
+					border-bottom: 2px solid #f4f7f8;
+					margin: 10px 14px 0 14px;
+					height: 37px;
+					// display: flex;
+					// flex-direction: row;
+					// align-items: center;
+				}
+				.itemTop span:nth-child(1) {
+					width: auto;
+					height: 19px;
+					font-size: 16px;
+					font-family: MicrosoftYaHei;
+					color: rgba(51, 51, 51, 1);
+					margin-left: 12px;
+				}
+				.itemTop span:nth-child(2) {
+					font-size: 14px;
+					font-family: MicrosoftYaHei;
+					color: rgba(102, 102, 102, 1);
+					margin: 2px 0 0 12px;
+				}
+				.itemTop span:nth-child(3) {
+					font-size: 14px;
+					font-family: MicrosoftYaHei;
+					color: rgba(102, 102, 102, 1);
+					margin: 2px 0 0 12px;
+				}
+				.itemTop span:nth-child(4) {
+					width: 60px;
+					height: 20px;
+					border-radius: 10px;
+					float: right;
+					text-align: center;
+				}
+				.itemCenter {
+					flex: 1;
+					display: flex;
+					flex-direction: column;
+					width: 332px;
+					margin: 10px auto 0 auto;
+					justify-content: center;
+				}
+				.itemCenter span {
+					display: flex;
+					flex-direction: row;
+					height: 35px;
+					line-height: 26px;
+					margin: 0px 0px 0 12px;
+				}
+				.itemCenter span a:nth-child(1) {
+					width: 75px;
+					color: #666666;
+					font-size: 14px;
+				}
+				.itemCenter span a:nth-child(2) {
+					color: #333333;
+					font-size: 14px;
+				}
+				.itemBottom {
+					width: 100%;
+					height: 39px;
+					border-top: 2px solid #42b7ba;
+					display: flex;
+					flex-direction: row;
+					justify-content: center;
+					align-items: center;
+				}
+				.itemBottom span {
+					flex: 1;
+					font-size: 12px;
+					font-family: MicrosoftYaHei;
+					color: rgba(49, 176, 179, 1);
+					height: 39px;
+					line-height: 39px;
+					text-align: center;
+					cursor:pointer;
+				}
+				.itemBottom span:nth-child(1) {
+					border-right: 2px solid #31b0b3;
+				}
+				.itemBottom span:nth-child(2) {
+					// border-right: 2px solid #31b0b3;
+				}
+				//顶部搜索栏
+				.filterBox {
+					float: left;
+					width: 1098px;
+					height: 60px;
+					background: rgba(255, 255, 255, 1);
+					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+					border-radius: 4px;
+					margin-left: 66px;
+				}
+				.filterBox .boxLeft {
+					float: left;
+				}
+				.filterBox .boxLeft input {
+					float: left;
+					width: 328px;
+					height: 28px;
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					margin: 16px 30px;
+					text-indent: 10px;
+					padding: 0;
+				}
+				.filterBox .boxLeft button {
+					float: left;
+					width: 60px;
+					height: 28px;
+					border-radius: 4px;
+					border: 1px solid #2acdc8;
+					color: rgba(42, 205, 200, 1);
+					font-size: 12px;
+					margin: 16px 0;
+					background: none;
+					cursor: pointer;
+				}
+				.filterBox .boxRight {
+					float: right;
+				}
+				.filterBox .boxRight button {
+					float: left;
+					width: 100px;
+					height: 28px;
+					background: rgba(42, 205, 200, 1);
+					border-radius: 4px;
+					border: none;
+					color: rgba(255, 255, 255, 1);
+					font-size: 12px;
+					cursor: pointer;
+					margin: 16px 35px;
+				}
+				.listContent {
+					float: left;
+					width: 1120px;
+					margin-left: 66px;
+					background: #909090;
+				}
+				//选择医生弹出框
+				.doctorList_top span:nth-child(1) {
+					font-size: 14px;
+					font-family: MicrosoftYaHei;
+					color: rgba(102, 102, 102, 1);
+					line-height: 17px;
+					height: 17px;
+					text-indent: 0;
+					margin: 40px 0 0 60px;
+					float: left;
+				}
+				.doctorList_top select {
+					width: 140px;
+					height: 30px;
+					background: rgba(245, 248, 249, 1) !important;
+					border-radius: 4px;
+					float: left;
+					margin: 34px 0 0 30px;
+					border: 1px solid #d9d9d9;
+					text-indent: 10px;
+				}
+				.doctorList_top input {
+					width: 152px;
+					height: 28px;
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px;
+					float: left;
+					margin: 34px 0 0 15px;
+					border: 1px solid #d9d9d9;
+					padding: 0;
+					text-indent: 10px;
+				}
+				.doctorList_top button {
+					width: 60px;
+					height: 28px;
+					border-radius: 4px;
+					border: 1px solid #2acdc8;
+					float: left;
+					margin: 36px 0 0 30px;
+					color: rgba(42, 205, 200, 1);
+					cursor: pointer;
+					background: transparent;
+				}
+				.doctorList_top span:last-child {
+					width: 40px;
+					height: 40px;
+					background: rgba(255, 95, 87, 1);
+					float: right;
+					color: #ffffff;
+					font-size: 20px;
+					text-align: center;
+					text-indent: 10px;
+					line-height: 35px;
+					border-bottom-left-radius: 100%;
+					cursor: pointer;
+				}
+				.doctorList_content ul {
+					margin: 0 20px;
+					display: block;
+					width: auto;
+					height: 400px;
+					// background: #909090;
+				}
+				.doctorList_content ul li {
+					width: 250px;
+					height: 150px;
+					background: rgba(255, 255, 255, 1);
+					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+					float: left;
+					margin-left: 40px;
+					margin-top: 26px;
+					display: flex;
+				}
+				.doctorList_content ul li img {
+					width: 40px;
+					height: 40px;
+					margin: 5px auto;
+					display: table;
+				}
+				.doctorList_content ul li > div:nth-child(1) {
+					float: left;
+					width: 100px;
+					margin: 25px 0;
+					flex: 2;
+				}
+				.doctorList_content ul li > div:nth-child(1) > span {
+					width: 100%;
+					text-align: center;
+					height: 20px;
+					display: block;
+					line-height: 25px;
+				}
+				.doctorList_content ul li > div:nth-child(2) {
+					float: left;
+					width: 100px;
+					margin: 25px 0;
+					flex: 3;
+				}
+				.doctorList_content ul li > div:nth-child(2) > span {
+					float: left;
+					width: 100%;
+					font-size: 12px;
+					height: 33px;
+					line-height: 33px;
+				}
+
+				//日历列表
+				.calendarCotent{
+					width:1098px;
+					height:637px; 
+					background:rgba(255,255,255,1);
+					box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+					border-radius: 4px ;
+					margin-top:20px;
+				}
+				.calenderFilter{
+					width:1098px;
+					height:42px; 
+					background:rgba(255,255,255,1);
+					box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
+					border-radius: 4px 4px 0px 0px ;
+					position: relative; 
+				}
+				.filterCnter{
+					width: 50%;
+					margin: 0 auto;
+					display: flex;
+				}
+				.filterCnter span{
+					text-align:center;
+					line-height:42px;
+					height:42px;
+					cursor:pointer;
+					font-size:14px;
+					font-family:MicrosoftYaHei;
+					color:rgba(102,102,102,1);
+				}
+				.calenderFilterBtn{
+					position: absolute;
+					right: 10px;
+					top: 7px;
+					width:100px;
+					height:28px; 
+					background:rgba(42,205,200,1);
+					border-radius: 4px ;
+					border:none;
+					color:rgba(255,255,255,1);
+				}
+				.calenderBox{}
+				.calenderBox table{
+					border-collapse: collapse;
+				}
+				.calenderBox table tr{
+					border-bottom:1px solid #d8d8d8;
+				}
+				.calenderBox table tr td{
+					width:137px;
+					height:42px; 
+					text-align:center;
+					border:1px solid #d8d8d8;
+				}
+				.calenderBox table thead tr td{
+					background:rgba(240,240,240,1);
+				}
 			`}
     </style>
   )

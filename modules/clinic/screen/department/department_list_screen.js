@@ -94,16 +94,16 @@ class DepartmentListScreen extends Component {
               )
             })}
           </ul>
-          <PageCard
-            offset={page_info.offset}
-            limit={page_info.limit}
-            total={page_info.total}
-            onItemClick={({ offset, limit }) => {
-              const keyword = this.state.keyword
-              this.queryDepartmentList({ offset, limit, keyword })
-            }}
-          />
         </div>
+        <PageCard
+          offset={page_info.offset}
+          limit={page_info.limit}
+          total={page_info.total}
+          onItemClick={({ offset, limit }) => {
+            const keyword = this.state.keyword
+            this.queryDepartmentList({ offset, limit, keyword })
+          }}
+        />
         <style jsx>{`
           .filterBox {
             float: left;

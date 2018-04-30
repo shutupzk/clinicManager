@@ -74,6 +74,7 @@ class PageCard extends Component {
       <div>
         <footer className={'fenye flex tb-flex lr-flex'}>
           <article className='left'>共 {this.props.total} 条</article>
+          <div className={'pageContent'}>
           <span
             className={'fenyeItem otherPage'}
             onClick={() => {
@@ -81,9 +82,9 @@ class PageCard extends Component {
                 this.props.onItemClick({ offset: offset - limit < 0 ? 0 : offset - limit, limit })
               }
             }}
-          >{`pre`}</span>
+          >{`<`}</span>
           {array.map(({ offset, limit, omitted, iscurrent, page }, index) => {
-            if (omitted) return <span>...</span>
+            if (omitted) return <span className={`fenyeItem otherPage`}>...</span>
             let className = `fenyeItem otherPage`
             if (iscurrent) {
               className = 'fenyeItem curPageCss'
@@ -110,17 +111,23 @@ class PageCard extends Component {
               }
             }}
           >
-            {'next'}
+            {'>'}
           </span>
+          </div>
+          
         </footer>
         <style jsx>{`
           .fenye {
-            margin-top: 10px;
+            margin-top: 40px;
             padding: 10px;
             line-height: 26px;
             position: relative;
             text-align: center;
             font-size: 12px;
+            float: left;
+            width: 1098px;
+            margin-left: 66px;
+            display: block;
           }
           .fenye article {
             padding-left: 0.2rem;
@@ -130,13 +137,20 @@ class PageCard extends Component {
             padding: 0;
             margin: 0 ${theme.midmargin};
           }
+          .pageContent{
+            float:right;
+            margin-right: 20px;
+          }
           .fenyeItem {
-            width: 28px;
-            height: 28px;
-            background: rgba(255, 255, 255, 1);
+            width:24px;
+            height:24px; 
+            background:rgba(255,255,255,1);
+            border-radius: 4px ; 
             border-radius: 4px;
-            margin-right: 8px;
+            margin-right:10px;
             cursor:pointer;
+            display:block;
+            float: left;
           }
           .fenyeItem.curPageCss {
             color: #fff;

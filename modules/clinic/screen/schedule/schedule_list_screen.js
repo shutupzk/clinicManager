@@ -5,7 +5,7 @@ import { queryDoctorList } from '../../../../ducks'
 import moment from 'moment'
 
 class ScheduleListScreen extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       personnelType: 1,
@@ -14,12 +14,12 @@ class ScheduleListScreen extends Component {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     const { queryDoctorList, clinic_code } = this.props
     queryDoctorList({ clinic_code })
   }
 
-  getListData () {
+  getListData() {
     const { doctors } = this.props
     let array = []
     for (let key in doctors) {
@@ -28,19 +28,19 @@ class ScheduleListScreen extends Component {
     return array
   }
 
-  goToDetail ({ apiName }) {
+  goToDetail({ apiName }) {
     const { selectBaseApi } = this.props
     selectBaseApi({ apiName })
     Router.push('/apis/detail')
   }
 
-  goToEdit ({ apiName }) {
+  goToEdit({ apiName }) {
     const { selectBaseApi } = this.props
     selectBaseApi({ apiName })
     Router.push('/apis/edit')
   }
 
-  async toRemove ({ apiName }) {
+  async toRemove({ apiName }) {
     const confirmed = confirm('确定要删除  ' + apiName + '?')
     if (confirmed) {
       const { removeBaseApi } = this.props
@@ -51,8 +51,8 @@ class ScheduleListScreen extends Component {
     }
   }
 
-  renderTitle () {
-    // const { titleText, orderTitle, liPadding } = styles
+  renderTitle() {
+		// const { titleText, orderTitle, liPadding } = styles
     return (
       <ul className='flex tb-flex'>
         <li style={{ flex: 1, height: '40px', lineHeight: '40px' }}>序号</li>
@@ -65,7 +65,7 @@ class ScheduleListScreen extends Component {
     )
   }
 
-  renderRow ({ apiName, description }, index) {
+  renderRow({ apiName, description }, index) {
     const { liPadding, fenyeItem, buttonMiddle } = styles
     return (
       <ul style={{ ...liPadding }} className='flex tb-flex listItem' key={index}>
@@ -86,10 +86,10 @@ class ScheduleListScreen extends Component {
       </ul>
     )
   }
-  changeContent ({ type }) {
+  changeContent({ type }) {
     this.setState({ pageType: type })
   }
-  showDoctor () {
+  showDoctor() {
     let exercises = this.getListData()
     return (
       <div>
@@ -108,146 +108,151 @@ class ScheduleListScreen extends Component {
     )
   }
 
-// 显示日历列表
-  showCalendarList () {
+	// 显示日历列表
+  showCalendarList() {
     let nowWeekNum = this.state.nowWeekNum
     return (
-      <div className={'regisList'}>
-        <div className={'calenderFilter'}>
-          <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>
-						上周
-					</button>
-          <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
-						下周
-					</button>
-          <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: 1 })}>
-						本周
-					</button>
-          <button className={'calenderFilterBtn'}>复制上周排班</button>
-        </div>
-        <div className={'calenderBox'}>
-          <h4>
-            {moment()
-							.day(nowWeekNum)
-							.format('YYYY年MM月DD日')}至{moment()
-							.day(nowWeekNum + 6)
-							.format('MM月DD日')}
-          </h4>
-          <div className={'calendarContent'}>
-            <table>
-              <thead>
-                <tr>
-                  <td>人员名称</td>
-                  <td>科室名称</td>
-                  <td>
-										周一（{moment()
-											.day(nowWeekNum)
-											.format('MM-DD')}）
-									</td>
-                  <td>
-										周二（{moment()
-											.day(nowWeekNum + 1)
-											.format('MM-DD')}）
-									</td>
-                  <td>
-										周三（{moment()
-											.day(nowWeekNum + 2)
-											.format('MM-DD')}）
-									</td>
-                  <td>
-										周四（{moment()
-											.day(nowWeekNum + 3)
-											.format('MM-DD')}）
-									</td>
-                  <td>
-										周五（{moment()
-											.day(nowWeekNum + 4)
-											.format('MM-DD')}）
-									</td>
-                  <td>
-										周六（{moment()
-											.day(nowWeekNum + 5)
-											.format('MM-DD')}）
-									</td>
-                  <td>
-										周日（{moment()
-											.day(nowWeekNum + 6)
-											.format('MM-DD')}）
-									</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ height: '58px' }}>
-                  <td>人员名称</td>
-                  <td>科室名称</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                </tr>
-                <tr style={{ height: '58px' }}>
-                  <td>人员名称</td>
-                  <td>科室名称</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                  <td>
-										08:00-12:00；<br />14:00-18:00；
-									</td>
-                </tr>
-              </tbody>
-            </table>
+      <div className={'listContent'}>
+        <div className={'calendarCotent'}>
+          <div className={'calenderFilter'}>
+            {/* <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>
+							上一周
+						</button>
+            <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: 1 })}>
+							本周
+						</button>
+            <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
+							下一周
+            </button> */}
+            <div className={'filterCnter'}>
+              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>{'上一周'}</span>
+              <span style={{ flex: 1 }}>{'《'}</span>
+              <span style={{ flex: 1 }}>{'<'}</span>
+              <span style={{ flex: 11 }} onClick={() => this.setState({ nowWeekNum: 1 })}>本周（{moment()
+								.day(nowWeekNum)
+								.format('YYYY年MM月DD日')}至{moment()
+								.day(nowWeekNum + 6)
+								.format('MM月DD日')}）</span>
+              <span style={{ flex: 1 }}>{'>'}</span>
+              <span style={{ flex: 1 }}>{'》'}</span>
+              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>下一周</span>
+            </div>
+            <button className={'calenderFilterBtn'}>复制上周排班</button>
+          </div>
+          <div className={'calenderBox'}>
+            <div className={'calendarContent'}>
+              <table>
+                <thead>
+                  <tr>
+                    <td>人员名称</td>
+                    <td>科室名称</td>
+                    <td>
+											周一（{moment()
+												.day(nowWeekNum)
+												.format('MM-DD')}）
+										</td>
+                    <td>
+											周二（{moment()
+												.day(nowWeekNum + 1)
+												.format('MM-DD')}）
+										</td>
+                    <td>
+											周三（{moment()
+												.day(nowWeekNum + 2)
+												.format('MM-DD')}）
+										</td>
+                    <td>
+											周四（{moment()
+												.day(nowWeekNum + 3)
+												.format('MM-DD')}）
+										</td>
+                    <td>
+											周五（{moment()
+												.day(nowWeekNum + 4)
+												.format('MM-DD')}）
+										</td>
+                    <td>
+											周六（{moment()
+												.day(nowWeekNum + 5)
+												.format('MM-DD')}）
+										</td>
+                    <td>
+											周日（{moment()
+												.day(nowWeekNum + 6)
+												.format('MM-DD')}）
+										</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ height: '58px' }}>
+                    <td>人员名称</td>
+                    <td>科室名称</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                  </tr>
+                  <tr style={{ height: '58px' }}>
+                    <td>人员名称</td>
+                    <td>科室名称</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                    <td>
+											08:00-12:00；<br />14:00-18:00；
+										</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     )
   }
-  render () {
-    // const { fenyeItem, buttonLarge } = styles
+  render() {
+		// const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
         <div className={'formList'}>
-          <div className={'childTopBar'}>
-            <div className={'regisListTop'}>
-              <input className={'searchbox'} style={{ marginLeft: '25px' }} type='text' placeholder='搜索科室' />
+          <div className={'filterBox'} style={{ marginTop: '30px' }}>
+            <div className={'boxLeft'}>
+              <input type='text' placeholder='搜索科室' />
               <input className={'searchbox'} style={{ marginLeft: '15px' }} type='text' placeholder='搜索医生' />
-              <button className={'searchBtn'}>查询</button>
+              <button>查询</button>
             </div>
-            {this.state.showType === 1 ? this.showCalendarList() : ''}
-            {this.state.showType === 2 ? this.showPatientList() : ''}
-            <div className={'pagination'} />
           </div>
         </div>
         {this.state.pageType === 1 ? this.showCalendarList() : ''}

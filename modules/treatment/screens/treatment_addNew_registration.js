@@ -79,6 +79,7 @@ class AddNewRegistrationScreen extends Component {
   }
 	// 显示添加新增
   showAddNew() {
+    if (this.state.pageType !== 1) return null
     let patient = this.state.patientInfo
     const { cities, counties } = this.state
     let departments = this.queryDepartment()
@@ -292,6 +293,7 @@ class AddNewRegistrationScreen extends Component {
   }
 	// 显示新增列表
   showNewList() {
+    if (this.state.pageType !== 2) return null
     const array = this.getTriagePatientListData()
     return (
       <div className={'newList'}>
@@ -330,9 +332,13 @@ class AddNewRegistrationScreen extends Component {
                     <a>登记时间：</a>
                     <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
                   </span>
+                    <span>
+                      <a>更新时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>更新时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</span>
+                    {/* <span>更新时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</span> */}
                     <span onClick={() => this.seeDetail()}>查看详情》</span>
                   </div>
                 </li>
@@ -371,7 +377,9 @@ class AddNewRegistrationScreen extends Component {
 						登记列表
 					</span>
         </div>
-        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
+        {this.showAddNew()}
+        {this.showNewList()}
+        {/* {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()} */}
         <style jsx global>{`
 					.contentMenu {
 						width: 100%;
@@ -532,23 +540,24 @@ class AddNewRegistrationScreen extends Component {
 						font-size: 14px;
 					}
 					.itemBottom {
-						width: 332px;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
+						width: 100%;
+						height: 39px;
+						border-top: 2px solid #42b7ba;
+						display: flex;
+						flex-direction: row;
+						justify-content: center;
+						align-items: center;
 					}
 					.itemBottom span {
-						float: left;
+						flex: 1;
 						font-size: 12px;
 						font-family: MicrosoftYaHei;
+						color: rgba(49, 176, 179, 1);
+						height: 39px;
+						line-height: 39px;
+            text-align: center;
+            cursor:pointer
 					}
-					.itemBottom span:nth-child(1) {
-						color: rgba(153, 153, 153, 1);
-					}
-					.itemBottom span:nth-child(2) {
-						float: right;
-						color: rgba(42, 205, 200, 1);
-						cursor: pointer;
-          }
           .saveBtn {
             width: 100px;
             height: 28px;
