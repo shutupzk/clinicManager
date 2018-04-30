@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-
+import { PageCard } from '../../../../components'
 class AddmisionScreen extends Component {
   constructor(props) {
     super(props)
@@ -16,10 +16,20 @@ class AddmisionScreen extends Component {
   }
 
   componentDidMount() {
-    const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
+    this.quetryTriagePatientsList({ status_start: 20, status_end: 20 })
   }
-	// 改变显示内容
+
+  quetryTriagePatientsList({ status_start, status_end, offset, limit }) {
+    const { clinic_id, triagePatientsList } = this.props
+    let params = { clinic_id, is_today: true, offset, limit }
+    if (status_start && status_end) {
+      params.status_start = status_start
+      params.status_end = status_end
+    }
+    triagePatientsList(params)
+  }
+
+  // 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
@@ -60,7 +70,7 @@ class AddmisionScreen extends Component {
     })
   }
 
-	// 显示分诊记录
+  // 显示分诊记录
   showTriageRecord() {
     const array = this.getTriagePatientListData(true)
     return (
@@ -81,8 +91,8 @@ class AddmisionScreen extends Component {
                     <span className={'status'}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
                   </div>
                   <div>
-										就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
-									</div>
+                    就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
+                  </div>
                   <div>身份证号：{patient.cert_no}</div>
                   <div>接诊科室：{patient.department_name}</div>
                   <div>接诊医生：{patient.doctor_name}</div>
@@ -102,18 +112,20 @@ class AddmisionScreen extends Component {
     )
   }
 
-	// 切换显示列表
+  // 切换显示列表
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
-	// 显示分诊列表
+  // 显示分诊列表
   showTriageList() {
-    const array = this.getUnTriagePatientListData(false)
+    const { pageType } = this.state
+    if (pageType !== 1) return
+    const { triagePatients, patient_page_info } = this.props
     return (
       <div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
+            {triagePatients.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
               return (
@@ -126,29 +138,29 @@ class AddmisionScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>门诊ID：</a>
-                    <a>{patient.cert_no}</a>
-                  </span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>接诊</span>
@@ -174,11 +186,11 @@ class AddmisionScreen extends Component {
       <div>
         <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						今日待接诊
-					</span>
+            今日待接诊
+          </span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-						今日已接诊
-					</span>
+            今日已接诊
+          </span>
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
