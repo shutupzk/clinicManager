@@ -4,7 +4,7 @@ import Router from 'next/router'
 import moment from 'moment'
 import { triagePatientsList, triageDoctorsList, triagePatient } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
-// import { PageCard } from '../../../components'
+import { PageCard } from '../../../components'
 
 class TriageScreen extends Component {
   constructor(props) {
@@ -13,29 +13,35 @@ class TriageScreen extends Component {
       pageType: 1,
       showType: 1,
       alertType: 0,
+      status: 10,
       alertPageType: 1,
       nowWeekNum: 1
     }
   }
 
   componentDidMount() {
-    this.queryList()
+    this.quetryTriagePatientsList({ status_start: 10, status_end: 10 })
   }
 
-  queryList() {
+  quetryTriagePatientsList({ status_start, status_end, offset, limit }) {
     const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
+    let params = { clinic_id, is_today: true, offset, limit }
+    if (status_start && status_end) {
+      params.status_start = status_start
+      params.status_end = status_end
+    }
+    triagePatientsList(params)
   }
 
-	// 改变显示内容
+  // 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
-	// 完善健康档案
+  // 完善健康档案
   showCompleteHealthFile() {
     this.setState({ alertType: 1 })
   }
-	// 显示体征表单
+  // 显示体征表单
   showBodySigns() {
     return (
       <div>
@@ -147,16 +153,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-						保存
-					</button>
+            保存
+          </button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-						取消
-					</button>
+            取消
+          </button>
         </div>
       </div>
     )
   }
-	// 显示诊前病历
+  // 显示诊前病历
   showPreMedicalRecords() {
     return (
       <div>
@@ -169,10 +175,10 @@ class TriageScreen extends Component {
               <label>过敏史</label>
               <label style={{ width: '150px', lineHeight: '30px' }}>
                 <input type='radio' name='allergy' style={{ width: 'auto', height: 'auto' }} />是
-							</label>
+              </label>
               <label style={{ width: '150px', lineHeight: '30px' }}>
                 <input type='radio' name='allergy' style={{ width: 'auto', height: 'auto' }} />否
-							</label>
+              </label>
               <input type='text' placeholder={'对什么过敏'} />
             </li>
             <li>
@@ -203,16 +209,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-						保存
-					</button>
+            保存
+          </button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-						取消
-					</button>
+            取消
+          </button>
         </div>
       </div>
     )
   }
-	// 诊前预诊
+  // 诊前预诊
   showPreDiagnosisRecords() {
     return (
       <div>
@@ -223,7 +229,7 @@ class TriageScreen extends Component {
           <ul>
             <li>
               <label>
-								主诉<b style={{ color: 'red' }}>*</b>
+                主诉<b style={{ color: 'red' }}>*</b>
               </label>
               <textarea style={{ height: '70px' }}>asda</textarea>
             </li>
@@ -247,15 +253,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-						保存
-					</button>
+            保存
+          </button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-						取消
-					</button>
+            取消
+          </button>
         </div>
       </div>
     )
   }
+
   completeHealthFile() {
     return (
       <div className={'healthFile'}>
@@ -265,14 +272,14 @@ class TriageScreen extends Component {
         </div>
         <div className={'healthFile_menu'}>
           <span className={this.state.alertPageType === 1 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 1 })}>
-						体征
-					</span>
+            体征
+          </span>
           <span className={this.state.alertPageType === 2 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 2 })}>
-						诊前病历
-					</span>
+            诊前病历
+          </span>
           <span className={this.state.alertPageType === 3 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 3 })}>
-						诊前预诊
-					</span>
+            诊前预诊
+          </span>
         </div>
         {this.state.alertPageType === 1 ? this.showBodySigns() : ''}
         {this.state.alertPageType === 2 ? this.showPreMedicalRecords() : ''}
@@ -280,7 +287,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-	// 选择医生
+  // 选择医生
   showChooseDoctor(clinic_triage_patient_id) {
     const { triageDoctorsList, clinic_id } = this.props
     triageDoctorsList({ clinic_id })
@@ -324,25 +331,26 @@ class TriageScreen extends Component {
                   <li
                     key={index}
                     onClick={async () => {
-                    let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
-                    let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
-                    if (error) {
-                    return alert('分诊失败', error)
-                  } else {
-                    return alert('分诊成功')
-                  }
-                  }}
-									>
+                      let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
+                      let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
+
+                      if (error) {
+                        return alert('分诊失败: ' + error)
+                      } else {
+                        return alert('分诊成功')
+                      }
+                    }}
+                  >
                     <div>
-                    <img src={'/static/login/u49.png'} />
-                    <span>医生</span>
-                    <span>{doctor.doctor_name}</span>
-                  </div>
+                      <img src={'/static/login/u49.png'} />
+                      <span>医生</span>
+                      <span>{doctor.doctor_name}</span>
+                    </div>
                     <div>
-                    <span>科室名称：{doctor.department_name}</span>
-                    <span>今日待接诊：{doctor.wait_total}人</span>
-                    <span>今日已接诊：{doctor.triaged_total}人</span>
-                  </div>
+                      <span>科室名称：{doctor.department_name}</span>
+                      <span>今日待接诊：{doctor.wait_total}人</span>
+                      <span>今日已接诊：{doctor.triaged_total}人</span>
+                    </div>
                   </li>
                 )
               })}
@@ -353,28 +361,14 @@ class TriageScreen extends Component {
       </div>
     )
   }
-	// 换诊
+  // 换诊
   changeDoctor() {}
 
-  getUnTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (patient.treat_status) continue
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
-      return 1
-    })
-  }
-
-	// 显示分诊列表
+  // 显示分诊列表
   showTriageList() {
-    const array = this.getUnTriagePatientListData(false)
+    const { triagePatients, patient_page_info } = this.props
+    const { pageType } = this.state
+    if (pageType !== 1) return
     return (
       <div>
         <div className={'filterBox'}>
@@ -382,13 +376,10 @@ class TriageScreen extends Component {
             <input type='text' placeholder='搜索科室' />
             <button>查询</button>
           </div>
-          <div className={'boxRight'}>
-            <button onClick={() => this.addNewReservation()}>新增预约</button>
-          </div>
         </div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
+            {triagePatients.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
@@ -401,29 +392,29 @@ class TriageScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>门诊ID：</a>
-                    <a>{patient.cert_no}</a>
-                  </span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
@@ -435,6 +426,15 @@ class TriageScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
+        <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            const keyword = this.state.keyword
+            this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 10 })
+          }}
+        />
       </div>
     )
   }
@@ -453,9 +453,11 @@ class TriageScreen extends Component {
       return 1
     })
   }
-	// 显示分诊记录
+  // 显示分诊记录
   showTriageRecord() {
-    const array = this.getTriagedPatientListData()
+    const { triagePatients, patient_page_info } = this.props
+    const { pageType } = this.state
+    if (pageType !== 2) return
     return (
       <div>
         <div className={'filterBox'}>
@@ -463,13 +465,10 @@ class TriageScreen extends Component {
             <input type='text' placeholder='搜索科室' />
             <button>查询</button>
           </div>
-          <div className={'boxRight'}>
-            <button onClick={() => this.addNewReservation()}>新增预约</button>
-          </div>
         </div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
+            {triagePatients.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
@@ -479,38 +478,38 @@ class TriageScreen extends Component {
                     <span>{patient.sex === 0 ? '女' : '男 '}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>
-                    {patient.status !== 20 ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
-                  </span>
+                      {patient.status !== 20 ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
+                    </span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>门诊ID：</a>
-                    <a>{patient.cert_no}</a>
-                  </span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
-                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>选择医生</span>
+                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>换诊</span>
                   </div>
                 </li>
               )
@@ -518,39 +517,48 @@ class TriageScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
+        <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            const keyword = this.state.keyword
+            this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 20, status_end: 90 })
+          }}
+        />
       </div>
     )
   }
 
-	// 切换显示列表
+  // 切换显示列表
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
-	// 显示日历列表
+  // 显示日历列表
   showCalendarList() {
-		// const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    // const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     let nowWeekNum = this.state.nowWeekNum
 
     return (
       <div className={'regisList'}>
         <div className={'calenderFilter'}>
           <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>
-						上周
-					</button>
+            上周
+          </button>
           <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
-						下周
-					</button>
+            下周
+          </button>
           <button className={'calenderFilterBtn'} onClick={() => this.setState({ nowWeekNum: 1 })}>
-						本周
-					</button>
+            本周
+          </button>
         </div>
         <div className={'calenderBox'}>
           <h4>
             {moment()
-							.day(nowWeekNum)
-							.format('YYYY年MM月DD日')}至{moment()
-							.day(nowWeekNum + 6)
-							.format('MM月DD日')}
+              .day(nowWeekNum)
+              .format('YYYY年MM月DD日')}至{moment()
+              .day(nowWeekNum + 6)
+              .format('MM月DD日')}
           </h4>
           <div className={'calendarContent'}>
             <table>
@@ -558,66 +566,66 @@ class TriageScreen extends Component {
                 <tr>
                   <td />
                   <td>
-										周一（{moment()
-											.day(nowWeekNum)
-											.format('MM-DD')}）
-									</td>
+                    周一（{moment()
+                      .day(nowWeekNum)
+                      .format('MM-DD')}）
+                  </td>
                   <td>
-										周二（{moment()
-											.day(nowWeekNum + 1)
-											.format('MM-DD')}）
-									</td>
+                    周二（{moment()
+                      .day(nowWeekNum + 1)
+                      .format('MM-DD')}）
+                  </td>
                   <td>
-										周三（{moment()
-											.day(nowWeekNum + 2)
-											.format('MM-DD')}）
-									</td>
+                    周三（{moment()
+                      .day(nowWeekNum + 2)
+                      .format('MM-DD')}）
+                  </td>
                   <td>
-										周四（{moment()
-											.day(nowWeekNum + 3)
-											.format('MM-DD')}）
-									</td>
+                    周四（{moment()
+                      .day(nowWeekNum + 3)
+                      .format('MM-DD')}）
+                  </td>
                   <td>
-										周五（{moment()
-											.day(nowWeekNum + 4)
-											.format('MM-DD')}）
-									</td>
+                    周五（{moment()
+                      .day(nowWeekNum + 4)
+                      .format('MM-DD')}）
+                  </td>
                   <td>
-										周六（{moment()
-											.day(nowWeekNum + 5)
-											.format('MM-DD')}）
-									</td>
+                    周六（{moment()
+                      .day(nowWeekNum + 5)
+                      .format('MM-DD')}）
+                  </td>
                   <td>
-										周日（{moment()
-											.day(nowWeekNum + 6)
-											.format('MM-DD')}）
-									</td>
+                    周日（{moment()
+                      .day(nowWeekNum + 6)
+                      .format('MM-DD')}）
+                  </td>
                 </tr>
               </thead>
               <tbody>
                 <tr style={{ height: '58px' }}>
                   <td>预约</td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                   <td>
-										上午5人<br />下午5人
-									</td>
+                    上午5人<br />下午5人
+                  </td>
                 </tr>
                 <tr>
                   <td>07:00-08:00</td>
@@ -726,7 +734,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-	// 显示就诊人列表
+  // 显示就诊人列表
   showPatientList() {
     return (
       <div className={'regisList'}>
@@ -784,11 +792,11 @@ class TriageScreen extends Component {
     )
   }
 
-	// 新增预约
+  // 新增预约
   addNewReservation() {
     Router.push('/treatment/reservation_add')
   }
-	// 预约管理
+  // 预约管理
   showReservation() {
     return (
       <div className={'formList'}>
@@ -833,209 +841,221 @@ class TriageScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						分诊
-					</span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-						分诊记录
-					</span>
+          <span
+            className={this.state.pageType === 1 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({ pageType: 1 })
+              this.quetryTriagePatientsList({ status_start: 10, status_end: 10 })
+            }}
+          >
+            分诊
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({ pageType: 2 })
+              this.quetryTriagePatientsList({ status_start: 20, status_end: 90 })
+            }}
+          >
+            分诊记录
+          </span>
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
-						预约管理
-					</span>
+            预约管理
+          </span>
         </div>
-        {this.state.pageType === 1 ? this.showTriageList() : ''}
-        {this.state.pageType === 2 ? this.showTriageRecord() : ''}
+        {this.showTriageList()}
+        {this.showTriageRecord()}
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
         <style jsx global>{`
-					.childTopBar {
-						float: left;
-						width: 100%;
-						// background:#909090;
-					}
-					.childTopBar span {
-						margin-top: 31px;
-						width: 126px;
-						height: 37px;
-						background: rgba(255, 255, 255, 1);
-						float: left;
-						text-align: center;
-						line-height: 37px;
-						cursor: pointer;
-						margin-bottom: 10px;
-					}
-					.childTopBar span:nth-child(1) {
-						margin-left: 66px;
-					}
-					.childTopBar span:hover,
-					.childTopBar span.sel {
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px 0px 0px 4px;
-						font-size: 14px;
-						font-family: MicrosoftYaHei-Bold;
-						color: rgba(255, 255, 255, 1);
-					}
-					.childTopBar span:nth-child(2):hover,
-					.childTopBar span.sel {
-						border-radius: 0;
-					}
-					.childTopBar span:nth-child(3):hover,
-					.childTopBar span.sel {
-						border-radius: 4px 4px 0px 0px;
-					}
-					.filterBox {
-						float: left;
-						width: 1098px;
-						height: 60px;
-						background: rgba(255, 255, 255, 1);
-						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-						border-radius: 4px;
-						margin-left: 66px;
-					}
-					.filterBox .boxLeft {
-						float: left;
-					}
-					.filterBox .boxLeft input {
-						float: left;
-						width: 328px;
-						height: 28px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						border: 1px solid #d9d9d9;
-						margin: 16px 30px;
-						text-indent: 10px;
-						padding: 0;
-					}
-					.filterBox .boxLeft button {
-						float: left;
-						width: 60px;
-						height: 28px;
-						border-radius: 4px;
-						border: 1px solid #2acdc8;
-						color: rgba(42, 205, 200, 1);
-						font-size: 12px;
-						margin: 16px 0;
-						background: none;
-						cursor: pointer;
-					}
-					.filterBox .boxRight {
-						float: right;
-					}
-					.filterBox .boxRight button {
-						float: left;
-						width: 100px;
-						height: 28px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						border: none;
-						color: rgba(255, 255, 255, 1);
-						font-size: 12px;
-						cursor: pointer;
-						margin: 16px 35px;
+          .childTopBar {
+            float: left;
+            width: 100%;
+            // background:#909090;
+          }
+          .childTopBar span {
+            margin-top: 31px;
+            width: 126px;
+            height: 37px;
+            background: rgba(255, 255, 255, 1);
+            float: left;
+            text-align: center;
+            line-height: 37px;
+            cursor: pointer;
+            margin-bottom: 10px;
+          }
+          .childTopBar span:nth-child(1) {
+            margin-left: 66px;
+          }
+          .childTopBar span:hover,
+          .childTopBar span.sel {
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px 0px 0px 4px;
+            font-size: 14px;
+            font-family: MicrosoftYaHei-Bold;
+            color: rgba(255, 255, 255, 1);
+          }
+          .childTopBar span:nth-child(2):hover,
+          .childTopBar span.sel {
+            border-radius: 0;
+          }
+          .childTopBar span:nth-child(3):hover,
+          .childTopBar span.sel {
+            border-radius: 4px 4px 0px 0px;
+          }
+          .filterBox {
+            float: left;
+            width: 1098px;
+            height: 60px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            margin-left: 66px;
+          }
+          .filterBox .boxLeft {
+            float: left;
+          }
+          .filterBox .boxLeft input {
+            float: left;
+            width: 328px;
+            height: 28px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            margin: 16px 30px;
+            text-indent: 10px;
+            padding: 0;
+          }
+          .filterBox .boxLeft button {
+            float: left;
+            width: 60px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42, 205, 200, 1);
+            font-size: 12px;
+            margin: 16px 0;
+            background: none;
+            cursor: pointer;
+          }
+          .filterBox .boxRight {
+            float: right;
+          }
+          .filterBox .boxRight button {
+            float: left;
+            width: 100px;
+            height: 28px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px;
+            border: none;
+            color: rgba(255, 255, 255, 1);
+            font-size: 12px;
+            cursor: pointer;
+            margin: 16px 35px;
           }
           .listContent {
-						float: left;
-						width: 1120px;
-						margin-left: 66px;
-						// background: #909090;
-					}
-					.listContent ul {
-						float: left;
-						margin: 10px 0 0 0;
-					}
-					.listContent ul li {
-						width: 360px;
-						height: 270px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 7px;
-						margin: 10px 10px 0 0;
-						float: left;
-						display: flex;
-						flex-direction: column;
-					}
-					.itemTop {
-						border-bottom: 2px solid #f4f7f8;
-						margin: 10px 14px 0 14px;
-						height: 37px;
-						// display: flex;
-						// flex-direction: row;
-						// align-items: center;
-					}
-					.itemTop span:nth-child(1) {
-						width: auto;
-						height: 19px;
-						font-size: 16px;
-						font-family: MicrosoftYaHei;
-						color: rgba(51, 51, 51, 1);
-						margin-left: 12px;
-					}
-					.itemTop span:nth-child(2) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(3) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(4) {
-						width: 60px;
-						height: 20px;
-						border-radius: 10px;
-						float: right;
-						text-align: center;
-					}
-					.itemCenter {
-						flex: 1;
-						display: flex;
-						flex-direction: column;
-						width: 332px;
-						margin: 10px auto 0 auto;
-						justify-content: center;
-					}
-					.itemCenter span {
-						display: flex;
-						flex-direction: row;
-						height: 35px;
-						line-height: 26px;
-						margin: 0px 0px 0 12px;
-					}
-					.itemCenter span a:nth-child(1) {
-						width: 75px;
-						color: #666666;
-						font-size: 14px;
-					}
-					.itemCenter span a:nth-child(2) {
-						color: #333333;
-						font-size: 14px;
-					}
-					.itemBottom {
-						width: 100%;
-						height: 39px;
-						border-top: 2px solid #42b7ba;
-						display: flex;
-						flex-direction: row;
-						justify-content: center;
-						align-items: center;
-					}
-					.itemBottom span {
-						flex: 1;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-						color: rgba(49, 176, 179, 1);
-						height: 39px;
-						line-height: 39px;
-						text-align: center;
-					}
-					.itemBottom span:nth-child(1) {
-						border-right: 2px solid #31b0b3;
-					}
-					.itemBottom span:nth-child(2) {
-						// border-right: 2px solid #31b0b3;
+            float: left;
+            width: 1120px;
+            margin-left: 66px;
+            // background: #909090;
+          }
+          .listContent ul {
+            float: left;
+            margin: 10px 0 0 0;
+          }
+          .listContent ul li {
+            width: 360px;
+            height: 270px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 7px;
+            margin: 10px 10px 0 0;
+            float: left;
+            display: flex;
+            flex-direction: column;
+          }
+          .itemTop {
+            border-bottom: 2px solid #f4f7f8;
+            margin: 10px 14px 0 14px;
+            height: 37px;
+            // display: flex;
+            // flex-direction: row;
+            // align-items: center;
+          }
+          .itemTop span:nth-child(1) {
+            width: auto;
+            height: 19px;
+            font-size: 16px;
+            font-family: MicrosoftYaHei;
+            color: rgba(51, 51, 51, 1);
+            margin-left: 12px;
+          }
+          .itemTop span:nth-child(2) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            margin: 2px 0 0 12px;
+          }
+          .itemTop span:nth-child(3) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            margin: 2px 0 0 12px;
+          }
+          .itemTop span:nth-child(4) {
+            width: 60px;
+            height: 20px;
+            border-radius: 10px;
+            float: right;
+            text-align: center;
+          }
+          .itemCenter {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 332px;
+            margin: 10px auto 0 auto;
+            justify-content: center;
+          }
+          .itemCenter span {
+            display: flex;
+            flex-direction: row;
+            height: 35px;
+            line-height: 26px;
+            margin: 0px 0px 0 12px;
+          }
+          .itemCenter span a:nth-child(1) {
+            width: 75px;
+            color: #666666;
+            font-size: 14px;
+          }
+          .itemCenter span a:nth-child(2) {
+            color: #333333;
+            font-size: 14px;
+          }
+          .itemBottom {
+            width: 100%;
+            height: 39px;
+            border-top: 2px solid #42b7ba;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+          .itemBottom span {
+            flex: 1;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: rgba(49, 176, 179, 1);
+            height: 39px;
+            line-height: 39px;
+            text-align: center;
+          }
+          .itemBottom span:nth-child(1) {
+            border-right: 2px solid #31b0b3;
+          }
+          .itemBottom span:nth-child(2) {
+            // border-right: 2px solid #31b0b3;
           }
           .doctorList_top span:nth-child(1) {
             font-size: 14px;
@@ -1141,7 +1161,7 @@ class TriageScreen extends Component {
             height: 33px;
             line-height: 33px;
           }
-				`}</style>
+        `}</style>
         {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
     )
