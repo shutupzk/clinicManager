@@ -72,11 +72,6 @@ class RightContent extends Component {
   }
   onWindowResize() {
     let winWidth1 = window.innerWidth
-		// const winHeight = window.innerHeight;
-		// console.log("winWidth=="+winHeight+"==="+window.outerHeight);
-		// if(winHeight < window.outerHeight){
-		//   winWidth1 = winWidth1-17;
-		// }
     this.setState({ windowWidth: winWidth1, windowHeight: window.innerHeight })
   }
 

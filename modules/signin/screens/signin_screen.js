@@ -20,12 +20,10 @@ class SigninScreen extends Component {
     const password = this.state.password
     if (!username) {
       alert('请输入账号')
-			// this.props.showPrompt({ text: '请输入账号' })
       return
     }
     if (!password) {
       alert('请输入密码')
-			// this.props.showPrompt({ text: '请输入密码' })
       return
     }
 
@@ -36,7 +34,6 @@ class SigninScreen extends Component {
   render() {
     return (
       <div className={'loginPage'}>
-        {/* <img className={'loginLogo'} src={'/staic/login/login_logo.png'} /> */}
         <div className={'loginLogo'} />
         <div className={'login_border'} />
         <div className={'login_welcome'}>

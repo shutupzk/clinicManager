@@ -6,16 +6,10 @@ import { RightContent } from '../../../components'
 const Layout = props => {
   return (
     <main>
-      {/* <div className={'mask'}></div> */}
       <Head title={props.title} />
       <div>
         <ConLayout {...props} />
         <RightContent {...props} />
-        {/* <Prompt /> */}
-        {/* <div style={{ overflow: 'auto' }}>
-          <ConLayout {...props} />
-        </div> */}
-        {/* <FooterBar notLoginPage /> */}
       </div>
       {styles()}
     </main>

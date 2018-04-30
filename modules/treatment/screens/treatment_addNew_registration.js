@@ -38,7 +38,7 @@ class AddNewRegistrationScreen extends Component {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id })
   }
-
+	// 保存新增登记
   async submit() {
     const { addTriagePatientsList, clinic_id, personnel_id } = this.props
     let patientInfo = this.state.patientInfo
@@ -70,7 +70,6 @@ class AddNewRegistrationScreen extends Component {
     for (let key in departments) {
       array.push(departments[key])
     }
-		// console.log('array', array)
     return array
   }
   setPatientInfo(e, key) {
@@ -81,9 +80,7 @@ class AddNewRegistrationScreen extends Component {
 	// 显示添加新增
   showAddNew() {
     let patient = this.state.patientInfo
-		// console.log('patient', patient)
     const { cities, counties } = this.state
-		// const searchView = this.state.searchView
     let departments = this.queryDepartment()
     return (
       <div className={'formList'}>
@@ -223,7 +220,6 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={1}
-									// checked={patient.visit_type === 1}
                   onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
                 <label htmlFor='first'>首诊</label>
@@ -232,7 +228,6 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={2}
-									// checked={patient.visit_type === 2}
                   style={{ marginLeft: '15px' }}
                   onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
@@ -242,7 +237,6 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={3}
-									// checked={patient.visit_type === 3}
                   style={{ marginLeft: '15px' }}
                   onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
@@ -280,125 +274,6 @@ class AddNewRegistrationScreen extends Component {
 						</button>
           </div>
         </div>
-        <style>
-          {`
-            .saveBtn{
-              width:100px;
-              height:28px; 
-              background:rgba(42,205,200,1);
-              border-radius: 4px ; 
-            }
-            .formList{
-              width: 1098px;
-              align-items: center;
-              margin: 31px 66px 33px 32px;
-              background: rgba(255,255,255,1);
-              box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-              border-radius: 4px;
-              display: block;
-              float: left;
-            }
-            .titleLabel{
-              height:19px; 
-              float: left;
-              font-size:16px;
-              font-family:MicrosoftYaHei;
-              color:rgba(102,102,102,1);
-              line-height:19px;
-            }
-            .line{
-              height:1px; 
-              width: 1000px;
-              background:rgba(238,238,238,1);
-              margin: 21px 0 0 0;
-            }
-            .formList ul {
-              width: 1000px;
-              height: auto;
-              margin: 0 auto;
-            }
-            .formList ul li {
-              float: left;
-              margin-top: 30px;
-              display:flex;
-              flex-direction: column;
-              position:relative;
-              width: 49%;
-              // background: #909090;
-              margin-left: 1%;
-            }
-            .formList ul li > label {
-              height:14px; 
-              font-size:14px;
-              font-family:MicrosoftYaHei;
-              color:rgba(102,102,102,1);
-              line-height:14px;
-            }
-            .formList ul li > input {
-              flex: 1;
-              height:40px; 
-              margin-top: 17px;
-              background:rgba(245,248,249,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-            }
-            .formList ul li > select {
-              margin-top: 17px;
-              line-height:40px;
-              height:40px;
-              background:rgba(255,255,255,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-              margin-right: 8px;
-            }
-            .liDiv {
-              display:flex;
-              flex-direction:row;
-              align-items:center;
-              height: 40px;
-              with: 100%;
-              margin-top: 17px;
-            }
-            .liDiv select {
-              line-height:40px;
-              width:100px;
-              height:40px; 
-              background:rgba(255,255,255,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-              margin-right: 8px;
-            }
-            .liDiv input[type='text'] {
-              flex: 1;
-              height:40px;
-              background:rgba(245,248,249,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-            }
-            .liDiv input[type='radio'] {
-              width:14px;
-              height:14px; 
-              background:rgba(255,255,255,1);
-              box-sizing: inherit;
-              border: 1px solid #108EE9;
-            }
-            .liDiv label {
-              height:18px; 
-              font-size:10px;
-              font-family:MicrosoftYaHei;
-              color:rgba(102,102,102,1);
-              line-height:18px;
-            }
-            .subButton {
-              width:100px;
-              height:28px; 
-              background:rgba(42,205,200,1);
-              border-radius: 4px ; 
-              color: #FFFFFF;
-              border: 0
-            }
-            `}
-        </style>
       </div>
     )
   }
@@ -439,10 +314,6 @@ class AddNewRegistrationScreen extends Component {
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
-                    {/* <span>
-                      <a>门诊ID：</a>
-                      <a>{patient.cert_no}</a>
-                    </span> */}
                     <span>
                     <a>接诊科室：</a>
                     <a>{patient.department_name}</a>
@@ -470,7 +341,38 @@ class AddNewRegistrationScreen extends Component {
           </ul>
           {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
-        <style jsx>{`
+      </div>
+    )
+  }
+	// 查看详情
+  seeDetail() {
+    Router.push('/treatment/newListDetail')
+  }
+
+  render() {
+    return (
+      <div>
+        <div className={'contentMenu'}>
+          <span
+            className={this.state.pageType === 1 ? 'sel' : ''}
+            onClick={() => {
+              this.queryPatients()
+              this.changeContent({ type: 1 })
+            }}
+					>
+						+ 新增登记
+					</span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.changeContent({ type: 2 })
+            }}
+					>
+						登记列表
+					</span>
+        </div>
+        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
+        <style jsx global>{`
 					.contentMenu {
 						width: 100%;
 						// background: #909090;
@@ -498,8 +400,8 @@ class AddNewRegistrationScreen extends Component {
 						background: rgba(42, 205, 200, 1);
 						border-radius: 4px;
 						color: #ffffff;
-					}
-					.newList_top {
+          }
+          .newList_top {
 						// background: #909090;
 						height: 34px;
 						max-width: 1146px;
@@ -646,68 +548,122 @@ class AddNewRegistrationScreen extends Component {
 						float: right;
 						color: rgba(42, 205, 200, 1);
 						cursor: pointer;
-					}
-				`}</style>
-      </div>
-    )
-  }
-	// 查看详情
-  seeDetail() {
-    Router.push('/treatment/newListDetail')
-  }
-
-  render() {
-    return (
-      <div>
-        <div className={'contentMenu'}>
-          <span
-            className={this.state.pageType === 1 ? 'sel' : ''}
-            onClick={() => {
-              this.queryPatients()
-              this.changeContent({ type: 1 })
-            }}
-					>
-						+ 新增登记
-					</span>
-          <span
-            className={this.state.pageType === 2 ? 'sel' : ''}
-            onClick={() => {
-              this.changeContent({ type: 2 })
-            }}
-					>
-						登记列表
-					</span>
-        </div>
-        {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()}
-        <style jsx>{`
-					.contentMenu {
-						width: 100%;
-						// background: #909090;
-						float: left;
-					}
-					.contentMenu span:nth-child(1) {
-						margin: 24px 0 0 32px;
-					}
-					.contentMenu span {
-						width: 88px;
-						height: 32px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						float: left;
-						text-align: center;
-						line-height: 32px;
-						color: #000000;
-						cursor: pointer;
-						margin-top: 24px;
-						margin-left: 10px;
-					}
-					.contentMenu span.sel {
-						width: 100px;
-						height: 32px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						color: #ffffff;
-					}
+          }
+          .saveBtn {
+            width: 100px;
+            height: 28px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px;
+          }
+          .formList {
+            width: 1098px;
+            align-items: center;
+            margin: 31px 66px 33px 32px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            display: block;
+            float: left;
+          }
+          .titleLabel {
+            height: 19px;
+            float: left;
+            font-size: 16px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            line-height: 19px;
+          }
+          .line {
+            height: 1px;
+            width: 1000px;
+            background: rgba(238, 238, 238, 1);
+            margin: 21px 0 0 0;
+          }
+          .formList ul {
+            width: 1000px;
+            height: auto;
+            margin: 0 auto;
+          }
+          .formList ul li {
+            float: left;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            width: 49%;
+            // background: #909090;
+            margin-left: 1%;
+          }
+          .formList ul li > label {
+            height: 14px;
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            line-height: 14px;
+          }
+          .formList ul li > input {
+            flex: 1;
+            height: 40px;
+            margin-top: 17px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+          }
+          .formList ul li > select {
+            margin-top: 17px;
+            line-height: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            margin-right: 8px;
+          }
+          .liDiv {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 40px;
+            with: 100%;
+            margin-top: 17px;
+          }
+          .liDiv select {
+            line-height: 40px;
+            width: 100px;
+            height: 40px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            margin-right: 8px;
+          }
+          .liDiv input[type='text'] {
+            flex: 1;
+            height: 40px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+          }
+          .liDiv input[type='radio'] {
+            width: 14px;
+            height: 14px;
+            background: rgba(255, 255, 255, 1);
+            box-sizing: inherit;
+            border: 1px solid #108ee9;
+          }
+          .liDiv label {
+            height: 18px;
+            font-size: 10px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            line-height: 18px;
+          }
+          .subButton {
+            width: 100px;
+            height: 28px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 4px;
+            color: #ffffff;
+            border: 0;
+          }
 				`}</style>
       </div>
     )

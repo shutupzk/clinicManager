@@ -349,114 +349,6 @@ class TriageScreen extends Component {
             </ul>
           </div>
           <div className={'pagination'} />
-          <style jsx global>
-            {`
-							.doctorList_top span:nth-child(1) {
-								font-size: 14px;
-								font-family: MicrosoftYaHei;
-								color: rgba(102, 102, 102, 1);
-								line-height: 17px;
-								height: 17px;
-								text-indent: 0;
-								margin: 40px 0 0 60px;
-								float: left;
-							}
-							.doctorList_top select {
-								width: 140px;
-								height: 30px;
-								background: rgba(245, 248, 249, 1) !important;
-								border-radius: 4px;
-								float: left;
-								margin: 34px 0 0 30px;
-								border: 1px solid #d9d9d9;
-								text-indent: 10px;
-							}
-							.doctorList_top input {
-								width: 152px;
-								height: 28px;
-								background: rgba(255, 255, 255, 1);
-								border-radius: 4px;
-								float: left;
-								margin: 34px 0 0 15px;
-								border: 1px solid #d9d9d9;
-								padding: 0;
-								text-indent: 10px;
-							}
-							.doctorList_top button {
-								width: 60px;
-								height: 28px;
-								border-radius: 4px;
-								border: 1px solid #2acdc8;
-								float: left;
-								margin: 36px 0 0 30px;
-								color: rgba(42, 205, 200, 1);
-								cursor: pointer;
-								background: transparent;
-							}
-							.doctorList_top span:last-child {
-								width: 40px;
-								height: 40px;
-								background: rgba(255, 95, 87, 1);
-								float: right;
-								color: #ffffff;
-								font-size: 20px;
-								text-align: center;
-								text-indent: 10px;
-								line-height: 35px;
-								border-bottom-left-radius: 100%;
-								cursor: pointer;
-							}
-							.doctorList_content ul {
-								margin: 0 20px;
-								display: block;
-								width: auto;
-								height: 400px;
-								// background: #909090;
-							}
-							.doctorList_content ul li {
-								width: 250px;
-								height: 150px;
-								background: rgba(255, 255, 255, 1);
-								box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-								float: left;
-								margin-left: 40px;
-								margin-top: 26px;
-								display: flex;
-							}
-							.doctorList_content ul li img {
-								width: 40px;
-								height: 40px;
-								margin: 5px auto;
-								display: table;
-							}
-							.doctorList_content ul li > div:nth-child(1) {
-								float: left;
-								width: 100px;
-								margin: 25px 0;
-								flex: 2;
-							}
-							.doctorList_content ul li > div:nth-child(1) > span {
-								width: 100%;
-								text-align: center;
-								height: 20px;
-								display: block;
-								line-height: 25px;
-							}
-							.doctorList_content ul li > div:nth-child(2) {
-								float: left;
-								width: 100px;
-								margin: 25px 0;
-								flex: 3;
-							}
-							.doctorList_content ul li > div:nth-child(2) > span {
-								float: left;
-								width: 100%;
-								font-size: 12px;
-								height: 33px;
-								line-height: 33px;
-							}
-						`}
-          </style>
         </div>
       </div>
     )
@@ -543,158 +435,6 @@ class TriageScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
-        <style jsx>{`
-					.filterBox {
-						float: left;
-						width: 1098px;
-						height: 60px;
-						background: rgba(255, 255, 255, 1);
-						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-						border-radius: 4px;
-						margin-left: 66px;
-					}
-					.filterBox .boxLeft {
-						float: left;
-					}
-					.filterBox .boxLeft input {
-						float: left;
-						width: 328px;
-						height: 28px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						border: 1px solid #d9d9d9;
-						margin: 16px 30px;
-						text-indent: 10px;
-						padding: 0;
-					}
-					.filterBox .boxLeft button {
-						float: left;
-						width: 60px;
-						height: 28px;
-						border-radius: 4px;
-						border: 1px solid #2acdc8;
-						color: rgba(42, 205, 200, 1);
-						font-size: 12px;
-						margin: 16px 0;
-						background: none;
-						cursor: pointer;
-					}
-					.filterBox .boxRight {
-						float: right;
-					}
-					.filterBox .boxRight button {
-						float: left;
-						width: 100px;
-						height: 28px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						border: none;
-						color: rgba(255, 255, 255, 1);
-						font-size: 12px;
-						cursor: pointer;
-						margin: 16px 35px;
-					}
-					.listContent {
-						float: left;
-						width: 100%;
-						// background: #909090;
-					}
-					.listContent ul {
-						float: left;
-						margin: 10px 66px;
-					}
-					.listContent ul li {
-						width: 360px;
-						height: 270px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 7px;
-						margin: 10px 10px 0 0;
-						float: left;
-					}
-					.itemTop {
-						width: 332px;
-						border-bottom: 2px solid #f4f7f8;
-						// background: #e0e0e0;
-						margin: 20px auto 0 auto;
-						padding: 0 0 10px 0;
-						height: 20px;
-					}
-					.itemTop span {
-						float: left;
-					}
-					.itemTop span:nth-child(1) {
-						width: auto;
-						height: 19px;
-						font-size: 16px;
-						font-family: MicrosoftYaHei;
-						color: rgba(51, 51, 51, 1);
-						margin-left: 3px;
-					}
-					.itemTop span:nth-child(2) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(3) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(4) {
-						width: 60px;
-						height: 20px;
-						border-radius: 10px;
-						float: right;
-						text-align: center;
-					}
-					.itemCenter {
-						width: 332px;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-						height: 168px;
-					}
-					.itemCenter span {
-						float: left;
-						width: 100%;
-						height: 26px;
-						line-height: 26px;
-					}
-					.itemCenter span a:nth-child(1) {
-						float: left;
-						width: 75px;
-						color: #666666;
-						font-size: 14px;
-					}
-					.itemCenter span a:nth-child(2) {
-						float: left;
-						margin-left: 20px;
-						color: #333333;
-						font-size: 14px;
-					}
-					.itemBottom {
-						width: 100%;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-						border-top: 2px solid #42b7ba;
-					}
-					.itemBottom span {
-						float: left;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-						color: rgba(49, 176, 179, 1);
-						width: 49.5%;
-						text-align: center;
-						line-height: 50px;
-						cursor: pointer;
-					}
-					.itemBottom span:nth-child(1) {
-						border-right: 2px solid #42b7ba;
-					}
-					.itemBottom span:nth-child(2) {
-					}
-				`}</style>
       </div>
     )
   }
@@ -778,158 +518,6 @@ class TriageScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
-        <style jsx>{`
-					.filterBox {
-						float: left;
-						width: 1098px;
-						height: 60px;
-						background: rgba(255, 255, 255, 1);
-						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-						border-radius: 4px;
-						margin-left: 66px;
-					}
-					.filterBox .boxLeft {
-						float: left;
-					}
-					.filterBox .boxLeft input {
-						float: left;
-						width: 328px;
-						height: 28px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						border: 1px solid #d9d9d9;
-						margin: 16px 30px;
-						text-indent: 10px;
-						padding: 0;
-					}
-					.filterBox .boxLeft button {
-						float: left;
-						width: 60px;
-						height: 28px;
-						border-radius: 4px;
-						border: 1px solid #2acdc8;
-						color: rgba(42, 205, 200, 1);
-						font-size: 12px;
-						margin: 16px 0;
-						background: none;
-						cursor: pointer;
-					}
-					.filterBox .boxRight {
-						float: right;
-					}
-					.filterBox .boxRight button {
-						float: left;
-						width: 100px;
-						height: 28px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						border: none;
-						color: rgba(255, 255, 255, 1);
-						font-size: 12px;
-						cursor: pointer;
-						margin: 16px 35px;
-					}
-					.listContent {
-						float: left;
-						width: 100%;
-						// background: #909090;
-					}
-					.listContent ul {
-						float: left;
-						margin: 10px 66px;
-					}
-					.listContent ul li {
-						width: 360px;
-						height: 270px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 7px;
-						margin: 10px 10px 0 0;
-						float: left;
-					}
-					.itemTop {
-						width: 332px;
-						border-bottom: 2px solid #f4f7f8;
-						// background: #e0e0e0;
-						margin: 20px auto 0 auto;
-						padding: 0 0 10px 0;
-						height: 20px;
-					}
-					.itemTop span {
-						float: left;
-					}
-					.itemTop span:nth-child(1) {
-						width: auto;
-						height: 19px;
-						font-size: 16px;
-						font-family: MicrosoftYaHei;
-						color: rgba(51, 51, 51, 1);
-						margin-left: 3px;
-					}
-					.itemTop span:nth-child(2) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(3) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(4) {
-						width: 60px;
-						height: 20px;
-						border-radius: 10px;
-						float: right;
-						text-align: center;
-					}
-					.itemCenter {
-						width: 332px;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-						height: 168px;
-					}
-					.itemCenter span {
-						float: left;
-						width: 100%;
-						height: 26px;
-						line-height: 26px;
-					}
-					.itemCenter span a:nth-child(1) {
-						float: left;
-						width: 75px;
-						color: #666666;
-						font-size: 14px;
-					}
-					.itemCenter span a:nth-child(2) {
-						float: left;
-						margin-left: 20px;
-						color: #333333;
-						font-size: 14px;
-					}
-					.itemBottom {
-						width: 100%;
-						// background: #e0e0e0;
-						margin: 0 auto 0 auto;
-						border-top: 1px solid #42b7ba;
-					}
-					.itemBottom span {
-						float: left;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-						color: rgba(49, 176, 179, 1);
-						width: 49.5%;
-						text-align: center;
-						line-height: 50px;
-						cursor: pointer;
-					}
-					.itemBottom span:nth-child(1) {
-						border-right: 1px solid #42b7ba;
-					}
-					.itemBottom span:nth-child(2) {
-					}
-				`}</style>
       </div>
     )
   }
@@ -1238,161 +826,6 @@ class TriageScreen extends Component {
         {this.state.showType === 1 ? this.showCalendarList() : ''}
         {this.state.showType === 2 ? this.showPatientList() : ''}
         <div className={'pagination'} />
-        <style jsx>{`
-					.filterBox {
-						float: left;
-						width: 1098px;
-						height: 60px;
-						background: rgba(255, 255, 255, 1);
-						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-						border-radius: 4px;
-						margin-left: 66px;
-					}
-					.filterBox .boxLeft {
-						float: left;
-					}
-					.filterBox .boxLeft input {
-						float: left;
-						width: 328px;
-						height: 28px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 4px;
-						border: 1px solid #d9d9d9;
-						margin: 16px 30px;
-						text-indent: 10px;
-						padding: 0;
-					}
-					.filterBox .boxLeft button {
-						float: left;
-						width: 60px;
-						height: 28px;
-						border-radius: 4px;
-						border: 1px solid #2acdc8;
-						color: rgba(42, 205, 200, 1);
-						font-size: 12px;
-						margin: 16px 0;
-						background: none;
-						cursor: pointer;
-					}
-					.filterBox .boxRight {
-						float: right;
-					}
-					.filterBox .boxRight button {
-						float: left;
-						width: 100px;
-						height: 28px;
-						background: rgba(42, 205, 200, 1);
-						border-radius: 4px;
-						border: none;
-						color: rgba(255, 255, 255, 1);
-						font-size: 12px;
-						cursor: pointer;
-						margin: 16px 35px;
-					}
-					.listContent {
-						float: left;
-						width: 1120px;
-						margin-left: 66px;
-						// background: #909090;
-					}
-					.listContent ul {
-						float: left;
-						margin: 10px 0 0 0;
-					}
-					.listContent ul li {
-						width: 360px;
-						height: 270px;
-						background: rgba(255, 255, 255, 1);
-						border-radius: 7px;
-						margin: 10px 10px 0 0;
-						float: left;
-						display: flex;
-						flex-direction: column;
-					}
-					.itemTop {
-						border-bottom: 2px solid #f4f7f8;
-						margin: 10px 14px 0 14px;
-						height: 37px;
-						display: flex;
-						flex-direction: row;
-						align-items: center;
-					}
-					.itemTop span:nth-child(1) {
-						width: auto;
-						height: 19px;
-						font-size: 16px;
-						font-family: MicrosoftYaHei;
-						color: rgba(51, 51, 51, 1);
-						margin-left: 12px;
-					}
-					.itemTop span:nth-child(2) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(3) {
-						font-size: 14px;
-						font-family: MicrosoftYaHei;
-						color: rgba(102, 102, 102, 1);
-						margin: 2px 0 0 12px;
-					}
-					.itemTop span:nth-child(4) {
-						width: 60px;
-						height: 20px;
-						border-radius: 10px;
-						float: right;
-						text-align: center;
-					}
-					.itemCenter {
-						flex: 1;
-						display: flex;
-						flex-direction: column;
-						width: 332px;
-						margin: 10px auto 0 auto;
-						justify-content: center;
-					}
-					.itemCenter span {
-						display: flex;
-						flex-direction: row;
-						height: 35px;
-						line-height: 26px;
-						margin: 0px 0px 0 12px;
-					}
-					.itemCenter span a:nth-child(1) {
-						width: 75px;
-						color: #666666;
-						font-size: 14px;
-					}
-					.itemCenter span a:nth-child(2) {
-						color: #333333;
-						font-size: 14px;
-					}
-					.itemBottom {
-						width: 100%;
-						height: 39px;
-						border-top: 2px solid #42b7ba;
-						display: flex;
-						flex-direction: row;
-						justify-content: center;
-						align-items: center;
-					}
-					.itemBottom span {
-						flex: 1;
-						font-size: 12px;
-						font-family: MicrosoftYaHei;
-						color: rgba(49, 176, 179, 1);
-						height: 39px;
-						line-height: 39px;
-						text-align: center;
-					}
-					.itemBottom span:nth-child(1) {
-						border-right: 2px solid #31b0b3;
-					}
-					.itemBottom span:nth-child(2) {
-						border-right: 2px solid #31b0b3;
-					}
-				`}</style>
       </div>
     )
   }
@@ -1415,7 +848,7 @@ class TriageScreen extends Component {
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
-        <style jsx>{`
+        <style jsx global>{`
 					.childTopBar {
 						float: left;
 						width: 100%;
@@ -1500,7 +933,214 @@ class TriageScreen extends Component {
 						font-size: 12px;
 						cursor: pointer;
 						margin: 16px 35px;
+          }
+          .listContent {
+						float: left;
+						width: 1120px;
+						margin-left: 66px;
+						// background: #909090;
 					}
+					.listContent ul {
+						float: left;
+						margin: 10px 0 0 0;
+					}
+					.listContent ul li {
+						width: 360px;
+						height: 270px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 7px;
+						margin: 10px 10px 0 0;
+						float: left;
+						display: flex;
+						flex-direction: column;
+					}
+					.itemTop {
+						border-bottom: 2px solid #f4f7f8;
+						margin: 10px 14px 0 14px;
+						height: 37px;
+						// display: flex;
+						// flex-direction: row;
+						// align-items: center;
+					}
+					.itemTop span:nth-child(1) {
+						width: auto;
+						height: 19px;
+						font-size: 16px;
+						font-family: MicrosoftYaHei;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 12px;
+					}
+					.itemTop span:nth-child(2) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(3) {
+						font-size: 14px;
+						font-family: MicrosoftYaHei;
+						color: rgba(102, 102, 102, 1);
+						margin: 2px 0 0 12px;
+					}
+					.itemTop span:nth-child(4) {
+						width: 60px;
+						height: 20px;
+						border-radius: 10px;
+						float: right;
+						text-align: center;
+					}
+					.itemCenter {
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						width: 332px;
+						margin: 10px auto 0 auto;
+						justify-content: center;
+					}
+					.itemCenter span {
+						display: flex;
+						flex-direction: row;
+						height: 35px;
+						line-height: 26px;
+						margin: 0px 0px 0 12px;
+					}
+					.itemCenter span a:nth-child(1) {
+						width: 75px;
+						color: #666666;
+						font-size: 14px;
+					}
+					.itemCenter span a:nth-child(2) {
+						color: #333333;
+						font-size: 14px;
+					}
+					.itemBottom {
+						width: 100%;
+						height: 39px;
+						border-top: 2px solid #42b7ba;
+						display: flex;
+						flex-direction: row;
+						justify-content: center;
+						align-items: center;
+					}
+					.itemBottom span {
+						flex: 1;
+						font-size: 12px;
+						font-family: MicrosoftYaHei;
+						color: rgba(49, 176, 179, 1);
+						height: 39px;
+						line-height: 39px;
+						text-align: center;
+					}
+					.itemBottom span:nth-child(1) {
+						border-right: 2px solid #31b0b3;
+					}
+					.itemBottom span:nth-child(2) {
+						// border-right: 2px solid #31b0b3;
+          }
+          .doctorList_top span:nth-child(1) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            line-height: 17px;
+            height: 17px;
+            text-indent: 0;
+            margin: 40px 0 0 60px;
+            float: left;
+          }
+          .doctorList_top select {
+            width: 140px;
+            height: 30px;
+            background: rgba(245, 248, 249, 1) !important;
+            border-radius: 4px;
+            float: left;
+            margin: 34px 0 0 30px;
+            border: 1px solid #d9d9d9;
+            text-indent: 10px;
+          }
+          .doctorList_top input {
+            width: 152px;
+            height: 28px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            float: left;
+            margin: 34px 0 0 15px;
+            border: 1px solid #d9d9d9;
+            padding: 0;
+            text-indent: 10px;
+          }
+          .doctorList_top button {
+            width: 60px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            float: left;
+            margin: 36px 0 0 30px;
+            color: rgba(42, 205, 200, 1);
+            cursor: pointer;
+            background: transparent;
+          }
+          .doctorList_top span:last-child {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 95, 87, 1);
+            float: right;
+            color: #ffffff;
+            font-size: 20px;
+            text-align: center;
+            text-indent: 10px;
+            line-height: 35px;
+            border-bottom-left-radius: 100%;
+            cursor: pointer;
+          }
+          .doctorList_content ul {
+            margin: 0 20px;
+            display: block;
+            width: auto;
+            height: 400px;
+            // background: #909090;
+          }
+          .doctorList_content ul li {
+            width: 250px;
+            height: 150px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+            float: left;
+            margin-left: 40px;
+            margin-top: 26px;
+            display: flex;
+          }
+          .doctorList_content ul li img {
+            width: 40px;
+            height: 40px;
+            margin: 5px auto;
+            display: table;
+          }
+          .doctorList_content ul li > div:nth-child(1) {
+            float: left;
+            width: 100px;
+            margin: 25px 0;
+            flex: 2;
+          }
+          .doctorList_content ul li > div:nth-child(1) > span {
+            width: 100%;
+            text-align: center;
+            height: 20px;
+            display: block;
+            line-height: 25px;
+          }
+          .doctorList_content ul li > div:nth-child(2) {
+            float: left;
+            width: 100px;
+            margin: 25px 0;
+            flex: 3;
+          }
+          .doctorList_content ul li > div:nth-child(2) > span {
+            float: left;
+            width: 100%;
+            font-size: 12px;
+            height: 33px;
+            line-height: 33px;
+          }
 				`}</style>
         {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
