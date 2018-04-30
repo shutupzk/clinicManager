@@ -73,7 +73,7 @@ export function styles() {
           }
           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: ${theme.fontsize};
-          background-color: #f2f2f2;
+          background-color: #F4F7F8;
           color: ${theme.fontcolor};
           font-weight: 300;
           margin: 0;
