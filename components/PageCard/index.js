@@ -120,7 +120,7 @@ class PageCard extends Component {
           .fenye {
             margin-top: 40px;
             padding: 10px;
-            line-height: 26px;
+            line-height: 28px;
             position: relative;
             text-align: center;
             font-size: 12px;
@@ -142,12 +142,14 @@ class PageCard extends Component {
             margin-right: 20px;
           }
           .fenyeItem {
-            width:24px;
-            height:24px; 
+            width:28px;
+            height:28px; 
             background:rgba(255,255,255,1);
             border-radius: 4px ; 
             border-radius: 4px;
             margin-right:10px;
+            line-height: 28px;
+            text-align: center;
             cursor:pointer;
             display:block;
             float: left;
