@@ -21,10 +21,10 @@ class DepartmentListScreen extends Component {
   }
 
   componentWillMount() {
-    this.queryDepartmentList()
+    this.queryDepartmentList({})
   }
 
-  queryDepartmentList(keyword, offset = 0, limit = 6) {
+  queryDepartmentList({ keyword, offset = 0, limit = 6 }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, offset, limit })
   }
@@ -35,7 +35,7 @@ class DepartmentListScreen extends Component {
 
   showDoctor() {
     if (this.state.pageType !== 1) return null
-    let { departments } = this.props
+    let { departments, page_info } = this.props
     return (
       <div className={'newList'}>
         <div className={'filterBox'}>
@@ -88,7 +88,14 @@ class DepartmentListScreen extends Component {
               )
             })}
           </ul>
-          {/* <PageCard offset={10} limit, total  /> */}
+          <PageCard
+            offset={page_info.offset}
+            limit={page_info.limit}
+            total={page_info.total}
+            onItemClick={({ offset, limit }) => {
+              this.queryDepartmentList({ offset, limit })
+            }}
+          />
         </div>
         <style jsx>{`
           .filterBox {
@@ -317,6 +324,7 @@ class DepartmentListScreen extends Component {
             height: 39px;
             line-height: 39px;
             text-align: center;
+            cursor:pointer;
           }
           .itemBottom span:nth-child(1) {
             border-right: 2px solid #31b0b3;

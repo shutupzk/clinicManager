@@ -345,6 +345,7 @@ class DoctorListScreen extends Component {
             height: 39px;
             line-height: 39px;
             text-align: center;
+            cursor:pointer;
           }
           .itemBottom span:nth-child(1) {
             border-right: 2px solid #31b0b3;
