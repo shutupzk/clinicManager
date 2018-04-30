@@ -658,7 +658,7 @@ class DoctorListScreen extends Component {
     if (error) {
       return alert('添加失败', error)
     }
-    this.queryList()
+    this.queryList('', personnel_type)
     alert('添加成功')
     this.setState({ showAddPersonnel: false })
   }
