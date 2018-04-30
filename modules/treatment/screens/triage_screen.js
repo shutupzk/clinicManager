@@ -491,21 +491,21 @@ class TriageScreen extends Component {
             <button>查询</button>
           </div>
           <div className={'boxRight'}>
-            <button>新增预约</button>
+            <button onClick={() => this.addNewReservation()}>新增预约</button>
           </div>
         </div>
         <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-              let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
+              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -677,7 +677,7 @@ class TriageScreen extends Component {
 						width: 100%;
 						// background: #e0e0e0;
 						margin: 0 auto 0 auto;
-						border-top: 1px solid #42b7ba;
+						border-top: 2px solid #42b7ba;
 					}
 					.itemBottom span {
 						float: left;
@@ -690,7 +690,7 @@ class TriageScreen extends Component {
 						cursor: pointer;
 					}
 					.itemBottom span:nth-child(1) {
-						border-right: 1px solid #42b7ba;
+						border-right: 2px solid #42b7ba;
 					}
 					.itemBottom span:nth-child(2) {
 					}
@@ -724,14 +724,14 @@ class TriageScreen extends Component {
             <button>查询</button>
           </div>
           <div className={'boxRight'}>
-            <button>新增预约</button>
+            <button onClick={() => this.addNewReservation()}>新增预约</button>
           </div>
         </div>
         <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
               let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-              let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
+              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
@@ -739,7 +739,7 @@ class TriageScreen extends Component {
                     <span>{patient.sex === 0 ? '女' : '男 '}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>
-                    {!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
+                    {patient.status !== 20 ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
                   </span>
                   </div>
                   <div className={'itemCenter'}>
@@ -1210,7 +1210,7 @@ class TriageScreen extends Component {
             <button>查询</button>
           </div>
           <div className={'boxRight'}>
-            <button>新增预约</button>
+            <button onClick={() => this.addNewReservation()}>新增预约</button>
           </div>
         </div>
         {/* <div className={'regisListTop'}>
@@ -1239,56 +1239,56 @@ class TriageScreen extends Component {
         {this.state.showType === 2 ? this.showPatientList() : ''}
         <div className={'pagination'} />
         <style jsx>{`
-        .filterBox {
-          float: left;
-          width: 1098px;
-          height: 60px;
-          background: rgba(255, 255, 255, 1);
-          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-          border-radius: 4px;
-          margin-left: 66px;
-        }
-        .filterBox .boxLeft {
-          float: left;
-        }
-        .filterBox .boxLeft input {
-          float: left;
-          width: 328px;
-          height: 28px;
-          background: rgba(255, 255, 255, 1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          margin: 16px 30px;
-          text-indent: 10px;
-          padding: 0;
-        }
-        .filterBox .boxLeft button {
-          float: left;
-          width: 60px;
-          height: 28px;
-          border-radius: 4px;
-          border: 1px solid #2acdc8;
-          color: rgba(42, 205, 200, 1);
-          font-size: 12px;
-          margin: 16px 0;
-          background: none;
-          cursor: pointer;
-        }
-        .filterBox .boxRight {
-          float: right;
-        }
-        .filterBox .boxRight button {
-          float: left;
-          width: 100px;
-          height: 28px;
-          background: rgba(42, 205, 200, 1);
-          border-radius: 4px;
-          border: none;
-          color: rgba(255, 255, 255, 1);
-          font-size: 12px;
-          cursor: pointer;
-          margin: 16px 35px;
-        }
+					.filterBox {
+						float: left;
+						width: 1098px;
+						height: 60px;
+						background: rgba(255, 255, 255, 1);
+						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+						border-radius: 4px;
+						margin-left: 66px;
+					}
+					.filterBox .boxLeft {
+						float: left;
+					}
+					.filterBox .boxLeft input {
+						float: left;
+						width: 328px;
+						height: 28px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						border: 1px solid #d9d9d9;
+						margin: 16px 30px;
+						text-indent: 10px;
+						padding: 0;
+					}
+					.filterBox .boxLeft button {
+						float: left;
+						width: 60px;
+						height: 28px;
+						border-radius: 4px;
+						border: 1px solid #2acdc8;
+						color: rgba(42, 205, 200, 1);
+						font-size: 12px;
+						margin: 16px 0;
+						background: none;
+						cursor: pointer;
+					}
+					.filterBox .boxRight {
+						float: right;
+					}
+					.filterBox .boxRight button {
+						float: left;
+						width: 100px;
+						height: 28px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						border: none;
+						color: rgba(255, 255, 255, 1);
+						font-size: 12px;
+						cursor: pointer;
+						margin: 16px 35px;
+					}
 					.listContent {
 						float: left;
 						width: 1120px;

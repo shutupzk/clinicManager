@@ -128,24 +128,9 @@ class AddNewRegistrationScreen extends Component {
 								性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
-                <input
-                  id='man'
-                  type='radio'
-                  name='sex'
-                  value={'1'}
-                  checked={patient.sex + '' === '1'}
-                  onChange={e => this.setPatientInfo(e, 'sex')}
-								/>
+                <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
                 <label htmlFor='man'>男</label>
-                <input
-                  id='woman'
-                  type='radio'
-                  name='sex'
-                  value={'0'}
-                  style={{ marginLeft: '15px' }}
-                  checked={patient.sex + '' === '0'}
-                  onChange={e => this.setPatientInfo(e, 'sex')}
-								/>
+                <input id='woman' type='radio' name='sex' value={'0'} style={{ marginLeft: '15px' }} checked={patient.sex + '' === '0'} onChange={e => this.setPatientInfo(e, 'sex')} />
                 <label htmlFor='woman'>女</label>
               </div>
             </li>
@@ -153,11 +138,7 @@ class AddNewRegistrationScreen extends Component {
               <label>
 								手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input
-                type='text'
-                value={patient.phone}
-                onChange={e => this.setPatientInfo(e, 'phone')}
-							/>
+              <input type='text' value={patient.phone} onChange={e => this.setPatientInfo(e, 'phone')} />
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
@@ -206,19 +187,20 @@ class AddNewRegistrationScreen extends Component {
                   )
                   })}
                 </select>
-                <input type='text' value={''} onChange={e => {
-                  let newPatient = patient
-                  newPatient.address = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }} />
+                <input
+                  type='text'
+                  defaultValue={''}
+                  onChange={e => {
+                    let newPatient = patient
+                    newPatient.address = this.state.province + this.state.city + this.state.county + e.target.value
+                    this.setState({ patientInfo: newPatient })
+                  }}
+								/>
               </div>
             </li>
             <li>
               <label>接诊科室：</label>
-              <select
-                value={patient.department_id}
-                onChange={e => this.setPatientInfo(e, 'department_id')}
-							>
+              <select value={patient.department_id} onChange={e => this.setPatientInfo(e, 'department_id')}>
                 <option value={'0'} key={'0'}>
 									请选择
 								</option>
@@ -241,7 +223,7 @@ class AddNewRegistrationScreen extends Component {
                   type='radio'
                   name='type'
                   value={1}
-                  // checked={patient.visit_type === 1}
+									// checked={patient.visit_type === 1}
                   onChange={e => this.setPatientInfo(e, 'visit_type')}
 								/>
                 <label htmlFor='first'>首诊</label>
@@ -270,19 +252,12 @@ class AddNewRegistrationScreen extends Component {
             <li style={{ width: '100%', cursor: 'pointer' }}>更多：完善健康档案（收起、展开）</li>
             <li>
               <label>会员卡号：</label>
-              <input
-                type='text'
-                onChange={e => this.setPatientInfo(e, 'member_card_number')}
-							/>
+              <input type='text' onChange={e => this.setPatientInfo(e, 'member_card_number')} />
             </li>
             <li>
               <label>就诊人来源：</label>
               <div className='liDiv' style={{ height: '44px' }}>
-                <select
-                  style={{ width: '100%' }}
-                  value={patient.patient_channel_id}
-                  onChange={e => this.setPatientInfo(e, 'patient_channel_id')}
-								>
+                <select style={{ width: '100%' }} value={patient.patient_channel_id} onChange={e => this.setPatientInfo(e, 'patient_channel_id')}>
                   <option value={1}>1</option>
                   <option value={2}>2</option>
                   <option value={3}>3</option>
@@ -292,18 +267,11 @@ class AddNewRegistrationScreen extends Component {
             </li>
             <li>
               <label>职业：</label>
-              <input
-                type='text'
-                value={patient.profession}
-                onChange={e => this.setPatientInfo(e, 'profession')}
-							/>
+              <input type='text' value={patient.profession} onChange={e => this.setPatientInfo(e, 'profession')} />
             </li>
             <li>
               <label>备注：</label>
-              <input
-                type='text'
-                onChange={e => this.setPatientInfo(e, 'remark')}
-							/>
+              <input type='text' onChange={e => this.setPatientInfo(e, 'remark')} />
             </li>
           </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
@@ -461,14 +429,14 @@ class AddNewRegistrationScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
-              let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
+              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     {/* <span>
