@@ -13,15 +13,15 @@ const MAINFUNCTION = [
     short_name: 'treatment',
     navigateName: '/treatment',
     children: [
-      { title: '就诊人登记', navigateName: '/treatment' },
-      { title: '预约分诊', navigateName: '/treatment/triage' },
-      { title: '医生接诊', navigateName: '/treatment/admission' },
-      { title: '收费管理', navigateName: '/treatment/charge' },
-      { title: '门诊发药', navigateName: '/treatment/drugdelivery' },
-      { title: '检查', navigateName: '/treatment/exam' },
-      { title: '检验', navigateName: '/treatment/inspect' },
-      { title: '治疗', navigateName: '/treatment/treat' },
-      { title: '药品零售', navigateName: '/treatment/drugretail' }
+			{ title: '就诊人登记', navigateName: '/treatment', icon: '/static/icons/patient.svg' },
+			{ title: '预约分诊', navigateName: '/treatment/triage', icon: '/static/icons/triage.svg' },
+			{ title: '医生接诊', navigateName: '/treatment/admission', icon: '/static/icons/admission.svg' },
+			{ title: '收费管理', navigateName: '/treatment/charge', icon: '/static/icons/charge.svg' },
+			{ title: '门诊发药', navigateName: '/treatment/drugdelivery', icon: '/static/icons/drugdelivery.svg' },
+			{ title: '检查', navigateName: '/treatment/exam', icon: '/static/icons/exam.svg' },
+			{ title: '检验', navigateName: '/treatment/inspect', icon: '/static/icons/inspect.svg' },
+			{ title: '治疗', navigateName: '/treatment/treat', icon: '/static/icons/treat.svg' },
+			{ title: '药品零售', navigateName: '/treatment/drugretail', icon: '/static/icons/drugretail.svg' }
     ]
   },
   {
@@ -29,38 +29,41 @@ const MAINFUNCTION = [
     short_name: 'clinic',
     navigateName: '/clinic',
     children: [
-      { title: '科室管理', navigateName: '/clinic' },
-      { title: '医生管理', navigateName: '/clinic/doctor' },
-      { title: '排班管理', navigateName: '/clinic/schedule' },
-      { title: '药房管理', navigateName: '/clinic/pharmacy' },
-      { title: '耗材管理', navigateName: '/clinic/consumable' },
-      { title: '患者管理', navigateName: '/clinic/patient' }
+			{ title: '科室管理', navigateName: '/clinic', icon: '/static/icons/department.svg' },
+			{ title: '医生管理', navigateName: '/clinic/doctor', icon: '/static/icons/doctor.svg' },
+			{ title: '排班管理', navigateName: '/clinic/schedule', icon: '/static/icons/schedule.svg' },
+			{ title: '药房管理', navigateName: '/clinic/pharmacy', icon: '/static/icons/pharmacy.svg' },
+			{ title: '耗材管理', navigateName: '/clinic/consumable', icon: '/static/icons/consumable.svg' },
+			{ title: '患者管理', navigateName: '/clinic/patient', icon: '/static/icons/patient2.svg' }
     ]
   },
   {
     title: '财务管理',
     short_name: 'finance',
     navigateName: '/finance',
-    children: []
+    children: [
+      { title: '费用报表', navigateName: '/finance', icon: '/static/icons/expenseReport.svg' },
+      { title: '医用报表', navigateName: '/finance/template', icon: '/static/icons/medicalReport.svg' }
+    ]
   },
   {
     title: '设置管理',
     short_name: 'setting',
     navigateName: '/setting',
     children: [
-      { title: '收费项目设置', navigateName: '/setting' },
-      { title: '模板设置', navigateName: '/setting/template' },
-      { title: '权限分组', navigateName: '/setting/permissionGroup' },
-      { title: '用户权限', navigateName: '/setting/userRights' },
-      { title: '会员规则管理', navigateName: '/setting/membershipRules' },
-      { title: '供应商管理', navigateName: '/setting/supplier' }
+			{ title: '收费项目设置', navigateName: '/setting', icon: '/static/icons/charge2.svg' },
+			{ title: '模板设置', navigateName: '/setting/template', icon: '/static/icons/template.svg' },
+			{ title: '权限分组', navigateName: '/setting/permissionGroup', icon: '/static/icons/permissionGroup.svg' },
+			{ title: '用户权限', navigateName: '/setting/userRights', icon: '/static/icons/userRights.svg' },
+			{ title: '会员规则管理', navigateName: '/setting/membershipRules', icon: '/static/icons/membershipRules.svg' },
+			{ title: '供应商管理', navigateName: '/setting/supplier', icon: '/static/icons/supplier.svg' }
     ]
   },
   {
     title: '平台管理',
     short_name: 'platform',
     navigateName: '/platform',
-    children: [{ title: '诊所管理', navigateName: '/platform' }, { title: '业务管理', navigateName: '/platform/business' }]
+    children: [{ title: '诊所管理', navigateName: '/platform', icon: '/static/icons/clinic.svg' }, { title: '业务管理', navigateName: '/platform/business', icon: '/static/icons/business.svg' }]
   }
 ]
 

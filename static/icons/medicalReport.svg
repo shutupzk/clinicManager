@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="13px" height="14px" viewBox="0 0 13 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>物品管理</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="设置管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="图标" transform="translate(-85.000000, -454.000000)" fill="#2ACDC8" fill-rule="nonzero">
+            <g id="物品管理" transform="translate(85.000000, 454.000000)">
+                <path d="M6.51981653,0 L0,3.00126521 L0,11.0046711 L6.51224528,14.0059524 L13,11.0046711 L13,3.00126521 L6.51981653,0 Z M6.00002462,12.6452392 L0.999998767,10.3885774 L0.999998767,4.00170297 L6.00002462,6.00254644 L6.00002462,12.6452392 Z M1.73151388,3.23666609 L6.51981653,1.11091602 L11.2156954,3.24147018 L6.52823615,5.13023401 L1.73151388,3.23666609 Z M12.0000332,10.4366184 L7.00002339,12.6788679 L7.00002339,6.00254644 L12.0000332,4.00170297 L12.0000332,10.4366184 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -818,41 +818,6 @@ class TriageScreen extends Component {
           }
         `}</style>
       </div>
-      // <div className={'formList'}>
-      //   <div className={'regisListTop'}>
-      //     <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-      //     <button className={'searchBtn'}>查询</button>
-      //     {/* <a>注：当日登记就诊人列表</a> */}
-      //   </div>
-      //   <div className={'regisList'}>
-      //     <ul>
-      //       {array.map((patient, index) => {
-      //         let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-      //         return (
-      //           <li key={index}>
-      //             <div className={'liTop'}>
-      //               <span className={'updateTime'}>更新时间：{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-      //               <span className={'status'}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
-      //             </div>
-      //             <div>
-      // 							就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
-      // 						</div>
-      //             <div>身份证号：{patient.cert_no}</div>
-      //             <div>接诊科室：{patient.department_name}</div>
-      //             <div>接诊医生：{patient.doctor_name}</div>
-      //             <div>登记人员：{patient.register_personnel_name}</div>
-      //             <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-      //             <div className={'seeDetail'}>
-      //               <a onClick={() => this.showCompleteHealthFile()}>完善健康档案</a>
-      //               <a onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>选择医生</a>
-      //             </div>
-      //           </li>
-      //         )
-      //       })}
-      //     </ul>
-      //   </div>
-      //   <div className={'pagination'} />
-      // </div>
     )
   }
 

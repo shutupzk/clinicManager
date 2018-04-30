@@ -99,15 +99,19 @@ class DepartmentListScreen extends Component {
     let exercises = this.getListData()
     return (
       <div className={'newList'}>
-        <div className={'newList_top'}>
-          <div className={'top_left'}>
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
             <input type='text' placeholder='搜索科室名称/科室编号' />
             <button>查询</button>
           </div>
-          <div className={'top_right'}>
-            <button onClick={() => {
-              this.setState({ alertType: 1 })
-            }}>新增科室</button>
+          <div className={'boxRight'}>
+            <button
+              onClick={() => {
+                this.setState({ alertType: 1 })
+              }}
+						>
+							新增科室
+						</button>
           </div>
         </div>
         <div className={'listContent'}>
@@ -120,21 +124,21 @@ class DepartmentListScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>科室编号：</a>
-                      <a>{depart.code}</a>
-                    </span>
+                    <a>科室编号：</a>
+                    <a>{depart.code}</a>
+                  </span>
                     <span>
-                      <a>可否挂号：</a>
-                      <a>{depart.is_appointment === true ? '可以' : '不可以'}</a>
-                    </span>
+                    <a>可否挂号：</a>
+                    <a>{depart.is_appointment === true ? '可以' : '不可以'}</a>
+                  </span>
                     <span>
-                      <a>创建时间：</a>
-                      <a>{moment(depart.created_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a>创建时间：</a>
+                    <a>{moment(depart.created_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                     <span>
-                      <a>更新时间：</a>
-                      <a>{moment(depart.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    <a>更新时间：</a>
+                    <a>{moment(depart.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>查看</span>
@@ -148,34 +152,84 @@ class DepartmentListScreen extends Component {
           {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
         <style jsx>{`
-          .contentMenu{
-            width: 100%;
-            // background: #909090;
-            float: left;
-          }
-          .contentMenu span:nth-child(1){
-            margin:24px 0 0 32px;
-          }
-          .contentMenu span{
-            width:88px;
-            height:32px; 
-            background:rgba(255,255,255,1);
-            border-radius: 4px ; 
-            float:left;
-            text-align:center;
-            line-height:32px;
-            color:#000000;
-            cursor:pointer;
-            margin-top:24px;
-            margin-left:10px;
-          }
-          .contentMenu span.sel{
-            width:100px;
-            height:32px; 
-            background:rgba(42,205,200,1);
-            border-radius: 4px ; 
-            color:#FFFFFF;
-          }
+					.filterBox {
+						float: left;
+						width: 1098px;
+						height: 60px;
+						background: rgba(255, 255, 255, 1);
+						box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+						border-radius: 4px;
+						margin: 30px 0 10px 66px;
+					}
+					.filterBox .boxLeft {
+						float: left;
+					}
+					.filterBox .boxLeft input {
+						float: left;
+						width: 328px;
+						height: 28px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						border: 1px solid #d9d9d9;
+						margin: 16px 30px;
+						text-indent: 10px;
+						padding: 0;
+					}
+					.filterBox .boxLeft button {
+						float: left;
+						width: 60px;
+						height: 28px;
+						border-radius: 4px;
+						border: 1px solid #2acdc8;
+						color: rgba(42, 205, 200, 1);
+						font-size: 12px;
+						margin: 16px 0;
+						background: none;
+						cursor: pointer;
+					}
+					.filterBox .boxRight {
+						float: right;
+					}
+					.filterBox .boxRight button {
+						float: left;
+						width: 100px;
+						height: 28px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						border: none;
+						color: rgba(255, 255, 255, 1);
+						font-size: 12px;
+						cursor: pointer;
+						margin: 16px 35px;
+					}
+					.contentMenu {
+						width: 100%;
+						// background: #909090;
+						float: left;
+					}
+					.contentMenu span:nth-child(1) {
+						margin: 24px 0 0 32px;
+					}
+					.contentMenu span {
+						width: 88px;
+						height: 32px;
+						background: rgba(255, 255, 255, 1);
+						border-radius: 4px;
+						float: left;
+						text-align: center;
+						line-height: 32px;
+						color: #000000;
+						cursor: pointer;
+						margin-top: 24px;
+						margin-left: 10px;
+					}
+					.contentMenu span.sel {
+						width: 100px;
+						height: 32px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
+						color: #ffffff;
+					}
 					.newList_top {
 						// background: #909090;
 						height: 34px;
@@ -200,10 +254,10 @@ class DepartmentListScreen extends Component {
 						float: left;
 					}
 					.newList_top .top_left button {
-            width:60px;
-            height:32px; 
-            background:rgba(42,205,200,1);
-            border-radius: 4px ; 
+						width: 60px;
+						height: 32px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 4px;
 						border: none;
 						cursor: pointer;
 						margin-left: 10px;
@@ -230,38 +284,39 @@ class DepartmentListScreen extends Component {
 					}
 					.listContent {
 						float: left;
-            width: 1146px;
+						width: 1120px;
+						margin-left: 66px;
 						// background: #909090;
 					}
 					.listContent ul {
 						float: left;
-            margin: 10px 0 0 36px;
+						margin: 10px 0 0 0;
 					}
 					.listContent ul li {
 						width: 360px;
 						height: 270px;
-            background: rgba(255, 255, 255, 1);
+						background: rgba(255, 255, 255, 1);
 						border-radius: 7px;
 						margin: 10px 10px 0 0;
-            float: left;
-            display: flex;
-            flex-direction: column;
+						float: left;
+						display: flex;
+						flex-direction: column;
 					}
 					.itemTop {
 						border-bottom: 2px solid #f4f7f8;
 						margin: 10px 14px 0 14px;
-            height: 37px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+						height: 37px;
+						display: flex;
+						flex-direction: row;
+						align-items: center;
 					}
 					.itemTop span:nth-child(1) {
 						width: auto;
 						height: 19px;
 						font-size: 16px;
 						font-family: MicrosoftYaHei;
-            color: rgba(51, 51, 51, 1);
-            margin-left: 12px;
+						color: rgba(51, 51, 51, 1);
+						margin-left: 12px;
 					}
 					.itemTop span:nth-child(2) {
 						font-size: 14px;
@@ -283,19 +338,19 @@ class DepartmentListScreen extends Component {
 						text-align: center;
 					}
 					.itemCenter {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 332px;
-            margin: 10px auto 0 auto;
-            justify-content: center;
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						width: 332px;
+						margin: 10px auto 0 auto;
+						justify-content: center;
 					}
 					.itemCenter span {
-            display: flex;
-            flex-direction: row;
+						display: flex;
+						flex-direction: row;
 						height: 35px;
-            line-height: 26px;
-            margin: 0px 0px 0 12px;
+						line-height: 26px;
+						margin: 0px 0px 0 12px;
 					}
 					.itemCenter span a:nth-child(1) {
 						width: 75px;
@@ -307,51 +362,31 @@ class DepartmentListScreen extends Component {
 						font-size: 14px;
 					}
 					.itemBottom {
-            width: 100%;
+						width: 100%;
 						height: 39px;
-            border-top: 2px solid #42B7BA;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
+						border-top: 2px solid #42b7ba;
+						display: flex;
+						flex-direction: row;
+						justify-content: center;
+						align-items: center;
 					}
 					.itemBottom span {
-            flex: 1;
+						flex: 1;
 						font-size: 12px;
 						font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            height: 39px;
-            line-height: 39px;
+						color: rgba(49, 176, 179, 1);
+						height: 39px;
+						line-height: 39px;
 						text-align: center;
 					}
 					.itemBottom span:nth-child(1) {
-						border-right: 2px solid #31B0B3;
+						border-right: 2px solid #31b0b3;
 					}
 					.itemBottom span:nth-child(2) {
-            border-right: 2px solid #31B0B3;
+						border-right: 2px solid #31b0b3;
 					}
 				`}</style>
       </div>
-      // <div>
-      //   <div className={'regisListTop'}>
-      //     <input type='text' placeholder='搜索科室名称/科室编号' />
-      //     <button className={'searchBtn'}>查询</button>
-      //   </div>
-      //   <div className={'listBox'}>
-      //     <button
-      //       className={'addBtn'}
-      //       onClick={() => {
-      //         this.setState({ alertType: 1 })
-      //       }}
-			// 		>
-			// 			新增科室
-			// 		</button>
-      //     {this.renderTitle()}
-      //     {exercises.map((item, index) => {
-      //       return this.renderRow(item, index)
-      //     })}
-      //   </div>
-      // </div>
     )
   }
 	// 保存添加
@@ -375,7 +410,7 @@ class DepartmentListScreen extends Component {
   }
 	// 显示新增科室
   showAddDepart() {
-    // let departInfo = this.state.departInfo
+		// let departInfo = this.state.departInfo
     if (this.state.alertType !== 1) return null
     return (
       <div className={'mask'}>
@@ -389,19 +424,11 @@ class DepartmentListScreen extends Component {
             <ul>
               <li>
                 <label>科室编码：</label>
-                <input
-                  placeholder='请填写科室编码'
-                  defaultValue=''
-                  onChange={e => this.setDeaprtInfo(e, 'code')}
-								/>
+                <input placeholder='请填写科室编码' defaultValue='' onChange={e => this.setDeaprtInfo(e, 'code')} />
               </li>
               <li>
                 <label>科室名称：</label>
-                <input
-                  placeholder='请填写科室名称'
-                  defaultValue=''
-                  onChange={e => this.setDeaprtInfo(e, 'name')}
-								/>
+                <input placeholder='请填写科室名称' defaultValue='' onChange={e => this.setDeaprtInfo(e, 'name')} />
               </li>
               <li>
                 <label>所属诊所：</label>
@@ -409,11 +436,7 @@ class DepartmentListScreen extends Component {
               </li>
               <li>
                 <label>科室权重：</label>
-                <input
-                  placeholder='请填写科室权重'
-                  defaultValue=''
-                  onChange={e => this.setDeaprtInfo(e, 'weight')}
-								/>
+                <input placeholder='请填写科室权重' defaultValue='' onChange={e => this.setDeaprtInfo(e, 'weight')} />
               </li>
             </ul>
             <div className={'buttonBtn'}>
@@ -437,8 +460,8 @@ class DepartmentListScreen extends Component {
 								line-height: 17px;
 								height: 17px;
 								text-indent: 0;
-                margin: 40px 0 0 50px;
-                font-weight:bold;
+								margin: 40px 0 0 50px;
+								font-weight: bold;
 								float: left;
 							}
 							.doctorList_top span:last-child {
@@ -469,15 +492,15 @@ class DepartmentListScreen extends Component {
 							.doctorList_content ul li label {
 								// width: 25%;
 								vertical-align: middle;
-                line-height: 40px;
-                flex: 1;
+								line-height: 40px;
+								flex: 1;
 							}
 							.doctorList_content ul li input {
 								height: 40px;
-                border-radius: 5px;
-                border: 1px solid #d8d8d8;
-                text-indent: 10px;
-                flex: 6;
+								border-radius: 5px;
+								border: 1px solid #d8d8d8;
+								text-indent: 10px;
+								flex: 6;
 							}
 							.buttonBtn {
 								display: block;

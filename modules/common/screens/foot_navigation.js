@@ -18,7 +18,7 @@ export default class Navigation extends Component {
     <Link key={item.navigateName} href={item.navigateName}>
       <div className={url === item.navigateName ? 'selLeftMenu' : ''}>
         <i />
-        <img src={'/static/login/u49.png'} />
+        <img src={item.icon} />
         <a>{item.title}</a>
       </div>
     </Link>
@@ -60,38 +60,38 @@ export default class Navigation extends Component {
 						font-size: 14px;
 						font-family: MicrosoftYaHei;
 						color: rgba(102, 102, 102, 1);
-          }
-          .footNavUl div i{
-            display:none;
-            float: left;
-            margin: 15px 0 0 20px;
-            width:6px;
-            height:20px; 
-            background:rgba(42,205,200,1);
-            border-radius: 5px ;
-            position: absolute;
-          }
-          .footNavUl div img{
-            width:20px;
-            height:20px; 
-            float: left;
-            margin: 15px 0 0 56px;
-          }
-          .footNavUl div a{
-            float: left;
-            margin-left:36px;
-            text-indent:0;
-          }
+					}
+					.footNavUl div i {
+						display: none;
+						float: left;
+						margin: 15px 0 0 20px;
+						width: 6px;
+						height: 20px;
+						background: rgba(42, 205, 200, 1);
+						border-radius: 5px;
+						position: absolute;
+					}
+					.footNavUl div img {
+						width: 20px;
+						height: 20px;
+						float: left;
+						margin: 15px 0 0 56px;
+					}
+					.footNavUl div a {
+						float: left;
+						margin-left: 36px;
+						text-indent: 0;
+					}
 					.footNavUl div:hover,
 					.footNavUl div.selLeftMenu {
 						background: rgba(42, 205, 200, 0.23309999999999997);
 						// opacity:0.23309999999999997;
 						color: rgba(52, 52, 52, 1);
-          }
-          .footNavUl div:hover i,
-					.footNavUl div.selLeftMenu i{
-            display:block;
-          }
+					}
+					.footNavUl div:hover i,
+					.footNavUl div.selLeftMenu i {
+						display: block;
+					}
 				`}</style>
       </ul>
     )
