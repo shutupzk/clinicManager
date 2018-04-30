@@ -29,7 +29,7 @@ export const queryDepartmentList = ({ clinic_id, keyword, offset = 0, limit = 6 
     })
     console.log('departments========', data)
     const docs = data.data || []
-    const page_info = data.page_info
+    const page_info = data.page_info || {}
     dispatch({
       type: DEPARTMENT_ADD,
       data: docs,

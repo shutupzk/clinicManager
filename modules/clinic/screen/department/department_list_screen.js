@@ -12,6 +12,7 @@ class DepartmentListScreen extends Component {
       personnelType: 1,
       pageType: 1,
       alertType: 0,
+      keyword: '',
       departInfo: {
         code: '',
         name: '',
@@ -40,8 +41,13 @@ class DepartmentListScreen extends Component {
       <div className={'newList'}>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='text' placeholder='搜索科室名称/科室编号' />
-            <button>查询</button>
+            <input type='text' placeholder='搜索科室名称/科室编号' value={this.state.keyword} onChange={(e) => {
+              this.setState({ keyword: e.target.value })
+            }} />
+            <button onClick={() => {
+              let keyword = this.state.keyword
+              this.queryDepartmentList({ keyword })
+            }}>查询</button>
           </div>
           <div className={'boxRight'}>
             <button
@@ -93,7 +99,8 @@ class DepartmentListScreen extends Component {
             limit={page_info.limit}
             total={page_info.total}
             onItemClick={({ offset, limit }) => {
-              this.queryDepartmentList({ offset, limit })
+              const keyword = this.state.keyword
+              this.queryDepartmentList({ offset, limit, keyword })
             }}
           />
         </div>
@@ -485,37 +492,6 @@ class DepartmentListScreen extends Component {
         {this.showAddDepart()}
       </div>
     )
-  }
-}
-
-const styles = {
-  titleText: {
-    fontSize: '16px'
-  },
-  liPadding: {
-    padding: '10px 15px'
-  },
-  orderTitle: {
-    color: '#797979',
-    background: '#f2f2f2',
-    borderRadius: '3px'
-  },
-  buttonMiddle: {
-    height: '30px',
-    width: '50px'
-  },
-  buttonLarge: {
-    height: '40px',
-    width: '80px',
-    fontSize: '20px'
-  },
-  fenyeItem: {
-    background: '#3ca0ff',
-    borderRadius: '2px',
-    display: 'inline-block',
-    cursor: 'pointer',
-    border: '1px solid #3ca0ff',
-    color: '#fff'
   }
 }
 

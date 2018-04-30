@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { doctorList } from '../../../../ducks'
+import { queryDoctorList } from '../../../../ducks'
 import moment from 'moment'
 
 class ScheduleListScreen extends Component {
@@ -15,8 +15,8 @@ class ScheduleListScreen extends Component {
   }
 
   componentWillMount () {
-    const { doctorList, clinic_code } = this.props
-    doctorList({ clinic_code })
+    const { queryDoctorList, clinic_code } = this.props
+    queryDoctorList({ clinic_code })
   }
 
   getListData () {
@@ -295,4 +295,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(ScheduleListScreen)
+export default connect(mapStateToProps, { queryDoctorList })(ScheduleListScreen)

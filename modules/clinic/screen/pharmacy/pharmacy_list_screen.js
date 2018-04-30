@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { doctorList } from '../../../../ducks'
+import { queryDoctorList } from '../../../../ducks'
 
 class PharmacyListScreen extends Component {
   constructor (props) {
@@ -13,8 +13,8 @@ class PharmacyListScreen extends Component {
   }
 
   componentWillMount () {
-    const { doctorList, clinic_code } = this.props
-    doctorList({ clinic_code })
+    const { queryDoctorList, clinic_code } = this.props
+    queryDoctorList({ clinic_code })
   }
 
   getListData () {
@@ -202,4 +202,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { doctorList })(PharmacyListScreen)
+export default connect(mapStateToProps, { queryDoctorList })(PharmacyListScreen)
