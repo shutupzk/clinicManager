@@ -1,42 +1,39 @@
 import { request } from './request'
 const DEPARTMENT_ADD = 'DEPARTMENT_ADD'
 const DEPARTMENT_SELECT = 'DEPARTMENT_SELECT'
-const DEPARTMENT_DELETE = 'DEPARTMENT_DELETE'
 
 const initState = {
-  data: {},
+  data: [],
+  page_info: {},
   selectId: null
 }
 
 export function departments(state = initState, action = {}) {
   switch (action.type) {
     case DEPARTMENT_ADD:
-      return Object.assign({}, state, { data: Object.assign({}, state.data, action.data) })
+      return { ...state, data: action.data, page_info: action.page_info }
     case DEPARTMENT_SELECT:
-      return Object.assign({}, state, { selectId: action.selectId })
-    case DEPARTMENT_DELETE:
-      let data = Object.assign({}, state.data)
-      delete data[action.apiName]
-      return Object.assign({}, state, { data: data })
+      return { ...state, selectId: action.selectId }
     default:
       return state
   }
 }
 
-export const departmentList = ({ clinic_id }) => async dispatch => {
+export const queryDepartmentList = ({ clinic_id, keyword, offset = 0, limit = 6 }) => async dispatch => {
   try {
     const data = await request('/department/list', {
-      clinic_id
+      clinic_id,
+      keyword,
+      offset,
+      limit
     })
     console.log('departments========', data)
     const docs = data.data || []
-    let json = {}
-    for (let doc of docs) {
-      json[doc.id] = doc
-    }
+    const page_info = data.page_info
     dispatch({
       type: DEPARTMENT_ADD,
-      data: json
+      data: docs,
+      page_info
     })
     return null
   } catch (e) {

@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList } from '../../../ducks'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../config/provinces'
@@ -35,8 +35,8 @@ class AddNewRegistrationScreen extends Component {
 
   componentWillMount() {
     this.queryPatients()
-    const { departmentList, clinic_id } = this.props
-    departmentList({ clinic_id })
+    const { queryDepartmentList, clinic_id } = this.props
+    queryDepartmentList({ clinic_id })
   }
 
   async submit() {
@@ -756,4 +756,4 @@ const mapStateToProps = state => {
     limit: state.triagePatients.page_info.limit
   }
 }
-export default connect(mapStateToProps, { getPatientByCertNo, departmentList, addTriagePatientsList, triagePatientsList })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList })(AddNewRegistrationScreen)
