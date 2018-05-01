@@ -17,15 +17,15 @@ class TriageScreen extends Component {
       alertPageType: 1,
       nowWeekNum: 1,
       dateTime: [
-				{ time: '08:00-09:00' },
-				{ time: '09:00-10:00' },
-				{ time: '10:00-11:00' },
-				{ time: '11:00-12:00' },
-				{ time: '13:00-14:00' },
-				{ time: '14:00-15:00' },
-				{ time: '15:00-16:00' },
-				{ time: '16:00-17:00' },
-				{ time: '17:00-18:00' }
+        { time: '08:00-09:00' },
+        { time: '09:00-10:00' },
+        { time: '10:00-11:00' },
+        { time: '11:00-12:00' },
+        { time: '13:00-14:00' },
+        { time: '14:00-15:00' },
+        { time: '15:00-16:00' },
+        { time: '16:00-17:00' },
+        { time: '17:00-18:00' }
       ]
     }
   }
@@ -44,15 +44,15 @@ class TriageScreen extends Component {
     triagePatientsList(params)
   }
 
-	// 改变显示内容
+  // 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
-	// 完善健康档案
+  // 完善健康档案
   showCompleteHealthFile() {
     this.setState({ alertType: 1 })
   }
-	// 显示体征表单
+  // 显示体征表单
   showBodySigns() {
     return (
       <div>
@@ -164,16 +164,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-						保存
-					</button>
+            保存
+          </button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-						取消
-					</button>
+            取消
+          </button>
         </div>
       </div>
     )
   }
-	// 显示诊前病历
+  // 显示诊前病历
   showPreMedicalRecords() {
     return (
       <div>
@@ -186,10 +186,10 @@ class TriageScreen extends Component {
               <label>过敏史</label>
               <label style={{ width: '150px', lineHeight: '30px' }}>
                 <input type='radio' name='allergy' style={{ width: 'auto', height: 'auto' }} />是
-							</label>
+              </label>
               <label style={{ width: '150px', lineHeight: '30px' }}>
                 <input type='radio' name='allergy' style={{ width: 'auto', height: 'auto' }} />否
-							</label>
+              </label>
               <input type='text' placeholder={'对什么过敏'} />
             </li>
             <li>
@@ -220,16 +220,16 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-						保存
-					</button>
+            保存
+          </button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-						取消
-					</button>
+            取消
+          </button>
         </div>
       </div>
     )
   }
-	// 诊前预诊
+  // 诊前预诊
   showPreDiagnosisRecords() {
     return (
       <div>
@@ -240,7 +240,7 @@ class TriageScreen extends Component {
           <ul>
             <li>
               <label>
-								主诉<b style={{ color: 'red' }}>*</b>
+                主诉<b style={{ color: 'red' }}>*</b>
               </label>
               <textarea style={{ height: '70px' }}>asda</textarea>
             </li>
@@ -264,11 +264,11 @@ class TriageScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <button className='saveBtn' onClick={() => this.submit(this.props)}>
-						保存
-					</button>
+            保存
+          </button>
           <button className='commonBtn' onClick={() => this.submit(this.props)}>
-						取消
-					</button>
+            取消
+          </button>
         </div>
       </div>
     )
@@ -283,14 +283,14 @@ class TriageScreen extends Component {
         </div>
         <div className={'healthFile_menu'}>
           <span className={this.state.alertPageType === 1 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 1 })}>
-						体征
-					</span>
+            体征
+          </span>
           <span className={this.state.alertPageType === 2 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 2 })}>
-						诊前病历
-					</span>
+            诊前病历
+          </span>
           <span className={this.state.alertPageType === 3 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 3 })}>
-						诊前预诊
-					</span>
+            诊前预诊
+          </span>
         </div>
         {this.state.alertPageType === 1 ? this.showBodySigns() : ''}
         {this.state.alertPageType === 2 ? this.showPreMedicalRecords() : ''}
@@ -298,7 +298,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-	// 选择医生
+  // 选择医生
   showChooseDoctor(clinic_triage_patient_id) {
     const { triageDoctorsList, clinic_id } = this.props
     triageDoctorsList({ clinic_id })
@@ -342,26 +342,26 @@ class TriageScreen extends Component {
                   <li
                     key={index}
                     onClick={async () => {
-                    let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
-                    let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
+                      let doctor_visit_schedule_id = doctor.doctor_visit_schedule_id
+                      let error = await triagePatient({ doctor_visit_schedule_id, clinic_triage_patient_id, triage_personnel_id })
 
-                    if (error) {
-                    return alert('分诊失败: ' + error)
-                  } else {
-                    return alert('分诊成功')
-                  }
-                  }}
-									>
+                      if (error) {
+                        return alert('分诊失败: ' + error)
+                      } else {
+                        return alert('分诊成功')
+                      }
+                    }}
+                  >
                     <div>
-                    <img src={'/static/login/u49.png'} />
-                    <span>医生</span>
-                    <span>{doctor.doctor_name}</span>
-                  </div>
+                      <img src={'/static/login/u49.png'} />
+                      <span>医生</span>
+                      <span>{doctor.doctor_name}</span>
+                    </div>
                     <div>
-                    <span>科室名称：{doctor.department_name}</span>
-                    <span>今日待接诊：{doctor.wait_total}人</span>
-                    <span>今日已接诊：{doctor.triaged_total}人</span>
-                  </div>
+                      <span>科室名称：{doctor.department_name}</span>
+                      <span>今日待接诊：{doctor.wait_total}人</span>
+                      <span>今日已接诊：{doctor.triaged_total}人</span>
+                    </div>
                   </li>
                 )
               })}
@@ -372,10 +372,10 @@ class TriageScreen extends Component {
       </div>
     )
   }
-	// 换诊
+  // 换诊
   changeDoctor() {}
 
-	// 显示分诊列表
+  // 显示分诊列表
   showTriageList() {
     const { triagePatients, patient_page_info } = this.props
     const { pageType } = this.state
@@ -403,29 +403,29 @@ class TriageScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>门诊ID：</a>
-                    <a>{patient.cert_no}</a>
-                  </span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
@@ -445,7 +445,7 @@ class TriageScreen extends Component {
             const keyword = this.state.keyword
             this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 10 })
           }}
-				/>
+        />
       </div>
     )
   }
@@ -464,7 +464,7 @@ class TriageScreen extends Component {
       return 1
     })
   }
-	// 显示分诊记录
+  // 显示分诊记录
   showTriageRecord() {
     const { triagePatients, patient_page_info } = this.props
     const { pageType } = this.state
@@ -489,34 +489,34 @@ class TriageScreen extends Component {
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}岁</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>
-                    {patient.status !== 20 ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
-                  </span>
+                      {patient.status !== 20 ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}
+                    </span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>门诊ID：</a>
-                    <a>{patient.cert_no}</a>
-                  </span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.showCompleteHealthFile()}>完善健康档案</span>
@@ -536,18 +536,18 @@ class TriageScreen extends Component {
             const keyword = this.state.keyword
             this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 20, status_end: 90 })
           }}
-				/>
+        />
       </div>
     )
   }
 
-	// 切换显示列表
+  // 切换显示列表
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
-	// 显示日历列表
+  // 显示日历列表
   showCalendarList() {
-		// const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    // const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     let nowWeekNum = this.state.nowWeekNum
     const dateTime = this.state.dateTime
     return (
@@ -561,17 +561,17 @@ class TriageScreen extends Component {
               <span style={{ flex: 1 }}>{'《'}</span>
               <span style={{ flex: 1 }}>{'<'}</span>
               <span style={{ flex: 11 }} onClick={() => this.setState({ nowWeekNum: 1 })}>
-								本周（{moment()
-									.day(nowWeekNum)
-									.format('YYYY年MM月DD日')}至{moment()
-									.day(nowWeekNum + 6)
-									.format('MM月DD日')}）
-							</span>
+                本周（{moment()
+                  .day(nowWeekNum)
+                  .format('YYYY年MM月DD日')}至{moment()
+                  .day(nowWeekNum + 6)
+                  .format('MM月DD日')}）
+              </span>
               <span style={{ flex: 1 }}>{'>'}</span>
               <span style={{ flex: 1 }}>{'》'}</span>
               <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
-								下一周
-							</span>
+                下一周
+              </span>
             </div>
           </div>
           <div className={'calenderBox'}>
@@ -581,40 +581,40 @@ class TriageScreen extends Component {
                   <tr>
                     <td colSpan={2} />
                     <td colSpan={2}>
-											周一（{moment()
-												.day(nowWeekNum)
-												.format('MM-DD')}）
-										</td>
+                      周一（{moment()
+                        .day(nowWeekNum)
+                        .format('MM-DD')}）
+                    </td>
                     <td colSpan={2}>
-											周二（{moment()
-												.day(nowWeekNum + 1)
-												.format('MM-DD')}）
-										</td>
+                      周二（{moment()
+                        .day(nowWeekNum + 1)
+                        .format('MM-DD')}）
+                    </td>
                     <td colSpan={2}>
-											周三（{moment()
-												.day(nowWeekNum + 2)
-												.format('MM-DD')}）
-										</td>
+                      周三（{moment()
+                        .day(nowWeekNum + 2)
+                        .format('MM-DD')}）
+                    </td>
                     <td colSpan={2}>
-											周四（{moment()
-												.day(nowWeekNum + 3)
-												.format('MM-DD')}）
-										</td>
+                      周四（{moment()
+                        .day(nowWeekNum + 3)
+                        .format('MM-DD')}）
+                    </td>
                     <td colSpan={2}>
-											周五（{moment()
-												.day(nowWeekNum + 4)
-												.format('MM-DD')}）
-										</td>
+                      周五（{moment()
+                        .day(nowWeekNum + 4)
+                        .format('MM-DD')}）
+                    </td>
                     <td colSpan={2}>
-											周六（{moment()
-												.day(nowWeekNum + 5)
-												.format('MM-DD')}）
-										</td>
+                      周六（{moment()
+                        .day(nowWeekNum + 5)
+                        .format('MM-DD')}）
+                    </td>
                     <td colSpan={2}>
-											周日（{moment()
-												.day(nowWeekNum + 6)
-												.format('MM-DD')}）
-										</td>
+                      周日（{moment()
+                        .day(nowWeekNum + 6)
+                        .format('MM-DD')}）
+                    </td>
                   </tr>
                 </thead>
                 <tbody>
@@ -654,24 +654,24 @@ class TriageScreen extends Component {
                   </tr>
                   {dateTime.map((item, index) => {
                     return (
-                    <tr>
-                    <td colSpan={2}>{item.time}</td>
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                  </tr>
-                  )
+                      <tr>
+                        <td colSpan={2}>{item.time}</td>
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                        <td />
+                      </tr>
+                    )
                   })}
                   <tr>
                     <td />
@@ -699,7 +699,7 @@ class TriageScreen extends Component {
       </div>
     )
   }
-	// 显示就诊人列表
+  // 显示就诊人列表
   showPatientList() {
     return (
       <div className={'regisList'}>
@@ -757,11 +757,11 @@ class TriageScreen extends Component {
     )
   }
 
-	// 新增预约
+  // 新增预约
   addNewReservation() {
     Router.push('/treatment/reservation_add')
   }
-	// 预约管理
+  // 预约管理
   showReservation() {
     return (
       <div className={'formList'}>
@@ -769,10 +769,10 @@ class TriageScreen extends Component {
           <div className={'boxLeft'}>
             <label>
               <input type='radio' name={'listType'} /> 日历列表
-						</label>
+            </label>
             <label>
               <input type='radio' name={'listType'} /> 就诊人列表
-						</label>
+            </label>
             <input type='text' placeholder='搜索科室' />
             <input className={'searchbox'} type='text' placeholder='搜索科室' />
             <input type='text' placeholder='搜索医生' />
@@ -811,27 +811,27 @@ class TriageScreen extends Component {
         <div className={'pagination'} />
         <style jsx>
           {`
-						.boxLeft label {
-							float: left;
-							height: 60px;
-							line-height: 60px;
-							margin-left: 30px;
-						}
-						input[type='radio'] {
-							width: 14px;
-							height: 14px;
-							margin: 23px 5px;
-							clear: both;
-							vertical-align: middle;
-						}
-						input[type='text'] {
-							width: 152px;
-							margin: 16px 0 16px 17px;
-						}
-						.boxLeft button {
-							margin: 16px 0 16px 17px;
-						}
-					`}
+            .boxLeft label {
+              float: left;
+              height: 60px;
+              line-height: 60px;
+              margin-left: 30px;
+            }
+            input[type='radio'] {
+              width: 14px;
+              height: 14px;
+              margin: 23px 5px;
+              clear: both;
+              vertical-align: middle;
+            }
+            input[type='text'] {
+              width: 152px;
+              margin: 16px 0 16px 17px;
+            }
+            .boxLeft button {
+              margin: 16px 0 16px 17px;
+            }
+          `}
         </style>
       </div>
     )
@@ -846,28 +846,27 @@ class TriageScreen extends Component {
               this.setState({ pageType: 1 })
               this.quetryTriagePatientsList({ status_start: 10, status_end: 10 })
             }}
-					>
-						分诊
-					</span>
+          >
+            分诊
+          </span>
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
               this.setState({ pageType: 2 })
               this.quetryTriagePatientsList({ status_start: 20, status_end: 90 })
             }}
-					>
-						分诊记录
-					</span>
+          >
+            分诊记录
+          </span>
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
-						预约管理
-					</span>
+            预约管理
+          </span>
         </div>
         {this.showTriageList()}
         {this.showTriageRecord()}
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
-        <style jsx global>{``}</style>
         {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
     )

@@ -206,9 +206,6 @@ class AddmisionScreen extends Component {
         {this.state.pageType === 3 ? this.showReservation() : ''}
         {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''}
-        <style jsx>{`
-				`}</style>
-        {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
     )
   }

@@ -118,11 +118,6 @@ class ChargeScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
-        <style jsx>{`
-					// .itemBottom span:nth-child(2) {
-					// 	border-right: 2px solid #31b0b3;
-					// }
-				`}</style>
       </div>
     )
   }
@@ -161,8 +156,6 @@ class ChargeScreen extends Component {
         {/* {this.state.pageType === 3 ? this.showReservation() : ''} */}
         {/* {this.state.alertType === 1 ? this.completeHealthFile() : ''}
         {this.state.alertType === 2 ? this.chooseDoctor() : ''} */}
-        <style jsx>{``}</style>
-        {/* <PageCard limit={10} offset={20} total={100} /> */}
       </div>
     )
   }
