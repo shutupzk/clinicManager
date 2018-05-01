@@ -61,10 +61,10 @@ export const queryScheduleDoctors = ({ department_id }) => async dispatch => {
   }
 }
 
-export const queryDoctorsWithSchedule = ({ clinic_id, start_date, end_date, offset, limit }) => async dispatch => {
+export const queryDoctorsWithSchedule = ({ clinic_id, start_date, end_date, offset, limit, department_id, personnel_id }) => async dispatch => {
   try {
     const data = await request('/doctorVisitSchedule/DoctorsWithSchedule', {
-      clinic_id, start_date, end_date, offset, limit
+      clinic_id, start_date, end_date, offset, limit, department_id, personnel_id
     })
     console.log('data ========= ', data)
     const docs = data.data || []

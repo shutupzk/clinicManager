@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
-import { queryDoctorsWithSchedule, queryDepartmentList } from '../../../../ducks'
+import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 
@@ -11,8 +11,11 @@ class ScheduleListScreen extends Component {
     this.state = {
       weekNum: 1,
       department_id: '',
+      department_name: '',
       personnel_id: '',
-      showSearchDept: false
+      personnel_name: '',
+      showSearchDept: false,
+      showSearchDortor: false
     }
   }
 
@@ -20,8 +23,10 @@ class ScheduleListScreen extends Component {
     this.queryListData({})
   }
 
-  queryListData({ offset = 0, limit = 10, weekNum }) {
+  queryListData({ offset = 0, limit = 10, weekNum, department_id, personnel_id }) {
     weekNum = weekNum || this.state.weekNum
+    department_id = department_id || this.state.department_id
+    personnel_id = personnel_id || this.state.personnel_id
     let start_date = moment()
       .day(weekNum)
       .format('YYYY-MM-DD')
@@ -29,12 +34,17 @@ class ScheduleListScreen extends Component {
       .day(weekNum + 6)
       .format('YYYY-MM-DD')
     const { queryDoctorsWithSchedule, clinic_id } = this.props
-    queryDoctorsWithSchedule({ clinic_id, start_date, end_date, offset, limit })
+    queryDoctorsWithSchedule({ clinic_id, start_date, end_date, offset, limit, department_id, personnel_id })
   }
 
   queryDepartmentList({ keyword }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, limit: 10 })
+  }
+
+  queryDoctorList({ keyword }) {
+    const { queryDoctorList, clinic_id } = this.props
+    queryDoctorList({ clinic_id, keyword, limit: 10, personnel_type: 2 })
   }
 
   formatDoctorWeekScheduleData(days = []) {
@@ -67,25 +77,57 @@ class ScheduleListScreen extends Component {
     return array
   }
 
-  searchView() {
-    const departments = this.props.departments || []
+  searchDeptView() {
+    const { departments } = this.props
     const { showSearchDept } = this.state
     if (!showSearchDept) return null
+    let text = '选择科室'
     return (
       <div className={'researchView'}>
-        <span>请选科室</span>
+        <span>{text}</span>
         <ul>
           {departments.map((item, index) => {
             return (
               <li
                 key={index}
                 onClick={() => {
-                  this.setState({ department_id: item.id, showSearchDept: false })
+                  this.setState({ department_id: item.id, showSearchDept: false, department_name: item.name })
+                  this.queryListData({ department_id: item.id })
                 }}
               >
                 <div className={'leftInfo'}>
+                  {/* <div>{item.code}</div> */}
                   <div>{item.name}</div>
-                  <div>{item.phone}</div>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    )
+  }
+
+  searchDoctorView() {
+    const { doctors } = this.props
+    const { showSearchDortor } = this.state
+    if (!showSearchDortor) return null
+    let text = '选择医生'
+    return (
+      <div className={'researchView'}>
+        <span>{text}</span>
+        <ul>
+          {doctors.map((item, index) => {
+            return (
+              <li
+                key={index}
+                onClick={() => {
+                  this.setState({ personnel_id: item.id, showSearchDortor: false, personnel_name: item.name })
+                  this.queryListData({ personnel_id: item.id })
+                }}
+              >
+                <div className={'leftInfo'}>
+                  {/* <div>{item.code}</div> */}
+                  <div>{item.name}</div>
                 </div>
               </li>
             )
@@ -229,28 +271,46 @@ class ScheduleListScreen extends Component {
         <div className={''}>
           <div className={'filterBox'} style={{ marginTop: '30px' }}>
             <div className={'boxLeft'}>
-              <div style={{position: 'relative'}}>
-                <input
-                  type='text'
-                  placeholder='搜索科室'
-                  onChange={e => {
-                    // this.setPatientInfo(e, 'name')
-                    let keyword = e.target.value
-                    this.setState({ showSearchDept: keyword === '' ? 0 : 1 })
-                    // this.queryPatients(value)
-                    this.queryDepartmentList({ keyword })
-                  }}
-                  onFocus={e => {
-                    this.setState({ showSearchDept: true })
-                    this.queryDepartmentList({})
-                  }}
-                  onBlur={(e) => {
-                    this.setState({ showSearchDept: false })
-                  }}
-                />
-                {this.searchView()}
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type='text'
+                    placeholder='搜索科室'
+                    value={this.state.department_name}
+                    onChange={e => {
+                      // this.setPatientInfo(e, 'name')
+                      let keyword = e.target.value
+                      this.setState({ showSearchDept: keyword !== '', department_name: keyword, department_id: '' })
+                      this.queryDepartmentList({ keyword })
+                    }}
+                    onFocus={e => {
+                      this.setState({ showSearchDept: true, showSearchDortor: false })
+                      this.queryDepartmentList({})
+                    }}
+                  />
+                  {this.searchDeptView()}
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    className={'searchbox'}
+                    style={{ marginLeft: '15px' }}
+                    type='text'
+                    placeholder='搜索医生'
+                    value={this.state.personnel_name}
+                    onChange={e => {
+                      // this.setPatientInfo(e, 'name')
+                      let keyword = e.target.value
+                      this.setState({ showSearchDortor: keyword !== '', personnel_name: keyword, personnel_id: '' })
+                      this.queryDoctorList({ keyword })
+                    }}
+                    onFocus={e => {
+                      this.setState({ showSearchDept: false, showSearchDortor: true })
+                      this.queryDoctorList({})
+                    }}
+                  />
+                  {this.searchDoctorView()}
+                </div>
               </div>
-              <input className={'searchbox'} style={{ marginLeft: '15px' }} type='text' placeholder='搜索医生' />
               <button>查询</button>
             </div>
           </div>
@@ -267,8 +327,9 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     scheduleDoctors: state.schedules.scheduleDoctors || [],
     page_info: state.schedules.page_info,
-    departments: state.departments.data
+    departments: state.departments.data,
+    doctors: state.doctors.data
   }
 }
 
-export default connect(mapStateToProps, { queryDoctorsWithSchedule, queryDepartmentList })(ScheduleListScreen)
+export default connect(mapStateToProps, { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList })(ScheduleListScreen)
