@@ -11,17 +11,19 @@ class AddmisionScreen extends Component {
     this.state = {
       pageType: 1,
       showType: 1,
-      nowWeekNum: 1
+      nowWeekNum: 1,
+      keyword1: '',
+      keyword2: ''
     }
   }
 
   componentDidMount() {
-    this.quetryTriagePatientsList({ status_start: 20, status_end: 20 })
+    this.commonQueryList({})
   }
 
-  quetryTriagePatientsList({ status_start, status_end, offset, limit }) {
+  quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit }) {
     const { clinic_id, triagePatientsList } = this.props
-    let params = { clinic_id, is_today: true, offset, limit }
+    let params = { clinic_id, is_today: true, offset, limit, keyword }
     if (status_start && status_end) {
       params.status_start = status_start
       params.status_end = status_end
@@ -29,97 +31,28 @@ class AddmisionScreen extends Component {
     triagePatientsList(params)
   }
 
-  // 改变显示内容
-  changeContent({ type }) {
-    this.setState({ pageType: type })
-  }
-
-  getTriagePatientListData(treat_status) {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (!patient.treat_status) continue
-      if (treat_status) {
-        if (!patient.reception_time) continue
-      } else {
-        if (patient.reception_time) continue
-      }
-      array.push(patient)
+  commonQueryList({ offset = 0, limit = 6, pageType }) {
+    const { keyword1, keyword2 } = this.state
+    pageType = pageType || this.state.pageType
+    let keyword = keyword1
+    let status_start = 20
+    let status_end = 30
+    if (pageType === 2) {
+      keyword = keyword2
+      status_start = 40
+      status_end = 90
     }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return 1
-      return -1
-    })
-  }
-  getUnTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (patient.treat_status) continue
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
-      return 1
-    })
-  }
-
-  // 显示分诊记录
-  showTriageRecord() {
-    const array = this.getTriagePatientListData(true)
-    return (
-      <div className={'formList'}>
-        <div className={'regisListTop'}>
-          <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-          <button className={'searchBtn'}>查询</button>
-          {/* <a>注：当日登记就诊人列表</a> */}
-        </div>
-        <div className={'regisList'}>
-          <ul>
-            {array.map((patient, index) => {
-              let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-              return (
-                <li key={index} onClick={() => {}}>
-                  <div className={'liTop'}>
-                    <span className={'updateTime'}>更新时间：{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</span>
-                    <span className={'status'}>{!patient.treat_status ? '待分诊' : !patient.reception_time ? '待接诊' : !patient.complete_time ? '已接诊' : '已完成'}</span>
-                  </div>
-                  <div>
-                    就诊人姓名：{patient.patient_name} {patient.sex === 0 ? '女' : '男'} 年龄：{getAgeByBirthday(patient.birthday)}岁
-                  </div>
-                  <div>身份证号：{patient.cert_no}</div>
-                  <div>接诊科室：{patient.department_name}</div>
-                  <div>接诊医生：{patient.doctor_name}</div>
-                  <div>登记人员：{patient.register_personnel_name}</div>
-                  <div>登记时间：{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-                  <div className={'seeDetail'}>
-                    <a onClick={() => this.showCompleteHealthFile()}>完善健康档案</a>
-                    <a onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>选择医生</a>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <div className={'pagination'} />
-      </div>
-    )
+    console.log('keyword, status_start, status_end, offset, limit ', keyword, status_start, status_end, offset, limit)
+    this.quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit })
   }
 
   // 切换显示列表
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
-  // 显示分诊列表
+  // 显示待接诊列表
   showTriageList() {
     const { pageType } = this.state
-    if (pageType !== 1) return
     const { triagePatients, patient_page_info } = this.props
     return (
       <div>
@@ -163,7 +96,7 @@ class AddmisionScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span onClick={() => this.showCompleteHealthFile()}>接诊</span>
+                    <span onClick={() => this.showCompleteHealthFile()}> {pageType === 1 ? '接诊' : '查看'}</span>
                     <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>查看健康档案</span>
                     <span onClick={() => this.showCompleteHealthFile()}>操作</span>
                   </div>
@@ -174,38 +107,65 @@ class AddmisionScreen extends Component {
         </div>
         <div className={'pagination'} />
         <style jsx>{`
-					.itemBottom span:nth-child(2) {
-						border-right: 2px solid #31b0b3;
-					}
-				`}</style>
+          .itemBottom span:nth-child(2) {
+            border-right: 2px solid #31b0b3;
+          }
+        `}</style>
+        <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            this.commonQueryList({offset, limit})
+          }}
+        />
       </div>
     )
   }
   render() {
+    const { pageType, keyword1, keyword2 } = this.state
+    let keyword = pageType === 1 ? keyword1 : keyword2
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
+          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => {
+            this.setState({pageType: 1, keyword2: ''})
+            this.commonQueryList({ pageType: 1 })
+          }}>
             今日待接诊
           </span>
-          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
+          <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => {
+            this.setState({pageType: 2, keyword1: ''})
+            this.commonQueryList({ pageType: 2 })
+          }}>
             今日已接诊
           </span>
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-            <button>查询</button>
+            <input
+              type='text'
+              placeholder='搜索就诊人姓名/身份证号码/手机号码'
+              value={keyword}
+              onChange={e => {
+                if (pageType === 1) {
+                  this.setState({ keyword1: e.target.value })
+                } else {
+                  this.setState({ keyword2: e.target.value })
+                }
+              }}
+            />
+            <button
+              onClick={() => this.commonQueryList({})}
+            >
+              查询
+            </button>
           </div>
           <div className={'boxRight'}>
             <button>快速接诊</button>
           </div>
         </div>
-        {this.state.pageType === 1 ? this.showTriageList() : ''}
-        {this.state.pageType === 2 ? this.showTriageRecord() : ''}
-        {this.state.pageType === 3 ? this.showReservation() : ''}
-        {this.state.alertType === 1 ? this.completeHealthFile() : ''}
-        {this.state.alertType === 2 ? this.chooseDoctor() : ''}
+        {this.showTriageList()}
       </div>
     )
   }
