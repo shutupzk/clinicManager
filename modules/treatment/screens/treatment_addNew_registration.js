@@ -116,58 +116,6 @@ class AddNewRegistrationScreen extends Component {
             )
           })}
         </ul>
-        <style>
-          {`
-            .researchView{
-              position: absolute;
-              background: #ffffff;
-              width: 488px;
-              z-index: 100;
-              top: 75px;
-              cursor: default;
-              border: 1px solid #d8d8d8;
-              max-height: 500px;
-              overflow: auto;
-              box-shadow: 0px 2px 5px #a0a0a0;
-            }
-            .researchView>span{
-              height: 40px;
-              width: 100%;
-              display: inline-block;
-              line-height: 40px;
-              text-indent: 20px;
-              border-bottom: 1px solid #d8d8d8;
-            }
-            .formList .researchView>ul{
-              display: flex;
-              flex-direction: column;
-              width: 100% !important;
-            }
-            .formList .researchView>ul>li{
-              width: 100%;
-              margin: 10px 0;
-              flex-direction: row;
-            }
-            .formList .researchView>ul>li:hover{
-              background: #eaeaea;
-            }
-            .formList .researchView>ul>li img{
-              width: 40px;
-              border-radius: 100%;
-              height: 40px;
-              flex: 1;
-              margin-left: 10px;
-            }
-            .formList .researchView>ul>li .leftInfo{
-              flex: 11;
-              text-indent: 20px;
-              line-height: 20px;
-            }
-            .formList .researchView>ul>li>div{
-              
-            }
-        `}
-        </style>
       </div>
     )
   }
@@ -459,6 +407,15 @@ class AddNewRegistrationScreen extends Component {
             this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
           }}
 				/>
+        <style jsx>{`
+					.itemBottom span:nth-child(1) {
+						flex: 1;
+						border-right: none;
+          }
+          .formList {
+						margin: 20px 66px 33px 66px;
+					}
+				`}</style>
       </div>
     )
   }
@@ -493,17 +450,6 @@ class AddNewRegistrationScreen extends Component {
         {this.showAddNew()}
         {this.showNewList()}
         {/* {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()} */}
-        <style jsx global>{`
-					.itemBottom span:nth-child(1) {
-						flex: 1;
-						// margin-left: 26px;
-						border-right: 0;
-						// color: rgba(153, 153, 153, 1);
-					}
-					.formList {
-						margin: 20px 66px 33px 66px;
-					}
-				`}</style>
       </div>
     )
   }

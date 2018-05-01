@@ -1590,7 +1590,55 @@ export function styles() {
 					height: 33px;
 					line-height: 33px;
 				}
-
+				//搜索层
+				.researchView{
+					position: absolute;
+					background: #ffffff;
+					width: 488px;
+					z-index: 100;
+					top: 75px;
+					cursor: default;
+					border: 1px solid #d8d8d8;
+					max-height: 500px;
+					overflow: auto;
+					box-shadow: 0px 2px 5px #a0a0a0;
+				}
+				.researchView>span{
+					height: 40px;
+					width: 100%;
+					display: inline-block;
+					line-height: 40px;
+					text-indent: 20px;
+					border-bottom: 1px solid #d8d8d8;
+				}
+				.formList .researchView>ul{
+					display: flex;
+					flex-direction: column;
+					width: 100% !important;
+				}
+				.formList .researchView>ul>li{
+					width: 100%;
+					margin: 10px 0;
+					flex-direction: row;
+				}
+				.formList .researchView>ul>li:hover{
+					background: #eaeaea;
+				}
+				.formList .researchView>ul>li img{
+					width: 40px;
+					border-radius: 100%;
+					height: 40px;
+					flex: 1;
+					margin-left: 10px;
+				}
+				.formList .researchView>ul>li .leftInfo{
+					flex: 11;
+					text-indent: 20px;
+					line-height: 20px;
+				}
+				.formList .researchView>ul>li>div{
+					
+				}
 				//日历列表
 				.calendarCotent{
 					width:1098px;
