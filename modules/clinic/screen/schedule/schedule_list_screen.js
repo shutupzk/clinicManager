@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { queryDoctorsWithSchedule } from '../../../../ducks'
 import moment from 'moment'
+import { PageCard } from '../../../../components'
 
 class ScheduleListScreen extends Component {
   constructor(props) {
@@ -61,7 +62,7 @@ class ScheduleListScreen extends Component {
   // 显示日历列表
   showCalendarList() {
     let { weekNum } = this.state
-    const { scheduleDoctors } = this.props
+    const { scheduleDoctors, page_info } = this.props
     return (
       <div className={'listContent'}>
         <div className={'calendarCotent'}>
@@ -141,8 +142,8 @@ class ScheduleListScreen extends Component {
                         {array.map(({ daySchedule }, index) => (
                           <td key={index}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '##999999'}}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
-                              <span style={{flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '##999999'}}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
+                              <span style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
+                              <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
                             </div>
                           </td>
                         ))}
@@ -151,6 +152,14 @@ class ScheduleListScreen extends Component {
                   })}
                 </tbody>
               </table>
+              <PageCard
+                offset={page_info.offset}
+                limit={page_info.limit}
+                total={page_info.total}
+                onItemClick={({ offset, limit }) => {
+                  this.queryListData({ offset, limit })
+                }}
+              />
             </div>
           </div>
         </div>
