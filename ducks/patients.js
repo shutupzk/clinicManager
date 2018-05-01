@@ -3,14 +3,14 @@ const PATIENT_ADD = 'PATIENT_ADD'
 const PATIENT_SELECT = 'PATIENT_SELECT'
 
 const initState = {
-  data: {},
+  data: [],
   selectId: null
 }
 
 export function patients(state = initState, action = {}) {
   switch (action.type) {
     case PATIENT_ADD:
-      return { ...state, data: { ...state.data, ...action.data } }
+      return { ...state, data: action.data }
     case PATIENT_SELECT:
       return Object.assign({}, state, { selectId: action.selectId })
     default:
@@ -26,10 +26,27 @@ export const getPatientByCertNo = ({ cert_no }) => async dispatch => {
     console.log(data)
     const patient = data.data
     if (!patient || !patient.id) return null
-    let json = { [patient.id]: patient }
     dispatch({
       type: PATIENT_ADD,
-      data: json
+      data: [patient]
+    })
+    return patient
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const getPatientByKeyword = ({ keyword }) => async dispatch => {
+  try {
+    const data = await request('/patient/getByKeyword', {
+      keyword
+    })
+    console.log(data)
+    const docs = data.data || []
+    dispatch({
+      type: PATIENT_ADD,
+      data: docs
     })
     return patient
   } catch (e) {
