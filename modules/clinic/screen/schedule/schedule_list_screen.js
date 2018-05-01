@@ -20,11 +20,11 @@ class ScheduleListScreen extends Component {
   queryListData({ offset = 0, limit = 10, weekNum }) {
     weekNum = weekNum || this.state.weekNum
     let start_date = moment()
-      .day(weekNum)
-      .format('YYYY-MM-DD')
+			.day(weekNum)
+			.format('YYYY-MM-DD')
     let end_date = moment()
-      .day(weekNum + 6)
-      .format('YYYY-MM-DD')
+			.day(weekNum + 6)
+			.format('YYYY-MM-DD')
     const { queryDoctorsWithSchedule, clinic_id } = this.props
     queryDoctorsWithSchedule({ clinic_id, start_date, end_date, offset, limit })
   }
@@ -34,8 +34,8 @@ class ScheduleListScreen extends Component {
     let array = []
     for (let i = 0; i < 7; i++) {
       let visit_date = moment()
-        .day(weekNum + i)
-        .format('YYYY-MM-DD')
+				.day(weekNum + i)
+				.format('YYYY-MM-DD')
       array[i] = { visit_date, daySchedule: { am: {}, pm: {} } }
       for (let obj of days) {
         if (obj.visit_date === visit_date) {
@@ -59,7 +59,7 @@ class ScheduleListScreen extends Component {
     return array
   }
 
-  // 显示日历列表
+	// 显示日历列表
   showCalendarList() {
     let { weekNum } = this.state
     const { scheduleDoctors, page_info } = this.props
@@ -75,18 +75,24 @@ class ScheduleListScreen extends Component {
                     this.setState({ weekNum: weekNum - 7 })
                     this.queryListData({ weekNum: weekNum - 7 })
                   }}
-                >
+								>
                   {'上一周'}
                 </span>
                 <span style={{ flex: 1 }}>{'《'}</span>
                 <span style={{ flex: 1 }}>{'<'}</span>
-                <span style={{ flex: 11 }} onClick={() => this.setState({ weekNum: 1 })}>
-                  本周（{moment()
-                    .day(weekNum)
-                    .format('YYYY年MM月DD日')}至{moment()
-                    .day(weekNum + 6)
-                    .format('MM月DD日')}）
-                </span>
+                <span
+                  style={{ flex: 11 }}
+                  onClick={() => {
+                    this.setState({ weekNum: 1 })
+                    this.queryListData({ weekNum: 1 })
+                  }}
+								>
+									本周（{moment()
+										.day(weekNum)
+										.format('YYYY年MM月DD日')}至{moment()
+										.day(weekNum + 6)
+										.format('MM月DD日')}）
+								</span>
                 <span style={{ flex: 1 }}>{'>'}</span>
                 <span style={{ flex: 1 }}>{'》'}</span>
                 <span
@@ -95,9 +101,9 @@ class ScheduleListScreen extends Component {
                     this.setState({ weekNum: weekNum + 7 })
                     this.queryListData({ weekNum: weekNum + 7 })
                   }}
-                >
-                  下一周
-                </span>
+								>
+									下一周
+								</span>
               </div>
               <button className={'calenderFilterBtn'}>复制上周排班</button>
             </div>
@@ -109,40 +115,40 @@ class ScheduleListScreen extends Component {
                       <td>人员名称</td>
                       <td>科室名称</td>
                       <td>
-                        周一（{moment()
-                          .day(weekNum)
-                          .format('MM-DD')}）
-                      </td>
+                          周一（{moment()
+                            .day(weekNum)
+                            .format('MM-DD')}）
+                        </td>
                       <td>
-                        周二（{moment()
-                          .day(weekNum + 1)
-                          .format('MM-DD')}）
-                      </td>
+                          周二（{moment()
+                            .day(weekNum + 1)
+                            .format('MM-DD')}）
+                        </td>
                       <td>
-                        周三（{moment()
-                          .day(weekNum + 2)
-                          .format('MM-DD')}）
-                      </td>
+                          周三（{moment()
+                            .day(weekNum + 2)
+                            .format('MM-DD')}）
+                        </td>
                       <td>
-                        周四（{moment()
-                          .day(weekNum + 3)
-                          .format('MM-DD')}）
-                      </td>
+                          周四（{moment()
+                            .day(weekNum + 3)
+                            .format('MM-DD')}）
+                        </td>
                       <td>
-                        周五（{moment()
-                          .day(weekNum + 4)
-                          .format('MM-DD')}）
-                      </td>
+                          周五（{moment()
+                            .day(weekNum + 4)
+                            .format('MM-DD')}）
+                        </td>
                       <td>
-                        周六（{moment()
-                          .day(weekNum + 5)
-                          .format('MM-DD')}）
-                      </td>
+                          周六（{moment()
+                            .day(weekNum + 5)
+                            .format('MM-DD')}）
+                        </td>
                       <td>
-                        周日（{moment()
-                          .day(weekNum + 6)
-                          .format('MM-DD')}）
-                      </td>
+                          周日（{moment()
+                            .day(weekNum + 6)
+                            .format('MM-DD')}）
+                        </td>
                     </tr>
                   </thead>
                   <tbody>
@@ -176,12 +182,12 @@ class ScheduleListScreen extends Component {
           onItemClick={({ offset, limit }) => {
             this.queryListData({ offset, limit })
           }}
-        />
+				/>
       </div>
     )
   }
   render() {
-    // const { fenyeItem, buttonLarge } = styles
+		// const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
         <div className={''}>
