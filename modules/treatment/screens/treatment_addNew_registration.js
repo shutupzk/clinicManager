@@ -80,11 +80,10 @@ class AddNewRegistrationScreen extends Component {
   }
   async queryPatients(keyword) {
     const { getPatientByKeyword } = this.props
-    let patient = await getPatientByKeyword({ keyword })
-    this.setState({ candidatePatient: patient || [] })
+    getPatientByKeyword({ keyword })
   }
   searchView() {
-    const patients = this.props.patients
+    const patients = this.props.patients || []
     console.log('patients ', patients)
     return (
       <div className={'researchView'}>
@@ -95,8 +94,11 @@ class AddNewRegistrationScreen extends Component {
               <li key={index} onClick={() => {
                 this.setState({ patientInfo: item, searchView: 0 })
               }}>
-                <div>{item.name}</div>
-                <div>{item.phone}</div>
+                <img src={'/static/login/u49.png'} />
+                <div className={'leftInfo'}>
+                  <div>{item.name} {item.sex === 1 ? '男' : '女'} { getAgeByBirthday(item.birthday)}岁</div>
+                  <div>{item.phone}</div>
+                </div>
               </li>
             )
           })}
@@ -106,18 +108,22 @@ class AddNewRegistrationScreen extends Component {
             .researchView{
               position: absolute;
               background: #ffffff;
-              width: 477px;
+              width: 488px;
               z-index: 100;
-              top: 75px;    
+              top: 75px;
               cursor: default;
-              border:1px solid #d8d8d8;
+              border: 1px solid #d8d8d8;
+              max-height: 500px;
+              overflow: auto;
+              box-shadow: 0px 2px 5px #a0a0a0;
             }
             .researchView>span{
-              height: 30px;
+              height: 40px;
               width: 100%;
-              background: #a0a0a0;
               display: inline-block;
-              line-height: 30px;
+              line-height: 40px;
+              text-indent: 20px;
+              border-bottom: 1px solid #d8d8d8;
             }
             .formList .researchView>ul{
               display: flex;
@@ -125,10 +131,24 @@ class AddNewRegistrationScreen extends Component {
               width: 100% !important;
             }
             .formList .researchView>ul>li{
-              margin-top:5px;
+              width: 100%;
+              margin: 10px 0;
+              flex-direction: row;
             }
             .formList .researchView>ul>li:hover{
               background: #eaeaea;
+            }
+            .formList .researchView>ul>li img{
+              width: 40px;
+              border-radius: 100%;
+              height: 40px;
+              flex: 1;
+              margin-left: 10px;
+            }
+            .formList .researchView>ul>li .leftInfo{
+              flex: 11;
+              text-indent: 20px;
+              line-height: 20px;
             }
             .formList .researchView>ul>li>div{
               
@@ -163,6 +183,7 @@ class AddNewRegistrationScreen extends Component {
                   this.setState({ searchView: value === '' ? 0 : 1 })
                   this.queryPatients(value)
                 }}
+                onBlur={e => this.setState({ searchView: 0 })}
 							/>
               {searchView === 1 ? this.searchView() : ''}
             </li>
