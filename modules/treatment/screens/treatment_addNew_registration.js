@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList } from '../../../ducks'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../config/provinces'
@@ -27,9 +27,10 @@ class AddNewRegistrationScreen extends Component {
       city: '请选择',
       county: '请选择',
       visit_date: moment()
-        .add(1, 'day')
-        .format('YYYYMMDD'),
-      searchView: 0
+				.add(1, 'day')
+				.format('YYYYMMDD'),
+      searchView: 0,
+      candidatePatient: []
     }
   }
 
@@ -38,7 +39,7 @@ class AddNewRegistrationScreen extends Component {
     queryDepartmentList({ clinic_id })
     this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
   }
-  // 保存新增登记
+	// 保存新增登记
   async submit() {
     const { addTriagePatientsList, clinic_id, personnel_id } = this.props
     let patientInfo = this.state.patientInfo
@@ -52,18 +53,18 @@ class AddNewRegistrationScreen extends Component {
       this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
     }
   }
-  // 改变显示内容
+	// 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
 
-  // 查询就诊人信息
+	// 查询就诊人信息
   async queryOne(cert_no = '') {
     const { getPatientByCertNo } = this.props
     let patient = await getPatientByCertNo({ cert_no })
     this.setState({ patientInfo: patient || {} })
   }
-  // 科室
+	// 科室
   queryDepartment() {
     const array = []
     const { departments } = this.props
@@ -77,21 +78,93 @@ class AddNewRegistrationScreen extends Component {
     newPatient[key] = e.target.value
     this.setState({ patientInfo: newPatient })
   }
-  // 显示添加新增
+  async queryPatients(keyword) {
+    const { getPatientByKeyword } = this.props
+    let patient = await getPatientByKeyword({ keyword })
+    this.setState({ candidatePatient: patient || [] })
+  }
+  searchView() {
+    const patients = this.props.patients
+    console.log('patients ', patients)
+    return (
+      <div className={'researchView'}>
+        <span>请选择患者或继续新增</span>
+        <ul>
+          {patients.map((item, index) => {
+            return (
+              <li key={index} onClick={() => {
+                this.setState({ patientInfo: item, searchView: 0 })
+              }}>
+                <div>{item.name}</div>
+                <div>{item.phone}</div>
+              </li>
+            )
+          })}
+        </ul>
+        <style>
+          {`
+            .researchView{
+              position: absolute;
+              background: #ffffff;
+              width: 477px;
+              z-index: 100;
+              top: 75px;    
+              cursor: default;
+              border:1px solid #d8d8d8;
+            }
+            .researchView>span{
+              height: 30px;
+              width: 100%;
+              background: #a0a0a0;
+              display: inline-block;
+              line-height: 30px;
+            }
+            .formList .researchView>ul{
+              display: flex;
+              flex-direction: column;
+              width: 100% !important;
+            }
+            .formList .researchView>ul>li{
+              margin-top:5px;
+            }
+            .formList .researchView>ul>li:hover{
+              background: #eaeaea;
+            }
+            .formList .researchView>ul>li>div{
+              
+            }
+        `}
+        </style>
+      </div>
+    )
+  }
+	// 显示添加新增
   showAddNew() {
     if (this.state.pageType !== 1) return null
     let patient = this.state.patientInfo
     const { cities, counties } = this.state
     let departments = this.queryDepartment()
+    const searchView = this.state.searchView
     return (
       <div className={'formList'}>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
           <ul>
             <li>
               <label htmlFor='patientName'>
-                就诊人名称：<b style={{ color: 'red' }}> *</b>
+								就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' id='patientName' value={patient.name} onChange={e => this.setPatientInfo(e, 'name')} />
+              <input
+                type='text'
+                id='patientName'
+                value={patient.name}
+                onChange={e => {
+                  this.setPatientInfo(e, 'name')
+                  let value = e.target.value
+                  this.setState({ searchView: value === '' ? 0 : 1 })
+                  this.queryPatients(value)
+                }}
+							/>
+              {searchView === 1 ? this.searchView() : ''}
             </li>
             <li>
               <label>身份证号码：</label>
@@ -104,11 +177,11 @@ class AddNewRegistrationScreen extends Component {
                   this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
                 }}
-              />
+							/>
             </li>
             <li style={{ width: '24%' }}>
               <label>
-                生日：<b style={{ color: 'red' }}> *</b>
+								生日：<b style={{ color: 'red' }}> *</b>
               </label>
               <input
                 type='date'
@@ -119,11 +192,11 @@ class AddNewRegistrationScreen extends Component {
                   newPatient.birthday = moment(e.target.value).format('YYYYMMDD')
                   this.setState({ patientInfo: newPatient })
                 }}
-              />
+							/>
             </li>
             <li style={{ width: '24%' }}>
               <label>
-                性别：<b style={{ color: 'red' }}> *</b>
+								性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
                 <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
@@ -134,7 +207,7 @@ class AddNewRegistrationScreen extends Component {
             </li>
             <li>
               <label>
-                手机号码：<b style={{ color: 'red' }}> *</b>
+								手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
               <input type='text' value={patient.phone} onChange={e => this.setPatientInfo(e, 'phone')} />
             </li>
@@ -146,14 +219,14 @@ class AddNewRegistrationScreen extends Component {
                     let province = JSON.parse(item.target.value)
                     this.setState({ province: province.name, cities: province.city })
                   }}
-                >
+								>
                   <option>省</option>
                   {provinces.map((province, index) => {
                     return (
-                      <option key={index} value={JSON.stringify(province)}>
-                        {province.name}
-                      </option>
-                    )
+                    <option key={index} value={JSON.stringify(province)}>
+                    {province.name}
+                  </option>
+                  )
                   })}
                 </select>
                 <select
@@ -161,28 +234,28 @@ class AddNewRegistrationScreen extends Component {
                     let city = JSON.parse(item.target.value)
                     this.setState({ city: city.name, counties: city.area })
                   }}
-                >
+								>
                   <option>市</option>
                   {cities.map((city, index) => {
                     return (
-                      <option key={index} value={JSON.stringify(city)}>
-                        {city.name}
-                      </option>
-                    )
+                    <option key={index} value={JSON.stringify(city)}>
+                    {city.name}
+                  </option>
+                  )
                   })}
                 </select>
                 <select
                   onChange={item => {
                     this.setState({ county: item.target.value })
                   }}
-                >
+								>
                   <option>区</option>
                   {counties.map((name, index) => {
                     return (
-                      <option key={index} value={name}>
-                        {name}
-                      </option>
-                    )
+                    <option key={index} value={name}>
+                    {name}
+                  </option>
+                  )
                   })}
                 </select>
                 <input
@@ -193,27 +266,27 @@ class AddNewRegistrationScreen extends Component {
                     newPatient.address = this.state.province + this.state.city + this.state.county + e.target.value
                     this.setState({ patientInfo: newPatient })
                   }}
-                />
+								/>
               </div>
             </li>
             <li>
               <label>接诊科室：</label>
               <select value={patient.department_id} onChange={e => this.setPatientInfo(e, 'department_id')}>
                 <option value={'0'} key={'0'}>
-                  请选择
-                </option>
+									请选择
+								</option>
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
-                      {item.name}
-                    </option>
+                    {item.name}
+                  </option>
                   )
                 })}
               </select>
             </li>
             <li>
               <label>
-                就诊类型：<b style={{ color: 'red' }}> *</b>
+								就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
                 <input id='first' type='radio' name='type' value={1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
@@ -251,8 +324,8 @@ class AddNewRegistrationScreen extends Component {
           </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
             <button className='saveBtn' onClick={() => this.submit()}>
-              保存
-            </button>
+							保存
+						</button>
           </div>
         </div>
       </div>
@@ -269,7 +342,7 @@ class AddNewRegistrationScreen extends Component {
     triagePatientsList(params)
   }
 
-  // 显示新增列表
+	// 显示新增列表
   showNewList() {
     const { pageType } = this.state
     if (pageType !== 2) return null
@@ -285,15 +358,15 @@ class AddNewRegistrationScreen extends Component {
               onChange={e => {
                 this.setState({ keyword: e.target.value })
               }}
-            />
+						/>
             <button
               onClick={() => {
                 let keyword = this.state.keyword
                 this.quetryTriagePatientsList({ keyword, status_start: 10, status_end: 100 })
               }}
-            >
-              查询
-            </button>
+						>
+							查询
+						</button>
           </div>
         </div>
         <div className={'listContent'}>
@@ -310,22 +383,25 @@ class AddNewRegistrationScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
+                    <a>接诊科室：</a>
+                    <a>{patient.department_name}</a>
+                  </span>
                     <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
+                    <a>接诊医生：</a>
+                    <a>{patient.doctor_name}</a>
+                  </span>
                     <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
+                    <a>登记人员：</a>
+                    <a>{patient.register_personnel_name}</a>
+                  </span>
                     <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                    <span><a>更新时间：</a><a>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a></span>
+                    <a>登记时间：</a>
+                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
+                    <span>
+                    <a>更新时间：</a>
+                    <a>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                  </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.seeDetail()}>查看详情 >></span>
@@ -343,11 +419,11 @@ class AddNewRegistrationScreen extends Component {
             const keyword = this.state.keyword
             this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
           }}
-        />
+				/>
       </div>
     )
   }
-  // 查看详情
+	// 查看详情
   seeDetail() {
     Router.push('/treatment/newListDetail')
   }
@@ -361,9 +437,9 @@ class AddNewRegistrationScreen extends Component {
             onClick={() => {
               this.changeContent({ type: 1 })
             }}
-          >
-            + 新增登记
-          </span>
+					>
+						+ 新增登记
+					</span>
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
@@ -371,24 +447,24 @@ class AddNewRegistrationScreen extends Component {
               const keyword = this.state.keyword
               this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
             }}
-          >
-            登记列表
-          </span>
+					>
+						登记列表
+					</span>
         </div>
         {this.showAddNew()}
         {this.showNewList()}
         {/* {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()} */}
         <style jsx global>{`
-          .itemBottom span:nth-child(1) {
-            flex: 1;
-            // margin-left: 26px;
-            border-right: 0;
-            // color: rgba(153, 153, 153, 1);
-          }
-          .formList{
-            margin: 20px 66px 33px 66px;
-          }
-        `}</style>
+					.itemBottom span:nth-child(1) {
+						flex: 1;
+						// margin-left: 26px;
+						border-right: 0;
+						// color: rgba(153, 153, 153, 1);
+					}
+					.formList {
+						margin: 20px 66px 33px 66px;
+					}
+				`}</style>
       </div>
     )
   }
@@ -405,4 +481,4 @@ const mapStateToProps = state => {
     limit: state.triagePatients.page_info.limit
   }
 }
-export default connect(mapStateToProps, { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword })(AddNewRegistrationScreen)

@@ -38,6 +38,7 @@ export const getPatientByCertNo = ({ cert_no }) => async dispatch => {
 }
 
 export const getPatientByKeyword = ({ keyword }) => async dispatch => {
+  console.log('keyword', keyword)
   try {
     const data = await request('/patient/getByKeyword', {
       keyword
@@ -48,7 +49,7 @@ export const getPatientByKeyword = ({ keyword }) => async dispatch => {
       type: PATIENT_ADD,
       data: docs
     })
-    return patient
+    // return patient
   } catch (e) {
     console.log(e)
     return null
