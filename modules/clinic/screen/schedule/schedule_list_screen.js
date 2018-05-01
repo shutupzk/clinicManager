@@ -69,7 +69,13 @@ class ScheduleListScreen extends Component {
           <div className={'calendarCotent'}>
             <div className={'calenderFilter'}>
               <div className={'filterCnter'}>
-                <span style={{ flex: 3 }} onClick={() => this.setState({ weekNum: weekNum - 7 })}>
+                <span
+                  style={{ flex: 3 }}
+                  onClick={() => {
+                    this.setState({ weekNum: weekNum - 7 })
+                    this.queryListData({ weekNum: weekNum - 7 })
+                  }}
+                >
                   {'上一周'}
                 </span>
                 <span style={{ flex: 1 }}>{'《'}</span>
@@ -83,7 +89,13 @@ class ScheduleListScreen extends Component {
                 </span>
                 <span style={{ flex: 1 }}>{'>'}</span>
                 <span style={{ flex: 1 }}>{'》'}</span>
-                <span style={{ flex: 3 }} onClick={() => this.setState({ weekNum: weekNum + 7 })}>
+                <span
+                  style={{ flex: 3 }}
+                  onClick={() => {
+                    this.setState({ weekNum: weekNum + 7 })
+                    this.queryListData({ weekNum: weekNum + 7 })
+                  }}
+                >
                   下一周
                 </span>
               </div>
@@ -143,8 +155,8 @@ class ScheduleListScreen extends Component {
                           {array.map(({ daySchedule }, index) => (
                             <td key={index}>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
-                                <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
+                                <span style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
+                                <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
                               </div>
                             </td>
                           ))}
