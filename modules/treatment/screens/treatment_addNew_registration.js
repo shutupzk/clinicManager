@@ -216,6 +216,7 @@ class AddNewRegistrationScreen extends Component {
               <div className='liDiv'>
                 <select
                   onChange={item => {
+                    this.setPatientInfo(item, 'province')
                     let province = JSON.parse(item.target.value)
                     this.setState({ province: province.name, cities: province.city })
                   }}
@@ -223,14 +224,15 @@ class AddNewRegistrationScreen extends Component {
                   <option>省</option>
                   {provinces.map((province, index) => {
                     return (
-                    <option key={index} value={JSON.stringify(province)}>
-                    {province.name}
-                  </option>
-                  )
+                      <option key={index} value={JSON.stringify(province)}>
+                        {province.name}
+                      </option>
+                    )
                   })}
                 </select>
                 <select
                   onChange={item => {
+                    this.setPatientInfo(item, 'city')
                     let city = JSON.parse(item.target.value)
                     this.setState({ city: city.name, counties: city.area })
                   }}
@@ -238,34 +240,31 @@ class AddNewRegistrationScreen extends Component {
                   <option>市</option>
                   {cities.map((city, index) => {
                     return (
-                    <option key={index} value={JSON.stringify(city)}>
-                    {city.name}
-                  </option>
-                  )
+                      <option key={index} value={JSON.stringify(city)}>
+                        {city.name}
+                      </option>
+                    )
                   })}
                 </select>
                 <select
                   onChange={item => {
+                    this.setPatientInfo(item, 'district')
                     this.setState({ county: item.target.value })
                   }}
 								>
                   <option>区</option>
                   {counties.map((name, index) => {
                     return (
-                    <option key={index} value={name}>
-                    {name}
-                  </option>
-                  )
+                      <option key={index} value={name}>
+                        {name}
+                      </option>
+                    )
                   })}
                 </select>
                 <input
                   type='text'
                   defaultValue={''}
-                  onChange={e => {
-                    let newPatient = patient
-                    newPatient.address = this.state.province + this.state.city + this.state.county + e.target.value
-                    this.setState({ patientInfo: newPatient })
-                  }}
+                  onChange={e => this.setPatientInfo(e, 'address')}
 								/>
               </div>
             </li>
@@ -278,8 +277,8 @@ class AddNewRegistrationScreen extends Component {
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
-                    {item.name}
-                  </option>
+                      {item.name}
+                    </option>
                   )
                 })}
               </select>
@@ -306,6 +305,7 @@ class AddNewRegistrationScreen extends Component {
               <label>就诊人来源：</label>
               <div className='liDiv' style={{ height: '44px' }}>
                 <select style={{ width: '100%' }} value={patient.patient_channel_id} onChange={e => this.setPatientInfo(e, 'patient_channel_id')}>
+                  <option value={0}>请选择</option>
                   <option value={1}>1</option>
                   <option value={2}>2</option>
                   <option value={3}>3</option>
@@ -383,25 +383,25 @@ class AddNewRegistrationScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span>
-                    <a>更新时间：</a>
-                    <a>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>更新时间：</a>
+                      <a>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.seeDetail()}>查看详情 >></span>
