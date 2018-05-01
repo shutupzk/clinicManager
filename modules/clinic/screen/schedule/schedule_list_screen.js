@@ -64,105 +64,107 @@ class ScheduleListScreen extends Component {
     let { weekNum } = this.state
     const { scheduleDoctors, page_info } = this.props
     return (
-      <div className={'listContent'}>
-        <div className={'calendarCotent'}>
-          <div className={'calenderFilter'}>
-            <div className={'filterCnter'}>
-              <span style={{ flex: 3 }} onClick={() => this.setState({ weekNum: weekNum - 7 })}>
-                {'上一周'}
-              </span>
-              <span style={{ flex: 1 }}>{'《'}</span>
-              <span style={{ flex: 1 }}>{'<'}</span>
-              <span style={{ flex: 11 }} onClick={() => this.setState({ weekNum: 1 })}>
-                本周（{moment()
-                  .day(weekNum)
-                  .format('YYYY年MM月DD日')}至{moment()
-                  .day(weekNum + 6)
-                  .format('MM月DD日')}）
-              </span>
-              <span style={{ flex: 1 }}>{'>'}</span>
-              <span style={{ flex: 1 }}>{'》'}</span>
-              <span style={{ flex: 3 }} onClick={() => this.setState({ weekNum: weekNum + 7 })}>
-                下一周
-              </span>
+      <div className={''}>
+        <div className={'listContent'}>
+          <div className={'calendarCotent'}>
+            <div className={'calenderFilter'}>
+              <div className={'filterCnter'}>
+                <span style={{ flex: 3 }} onClick={() => this.setState({ weekNum: weekNum - 7 })}>
+                  {'上一周'}
+                </span>
+                <span style={{ flex: 1 }}>{'《'}</span>
+                <span style={{ flex: 1 }}>{'<'}</span>
+                <span style={{ flex: 11 }} onClick={() => this.setState({ weekNum: 1 })}>
+                  本周（{moment()
+                    .day(weekNum)
+                    .format('YYYY年MM月DD日')}至{moment()
+                    .day(weekNum + 6)
+                    .format('MM月DD日')}）
+                </span>
+                <span style={{ flex: 1 }}>{'>'}</span>
+                <span style={{ flex: 1 }}>{'》'}</span>
+                <span style={{ flex: 3 }} onClick={() => this.setState({ weekNum: weekNum + 7 })}>
+                  下一周
+                </span>
+              </div>
+              <button className={'calenderFilterBtn'}>复制上周排班</button>
             </div>
-            <button className={'calenderFilterBtn'}>复制上周排班</button>
-          </div>
-          <div className={'calenderBox'}>
-            <div className={'calendarContent'}>
-              <table>
-                <thead>
-                  <tr>
-                    <td>人员名称</td>
-                    <td>科室名称</td>
-                    <td>
-                      周一（{moment()
-                        .day(weekNum)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周二（{moment()
-                        .day(weekNum + 1)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周三（{moment()
-                        .day(weekNum + 2)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周四（{moment()
-                        .day(weekNum + 3)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周五（{moment()
-                        .day(weekNum + 4)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周六（{moment()
-                        .day(weekNum + 5)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周日（{moment()
-                        .day(weekNum + 6)
-                        .format('MM-DD')}）
-                    </td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {scheduleDoctors.map((item, index) => {
-                    let array = this.formatDoctorWeekScheduleData(item.date || []) || []
-                    return (
-                      <tr style={{ height: '58px' }} key={index}>
-                        <td>{item.personnel_name}</td>
-                        <td>{item.department_name}</td>
-                        {array.map(({ daySchedule }, index) => (
-                          <td key={index}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
-                              <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
-                            </div>
-                          </td>
-                        ))}
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-              <PageCard
-                offset={page_info.offset}
-                limit={page_info.limit}
-                total={page_info.total}
-                onItemClick={({ offset, limit }) => {
-                  this.queryListData({ offset, limit })
-                }}
-              />
+            <div className={'calenderBox'}>
+              <div className={''}>
+                <table>
+                  <thead>
+                    <tr>
+                      <td>人员名称</td>
+                      <td>科室名称</td>
+                      <td>
+                        周一（{moment()
+                          .day(weekNum)
+                          .format('MM-DD')}）
+                      </td>
+                      <td>
+                        周二（{moment()
+                          .day(weekNum + 1)
+                          .format('MM-DD')}）
+                      </td>
+                      <td>
+                        周三（{moment()
+                          .day(weekNum + 2)
+                          .format('MM-DD')}）
+                      </td>
+                      <td>
+                        周四（{moment()
+                          .day(weekNum + 3)
+                          .format('MM-DD')}）
+                      </td>
+                      <td>
+                        周五（{moment()
+                          .day(weekNum + 4)
+                          .format('MM-DD')}）
+                      </td>
+                      <td>
+                        周六（{moment()
+                          .day(weekNum + 5)
+                          .format('MM-DD')}）
+                      </td>
+                      <td>
+                        周日（{moment()
+                          .day(weekNum + 6)
+                          .format('MM-DD')}）
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scheduleDoctors.map((item, index) => {
+                      let array = this.formatDoctorWeekScheduleData(item.date || []) || []
+                      return (
+                        <tr style={{ height: '58px' }} key={index}>
+                          <td>{item.personnel_name}</td>
+                          <td>{item.department_name}</td>
+                          {array.map(({ daySchedule }, index) => (
+                            <td key={index}>
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
+                                <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '##999999' }}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
+                              </div>
+                            </td>
+                          ))}
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
+        <PageCard
+          offset={page_info.offset}
+          limit={page_info.limit}
+          total={page_info.total}
+          onItemClick={({ offset, limit }) => {
+            this.queryListData({ offset, limit })
+          }}
+        />
       </div>
     )
   }
