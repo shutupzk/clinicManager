@@ -1594,7 +1594,7 @@ export function styles() {
 				//日历列表
 				.calendarCotent{
 					width:1098px;
-					height:637px; 
+					min-height:637px; 
 					background:rgba(255,255,255,1);
 					box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
 					border-radius: 4px ;
