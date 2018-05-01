@@ -1,12 +1,14 @@
 import { request } from './request'
 const SCHDULE_DEPARTMENT_ADD = 'SCHDULE_DEPARTMENT_ADD'
 const SCHDULE_DOCTOR_ADD = 'SCHDULE_DOCTOR_ADD'
+const SCHDULE_SCHEDULE_DOCTOR_ADD = 'SCHDULE_SCHEDULE_DOCTOR_ADD'
 
 const initState = {
   schedules: [],
   page_info: {},
   departments: [],
-  doctors: []
+  doctors: [],
+  scheduleDoctors: []
 }
 
 export function schedules(state = initState, action = {}) {
@@ -15,6 +17,8 @@ export function schedules(state = initState, action = {}) {
       return { ...state, departments: action.data }
     case SCHDULE_DOCTOR_ADD:
       return { ...state, doctors: action.data }
+    case SCHDULE_SCHEDULE_DOCTOR_ADD:
+      return { ...state, scheduleDoctors: action.data, page_info: action.page_info }
     default:
       return state
   }
@@ -49,6 +53,27 @@ export const queryScheduleDoctors = ({ department_id }) => async dispatch => {
     dispatch({
       type: SCHDULE_DOCTOR_ADD,
       data: array
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const queryDoctorsWithSchedule = ({ clinic_id, start_date, end_date, offset, limit }) => async dispatch => {
+  try {
+    console.log("clinic_id, start_date, end_date, offset, limit =======", clinic_id, start_date, end_date, offset, limit)
+    const data = await request('/doctorVisitSchedule/DoctorsWithSchedule', {
+      clinic_id, start_date, end_date, offset, limit
+    })
+    console.log('data ========= ', data)
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    dispatch({
+      type: SCHDULE_SCHEDULE_DOCTOR_ADD,
+      data: docs,
+      page_info
     })
     return null
   } catch (e) {
