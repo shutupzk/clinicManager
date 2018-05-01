@@ -144,7 +144,14 @@ class AddNewRegistrationScreen extends Component {
                   this.setState({ searchView: value === '' ? 0 : 1 })
                   this.queryPatients(value)
                 }}
-                onFocus={e => this.setState({ searchView: 0 })}
+                onFocus={e => {
+                  let value = e.target.value
+                  this.setState({ searchView: value === '' ? 0 : 1 })
+                  this.queryPatients(value)
+                }}
+                onBlur={e => {
+                  this.setState({ searchView: 0 })
+                }}
 							/>
               {searchView === 1 ? this.searchView() : ''}
             </li>
