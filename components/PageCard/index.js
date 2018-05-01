@@ -91,6 +91,7 @@ class PageCard extends Component {
             }
             return (
               <span
+                key={index}
                 className={className}
                 onClick={() => {
                   if (this.props.onItemClick) {

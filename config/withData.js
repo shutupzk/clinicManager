@@ -1,8 +1,9 @@
 import React from 'react'
 import localforage from 'localforage'
 import { Provider } from 'react-redux'
-// import { store } from './store'
-import { initStore } from './store'
+import { store, persistor } from './store'
+// import initStore from './store'
+import { PersistGate } from 'redux-persist/integration/react'
 export default function(Component) {
   class Auth extends React.Component {
     constructor(props) {
@@ -16,10 +17,12 @@ export default function(Component) {
     }
 
     render() {
-      const store = initStore()
+      // const { store, persistor } = initStore()
       return (
         <Provider store={store}>
-          <Component url={this.props.url} />
+          <PersistGate loading={null} persistor={persistor}>
+            <Component url={this.props.url} />
+          </PersistGate>
         </Provider>
       )
     }
