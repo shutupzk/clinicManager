@@ -636,22 +636,19 @@ export function styles() {
 					margin: 10px 0 0 20px;
 				}
 				.addBtn {
-					width: 103px;
-					height: 30px;
-					background: inherit;
-					background-color: rgba(0, 204, 102, 1);
-					border: none;
-					border-radius: 5px;
-					-moz-box-shadow: none;
-					-webkit-box-shadow: none;
-					box-shadow: none;
-					font-family: 'PingFangSC-Regular', 'PingFang SC';
-					font-weight: 400;
-					font-style: normal;
-					color: #ffffff;
-					margin: 10px;
-					cursor: pointer;
-					float: right;
+					width:150px;
+					height:40px; 
+					background:rgba(255,255,255,1);
+					border-radius: 4px ; 
+					font-size:14px;
+					font-family:PingFangSC;
+					color:rgba(42,205,200,1);
+					border:1px solid #2ACDC8;
+					cursor:pointer;
+				}
+				.addBtn:hover{
+					background:rgba(42,205,200,1);
+					color:rgba(255,255,255,1);
 				}
 				.regisListTop button {
 					border-width: 0px;
@@ -1003,8 +1000,8 @@ export function styles() {
 				}
 				.changeLevel button {
 					float: left;
-					width: 80px;
-					margin: 40px 0 0 0;
+					// width: 80px;
+					margin: 30px 0 0 0;
 				}
 				.discountSituation {
 					flex-direction: column;
@@ -1044,12 +1041,12 @@ export function styles() {
 					margin: 20px;
 				}
 				.cardInfoBtn {
-					float: left;
-					width: 100%;
+					width: 90%;
+					margin:10px auto;
 				}
 				.cardInfoBtn button {
 					float: left;
-					margin-left: 20px;
+					margin: 0 20px 20px 0;
         }
 				//子页面顶部菜单
 				.childTopBar {
@@ -1242,6 +1239,53 @@ export function styles() {
 					width: 1120px;
 					margin-left: 66px;
 					background: #909090;
+				}
+				//就诊人详情--就诊信息
+				.patientInfo div{
+					height:60px;
+					flex:3;
+					line-height:60px;
+					text-align:center;
+				}
+				.keyPhysicalData{
+					flex-direction: column;
+				}
+				.keyPhysicalData span{
+					font-size:16px;
+					font-family:MicrosoftYaHei;
+					color:rgba(102,102,102,1);
+					margin: 20px 30px;
+				}
+				.keyPhysicalData ul{
+					width:94%;
+					margin:10px auto;
+				}
+				.keyPhysicalData ul li{
+					float:left;
+					width:25%;
+					height: 80px;
+				}
+				.keyPhysicalData ul li div{
+					line-height:35px;
+				}
+				.keyPhysicalData ul li .dataTitle{
+					font-size:16px;
+					font-family:MicrosoftYaHei-Bold;
+					color:rgba(102,102,102,1);
+					font-weight:bold;
+				}
+				.keyPhysicalData ul li .dataContent{
+					font-size:16px;
+					font-family:MicrosoftYaHei;
+					color:rgba(102,102,102,1);
+				}
+				.keyPhysicalData .seeMore{
+					font-size:12px;
+					font-family:MicrosoftYaHei;
+					color:rgba(42,205,200,1);
+					text-align:center;
+					margin:20px 0;
+					cursor:pointer;
 				}
 				//费用表格
 				.detailBox{

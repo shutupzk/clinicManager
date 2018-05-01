@@ -314,7 +314,7 @@ class NewListDetails extends Component {
             <li>其他费用：88%</li>
           </ul>
         </div>
-        <div className={'blankBox'}>
+        <div className={'blankBox discountSituation'}>
           <span>储值卡信息：</span>
           <ul>
             <li>本金余额：1,000.00元</li>
@@ -340,8 +340,48 @@ class NewListDetails extends Component {
   // 就诊信息
   showVisitInfo () {
     return (
-      <div className={'formList'}>
-        dasdas
+      <div className={'detailBox'}>
+        <div className={'blankBox patientInfo'}>
+          <div>就诊人姓名：王俊凯</div>
+          <div style={{ flex: 1 }}>性别：男</div>
+          <div style={{ flex: 1 }}>年龄：18</div>
+          <div>就诊ID：1234567890</div>
+          <div>手机号码：13333333333</div>
+        </div>
+        <div className={'blankBox keyPhysicalData'}>
+          <span>关键体征数据</span>
+          <ul>
+            <li>
+              <div className={'dataTitle'}>身高(CM)</div>
+              <div className={'dataContent'}>180</div>
+            </li>
+            <li>
+              <div className={'dataTitle'}>身高(CM)</div>
+              <div className={'dataContent'}>180</div>
+            </li>
+            <li>
+              <div className={'dataTitle'}>身高(CM)</div>
+              <div className={'dataContent'}>180</div>
+            </li>
+            <li>
+              <div className={'dataTitle'}>身高(CM)</div>
+              <div className={'dataContent'}>180</div>
+            </li>
+            <li>
+              <div className={'dataTitle'}>身高(CM)</div>
+              <div className={'dataContent'}>180</div>
+            </li>
+          </ul>
+          <div className={'seeMore'}>查看更多</div>
+        </div>
+        <div className={'blankBox'}>
+          sadas
+        </div>
+        <style jsx>{`
+					.detailBox {
+            float: left;
+					}
+				`}</style>
       </div>
     )
   }
