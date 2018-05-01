@@ -687,7 +687,7 @@ class TriageScreen extends Component {
   // 预约管理
   showReservation() {
     return (
-      <div className={'formList'}>
+      <div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
             <label>

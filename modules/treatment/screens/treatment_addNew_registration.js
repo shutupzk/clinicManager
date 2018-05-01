@@ -58,12 +58,6 @@ class AddNewRegistrationScreen extends Component {
     this.setState({ pageType: type })
   }
 
-	// 查询就诊人信息
-  async queryOne(cert_no = '') {
-    const { getPatientByCertNo } = this.props
-    let patient = await getPatientByCertNo({ cert_no })
-    this.setState({ patientInfo: patient || {} })
-  }
 	// 科室
   queryDepartment() {
     const array = []
@@ -91,12 +85,31 @@ class AddNewRegistrationScreen extends Component {
         <ul>
           {patients.map((item, index) => {
             return (
-              <li key={index} onClick={() => {
-                this.setState({ patientInfo: item, searchView: 0 })
-              }}>
+              <li
+                key={index}
+                onClick={() => {
+                  let cities = []
+                  for (let province of provinces) {
+                    if (item.province === province.name) {
+                      cities = province.city
+                      break
+                    }
+                  }
+                  let counties = []
+                  for (let city of cities) {
+                    if (item.city === city.name) {
+                      counties = city.area
+                      break
+                    }
+                  }
+                  this.setState({ patientInfo: item, searchView: 0, province: item.province, cities: cities, counties: counties })
+                }}
+							>
                 <img src={'/static/login/u49.png'} />
                 <div className={'leftInfo'}>
-                  <div>{item.name} {item.sex === 1 ? '男' : '女'} { getAgeByBirthday(item.birthday)}岁</div>
+                  <div>
+                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}岁
+									</div>
                   <div>{item.phone}</div>
                 </div>
               </li>
@@ -183,7 +196,7 @@ class AddNewRegistrationScreen extends Component {
                   this.setState({ searchView: value === '' ? 0 : 1 })
                   this.queryPatients(value)
                 }}
-                onBlur={e => this.setState({ searchView: 0 })}
+                onFocus={e => this.setState({ searchView: 0 })}
 							/>
               {searchView === 1 ? this.searchView() : ''}
             </li>
@@ -237,15 +250,18 @@ class AddNewRegistrationScreen extends Component {
               <div className='liDiv'>
                 <select
                   onChange={item => {
-                    this.setPatientInfo(item, 'province')
                     let province = JSON.parse(item.target.value)
-                    this.setState({ province: province.name, cities: province.city })
+                    let newPatient = patient
+                    newPatient.province = province.name
+                    this.setState({ province: province.name, cities: province.city, patientInfo: newPatient })
                   }}
 								>
-                  <option>省</option>
+                  <option key={0} value={'省'}>
+										省
+									</option>
                   {provinces.map((province, index) => {
                     return (
-                      <option key={index} value={JSON.stringify(province)}>
+                      <option key={index} value={JSON.stringify(province)} selected={patient.province === province.name}>
                         {province.name}
                       </option>
                     )
@@ -253,15 +269,16 @@ class AddNewRegistrationScreen extends Component {
                 </select>
                 <select
                   onChange={item => {
-                    this.setPatientInfo(item, 'city')
                     let city = JSON.parse(item.target.value)
-                    this.setState({ city: city.name, counties: city.area })
+                    let newPatient = patient
+                    newPatient.city = city.name
+                    this.setState({ city: city.name, counties: city.area, patientInfo: newPatient })
                   }}
 								>
                   <option>市</option>
                   {cities.map((city, index) => {
                     return (
-                      <option key={index} value={JSON.stringify(city)}>
+                      <option key={index} value={JSON.stringify(city)} selected={patient.city === city.name}>
                         {city.name}
                       </option>
                     )
@@ -276,17 +293,13 @@ class AddNewRegistrationScreen extends Component {
                   <option>区</option>
                   {counties.map((name, index) => {
                     return (
-                      <option key={index} value={name}>
+                      <option key={index} value={name} selected={patient.district === name}>
                         {name}
                       </option>
                     )
                   })}
                 </select>
-                <input
-                  type='text'
-                  defaultValue={''}
-                  onChange={e => this.setPatientInfo(e, 'address')}
-								/>
+                <input type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
             <li>
@@ -349,6 +362,11 @@ class AddNewRegistrationScreen extends Component {
 						</button>
           </div>
         </div>
+        <style jsx>{`
+					.formList {
+						margin: 20px 66px 33px 66px;
+					}
+				`}</style>
       </div>
     )
   }

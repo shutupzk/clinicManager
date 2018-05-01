@@ -170,7 +170,7 @@ class ScheduleListScreen extends Component {
     // const { fenyeItem, buttonLarge } = styles
     return (
       <div className={'orderRecordsPage'}>
-        <div className={'formList'}>
+        <div className={''}>
           <div className={'filterBox'} style={{ marginTop: '30px' }}>
             <div className={'boxLeft'}>
               <input type='text' placeholder='搜索科室' />

@@ -1007,29 +1007,23 @@ export function styles() {
 					margin: 40px 0 0 0;
 				}
 				.discountSituation {
-					width: 562px;
-					height: 125px;
-					background-color: rgba(255, 255, 255, 1);
-					box-sizing: border-box;
-					border-width: 1px;
-					border-style: solid;
-					border-color: rgba(204, 204, 204, 1);
-					border-radius: 0px;
-					// float: left;
-					margin: 20px;
+					flex-direction: column;
 				}
 				.cardInfo span,
 				.discountSituation span {
-					float: left;
-					width: 100%;
-					height: 35px;
-					line-height: 35px;
-					text-indent: 20px;
+					width: 93%;
+ 					height: 40px;
+    			line-height: 40px;
+    			text-indent: 20px;
+    			margin: 0 auto;
+    			font-size: 16px;
+    			font-weight: bold;
+    			border-bottom: 1px solid #d9d9d9;
 				}
 				.cardInfo ul,
 				.discountSituation ul {
-					float: left;
-					width: 100%;
+					width: 90%;
+					margin:10px auto;
 				}
 				.cardInfo ul li,
 				.discountSituation ul li {
@@ -1249,6 +1243,248 @@ export function styles() {
 					margin-left: 66px;
 					background: #909090;
 				}
+				//费用表格
+				.detailBox{
+					background:#909090;
+					display: flex;
+					flex-direction: column;
+					margin-top: 12px;
+				}
+				.blankBox{
+					display: flex;
+					width:1096px;
+					// height:189px; 
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px ; 
+					margin: 20px 0 0 65px;
+					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+				}
+				.feeScheduleBox{
+					display: flex;
+					width:1096px;
+					// height:189px; 
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px ; 
+					margin: 20px 0 0 65px;
+				}
+				.feeScheduleBox ul{
+					width:100%;
+					display: flex;
+					flex-direction: column;
+					border:1px solid #E9E9E9;
+					border-bottom:none;
+				}
+				.feeScheduleBox ul li{
+					display: flex;
+					height:40px;
+					border-bottom:1px solid #E9E9E9;
+					line-height:40px;
+					text-align:center;
+				}
+				.feeScheduleBox ul li:nth-child(1){
+					background:rgba(247,247,247,1);
+				}
+				.feeScheduleBox ul li div{
+					flex:2;
+					border-left:1px #E9E9E9 dashed;
+				}
+				.feeScheduleBox ul li div:nth-child(1){
+					flex:1;
+				}
+				.toatalFeeBox{
+					display:flex;
+					flex-direction: column;
+					width:1096px;
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px ; 
+					margin: 20px 0 0 65px;
+				}
+				.toatalFeeBox h4{
+					height:30px;
+					text-align:center;
+					border-bottom:1px solid #d8d8d8;
+					line-height:30px;
+					margin: 0;
+				}
+				.toatalFeeBox ul{
+					width:100%;
+					margin:10px 0;
+				}
+				.toatalFeeBox ul li{
+					float:left;
+					width:25%;
+					text-align:center;
+					height:30px;
+					line-height:30px;
+				}
+				.feeScheduleBottom{
+					margin: 20px 65px;
+					width:1098px;
+				}
+				.feeScheduleBottom button{
+					width:150px;
+					height:40px; 
+					background:rgba(255,255,255,1);
+					border-radius: 4px ;
+					color:rgba(42,205,200,1);
+					font-size:14px;
+					font-family:PingFangSC;
+					border:1px solid #2ACDC8;
+					float:right;
+					margin-right:20px;
+				}
+				.feeScheduleBottom button:hover{
+					width:150px;
+					height:40px; 
+					background:rgba(42,205,200,1);
+					border-radius: 4px ; 
+					border:none;
+					color:rgba(255,255,255,1);
+				}
+				.detailBoxCenter,
+				.detailBoxTop{
+					display: flex;
+					width:1096px;
+					// height:189px; 
+					background: rgba(255, 255, 255, 1);
+					border-radius: 4px ; 
+					margin: 20px 0 0 65px;
+				}
+				.detailBoxTop .topLeft{
+					flex: 1;
+					// background: #ababab; 
+					height: 80px;
+					margin: 10px 0;
+					text-align: center;
+					color:rgba(100,100,100,1);
+					border-right:1px solid #d8d8d8;
+				}
+				.detailBoxTop .topLeft div{
+					font-size:18px;
+					line-height:40px;
+					font-family:MicrosoftYaHei;
+				}
+				.detailBoxTop .topLeft b{
+					font-size:30px;
+					font-family:MicrosoftYaHei-Bold;
+				}
+				.detailBoxTop .topLeft a{
+					font-size:16px;
+					font-family:MicrosoftYaHei-Bold;
+				}
+				.detailBoxTop .topRight{
+					flex: 5;
+					// background: #eaeaea;
+					height: 80px;
+					margin: 10px 20px;
+				}
+				.detailBoxTop .topRight div{
+					float:left;
+					width:25%;
+					text-align:left;
+					color:rgba(102,102,102,1);
+					line-height:40px;
+					font-size:14px;
+				}
+				.detailBoxCenter{
+					flex-direction: column;
+				}
+				.detailBoxCenter ul{
+					margin: 56px auto 10px auto;
+					width:70%;
+				}
+				.detailBoxCenter ul li{
+					float:left;
+					// margin-left:20px;
+					width:50%;
+					height:40px;
+					display:flex;
+					line-height: 40px;
+				}
+				.detailBoxCenter ul li label{
+					flex:1;
+				}
+				.detailBoxCenter ul li div{
+					flex:2;
+				}
+				.detailBoxCenter ul li input[type="text"]{
+					width:160px;
+					height:28px; 
+					background:rgba(255,255,255,1);
+					border-radius: 4px; 
+					border: 1px solid #d8d8d8;
+				}
+				.checkoutPay{
+					margin: 10px auto;
+					width:70%;
+				}
+				.checkoutPay span{
+					font-size:18px;
+					font-family:MicrosoftYaHei-Bold;
+					color:rgba(102,102,102,1);
+					font-weight:bold;
+				}
+				.checkoutPay .payType{
+					margin: 30px 0;
+				}
+				.checkoutPay .payType button{
+					width:100px;
+					height:34px; 
+					border-radius: 4px ; 
+					border:1px solid #d9d9d9;
+					background: transparent;
+					cursor: pointer;
+					margin-right: 20px;
+					font-size:14px;
+					font-family:PingFangSC-Regular;
+					color:rgba(102,102,102,1);
+				}
+				.checkoutPay .payType button.sel,
+				.checkoutPay .payType button:hover{
+					background:rgba(16,142,233,1);
+					color:rgba(255,255,255,1);
+				}
+				.checkoutPay .receipt{
+					display: flex;
+				}
+				.checkoutPay .receipt div{
+					flex:1;
+				}
+				.checkoutPay .receipt div label{
+					font-size:16px;
+					font-family:MicrosoftYaHei-Bold;
+					color:rgba(102,102,102,1);
+					font-weight:bold;
+				}
+				.checkoutPay .receipt div input{
+					width:220px;
+					height:28px; 
+					background:rgba(255,255,255,1);
+					border-radius: 4px ; 
+					border:1px solid #d9d9d9;
+					margin-left:26px;
+				}
+				.checkoutPay .bottomBtn{
+					margin: 71px auto;
+					width: 333px;
+					height: 40px;
+				}
+				.checkoutPay .bottomBtn button{
+					width:150px;
+					height:40px; 
+					background:rgba(255,255,255,1);
+					border-radius: 4px ;
+					font-size:14px;
+					font-family:PingFangSC;
+					color:rgba(42,205,200,1);
+					border:1px solid #2ACDC8;
+					margin:0;
+				}
+				.checkoutPay .bottomBtn button.sel,
+				.checkoutPay .bottomBtn button:hover{
+					background:rgba(42,205,200,1);
+					color:rgba(255,255,255,1);
+				}
 				//选择医生弹出框
 				.doctorList_top span:nth-child(1) {
 					font-size: 14px;
@@ -1358,7 +1594,7 @@ export function styles() {
 				//日历列表
 				.calendarCotent{
 					width:1098px;
-					height:637px; 
+					min-height:637px; 
 					background:rgba(255,255,255,1);
 					box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
 					border-radius: 4px ;

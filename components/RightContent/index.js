@@ -147,7 +147,8 @@ class RightContent extends Component {
 						width: 100%;
 						height: 64px;
 						background:rgba(255,255,255,1);
-						box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.12) 
+						box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.12);
+						min-width:1000px;
 					}
 					.right_nav_menu ul {
 					}
