@@ -381,9 +381,9 @@ class AddNewRegistrationScreen extends Component {
         <style jsx global>{`
           .itemBottom span:nth-child(1) {
             flex: 1;
-            margin-left: 26px;
+            // margin-left: 26px;
             border-right: 0;
-            color: rgba(153, 153, 153, 1);
+            // color: rgba(153, 153, 153, 1);
           }
           .formList{
             margin: 20px 66px 33px 66px;

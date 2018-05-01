@@ -4,5 +4,6 @@ import TriageScreen from './screens/triage_screen'
 import AddReservation from './screens/reservation_add_screen'
 import AddmisionScreen from './screens/addmission'
 import ChargeScreen from './screens/charge'
+import ChargeDetails from './screens/chargeDetail_screen'
 
-export { AddNewRegistrationScreen, NewListDetails, TriageScreen, AddReservation, AddmisionScreen, ChargeScreen }
+export { AddNewRegistrationScreen, NewListDetails, TriageScreen, AddReservation, AddmisionScreen, ChargeScreen, ChargeDetails }

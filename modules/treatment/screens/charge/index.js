@@ -127,7 +127,7 @@ class ChargeScreen extends Component {
     )
   }
   gotoChargeDetail() {
-    Router.push('/treatment/reservation_add')
+    Router.push('/treatment/charge/chargeDetail')
   }
   render() {
     return (
