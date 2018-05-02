@@ -16,6 +16,7 @@ import PageCard from './PageCard'
 import DraftCard from './DraftCard'
 
 import Select from './Select'
+import SearchInput from './SearchInput'
 
 export {
   CardWhite,
@@ -41,5 +42,6 @@ export {
   FooterBar,
   PageCard,
   DraftCard,
-  Select
+  Select,
+  SearchInput
 }
