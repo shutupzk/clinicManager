@@ -1192,12 +1192,12 @@ export function styles() {
 				}
 				.filterBox .boxLeft input {
 					float: left;
-					width: 328px;
-					height: 28px;
+					// width: 328px;
+					// height: 20px;
 					background: rgba(255, 255, 255, 1);
 					border-radius: 4px;
 					border: 1px solid #d9d9d9;
-					margin: 16px 30px;
+					// margin: 16px 30px;
 					text-indent: 10px;
 					padding: 0;
 				}

@@ -242,13 +242,27 @@ class ScheduleListScreen extends Component {
 
   render() {
     const { departments, doctors } = this.props
+    const customStyles = {
+      control: (base, state) => {
+        console.log('state', base, state)
+        return {
+          ...base,
+          borderColor: '#d9d9d9',
+          '&:hover': {
+            borderColor: 'rgb(42, 205, 200)'
+          }
+        }
+      }
+    }
     return (
       <div className={'orderRecordsPage'}>
         <div className={''}>
           <div className={'filterBox'} style={{ marginTop: '30px' }}>
             <div className={'boxLeft'}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <Select options={this.getDepartmentOptions()} />
+                <div style={{ width: '200px', margin: '12px 20px' }}>
+                  <Select styles={customStyles} placeholder='选择科室' options={this.getDepartmentOptions()} />
+                </div>
                 {/* <select
                   onChange={e => {
                     let id = e.target.value
