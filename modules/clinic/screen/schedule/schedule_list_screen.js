@@ -3,9 +3,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate } from '../../../../ducks'
 import moment from 'moment'
-import { PageCard } from '../../../../components'
+import { PageCard, Select } from '../../../../components'
 
-import Select from 'react-select'
+// import Select from 'react-select'
 
 class ScheduleListScreen extends Component {
   constructor(props) {
@@ -254,16 +254,6 @@ class ScheduleListScreen extends Component {
 
   render() {
     const { departments, doctors } = this.props
-    const customStyles = {
-      control: (base, state) => {
-        console.log('state', base, state)
-        return {
-          ...base,
-          borderColor: state.isFocused ? 'rgb(16,142,233)' : '#d9d9d9',
-          boxShadow: state.isFocused ? `0 0 0 2px rgba(16,142,233,0.2)` : null
-        }
-      }
-    }
     return (
       <div className={'orderRecordsPage'}>
         <div className={''}>
@@ -271,7 +261,7 @@ class ScheduleListScreen extends Component {
             <div className={'boxLeft'}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '200px', margin: '12px 20px' }}>
-                  <Select styles={customStyles} placeholder='选择科室'
+                  <Select placeholder='选择科室'
                     options={this.getDepartmentOptions()}
                     onChange={e => {
                       let id = e.value
@@ -283,7 +273,7 @@ class ScheduleListScreen extends Component {
                   />
                 </div>
                 <div style={{ width: '200px', margin: '12px 20px' }}>
-                  <Select styles={customStyles} placeholder='选择医生'
+                  <Select placeholder='选择医生'
                     options={this.getDoctorOptions()}
                     onChange={e => {
                       let id = e.value
