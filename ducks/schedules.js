@@ -6,6 +6,7 @@ const SCHDULE_SCHEDULE_DOCTOR_ADD = 'SCHDULE_SCHEDULE_DOCTOR_ADD'
 const initState = {
   schedules: [],
   page_info: {},
+  canOverride: false,
   departments: [],
   doctors: [],
   scheduleDoctors: []
@@ -18,7 +19,7 @@ export function schedules(state = initState, action = {}) {
     case SCHDULE_DOCTOR_ADD:
       return { ...state, doctors: action.data }
     case SCHDULE_SCHEDULE_DOCTOR_ADD:
-      return { ...state, scheduleDoctors: action.data, page_info: action.page_info }
+      return { ...state, scheduleDoctors: action.data, page_info: action.page_info, canOverride: action.canOverride, needOpen: action.needOpen }
     default:
       return state
   }
@@ -69,12 +70,86 @@ export const queryDoctorsWithSchedule = ({ clinic_id, start_date, end_date, offs
     console.log('data ========= ', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
+    const canOverride = data.canOverride
+    const needOpen = data.needOpen
     dispatch({
       type: SCHDULE_SCHEDULE_DOCTOR_ADD,
       data: docs,
-      page_info
+      page_info,
+      canOverride,
+      needOpen
     })
     return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const copyScheduleByDate = ({ clinic_id, copy_start_date, insert_start_date }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/CopyScheduleByDate', {
+      clinic_id, copy_start_date, insert_start_date, day_long: 7
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const openScheduleByDate = ({ clinic_id, start_date }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/OpenScheduleByDate', {
+      clinic_id, start_date, day_long: 7
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const createOneSchedule = ({ department_id, personnel_id, visit_date, am_pm }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/CreateOneSchedule', {
+      department_id, personnel_id, visit_date, am_pm
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const deleteOneUnOpenScheduleByID = ({ doctor_visit_schedule_id }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/DeleteOneUnOpenScheduleByID', {
+      doctor_visit_schedule_id
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const stopScheduleByID = ({ doctor_visit_schedule_id }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/StopScheduleByID', {
+      doctor_visit_schedule_id
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
   } catch (e) {
     console.log(e)
     return e.message
