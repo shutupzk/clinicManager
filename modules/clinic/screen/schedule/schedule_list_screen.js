@@ -5,6 +5,8 @@ import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copySch
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 
+import Select from 'react-select'
+
 class ScheduleListScreen extends Component {
   constructor(props) {
     super(props)
@@ -87,66 +89,6 @@ class ScheduleListScreen extends Component {
       }
     }
     return array
-  }
-
-  searchDeptView() {
-    const { departments } = this.props
-    const { showSearchDept } = this.state
-    if (!showSearchDept) return null
-    let text = '选择科室'
-    return (
-      <div className={'researchView'}>
-        <span>{text}</span>
-        <ul>
-          {departments.map((item, index) => {
-            return (
-              <li
-                key={index}
-                onClick={() => {
-                  this.setState({ department_id: item.id, showSearchDept: false, department_name: item.name })
-                  this.queryListData({ department_id: item.id })
-                }}
-              >
-                <div className={'leftInfo'}>
-                  {/* <div>{item.code}</div> */}
-                  <div>{item.name}</div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    )
-  }
-
-  searchDoctorView() {
-    const { doctors } = this.props
-    const { showSearchDortor } = this.state
-    if (!showSearchDortor) return null
-    let text = '选择医生'
-    return (
-      <div className={'researchView'}>
-        <span>{text}</span>
-        <ul>
-          {doctors.map((item, index) => {
-            return (
-              <li
-                key={index}
-                onClick={() => {
-                  this.setState({ personnel_id: item.id, showSearchDortor: false, personnel_name: item.name })
-                  this.queryListData({ personnel_id: item.id })
-                }}
-              >
-                <div className={'leftInfo'}>
-                  {/* <div>{item.code}</div> */}
-                  <div>{item.name}</div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    )
   }
 
   getWeekTds() {
@@ -285,6 +227,19 @@ class ScheduleListScreen extends Component {
       </div>
     )
   }
+
+  getDepartmentOptions() {
+    const { departments } = this.props
+    let options = []
+    for (let { id, name } of departments) {
+      options.push({
+        value: id,
+        label: name
+      })
+    }
+    return options
+  }
+
   render() {
     const { departments, doctors } = this.props
     return (
@@ -293,7 +248,8 @@ class ScheduleListScreen extends Component {
           <div className={'filterBox'} style={{ marginTop: '30px' }}>
             <div className={'boxLeft'}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <select
+                <Select options={this.getDepartmentOptions()} />
+                {/* <select
                   onChange={e => {
                     let id = e.target.value
                     console.log('id ========', id)
@@ -326,74 +282,12 @@ class ScheduleListScreen extends Component {
                       </option>
                     )
                   })}
-                </select>
-                {/* <div style={{ position: 'relative' }}>
-                  <input
-                    type='text'
-                    placeholder='搜索科室'
-                    value={this.state.department_name}
-                    onChange={e => {
-                      // this.setPatientInfo(e, 'name')
-                      let keyword = e.target.value
-                      this.setState({ showSearchDept: keyword !== '', department_name: keyword, department_id: '' })
-                      this.queryDepartmentList({ keyword })
-                    }}
-                    onFocus={e => {
-                      this.setState({ showSearchDept: true, showSearchDortor: false })
-                      this.queryDepartmentList({})
-                    }}
-                  />
-                  {this.searchDeptView()}
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    className={'searchbox'}
-                    style={{ marginLeft: '15px' }}
-                    type='text'
-                    placeholder='搜索医生'
-                    value={this.state.personnel_name}
-                    onChange={e => {
-                      // this.setPatientInfo(e, 'name')
-                      let keyword = e.target.value
-                      this.setState({ showSearchDortor: keyword !== '', personnel_name: keyword, personnel_id: '' })
-                      this.queryDoctorList({ keyword })
-                    }}
-                    onFocus={e => {
-                      this.setState({ showSearchDept: false, showSearchDortor: true })
-                      this.queryDoctorList({})
-                    }}
-                  />
-                  {this.searchDoctorView()}
-                </div> */}
+                </select> */}
               </div>
               {/* <button>查询</button> */}
             </div>
           </div>
         </div>
-        <style jsx>
-          {`
-            .boxLeft select {
-              width: 200px;
-              height: 40px;
-              background: rgba(255, 255, 255, 1);
-              box-sizing: border-box;
-              border-radius: 4px;
-              margin: 10px 15px 0 20px;
-              border: 1px solid rgba(42, 205, 200, 1);
-              font-size: 12px;
-              font-family: PingFangSC-Regular;
-              color: rgba(102, 102, 102, 1);
-            }
-            .boxLeft option {
-              width: 67px;
-              height: 18px;
-              font-size: 12px;
-              font-family: PingFangSC-Regular;
-              color: rgba(102, 102, 102, 1);
-              line-height: 18px;
-            }
-          `}
-        </style>
         {this.showCalendarList()}
       </div>
     )
