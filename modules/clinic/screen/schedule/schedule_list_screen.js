@@ -230,7 +230,7 @@ class ScheduleListScreen extends Component {
 
   getDepartmentOptions() {
     const { departments } = this.props
-    let options = []
+    let options = [{value: '-1', label: '全部科室'}]
     for (let { id, name } of departments) {
       options.push({
         value: id,
@@ -242,6 +242,16 @@ class ScheduleListScreen extends Component {
 
   render() {
     const { departments, doctors } = this.props
+    const customStyles = {
+      control: (base, state) => {
+        console.log('state', base, state)
+        return {
+          ...base,
+          borderColor: state.isFocused ? 'rgb(16,142,233)' : '#d9d9d9',
+          boxShadow: state.isFocused ? `0 0 0 2px rgba(16,142,233,0.2)` : null
+        }
+      }
+    }
     return (
       <div className={'orderRecordsPage'}>
         <div className={''}>
@@ -249,7 +259,16 @@ class ScheduleListScreen extends Component {
             <div className={'boxLeft'}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '200px', margin: '12px 20px' }}>
-                  <Select placeholder='选择科室' options={this.getDepartmentOptions()} />
+                  <Select styles={customStyles} placeholder='选择科室'
+                    options={this.getDepartmentOptions()}
+                    onChange={e => {
+                      let id = e.value
+                      console.log('id ========', id)
+                      this.setState({ department_id: id })
+                      this.queryDoctorList({ department_id: id, limit: 100 })
+                      this.queryListData({ department_id: id })
+                    }}
+                  />
                 </div>
                 {/* <select
                   onChange={e => {
