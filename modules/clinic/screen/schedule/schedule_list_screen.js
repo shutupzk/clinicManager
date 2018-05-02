@@ -240,6 +240,18 @@ class ScheduleListScreen extends Component {
     return options
   }
 
+  getDoctorOptions() {
+    const { doctors } = this.props
+    let options = []
+    for (let { id, name } of doctors) {
+      options.push({
+        value: id,
+        label: name
+      })
+    }
+    return options
+  }
+
   render() {
     const { departments, doctors } = this.props
     const customStyles = {
@@ -267,6 +279,16 @@ class ScheduleListScreen extends Component {
                       this.setState({ department_id: id })
                       this.queryDoctorList({ department_id: id, limit: 100 })
                       this.queryListData({ department_id: id })
+                    }}
+                  />
+                </div>
+                <div style={{ width: '200px', margin: '12px 20px' }}>
+                  <Select styles={customStyles} placeholder='选择医生'
+                    options={this.getDoctorOptions()}
+                    onChange={e => {
+                      let id = e.value
+                      this.setState({ personnel_id: id })
+                      this.queryListData({ personnel_id: id })
                     }}
                   />
                 </div>
