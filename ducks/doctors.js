@@ -19,14 +19,15 @@ export function doctors(state = initState, action = {}) {
   }
 }
 
-export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0, limit = 6 }) => async dispatch => {
+export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0, limit = 6, department_id }) => async dispatch => {
   try {
     const data = await request('/personnel/list', {
       clinic_id,
       personnel_type,
       keyword,
       offset,
-      limit
+      limit,
+      department_id
     })
     console.log('personnel ======', data)
     const docs = data.data || []

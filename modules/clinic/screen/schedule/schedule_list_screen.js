@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
-import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList } from '../../../../ducks'
+import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 
@@ -21,12 +21,23 @@ class ScheduleListScreen extends Component {
 
   componentWillMount() {
     this.queryListData({})
+    this.queryDepartmentList({ limit: 100 })
   }
 
   queryListData({ offset = 0, limit = 10, weekNum, department_id, personnel_id }) {
     weekNum = weekNum || this.state.weekNum
-    department_id = department_id || this.state.department_id
-    personnel_id = personnel_id || this.state.personnel_id
+    if (department_id === '-1') {
+      department_id = null
+    } else {
+      department_id = department_id || this.state.department_id
+    }
+
+    if (personnel_id === '-1') {
+      personnel_id = null
+    } else {
+      personnel_id = personnel_id || this.state.personnel_id
+    }
+
     let start_date = moment()
       .day(weekNum)
       .format('YYYY-MM-DD')
@@ -37,14 +48,15 @@ class ScheduleListScreen extends Component {
     queryDoctorsWithSchedule({ clinic_id, start_date, end_date, offset, limit, department_id, personnel_id })
   }
 
-  queryDepartmentList({ keyword }) {
+  queryDepartmentList({ keyword, limit = 10 }) {
     const { queryDepartmentList, clinic_id } = this.props
-    queryDepartmentList({ clinic_id, keyword, limit: 10 })
+    queryDepartmentList({ clinic_id, keyword, limit })
   }
 
-  queryDoctorList({ keyword }) {
+  queryDoctorList({ keyword, limit = 10, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
-    queryDoctorList({ clinic_id, keyword, limit: 10, personnel_type: 2 })
+    console.log('department_id ========', department_id)
+    queryDoctorList({ clinic_id, keyword, limit: 10, personnel_type: 2, department_id })
   }
 
   formatDoctorWeekScheduleData(days = []) {
@@ -137,10 +149,42 @@ class ScheduleListScreen extends Component {
     )
   }
 
+  getWeekTds() {
+    const weeks = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    const { weekNum } = this.state
+    let array = []
+    for (let i = 0; i < 7; i++) {
+      array.push(
+        `${weeks[i]} ( ${moment()
+          .day(weekNum + i)
+          .format('MM-DD')} )`
+      )
+    }
+    return array
+  }
+
+  async copyScheduleByDate() {
+    const { copyScheduleByDate, clinic_id } = this.props
+    const { weekNum } = this.state
+    const copy_start_date = moment()
+      .day(weekNum - 7)
+      .format('YYYY-MM-DD')
+    const insert_start_date = moment()
+      .day(weekNum)
+      .format('YYYY-MM-DD')
+    let err = await copyScheduleByDate({ clinic_id, copy_start_date, insert_start_date })
+    if (err) {
+      return alert('复制失败' + err)
+    }
+    alert('复制成功')
+    this.queryListData({})
+  }
+
   // 显示日历列表
   showCalendarList() {
     let { weekNum } = this.state
-    const { scheduleDoctors, page_info } = this.props
+    const { scheduleDoctors, page_info, canOverride, needOpen } = this.props
+    const weekTds = this.getWeekTds()
     return (
       <div className={''}>
         <div className={'listContent'}>
@@ -183,7 +227,16 @@ class ScheduleListScreen extends Component {
                   下一周
                 </span>
               </div>
-              <button className={'calenderFilterBtn'}>复制上周排班</button>
+              {canOverride ? (
+                <button style={{ width: '150px' }} onClick={() => this.copyScheduleByDate()}>
+                  复制上周排班
+                </button>
+              ) : null}
+              {needOpen ? (
+                <button style={{ width: '100px' }} onClick={() => {}}>
+                  开放号源
+                </button>
+              ) : null}
             </div>
             <div className={'calenderBox'}>
               <div className={''}>
@@ -192,41 +245,9 @@ class ScheduleListScreen extends Component {
                     <tr>
                       <td>人员名称</td>
                       <td>科室名称</td>
-                      <td>
-                        周一（{moment()
-                          .day(weekNum)
-                          .format('MM-DD')}）
-                      </td>
-                      <td>
-                        周二（{moment()
-                          .day(weekNum + 1)
-                          .format('MM-DD')}）
-                      </td>
-                      <td>
-                        周三（{moment()
-                          .day(weekNum + 2)
-                          .format('MM-DD')}）
-                      </td>
-                      <td>
-                        周四（{moment()
-                          .day(weekNum + 3)
-                          .format('MM-DD')}）
-                      </td>
-                      <td>
-                        周五（{moment()
-                          .day(weekNum + 4)
-                          .format('MM-DD')}）
-                      </td>
-                      <td>
-                        周六（{moment()
-                          .day(weekNum + 5)
-                          .format('MM-DD')}）
-                      </td>
-                      <td>
-                        周日（{moment()
-                          .day(weekNum + 6)
-                          .format('MM-DD')}）
-                      </td>
+                      {weekTds.map((item, i) => {
+                        return <td key={i}> {item}</td>
+                      })}
                     </tr>
                   </thead>
                   <tbody>
@@ -265,14 +286,48 @@ class ScheduleListScreen extends Component {
     )
   }
   render() {
-    // const { fenyeItem, buttonLarge } = styles
+    const { departments, doctors } = this.props
     return (
       <div className={'orderRecordsPage'}>
         <div className={''}>
           <div className={'filterBox'} style={{ marginTop: '30px' }}>
             <div className={'boxLeft'}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <div style={{ position: 'relative' }}>
+                <select
+                  onChange={e => {
+                    let id = e.target.value
+                    console.log('id ========', id)
+                    this.setState({ department_id: id })
+                    this.queryDoctorList({ department_id: id, limit: 100 })
+                    this.queryListData({ department_id: id })
+                  }}
+                >
+                  <option value={-1}>选择科室</option>
+                  {departments.map(({ id, name }, index) => {
+                    return (
+                      <option key={index} value={id}>
+                        {name}
+                      </option>
+                    )
+                  })}
+                </select>
+                <select
+                  onChange={e => {
+                    let id = e.target.value
+                    this.setState({ personnel_id: id })
+                    this.queryListData({ personnel_id: id })
+                  }}
+                >
+                  <option value={-1}>选择医生</option>
+                  {doctors.map(({ id, name }, index) => {
+                    return (
+                      <option key={index} value={id}>
+                        {name}
+                      </option>
+                    )
+                  })}
+                </select>
+                {/* <div style={{ position: 'relative' }}>
                   <input
                     type='text'
                     placeholder='搜索科室'
@@ -309,12 +364,36 @@ class ScheduleListScreen extends Component {
                     }}
                   />
                   {this.searchDoctorView()}
-                </div>
+                </div> */}
               </div>
-              <button>查询</button>
+              {/* <button>查询</button> */}
             </div>
           </div>
         </div>
+        <style jsx>
+          {`
+            .boxLeft select {
+              width: 200px;
+              height: 40px;
+              background: rgba(255, 255, 255, 1);
+              box-sizing: border-box;
+              border-radius: 4px;
+              margin: 10px 15px 0 20px;
+              border: 1px solid rgba(42, 205, 200, 1);
+              font-size: 12px;
+              font-family: PingFangSC-Regular;
+              color: rgba(102, 102, 102, 1);
+            }
+            .boxLeft option {
+              width: 67px;
+              height: 18px;
+              font-size: 12px;
+              font-family: PingFangSC-Regular;
+              color: rgba(102, 102, 102, 1);
+              line-height: 18px;
+            }
+          `}
+        </style>
         {this.showCalendarList()}
       </div>
     )
@@ -327,9 +406,11 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     scheduleDoctors: state.schedules.scheduleDoctors || [],
     page_info: state.schedules.page_info,
+    canOverride: state.schedules.canOverride,
+    needOpen: state.schedules.needOpen,
     departments: state.departments.data,
     doctors: state.doctors.data
   }
 }
 
-export default connect(mapStateToProps, { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList })(ScheduleListScreen)
+export default connect(mapStateToProps, { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate })(ScheduleListScreen)
