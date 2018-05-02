@@ -30,7 +30,8 @@ class AddNewRegistrationScreen extends Component {
         .add(1, 'day')
         .format('YYYYMMDD'),
       searchView: 0,
-      candidatePatient: []
+      candidatePatient: [],
+      toSearch: false
     }
   }
 
@@ -80,7 +81,14 @@ class AddNewRegistrationScreen extends Component {
     const patients = this.props.patients || []
     console.log('patients ', patients)
     return (
-      <div className={'researchView'}>
+      <div className={'researchView'}
+        onMouseOver={e => {
+          this.setState({toSearch: false})
+        }}
+        onMouseLeave={e => {
+          this.setState({toSearch: true})
+        }}
+      >
         <span>请选择患者或继续新增</span>
         <ul>
           {patients.map((item, index) => {
@@ -102,7 +110,7 @@ class AddNewRegistrationScreen extends Component {
                       break
                     }
                   }
-                  this.setState({ patientInfo: item, searchView: 0, province: item.province, cities: cities, counties: counties })
+                  this.setState({ toSearch: false, patientInfo: item, searchView: 0, province: item.province, cities: cities, counties: counties })
                 }}
               >
                 <img src={'/static/login/u49.png'} />
@@ -147,11 +155,30 @@ class AddNewRegistrationScreen extends Component {
               <label htmlFor='patientName'>
                 就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
-              <SearchInput
+              <input type='text'
+                value={patient.name}
+                onChange={e => {
+                  let newPatient = this.state.patientInfo
+                  newPatient.name = e.target.value
+                  this.setState({ patientInfo: newPatient, searchView: 1 })
+                  this.queryPatients(e.target.value)
+                }}
+                onFocus={e => {
+                  this.setState({toSearch: true})
+                }}
+                onBlur={e => {
+                  console.log('this.state.toSearch====', this.state.toSearch)
+                  if (this.state.toSearch && this.state.searchView === 1) {
+                    this.setState({ searchView: 0 })
+                  }
+                }}
+              />
+              {this.state.searchView === 1 ? this.searchView() : '' }
+              {/* <SearchInput
                 placeholder=''
                 options={this.getPatientOptions()}
                 onInputChange={name => {
-                  // console.log('eeeeeee ======', name)
+                  console.log('eeeeeee ======', name)
                   let newPatient = this.state.patientInfo
                   newPatient.name = name
                   this.setState({ patientInfo: newPatient })
@@ -174,7 +201,7 @@ class AddNewRegistrationScreen extends Component {
                   }
                   this.setState({ patientInfo: item, searchView: 0, province: item.province, cities: cities, counties: counties })
                 }}
-              />
+              /> */}
             </li>
             <li>
               <label>身份证号码：</label>
