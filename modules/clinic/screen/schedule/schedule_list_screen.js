@@ -228,12 +228,12 @@ class ScheduleListScreen extends Component {
                 </span>
               </div>
               {canOverride ? (
-                <button style={{ width: '150px' }} onClick={() => this.copyScheduleByDate()}>
+                <button className={'calenderFilterBtn'} style={{ width: '100px' }} onClick={() => this.copyScheduleByDate()}>
                   复制上周排班
                 </button>
               ) : null}
               {needOpen ? (
-                <button style={{ width: '100px' }} onClick={() => {}}>
+                <button className={'calenderFilterBtn'} style={{ width: '100px' }} onClick={() => {}}>
                   开放号源
                 </button>
               ) : null}
