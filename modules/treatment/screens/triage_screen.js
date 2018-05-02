@@ -179,11 +179,11 @@ class TriageScreen extends Component {
             </li>
           </ul>
         </div>
-        <div className={'bottomBtn'}>
-          <button className='saveBtn' onClick={() => this.submit(this.props)}>
+        <div className={'bottomBtn'} style={{width: '300px'}}>
+          <button className='addBtn' onClick={() => this.submit(this.props)}>
             保存
           </button>
-          <button className='commonBtn' onClick={() => this.submit(this.props)}>
+          <button className='addBtn' onClick={() => this.submit(this.props)}>
             取消
           </button>
         </div>
@@ -235,11 +235,11 @@ class TriageScreen extends Component {
             </li>
           </ul>
         </div>
-        <div className={'bottomBtn'}>
-          <button className='saveBtn' onClick={() => this.submit(this.props)}>
+        <div className={'bottomBtn'} style={{width: '300px'}}>
+          <button className='addBtn' onClick={() => this.submit(this.props)}>
             保存
           </button>
-          <button className='commonBtn' onClick={() => this.submit(this.props)}>
+          <button className='addBtn' onClick={() => this.submit(this.props)}>
             取消
           </button>
         </div>
@@ -279,11 +279,11 @@ class TriageScreen extends Component {
             </li>
           </ul>
         </div>
-        <div className={'bottomBtn'}>
-          <button className='saveBtn' onClick={() => this.submit(this.props)}>
+        <div className={'bottomBtn'} style={{width: '300px'}}>
+          <button className='addBtn' onClick={() => this.submit(this.props)}>
             保存
           </button>
-          <button className='commonBtn' onClick={() => this.submit(this.props)}>
+          <button className='addBtn' onClick={() => this.submit(this.props)}>
             取消
           </button>
         </div>

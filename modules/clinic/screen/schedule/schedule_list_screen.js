@@ -242,7 +242,7 @@ class ScheduleListScreen extends Component {
 
   getDoctorOptions() {
     const { doctors } = this.props
-    let options = []
+    let options = [{value: '-1', label: '全部医生'}]
     for (let { id, name } of doctors) {
       options.push({
         value: id,

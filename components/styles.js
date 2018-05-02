@@ -528,55 +528,15 @@ export function styles() {
 				// .childTopBar span:nth-child(1) {
 				//   margin-left: 20px;
 				// }
-				// .healthFile_menu span.sel,
-				// .childTopBar span:hover,
-				// .childTopBar span.sel {
-				//   background-color: rgba(0, 204, 102, 1);
-				//   color: #ffffff;
-				//   border: none;
-				//   -moz-box-shadow: none;
-				//   -webkit-box-shadow: none;
-				//   box-shadow: none;
-				// }
-				// .formList {
-				//   float: left;
-				//   width: 100%;
-				// }
-				// .formList ul {
-				//   width: 1000px;
-				//   height: auto;
-				//   margin: 0 20px;
-				// }
-				// .formList ul li {
-				//   float: left;
-				//   margin-top: 30px;
-				//   width: 50%;
-				//   height: 65px;
-				// }
-				// .formList ul li > label {
-				//   width: 70px;
-				//   height: 18px;
-				//   font-size: 10px;
-				//   font-family: PingFangSC-Regular;
-				//   color: rgba(102, 102, 102, 1);
-				//   line-height: 18px;
-				// }
-				// .formList ul li > input {
-				//   width: 400px;
-				//   height: 30px;
-				//   padding: 0px;
-				//   background: rgba(245, 248, 249, 1);
-				//   border-radius: 4px;
-				//   border: 1px solid #d9d9d9;
-				// }
-				// .formList ul li > select {
-				//   width: 100px;
-				//   height: 30px;
-				//   background: rgba(255, 255, 255, 1);
-				//   border-radius: 4px;
-				//   float: left;
-				//   border: 1px solid #d9d9d9;
-				// }
+				.healthFile_menu span.sel{
+				  background: rgba(42,205,200,1);
+				  color: #ffffff;
+				  border: none;
+				  -moz-box-shadow: none;
+				  -webkit-box-shadow: none;
+				  box-shadow: none;
+				}
+				
 				.saveBtn {
 					border-width: 0px;
 					// position: absolute;
@@ -777,21 +737,15 @@ export function styles() {
 
 				.healthFile_top {
 					width: 100%;
-					height: 30px;
-					// background: #909090;
+					height: 50px;
+					border-bottom: 1px solid #d8d8d8;
 				}
-				// .doctorList_top span:nth-child(1),
 				.healthFile_top span:nth-child(1) {
 					float: left;
-					height: 30px;
-					line-height: 30px;
+					height: 50px;
+					line-height: 50px;
 					text-indent: 10px;
 				}
-				// .doctorList_top span:nth-child(1) {
-				//   height: 60px;
-				//   line-height: 60px;
-				// }
-				// .doctorList_top span:last-child,
 				.healthFile_top span:nth-child(2) {
 					float: right;
 					height: 20px;
@@ -803,16 +757,17 @@ export function styles() {
 				}
 				.healthFile_menu {
 					width: 667px;
-					margin: 20px auto 10px auto;
-					height: 60px;
+					margin: 20px auto 20px auto;
+					height: 31px;
 				}
 				.healthFile_menu span {
 					float: left;
 					width: 220px;
-					height: 59px;
+					height: 30px;
 					text-align: center;
-					line-height: 59px;
+					line-height: 30px;
 					border: 1px solid #d8d8d8;
+					cursor: pointer;
 				}
 				.progress {
 					width: 667px;
@@ -828,7 +783,7 @@ export function styles() {
 				.recordContent {
 					width: 667px;
 					margin: 0 auto;
-					height: 550px;
+					height: auto;
 				}
 				.mRecord ul,
 				.recordContent ul {
@@ -1566,6 +1521,7 @@ export function styles() {
 					cursor: pointer;
 					background: transparent;
 				}
+				.healthFile_top span:nth-child(2),
 				.doctorList_top span:last-child {
 					width: 40px;
 					height: 40px;
