@@ -754,17 +754,11 @@ export function styles() {
 				.healthFile {
 					width: 853px;
 					min-height: 785px;
-					background: inherit;
-					background-color: rgba(255, 255, 255, 1);
-					box-sizing: border-box;
-					border-width: 1px;
-					border-style: solid;
-					border-color: rgba(204, 204, 204, 1);
-					border-radius: 0px;
-					-moz-box-shadow: none;
-					-webkit-box-shadow: none;
-					box-shadow: none;
+					background: rgba(244, 247, 248, 1);
+					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
 					position: absolute;
+					top: 95px;
+					left: 320px;
 				}
 				.doctorList {
 					width: 950px;

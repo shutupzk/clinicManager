@@ -141,6 +141,7 @@ class RightContent extends Component {
 						height: 100%;
 						top: 0;
 						overflow: hidden;
+						background-color: #f4f7f8;
 					}
 					.right_nav_menu {
 						float: left;

@@ -293,25 +293,27 @@ class TriageScreen extends Component {
 
   completeHealthFile() {
     return (
-      <div className={'healthFile'}>
-        <div className={'healthFile_top'}>
-          <span>个人健康档案</span>
-          <span onClick={() => this.setState({ alertType: 0 })}>×</span>
+      <div className={'mask'}>
+        <div className={'healthFile'}>
+          <div className={'healthFile_top'}>
+            <span>个人健康档案</span>
+            <span onClick={() => this.setState({ alertType: 0 })}>×</span>
+          </div>
+          <div className={'healthFile_menu'}>
+            <span className={this.state.alertPageType === 1 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 1 })}>
+              体征
+            </span>
+            <span className={this.state.alertPageType === 2 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 2 })}>
+              诊前病历
+            </span>
+            <span className={this.state.alertPageType === 3 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 3 })}>
+              诊前预诊
+            </span>
+          </div>
+          {this.state.alertPageType === 1 ? this.showBodySigns() : ''}
+          {this.state.alertPageType === 2 ? this.showPreMedicalRecords() : ''}
+          {this.state.alertPageType === 3 ? this.showPreDiagnosisRecords() : ''}
         </div>
-        <div className={'healthFile_menu'}>
-          <span className={this.state.alertPageType === 1 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 1 })}>
-            体征
-          </span>
-          <span className={this.state.alertPageType === 2 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 2 })}>
-            诊前病历
-          </span>
-          <span className={this.state.alertPageType === 3 ? 'sel' : ''} onClick={() => this.setState({ alertPageType: 3 })}>
-            诊前预诊
-          </span>
-        </div>
-        {this.state.alertPageType === 1 ? this.showBodySigns() : ''}
-        {this.state.alertPageType === 2 ? this.showPreMedicalRecords() : ''}
-        {this.state.alertPageType === 3 ? this.showPreDiagnosisRecords() : ''}
       </div>
     )
   }
