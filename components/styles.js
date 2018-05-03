@@ -711,8 +711,8 @@ export function styles() {
 					z-index: 1000;
 					overflow: auto;
 					display: flex;
-					align-items: center;
-          // justify-content: center;
+					// align-items: center;
+          justify-content: center;
 				}
 
 				.healthFile {
