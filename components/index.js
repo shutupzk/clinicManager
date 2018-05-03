@@ -17,6 +17,7 @@ import DraftCard from './DraftCard'
 
 import Select from './Select'
 import SearchInput from './SearchInput'
+import Confirm from './Confirm'
 
 export {
   CardWhite,
@@ -43,5 +44,6 @@ export {
   PageCard,
   DraftCard,
   Select,
-  SearchInput
+  SearchInput,
+  Confirm
 }

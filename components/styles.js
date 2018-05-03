@@ -1770,18 +1770,10 @@ export function styles() {
 					with: 100%;
 					margin-top: 17px;
 				}
-				.liDiv select {
-					line-height: 40px;
-					width: 100px;
-					height: 40px;
-					background: rgba(255, 255, 255, 1);
-					border-radius: 4px;
-					border: 1px solid #d9d9d9;
-					margin-right: 8px;
-				}
 				.liDiv input[type='text'] {
 					flex: 1;
-					height: 40px;
+					// height: 40px;
+					height: 100%;
 					background: rgba(245, 248, 249, 1);
 					border-radius: 4px;
 					border: 1px solid #d9d9d9;

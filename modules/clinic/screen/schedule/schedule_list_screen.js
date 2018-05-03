@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
-import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate } from '../../../../ducks'
+import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate, openScheduleByDate } from '../../../../ducks'
 import moment from 'moment'
-import { PageCard, Select } from '../../../../components'
+import { PageCard, Select, Confirm } from '../../../../components'
 
 // import Select from 'react-select'
 
@@ -17,7 +17,8 @@ class ScheduleListScreen extends Component {
       personnel_id: '',
       personnel_name: '',
       showSearchDept: false,
-      showSearchDortor: false
+      showSearchDortor: false,
+      showConfirm: false
     }
   }
 
@@ -106,20 +107,38 @@ class ScheduleListScreen extends Component {
   }
 
   async copyScheduleByDate() {
-    const { copyScheduleByDate, clinic_id } = this.props
+    this.refs.myConfirm.confirm('确定复制上周排版？', '', 'Success', async () => {
+      const { copyScheduleByDate, clinic_id } = this.props
+      const { weekNum } = this.state
+      const copy_start_date = moment()
+        .day(weekNum - 7)
+        .format('YYYY-MM-DD')
+      const insert_start_date = moment()
+        .day(weekNum)
+        .format('YYYY-MM-DD')
+      let err = await copyScheduleByDate({ clinic_id, copy_start_date, insert_start_date })
+      if (err) {
+        return this.refs.myAlert.alert('复制失败', err)
+      }
+      this.refs.myAlert.alert('复制成功')
+      this.queryListData({})
+    })
+  }
+
+  async openScheduleByDate() {
+    const { openScheduleByDate, clinic_id } = this.props
     const { weekNum } = this.state
-    const copy_start_date = moment()
-      .day(weekNum - 7)
-      .format('YYYY-MM-DD')
-    const insert_start_date = moment()
+    const start_date = moment()
       .day(weekNum)
       .format('YYYY-MM-DD')
-    let err = await copyScheduleByDate({ clinic_id, copy_start_date, insert_start_date })
-    if (err) {
-      return alert('复制失败' + err)
-    }
-    alert('复制成功')
-    this.queryListData({})
+    this.refs.myConfirm.confirm('确定开放号源？', '开放号源后将不能删除，更改，确定开放？', 'Warning', async () => {
+      let err = await openScheduleByDate({ clinic_id, start_date })
+      if (err) {
+        return this.refs.myAlert.alert('开放号源失败', err)
+      }
+      this.refs.myAlert.alert('开放号源成功')
+      this.queryListData({})
+    })
   }
 
   // 显示日历列表
@@ -175,7 +194,7 @@ class ScheduleListScreen extends Component {
                 </button>
               ) : null}
               {needOpen ? (
-                <button className={'calenderFilterBtn'} onClick={() => {}}>
+                <button className={'calenderFilterBtn'} onClick={() => this.openScheduleByDate()}>
                   开放号源
                 </button>
               ) : null}
@@ -230,7 +249,7 @@ class ScheduleListScreen extends Component {
 
   getDepartmentOptions() {
     const { departments } = this.props
-    let options = [{value: '-1', label: '全部科室'}]
+    let options = [{ value: '-1', label: '全部科室' }]
     for (let { id, name } of departments) {
       options.push({
         value: id,
@@ -242,7 +261,7 @@ class ScheduleListScreen extends Component {
 
   getDoctorOptions() {
     const { doctors } = this.props
-    let options = [{value: '-1', label: '全部医生'}]
+    let options = [{ value: '-1', label: '全部医生' }]
     for (let { id, name } of doctors) {
       options.push({
         value: id,
@@ -253,7 +272,6 @@ class ScheduleListScreen extends Component {
   }
 
   render() {
-    const { departments, doctors } = this.props
     return (
       <div className={'orderRecordsPage'}>
         <div className={''}>
@@ -261,7 +279,8 @@ class ScheduleListScreen extends Component {
             <div className={'boxLeft'}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <div style={{ width: '200px', margin: '12px 20px' }}>
-                  <Select placeholder='选择科室'
+                  <Select
+                    placeholder='选择科室'
                     options={this.getDepartmentOptions()}
                     onChange={e => {
                       let id = e.value
@@ -273,7 +292,8 @@ class ScheduleListScreen extends Component {
                   />
                 </div>
                 <div style={{ width: '200px', margin: '12px 20px' }}>
-                  <Select placeholder='选择医生'
+                  <Select
+                    placeholder='选择医生'
                     options={this.getDoctorOptions()}
                     onChange={e => {
                       let id = e.value
@@ -322,6 +342,8 @@ class ScheduleListScreen extends Component {
           </div>
         </div>
         {this.showCalendarList()}
+        <Confirm ref='myConfirm' />
+        <Confirm ref='myAlert' isAlert />
       </div>
     )
   }
@@ -340,4 +362,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate })(ScheduleListScreen)
+export default connect(mapStateToProps, { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate, openScheduleByDate })(ScheduleListScreen)
