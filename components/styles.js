@@ -712,7 +712,7 @@ export function styles() {
 					overflow: auto;
 					display: flex;
 					align-items: center;
-          justify-content: center;
+          // justify-content: center;
 				}
 
 				.healthFile {
@@ -721,7 +721,7 @@ export function styles() {
 					background: rgba(244, 247, 248, 1);
 					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
 					position: absolute;
-					// top: 95px;
+					top: 95px;
 					// left: 320px;
 				}
 				.doctorList {
