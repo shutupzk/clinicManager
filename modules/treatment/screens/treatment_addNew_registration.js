@@ -100,8 +100,17 @@ class AddNewRegistrationScreen extends Component {
                       break
                     }
                   }
-                  
-                  this.setState({ toSearch: false, patientInfo: {...this.state.patientInfo, ...item}, searchView: 0, province: item.province, city: item.city, county: item.district, cities: cities, counties: counties })
+
+                  this.setState({
+                    toSearch: false,
+                    patientInfo: { ...this.state.patientInfo, ...item },
+                    searchView: 0,
+                    province: item.province,
+                    city: item.city,
+                    county: item.district,
+                    cities: cities,
+                    counties: counties
+                  })
                 }}
               >
                 <img src={'/static/login/u49.png'} />
