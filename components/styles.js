@@ -785,7 +785,8 @@ export function styles() {
 				}
 				.mRecord,
 				.recordContent {
-					width: 667px;
+					// width: 667px;
+					width: 720px
 					margin: 0 auto;
 					height: auto;
 				}
@@ -812,11 +813,20 @@ export function styles() {
 				}
 				.mRecord ul li textarea {
 					width: 661px;
+					background: rgba(245,248,249,1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					resize:none;
 				}
 				.mRecord ul li input,
-				.recordContent ul li input {
-					width: 300px;
-					height: 30px;
+				.recordContent ul li>input {
+					width: 326px;
+					height: 37px;
+					background: rgba(245,248,249,1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					padding: 0;
+    			margin-top: 3px;
 				}
 				.recordContent ul li select {
 					width: 300px;
