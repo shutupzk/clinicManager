@@ -3,37 +3,34 @@ import React, { Component } from 'react'
 export default class Confirm extends Component {
   constructor(props) {
     super(props)
-    let { title, content, type, hideCancelButton, confirmFun, isAlert } = props
     this.state = {
-      isAlert,
+      isAlert: false,
       showConfirm: false,
-      title,
-      content,
-      type,
-      hideCancelButton,
-      confirmFun
+      title: '提示',
+      content: '',
+      type: '',
+      hideCancelButton: false,
+      confirmFun: null
     }
   }
 
   alert(title, content) {
-    const { isAlert } = this.props
-    if (!isAlert) return
     this.setState({
       title,
       content,
-      showConfirm: true
+      showConfirm: true,
+      isAlert: true
     })
   }
 
   confirm(title, content, type, confirmFun) {
-    const { isAlert } = this.props
-    if (isAlert) return
     this.setState({
       title,
       content,
       confirmFun,
       type,
-      showConfirm: true
+      showConfirm: true,
+      isAlert: false
     })
   }
 
