@@ -84,29 +84,29 @@ class ChargeScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                    <a>门诊ID：</a>
-                    <a>{patient.cert_no}</a>
-                  </span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
                     <span>
-                    <a>接诊科室：</a>
-                    <a>{patient.department_name}</a>
-                  </span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
                     <span>
-                    <a>接诊医生：</a>
-                    <a>{patient.doctor_name}</a>
-                  </span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
                     <span>
-                    <a>登记人员：</a>
-                    <a>{patient.register_personnel_name}</a>
-                  </span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
                     <span>
-                    <a>登记时间：</a>
-                    <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                     <span style={{ color: 'rgba(153,153,153,1)' }}>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                    <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                  </span>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span>￥337.0</span>

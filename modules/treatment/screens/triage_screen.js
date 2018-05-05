@@ -956,38 +956,38 @@ class TriageScreen extends Component {
               <table>
                 <thead>
                   <tr>
-                    <td colSpan={2} />
-                    <td colSpan={2}>
+                    <td />
+                    <td>
                       周一（{moment()
                         .day(nowWeekNum)
                         .format('MM-DD')}）
                     </td>
-                    <td colSpan={2}>
+                    <td>
                       周二（{moment()
                         .day(nowWeekNum + 1)
                         .format('MM-DD')}）
                     </td>
-                    <td colSpan={2}>
+                    <td>
                       周三（{moment()
                         .day(nowWeekNum + 2)
                         .format('MM-DD')}）
                     </td>
-                    <td colSpan={2}>
+                    <td>
                       周四（{moment()
                         .day(nowWeekNum + 3)
                         .format('MM-DD')}）
                     </td>
-                    <td colSpan={2}>
+                    <td>
                       周五（{moment()
                         .day(nowWeekNum + 4)
                         .format('MM-DD')}）
                     </td>
-                    <td colSpan={2}>
+                    <td>
                       周六（{moment()
                         .day(nowWeekNum + 5)
                         .format('MM-DD')}）
                     </td>
-                    <td colSpan={2}>
+                    <td>
                       周日（{moment()
                         .day(nowWeekNum + 6)
                         .format('MM-DD')}）
@@ -996,77 +996,24 @@ class TriageScreen extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td colSpan={2}>预约</td>
                     <td>上午</td>
-                    <td>下午</td>
-                    <td>上午</td>
-                    <td>下午</td>
-                    <td>上午</td>
-                    <td>下午</td>
-                    <td>上午</td>
-                    <td>下午</td>
-                    <td>上午</td>
-                    <td>下午</td>
-                    <td>上午</td>
-                    <td>下午</td>
-                    <td>上午</td>
-                    <td>下午</td>
+                    <td>1人</td>
+                    <td>2人</td>
+                    <td>3人</td>
+                    <td>4人</td>
+                    <td>5人</td>
+                    <td>6人</td>
+                    <td>7人</td>
                   </tr>
                   <tr>
-                    <td colSpan={2}>预约</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td>12</td>
-                    <td>13</td>
-                    <td>14</td>
-                  </tr>
-                  {dateTime.map((item, index) => {
-                    return (
-                      <tr>
-                        <td colSpan={2}>{item.time}</td>
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                        <td />
-                      </tr>
-                    )
-                  })}
-                  <tr>
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
-                    <td />
+                    <td>下午</td>
+                    <td>1人</td>
+                    <td>2人</td>
+                    <td>3人</td>
+                    <td>4人</td>
+                    <td>5人</td>
+                    <td>6人</td>
+                    <td>7人</td>
                   </tr>
                 </tbody>
               </table>
@@ -1140,15 +1087,24 @@ class TriageScreen extends Component {
   }
   // 预约管理
   showReservation() {
+    const {showType} = this.state
     return (
       <div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
             <label>
-              <input type='radio' name={'listType'} /> 日历列表
+              <input type='radio'
+                name={'listType'}
+                checked={showType === 1}
+                onChange={() => this.changeShowType({ type: 1 })}
+              /> 日历列表
             </label>
             <label>
-              <input type='radio' name={'listType'} /> 就诊人列表
+              <input type='radio'
+                name={'listType'}
+                checked={showType === 2}
+                onChange={() => this.changeShowType({ type: 2 })}
+              /> 就诊人列表
             </label>
             <input type='text' placeholder='搜索科室' />
             <input className={'searchbox'} type='text' placeholder='搜索科室' />
@@ -1184,7 +1140,7 @@ class TriageScreen extends Component {
         </div> */}
 
         {this.state.showType === 1 ? this.showCalendarList() : ''}
-        {/* {this.state.showType === 2 ? this.showPatientList() : ''} */}
+        {this.state.showType === 2 ? this.showPatientList() : ''}
         <div className={'pagination'} />
         <style jsx>
           {`
@@ -1235,7 +1191,10 @@ class TriageScreen extends Component {
           >
             分诊记录
           </span>
-          <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.setState({ pageType: 3 })}>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => this.setState({ pageType: 3 })}
+          >
             预约管理
           </span>
         </div>
