@@ -1159,14 +1159,14 @@ export function styles() {
 				.filterBox .boxLeft {
 					float: left;
 				}
-				.filterBox .boxLeft input {
+				.filterBox .boxLeft>input {
 					float: left;
-					// width: 328px;
-					// height: 20px;
+					width: 328px;
+					height: 30px;
 					background: rgba(255, 255, 255, 1);
 					border-radius: 4px;
 					border: 1px solid #d9d9d9;
-					// margin: 16px 30px;
+					margin: 14px 30px;
 					text-indent: 10px;
 					padding: 0;
 				}
@@ -1493,7 +1493,7 @@ export function styles() {
 					color:rgba(255,255,255,1);
 				}
 				//选择医生弹出框
-				.doctorList_top span:nth-child(1) {
+				.doctorList_top>span:nth-child(1) {
 					font-size: 14px;
 					font-family: MicrosoftYaHei;
 					color: rgba(102, 102, 102, 1);
@@ -1513,13 +1513,13 @@ export function styles() {
 					border: 1px solid #d9d9d9;
 					text-indent: 10px;
 				}
-				.doctorList_top input {
+				.doctorList_top .topFilter>input {
 					width: 152px;
-					height: 28px;
+					height: 36px;
 					background: rgba(255, 255, 255, 1);
 					border-radius: 4px;
 					float: left;
-					margin: 34px 0 0 15px;
+					margin: 30px 0 0 15px;
 					border: 1px solid #d9d9d9;
 					padding: 0;
 					text-indent: 10px;

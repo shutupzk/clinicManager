@@ -49,7 +49,6 @@ class DoctorListScreen extends Component {
       showText = '职员'
       defaultValue = employeeKeyword
     }
-    
     let { doctors } = this.props
     return (
       <div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import moment from 'moment'
-import { triagePatientsList, triageDoctorsList, triagePatient } from '../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import { PageCard, Select } from '../../../components'
 
@@ -32,12 +32,20 @@ class TriageScreen extends Component {
       bodySign: {}, // 体征
       preMedicalRecords: {}, // 诊前病历
       preDiagnosisRecords: {}, // 诊前预诊
-      BMI: 0
+      BMI: 0,
+      department_id: '',
+      clinic_triage_patient_id: ''
     }
   }
 
   componentDidMount() {
     this.commonQueryList({})
+    this.queryDepartmentList({ limit: 100 })
+  }
+
+  queryDepartmentList({ keyword, limit = 10 }) {
+    const { queryDepartmentList, clinic_id } = this.props
+    queryDepartmentList({ clinic_id, keyword, limit })
   }
 
   commonQueryList({ offset = 0, limit = 6, pageType }) {
@@ -713,23 +721,34 @@ class TriageScreen extends Component {
     )
   }
   // 选择医生
-  showChooseDoctor(clinic_triage_patient_id) {
+  showChooseDoctor(department_id, keyword, offset = 0, limit = 6) {
     const { triageDoctorsList, clinic_id } = this.props
-    triageDoctorsList({ clinic_id })
+    if (department_id === '-1') {
+      department_id = null
+    } else {
+      department_id = department_id || this.state.department_id
+    }
+    const {clinic_triage_patient_id} = this.state
+    triageDoctorsList({ clinic_id, department_id, offset, limit, keyword })
     this.setState({ alertType: 2, clinic_triage_patient_id })
   }
 
-  getDoctorDatas() {
-    let array = []
-    const { triageDoctors } = this.props
-    for (let key in triageDoctors) {
-      array.push(triageDoctors[key])
+  getDepartmentOptions() {
+    const { departments } = this.props
+    let options = [{ value: '-1', label: '全部科室' }]
+    for (let { id, name } of departments) {
+      options.push({
+        value: id,
+        label: name
+      })
     }
-    return array
+    return options
   }
 
   chooseDoctor() {
-    let doctors = this.getDoctorDatas()
+    // let doctors = this.getDoctorDatas()
+    let { triageDoctors, doctor_page_info } = this.props
+    console.log('triageDoctors=====', triageDoctors)
     const { triagePatient, triage_personnel_id } = this.props
     const { clinic_triage_patient_id } = this.state
     return (
@@ -737,13 +756,25 @@ class TriageScreen extends Component {
         <div className={'doctorList'}>
           <div className={'doctorList_top'}>
             <span>选择医生</span>
-            <div>
-              <select placeholder='模板名称/模板类型'>
+            <div className={'topFilter'}>
+              {/* <select placeholder='模板名称/模板类型'>
                 <option>请选择科室</option>
                 <option>儿科</option>
                 <option>全科门诊</option>
                 <option>中医科</option>
-              </select>
+              </select> */}
+              <div style={{width: '200px', float: 'left', margin: '30px 0 0 15px'}}>
+                <Select
+                  placeholder='请选择科室'
+                  options={this.getDepartmentOptions()}
+                  onChange={e => {
+                    // alert(0)
+                    let id = e.value
+                    this.setState({department_id: id})
+                    this.showChooseDoctor({ department_id: id })
+                  }}
+                />
+              </div>
               <input type='text' placeholder={'医生名称'} />
               <button>查询</button>
             </div>
@@ -751,7 +782,7 @@ class TriageScreen extends Component {
           </div>
           <div className={'doctorList_content'}>
             <ul>
-              {doctors.map((doctor, index) => {
+              {triageDoctors.map((doctor, index) => {
                 return (
                   <li
                     key={index}
@@ -782,6 +813,15 @@ class TriageScreen extends Component {
             </ul>
           </div>
           <div className={'pagination'} />
+          <PageCard
+            offset={doctor_page_info.offset}
+            limit={doctor_page_info.limit}
+            total={doctor_page_info.total}
+            style={{width: '910px', float: 'none', display: 'table', margin: '40px auto'}}
+            onItemClick={({ offset, limit }) => {
+              this.commonQueryList({ offset, limit })
+            }}
+          />
         </div>
       </div>
     )
@@ -851,14 +891,21 @@ class TriageScreen extends Component {
                         this.setState({clinic_triage_patient_id, bodySign, preMedicalRecords, preDiagnosisRecords})
                       }}
                     >完善健康档案</span>
-                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>{pageType === 1 ? '选择医生' : '换诊'}</span>
+                    <span
+                      onClick={() => {
+                        let clinic_triage_patient_id = patient.id
+                        this.setState({clinic_triage_patient_id})
+                        this.showChooseDoctor()
+                      }}
+                    >
+                      {pageType === 1 ? '选择医生' : '换诊'}</span>
                   </div>
                 </li>
               )
             })}
           </ul>
         </div>
-        <div className={'pagination'} />
+        {/* <div className={'pagination'} /> */}
         <PageCard
           offset={patient_page_info.offset}
           limit={patient_page_info.limit}
@@ -1209,8 +1256,9 @@ const mapStateToProps = state => {
     triagePatients: state.triagePatients.data,
     patient_page_info: state.triagePatients.page_info,
     triageDoctors: state.triageDoctors.data,
+    departments: state.departments.data,
     doctor_page_info: state.triageDoctors.page_info
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient })(TriageScreen)
+export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList })(TriageScreen)

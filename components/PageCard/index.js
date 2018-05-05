@@ -72,7 +72,7 @@ class PageCard extends Component {
     let pageTotal = Math.ceil(total / limit)
     return (
       <div >
-        <footer className={'fenye flex tb-flex lr-flex'}>
+        <footer className={'fenye flex tb-flex lr-flex'} style={this.props.style}>
           <article className='left'>共 {this.props.total} 条</article>
           <div className={'pageContent'}>
           <span
@@ -115,7 +115,6 @@ class PageCard extends Component {
             {'>'}
           </span>
           </div>
-          
         </footer>
         <style jsx>{`
           .fenye {
