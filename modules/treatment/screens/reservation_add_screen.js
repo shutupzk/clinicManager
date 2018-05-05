@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { addAppointment, queryScheduleDepartments, queryScheduleDoctors } from '../../../ducks'
+import { addAppointment, queryScheduleDepartments, queryScheduleDoctors, getPatientByKeyword } from '../../../ducks'
 import { provinces } from '../../../config/provinces'
 import moment from 'moment'
+import { getAgeByBirthday } from '../../../utils'
+import { Select } from '../../../components'
 
 class AddReservation extends Component {
   constructor(props) {
@@ -15,6 +17,7 @@ class AddReservation extends Component {
       province: '请选择',
       city: '请选择',
       county: '请选择',
+      patientInfo: {},
       visit_date: moment()
         .add(1, 'day')
         .format('YYYYMMDD'),
@@ -41,173 +44,277 @@ class AddReservation extends Component {
     // const { queryScheduleDoctors } = this.props
     // queryScheduleDoctors({ department_id })
   }
+
+  async queryPatients(keyword) {
+    const { getPatientByKeyword } = this.props
+    getPatientByKeyword({ keyword })
+  }
+
   //
   searchView() {
+    const patients = this.props.patients || []
     return (
-      <div className={'researchView'}>
+      <div
+        className={'researchView'}
+        onMouseOver={e => {
+          this.setState({ toSearch: false })
+        }}
+        onMouseLeave={e => {
+          this.setState({ toSearch: true })
+        }}
+      >
         <span>请选择患者或继续新增</span>
         <ul>
-          <li>
-            <div>测试 女 68岁</div>
-            <div>13352415412</div>
-          </li>
-          <li>
-            <div>测试 女 68岁</div>
-            <div>13352415412</div>
-          </li>
-          <li>
-            <div>测试 女 68岁</div>
-            <div>13352415412</div>
-          </li>
-          <li>
-            <div>测试 女 68岁</div>
-            <div>13352415412</div>
-          </li>
-          <li>
-            <div>测试 女 68岁</div>
-            <div>13352415412</div>
-          </li>
+          {patients.map((item, index) => {
+            return (
+              <li
+                key={index}
+                onClick={() => {
+                  let cities = []
+                  for (let province of provinces) {
+                    if (item.province === province.name) {
+                      cities = province.city
+                      break
+                    }
+                  }
+                  let counties = []
+                  for (let city of cities) {
+                    if (item.city === city.name) {
+                      counties = city.area
+                      break
+                    }
+                  }
+
+                  this.setState({
+                    toSearch: false,
+                    patientInfo: { ...this.state.patientInfo, ...item },
+                    searchView: 0,
+                    province: item.province,
+                    city: item.city,
+                    county: item.district,
+                    cities: cities,
+                    counties: counties
+                  })
+                }}
+              >
+                <img src={'/static/login/u49.png'} />
+                <div className={'leftInfo'}>
+                  <div>
+                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}岁
+                  </div>
+                  <div>{item.phone}</div>
+                </div>
+              </li>
+            )
+          })}
         </ul>
-        <style>
-          {`
-            .researchView{
-              position: absolute;
-              background: #ffffff;
-              width: 477px;
-              z-index: 100;
-              top: 75px;    
-              cursor: default;
-              border:1px solid #d8d8d8;
-            }
-            .researchView>span{
-              height: 30px;
-              width: 100%;
-              background: #a0a0a0;
-              display: inline-block;
-              line-height: 30px;
-            }
-            .formList .researchView>ul{
-              display: flex;
-              flex-direction: column;
-              width: 100% !important;
-            }
-            .formList .researchView>ul>li{
-              margin-top:5px;
-            }
-            .formList .researchView>ul>li:hover{
-              background: #eaeaea;
-            }
-            .formList .researchView>ul>li>div{
-              
-            }
-        `}
-        </style>
       </div>
     )
   }
+
+  setPatientInfo(e, key) {
+    let newPatient = this.state.patientInfo
+    newPatient[key] = e.target.value
+    this.setState({ patientInfo: newPatient })
+  }
+
+  getProvincesOptions() {
+    let options = []
+    for (let province of provinces) {
+      options.push({
+        value: province.name,
+        label: province.name,
+        cities: province.city
+      })
+    }
+    return options
+  }
+
+  getCityOptions() {
+    const { cities } = this.state
+    let options = []
+    for (let city of cities) {
+      options.push({
+        value: city.name,
+        label: city.name,
+        counties: city.area
+      })
+    }
+    return options
+  }
+
+  getcountyOptions() {
+    const { counties } = this.state
+    let options = []
+    for (let county of counties) {
+      options.push({
+        value: county,
+        label: county
+      })
+    }
+    return options
+  }
+
+  getChanelOptions() {
+    let options = [
+      {
+        value: 1,
+        label: '运营推荐'
+      },
+      {
+        value: 2,
+        label: '会员介绍'
+      },
+      {
+        value: 3,
+        label: '网络宣传'
+      },
+      {
+        value: 4,
+        label: '社区患者'
+      }
+    ]
+    return options
+  }
+
+  getDepartmentOptions() {
+    const { departments } = this.props
+    let options = []
+    for (let { id, name } of departments) {
+      options.push({
+        value: id,
+        label: name
+      })
+    }
+    return options
+  }
+
   showBaseInfo() {
     const { departments, doctors } = this.props
     const this_department_id = this.state.department_id
-    const { cities, counties } = this.state
-    const searchView = this.state.searchView
+    let patient = this.state.patientInfo
     return (
-      <div>
-        <div className={'formList'}>
-          <div style={{ width: '1000px', marginTop: '31px' }}>
-            <label className='titleLabel'>新增预约</label>
-          </div>
-          <div className='line' />
-          <ul>
-            <li style={{ width: '479px' }}>
-              <label>
-                就诊人名称<b style={{ color: 'red' }}> *</b>
+      <div style={{ display: 'flex', margin: '31px 20px 63px 66px', backgroundColor: '#FFFFFF', height: 'auto', flexDirection: 'column', padding: '31px 47px 31px 47px' }}>
+        <div style={{ width: '100%' }}>
+          <label className='titleLabel'>新增预约</label>
+        </div>
+        <div style={{ height: '1px', width: '100%', backgroundColor: `rgba(238,238,238,1)`, marginTop: '21px' }} />
+        <div className='formDiv'>
+          <ul style={{ width: '100%' }}>
+            <li style={{ width: '48%' }}>
+              <label htmlFor='patientName'>
+                就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
               <input
                 type='text'
-                // value={''}
-                onChange={() => {
-                  this.setState({ searchView: 1 })
+                value={patient.name}
+                onChange={e => {
+                  let newPatient = this.state.patientInfo
+                  newPatient.name = e.target.value
+                  this.setState({ patientInfo: newPatient, searchView: 1 })
+                  this.queryPatients(e.target.value)
+                }}
+                onFocus={e => {
+                  this.setState({ toSearch: true })
+                }}
+                onBlur={e => {
+                  if (this.state.toSearch && this.state.searchView === 1) {
+                    this.setState({ searchView: 0 })
+                  }
                 }}
               />
-              {searchView === 1 ? this.searchView() : ''}
+              {this.state.searchView === 1 ? this.searchView() : ''}
             </li>
-            <li style={{ width: '479px', marginLeft: '31px' }}>
-              <label>
-                身份证号码<b style={{ color: 'red' }}> *</b>
-              </label>
-              <input type='text' value={''} />
+            <li style={{ width: '48%', marginLeft: '3.5%' }}>
+              <label>身份证号码：</label>
+              <input
+                type='text'
+                value={patient.cert_no}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.birthday = e.target.value.substring(6, 14)
+                  this.setState({ patientInfo: newPatient })
+                  this.setPatientInfo(e, 'cert_no')
+                }}
+              />
             </li>
-            <li style={{ width: '210px' }}>
+            <li style={{ width: '24%' }}>
               <label>
-                年龄<b style={{ color: 'red' }}> *</b>
+                生日：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' value={''} />
+              <input
+                type='date'
+                style={{ width: '120px' }}
+                value={moment(patient.birthday).format('YYYY-MM-DD')}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.birthday = moment(e.target.value).format('YYYYMMDD')
+                  this.setState({ patientInfo: newPatient })
+                }}
+              />
             </li>
-            <li style={{ width: '210px', marginLeft: '45px' }}>
+            <li style={{ width: '24%' }}>
               <label>
-                性别<b style={{ color: 'red' }}> *</b>
+                性别：<b style={{ color: 'red' }}> *</b>
               </label>
-              <div className='liDiv'>
-                <input type='radio' name='sex' />
-                <label>女</label>
-                <input type='radio' name='sex' />
-                <label>男</label>
+              <div style={{ height: '40px', marginTop: '17px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center' }}>
+                <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
+                <label htmlFor='man'>男</label>
+                <input id='woman' type='radio' name='sex' value={'0'} style={{ marginLeft: '15px' }} checked={patient.sex + '' === '0'} onChange={e => this.setPatientInfo(e, 'sex')} />
+                <label htmlFor='woman'>女</label>
               </div>
             </li>
-            <li style={{ width: '479px', marginLeft: '45px' }}>
-              <label>
-                手机号码<b style={{ color: 'red' }}> *</b>
-              </label>
-              <input className='bigInput' type='text' value={''} />
-            </li>
-            <li style={{ width: '989px' }}>
-              <label>住址</label>
-              <div className='liDiv'>
-                <select
-                  onChange={item => {
-                    let province = JSON.parse(item.target.value)
-                    this.setState({ province: province.name, cities: province.city })
-                  }}
-                >
-                  <option>省</option>
-                  {provinces.map((province, index) => {
-                    return (
-                      <option key={index} value={JSON.stringify(province)}>
-                        {province.name}
-                      </option>
-                    )
-                  })}
-                </select>
-                <select
-                  onChange={item => {
-                    let city = JSON.parse(item.target.value)
-                    this.setState({ city: city.name, counties: city.area })
-                  }}
-                >
-                  <option>市</option>
-                  {cities.map((city, index) => {
-                    return (
-                      <option key={index} value={JSON.stringify(city)}>
-                        {city.name}
-                      </option>
-                    )
-                  })}
-                </select>
-                <select
-                  onChange={item => {
-                    this.setState({ county: item.target.value })
-                  }}
-                >
-                  <option>区</option>
-                  {counties.map((name, index) => {
-                    return (
-                      <option key={index} value={name}>
-                        {name}
-                      </option>
-                    )
-                  })}
-                </select>
-                <input type='text' value={''} />
+            <li style={{ width: '100%' }}>
+              <label>住址：</label>
+              <div style={{ height: '40px', marginTop: '17px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center' }}>
+                <div style={{ width: '100px', marginRight: '10px' }}>
+                  <Select
+                    placeholder='省'
+                    value={{
+                      value: this.state.province,
+                      label: this.state.province,
+                      cities: this.state.cities
+                    }}
+                    options={this.getProvincesOptions()}
+                    onChange={({ value, cities }) => {
+                      let newPatient = patient
+                      newPatient.province = value
+                      this.setState({ province: value, cities, patientInfo: newPatient })
+                    }}
+                  />
+                </div>
+                <div style={{ width: '100px', marginRight: '10px' }}>
+                  <Select
+                    placeholder='市'
+                    value={{
+                      value: this.state.city,
+                      label: this.state.city,
+                      counties: this.state.counties
+                    }}
+                    options={this.getCityOptions()}
+                    onChange={({ value, counties }) => {
+                      let newPatient = patient
+                      newPatient.city = value
+                      this.setState({ city: value, counties, patientInfo: newPatient })
+                    }}
+                  />
+                </div>
+                <div style={{ width: '100px', marginRight: '10px' }}>
+                  <Select
+                    value={{
+                      value: this.state.county,
+                      label: this.state.county
+                    }}
+                    placeholder='区'
+                    options={this.getcountyOptions()}
+                    onChange={({ value }) => {
+                      let newPatient = patient
+                      newPatient.district = value
+                      this.setState({ county: value, patientInfo: newPatient })
+                    }}
+                  />
+                </div>
+                <input style={{ flex: 1, marginTop: '0px' }} type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
             <li style={{ width: '24%', marginRight: '1%' }}>
@@ -272,131 +379,42 @@ class AddReservation extends Component {
               />
             </li>
           </ul>
-          <div style={{ marginTop: '40px' }}>
-            <label>完善健康档案【展开】</label>
-          </div>
-          <div style={{ width: '1000px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: '57px', marginBottom: '27px', paddingRight: '21px' }}>
-            <button className='subButton' onClick={() => this.submit(this.props)}>
-              保存
-            </button>
-          </div>
         </div>
-        <style>
+        <div style={{ marginTop: '40px' }}>
+          <label>完善健康档案【展开】</label>
+        </div>
+        <div style={{ width: '1000px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: '57px', marginBottom: '27px', paddingRight: '21px' }}>
+          <button className='subButton' onClick={() => this.submit(this.props)}>
+            保存
+          </button>
+        </div>
+        <style jsx>
           {`
-            .formList{
-              display:flex;
-              flex-direction: column;
-              width:1098px;
-              align-items:center;
-              // height:650px; 
-              margin: 31px 66px 33px 66px;
-              background:rgba(255,255,255,1);
-              box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-              border-radius: 4px ; 
+            .formDiv {
+              margin-top: 10px;
             }
-            .titleLabel{
-              height:19px; 
+            .formDiv li {
               float: left;
-              font-size:16px;
-              font-family:MicrosoftYaHei;
-              color:rgba(102,102,102,1);
-              line-height:19px;
-            }
-            .line{
-              height:1px; 
-              width: 1000px;
-              background:rgba(238,238,238,1);
-              margin: 21px 0 0 0;
-            }
-            .formList ul {
-              width: 1000px;
-              height: auto;
-            }
-            .formList ul li {
-              float: left;
-              margin-top: 30px;
-              display:flex;
+              display: flex;
               flex-direction: column;
-              position:relative;
+              margin-top 20px;
             }
-            .formList ul li > label {
-              height:14px; 
-              font-size:14px;
-              font-family:MicrosoftYaHei;
-              color:rgba(102,102,102,1);
-              line-height:14px;
-            }
-            .formList ul li > input {
-              flex: 1;
-              height:40px; 
-              margin-top: 17px;
-              background:rgba(245,248,249,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-            }
-            .formList ul li > select {
-              margin-top: 17px;
-              line-height:40px;
-              height:40px;
-              background:rgba(255,255,255,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-              margin-right: 8px;
-            }
-            .liDiv {
-              display:flex;
-              flex-direction:row;
-              align-items:center;
+            .formDiv li > input[type='text'] {
+              width: 100%;
               height: 40px;
-              with: 100%;
-              margin-top: 17px;
+              background: rgba(245, 248, 249, 1);
+              margin-top 20px;
+              border-radius: 4px;
+              border: 1px solid #D9D9D9;
             }
-            .liDiv select {
-              line-height:40px;
-              width:100px;
-              height:40px; 
-              background:rgba(255,255,255,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-              margin-right: 8px;
-            }
-            .liDiv input[type='text'] {
-              flex: 1;
-              height:40px;
-              background:rgba(245,248,249,1);
-              border-radius: 4px ; 
-              border: 1px solid #d9d9d9;
-            }
-            .liDiv input[type='radio'] {
-              width:14px;
-              height:14px; 
-              background:rgba(255,255,255,1);
-              box-sizing: inherit;
-              border: 1px solid #108EE9;
-            }
-            .liDiv label {
-              height:18px; 
-              font-size:10px;
-              font-family:MicrosoftYaHei;
-              color:rgba(102,102,102,1);
-              line-height:18px;
-            }
-            .subButton {
-              width:100px;
-              height:28px; 
-              background:rgba(42,205,200,1);
-              border-radius: 4px ; 
-              color: #FFFFFF;
-              border: 0
-            }
-            `}
+          `}
         </style>
       </div>
     )
   }
 
   render() {
-    return <div style={{ width: '100%' }}>{this.showBaseInfo()}</div>
+    return <div>{this.showBaseInfo()}</div>
   }
 }
 
@@ -406,8 +424,9 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     schedules: state.schedules.schedules,
     departments: state.schedules.departments,
-    doctors: state.schedules.doctors
+    doctors: state.schedules.doctors,
+    patients: state.patients.data
   }
 }
 
-export default connect(mapStateToProps, { addAppointment, queryScheduleDepartments, queryScheduleDoctors })(AddReservation)
+export default connect(mapStateToProps, { addAppointment, queryScheduleDepartments, queryScheduleDoctors, getPatientByKeyword })(AddReservation)

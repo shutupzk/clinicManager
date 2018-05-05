@@ -15,10 +15,7 @@ class AddNewRegistrationScreen extends Component {
     this.state = {
       pageType: 1,
       keyword: '',
-      patientInfo: {
-        visit_type: 1,
-        patient_channel_id: 1
-      },
+      patientInfo: {},
       cities: [],
       counties: [],
       province: '请选择',
@@ -68,7 +65,6 @@ class AddNewRegistrationScreen extends Component {
   }
   searchView() {
     const patients = this.props.patients || []
-    console.log('patients ', patients)
     return (
       <div
         className={'researchView'}
