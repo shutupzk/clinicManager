@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import moment from 'moment'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList } from '../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import { PageCard, Select } from '../../../components'
 
@@ -41,9 +41,13 @@ class TriageScreen extends Component {
   componentDidMount() {
     this.commonQueryList({})
     this.queryDepartmentList({ limit: 100 })
+    this.queryDoctorsList({ limit: 100, personnel_type: 2 })
   }
-
-  queryDepartmentList({ keyword, limit = 10 }) {
+  queryDoctorsList({personnel_type, keyword, offset = 0, limit = 100}) {
+    const { queryDoctorList, clinic_id } = this.props
+    queryDoctorList({ clinic_id, personnel_type, keyword, offset, limit })
+  }
+  queryDepartmentList({ keyword, limit }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, limit })
   }
@@ -308,7 +312,7 @@ class TriageScreen extends Component {
             <li style={{ width: '25%' }}>
               <label>血型</label>
               <div style={{display: 'block', width: '115px'}}>
-                <Select placeholder='请选择...' options={this.bloodType()}
+                <Select placeholder='请选择...' options={this.bloodType()} height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'blood_type')
                   }}
@@ -318,7 +322,7 @@ class TriageScreen extends Component {
             <li style={{ width: '25%' }}>
               <label>RH血型</label>
               <div style={{display: 'block', width: '115px'}}>
-                <Select placeholder='请选择...' options={this.rhBloodType()}
+                <Select placeholder='请选择...' options={this.rhBloodType()} height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'rh_blood_type')
                   }}
@@ -328,7 +332,7 @@ class TriageScreen extends Component {
             <li>
               <label>体温（°C）</label>
               <div style={{display: 'block', width: '115px', float: 'left', marginTop: '3px'}}>
-                <Select placeholder='请选择...' options={this.temperatureType()}
+                <Select placeholder='请选择...' options={this.temperatureType()} height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'temperature_type')
                   }}
@@ -436,7 +440,7 @@ class TriageScreen extends Component {
             <li>
               <label>疼痛评分（1-10分）</label>
               <div style={{display: 'block', width: '326px', float: 'left', marginTop: '3px'}}>
-                <Select placeholder='请选择...' options={this.painScore()}
+                <Select placeholder='请选择...' options={this.painScore()} height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'pain_score')
                   }}
@@ -650,7 +654,7 @@ class TriageScreen extends Component {
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'history_of_rresent_illness')
                 }}
-              />>
+              />
             </li>
             <li>
               <label>既往史</label>
@@ -659,7 +663,7 @@ class TriageScreen extends Component {
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'history_of_past_illness')
                 }}
-              />>
+              />
             </li>
             <li>
               <label>体格检查</label>
@@ -668,7 +672,7 @@ class TriageScreen extends Component {
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'physical_examination')
                 }}
-              />>
+              />
             </li>
             <li>
               <label>备注</label>
@@ -721,7 +725,7 @@ class TriageScreen extends Component {
     )
   }
   // 选择医生
-  showChooseDoctor(department_id, keyword, offset = 0, limit = 6) {
+  showChooseDoctor({department_id, keyword, offset = 0, limit = 6}) {
     const { triageDoctorsList, clinic_id } = this.props
     if (department_id === '-1') {
       department_id = null
@@ -737,6 +741,17 @@ class TriageScreen extends Component {
     const { departments } = this.props
     let options = [{ value: '-1', label: '全部科室' }]
     for (let { id, name } of departments) {
+      options.push({
+        value: id,
+        label: name
+      })
+    }
+    return options
+  }
+  getDoctorOptions() {
+    const { selectDoctors } = this.props
+    let options = [{ value: '-1', label: '全部医生' }]
+    for (let { id, name } of selectDoctors) {
       options.push({
         value: id,
         label: name
@@ -1025,58 +1040,124 @@ class TriageScreen extends Component {
   }
   // 显示就诊人列表
   showPatientList() {
+    // const { triagePatients, patient_page_info } = this.props
     return (
-      <div className={'regisList'}>
-        <ul>
-          <li>
-            <div className={'liTop'}>
-              <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-              <span className={'status'}>已预约</span>
-            </div>
-            <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-            <div>门诊ID：000989123654</div>
-            <div>接诊科室：</div>
-            <div>接诊医生：</div>
-            <div>预约时间：20180410 10:23:23</div>
-            <div>备注：</div>
-            <div className={'seeDetail'} onClick={() => this.seeDetail()}>
-              <a onClick={() => this.editPatient()}>修改</a>
-              <a onClick={() => this.cancelReservation()}>取消</a>
-            </div>
-          </li>
-          <li>
-            <div className={'liTop'}>
-              <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-              <span className={'status'}>已就诊</span>
-            </div>
-            <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-            <div>门诊ID：000989123654</div>
-            <div>接诊科室：</div>
-            <div>接诊医生：</div>
-            <div>预约时间：20180410 10:23:23</div>
-            <div>备注：</div>
-            <div className={'seeDetail'}>
-              <a onClick={() => this.gotoWechat()}>微信交流</a>
-              <a onClick={() => this.scanPatient()}>查看</a>
-            </div>
-          </li>
-          <li>
-            <div className={'liTop'}>
-              <span className={'updateTime'}>更新时间：20180408 10:23:34</span>
-              <span className={'status'}>已就诊</span>
-            </div>
-            <div>就诊人姓名：王俊凯 男 年龄：18岁</div>
-            <div>门诊ID：000989123654</div>
-            <div>接诊科室：</div>
-            <div>接诊医生：</div>
-            <div>预约时间：20180410 10:23:23</div>
-            <div>备注：</div>
-            <div className={'seeDetail'}>
-              <a onClick={() => this.gotoWechat()}>微信交流</a>
-              <a onClick={() => this.scanPatient()}>查看</a>
-            </div>
-          </li>
-        </ul>
+      <div>
+        <div className={'listContent'}>
+          <ul>
+            <li key={1}>
+              <div className={'itemTop'}>
+                <span>龙超</span>
+                <span>男</span>
+                <span>18岁</span>
+                <span style={{ color: '#F24A01', border: '1px solid #F24A01' }}>已分诊</span>
+              </div>
+              <div className={'itemCenter'}>
+                <span>
+                  <a>门诊ID：</a>
+                  <a>1515151515</a>
+                </span>
+                <span>
+                  <a>接诊科室：</a>
+                  <a>骨科</a>
+                </span>
+                <span>
+                  <a>接诊医生：</a>
+                  <a>关云长</a>
+                </span>
+                <span>
+                  <a>登记人员：</a>
+                  <a>扁鹊</a>
+                </span>
+                <span>
+                  <a>登记时间：</a>
+                  <a>{moment('20180505').format('YYYY-MM-DD HH:mm:ss')}</a>
+                </span>
+                <span style={{ color: 'rgba(153,153,153,1)' }}>
+                  <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                  <a style={{ color: 'rgba(153,153,153,1)' }}>{moment('20180505').format('YYYY-MM-DD HH:mm:ss')}</a>
+                </span>
+              </div>
+              <div className={'itemBottom'}>
+                <span
+                  onClick={() => {}}
+                >修改</span>
+                <span
+                  onClick={() => {}}
+                >取消</span>
+              </div>
+            </li>
+            {/* {triagePatients.map((patient, index) => {
+              let updateTime = patient.complete_time || patient.reception_time || patient.register_time
+              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
+              return (
+                <li key={index}>
+                  <div className={'itemTop'}>
+                    <span>{patient.patient_name}</span>
+                    <span>{patient.sex === 0 ? '女' : '男'}</span>
+                    <span>{getAgeByBirthday(patient.birthday)}岁</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
+                  </div>
+                  <div className={'itemCenter'}>
+                    <span>
+                      <a>门诊ID：</a>
+                      <a>{patient.cert_no}</a>
+                    </span>
+                    <span>
+                      <a>接诊科室：</a>
+                      <a>{patient.department_name}</a>
+                    </span>
+                    <span>
+                      <a>接诊医生：</a>
+                      <a>{patient.doctor_name}</a>
+                    </span>
+                    <span>
+                      <a>登记人员：</a>
+                      <a>{patient.register_personnel_name}</a>
+                    </span>
+                    <span>
+                      <a>登记时间：</a>
+                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
+                    <span style={{ color: 'rgba(153,153,153,1)' }}>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
+                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
+                  </div>
+                  <div className={'itemBottom'}>
+                    <span
+                      onClick={() => {
+                        this.showCompleteHealthFile()
+                        let bodySign = {}
+                        let preMedicalRecords = {}
+                        let preDiagnosisRecords = {}
+                        // 设置选择的病人ID
+                        let clinic_triage_patient_id = patient.id
+                        this.setState({clinic_triage_patient_id, bodySign, preMedicalRecords, preDiagnosisRecords})
+                      }}
+                    >完善健康档案</span>
+                    <span
+                      onClick={() => {
+                        let clinic_triage_patient_id = patient.id
+                        this.setState({clinic_triage_patient_id})
+                        this.showChooseDoctor()
+                      }}
+                    >
+                      {pageType === 1 ? '选择医生' : '换诊'}</span>
+                  </div>
+                </li>
+              )
+            })} */}
+          </ul>
+        </div>
+        {/* <PageCard
+          offset={patient_page_info.offset}
+          limit={patient_page_info.limit}
+          total={patient_page_info.total}
+          onItemClick={({ offset, limit }) => {
+            this.commonQueryList({ offset, limit })
+          }}
+        /> */}
       </div>
     )
   }
@@ -1092,30 +1173,56 @@ class TriageScreen extends Component {
       <div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <label>
+            <label style={{marginLeft: '15px'}}>
               <input type='radio'
                 name={'listType'}
                 checked={showType === 1}
                 onChange={() => this.changeShowType({ type: 1 })}
               /> 日历列表
             </label>
-            <label>
+            <label style={{marginLeft: '15px'}}>
               <input type='radio'
                 name={'listType'}
                 checked={showType === 2}
                 onChange={() => this.changeShowType({ type: 2 })}
               /> 就诊人列表
             </label>
-            <input type='text' placeholder='搜索科室' />
-            <input className={'searchbox'} type='text' placeholder='搜索科室' />
-            <input type='text' placeholder='搜索医生' />
-            {/* <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
-            <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' /> */}
-            <button>查询</button>
+            <div style={{width: '150px', float: 'left', margin: '14px 0 0 15px'}}>
+              <Select
+                placeholder='搜索科室'
+                options={this.getDepartmentOptions()}
+                height={32}
+              />
+            </div>
+            <div style={{width: '150px', float: 'left', margin: '14px 0 0 15px'}}>
+              <Select
+                placeholder='搜索医生'
+                options={this.getDoctorOptions()}
+                height={32}
+              />
+            </div>
           </div>
           <div className={'boxRight'}>
             <button onClick={() => this.addNewReservation()}>新增预约</button>
           </div>
+        </div>
+        <div className={'filterBox'}>
+          <div className={'boxLeft'}>
+            <input type='date' placeholder='预约日期'
+              style={{ margin: '14px 0 0 15px' }}
+            />
+            <input type='text'
+              style={{ margin: '14px 0 0 15px' }}
+              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+            />
+            {/* <input type='text' placeholder='搜索科室' /> */}
+            {/* <input type='text' placeholder='搜索科室' /> */}
+            {/* <input type='text' placeholder='搜索医生' /> */}
+            {/* <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
+            <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' /> */}
+            <button >查询</button>
+          </div>
+          
         </div>
         {/* <div className={'regisListTop'}>
           <button className={'bigBtn'} onClick={() => this.addNewReservation()}>
@@ -1157,10 +1264,10 @@ class TriageScreen extends Component {
               clear: both;
               vertical-align: middle;
             }
-            input[type='text'] {
-              width: 152px;
-              margin: 16px 0 16px 17px;
-            }
+            // input[type='text'] {
+            //   width: 152px;
+            //   margin: 16px 0 16px 17px;
+            // }
             .boxLeft button {
               margin: 16px 0 16px 17px;
             }
@@ -1216,8 +1323,9 @@ const mapStateToProps = state => {
     patient_page_info: state.triagePatients.page_info,
     triageDoctors: state.triageDoctors.data,
     departments: state.departments.data,
-    doctor_page_info: state.triageDoctors.page_info
+    doctor_page_info: state.triageDoctors.page_info,
+    selectDoctors: state.doctors.data
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList })(TriageScreen)
+export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList })(TriageScreen)

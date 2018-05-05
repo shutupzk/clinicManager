@@ -21,6 +21,7 @@ export function doctors(state = initState, action = {}) {
 
 export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0, limit = 6, department_id }) => async dispatch => {
   try {
+    console.log('limit====', limit)
     const data = await request('/personnel/list', {
       clinic_id,
       personnel_type,

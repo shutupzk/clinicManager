@@ -1150,14 +1150,16 @@ export function styles() {
 				.filterBox {
 					float: left;
 					width: 1098px;
-					height: 60px;
+					min-height: 60px;
 					background: rgba(255, 255, 255, 1);
 					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
 					border-radius: 4px;
 					margin-left: 66px;
+					display: flex;
 				}
 				.filterBox .boxLeft {
 					float: left;
+					flex: 9;
 				}
 				.filterBox .boxLeft>input {
 					float: left;
@@ -1184,6 +1186,7 @@ export function styles() {
 				}
 				.filterBox .boxRight {
 					float: right;
+					flex: 1;
 				}
 				.filterBox .boxRight button {
 					float: left;
@@ -1195,13 +1198,13 @@ export function styles() {
 					color: rgba(255, 255, 255, 1);
 					font-size: 12px;
 					cursor: pointer;
-					margin: 16px 35px;
+					margin: 16px 35px 0 0;
 				}
 				.listContent {
 					float: left;
 					width: 1120px;
 					margin-left: 66px;
-					background: #909090;
+					// background: #909090;
 				}
 				//就诊人详情--就诊信息
 				.patientInfo div{
