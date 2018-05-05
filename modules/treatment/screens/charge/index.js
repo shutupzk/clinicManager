@@ -149,16 +149,56 @@ class ChargeScreen extends Component {
 
   // 显示订单管理
   showOrderManagement() {
+    const array = []
+    for (let i = 0; i < 10; i++) {
+      let item = {}
+      array.push(item)
+    }
     return (
-      <div>
-        <div className={'listContent'} style={{background: '#909090'}}>
+      <div className={'detailBox'} style={{float: 'left'}}>
+        <div className={'feeScheduleBox'}>
           <ul>
             <li>
               <div>交易时间</div>
-              <div>交易时间</div>
+              <div>平台订单号</div>
+              <div>业务类型</div>
+              <div>就诊人</div>
+              <div>门诊ID</div>
+              <div>支付方式</div>
+              <div>支付金额</div>
+              <div>支付状态</div>
+              <div>操作员</div>
+              <div>操作</div>
             </li>
+            {array.map((item, index) => {
+              return (
+                <li>
+                  <div>2018-04-08 12:23:22</div>
+                  <div>4002018040812345</div>
+                  <div>挂号费</div>
+                  <div>王俊凯</div>
+                  <div>1231423412</div>
+                  <div>支付宝</div>
+                  <div>100.00元</div>
+                  <div>支付中</div>
+                  <div>蔡徐坤</div>
+                  <div>更新状态</div>
+                </li>
+              )
+            })}
           </ul>
         </div>
+        <style jsx>
+          {`
+            .feeScheduleBox ul li div:nth-child(2),
+            .feeScheduleBox ul li div:nth-child(1) {
+              flex:2;
+            }
+            .feeScheduleBox ul li div{
+              flex:1;
+            }
+          `}
+        </style>
       </div>
     )
   }
