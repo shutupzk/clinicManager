@@ -123,7 +123,7 @@ class AddReservation extends Component {
                 <img src={'/static/login/u49.png'} />
                 <div className={'leftInfo'}>
                   <div>
-                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}岁
+                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}
                   </div>
                   <div>{item.phone}</div>
                 </div>

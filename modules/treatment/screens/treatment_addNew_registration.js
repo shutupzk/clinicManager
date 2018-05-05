@@ -112,7 +112,7 @@ class AddNewRegistrationScreen extends Component {
                 <img src={'/static/login/u49.png'} />
                 <div className={'leftInfo'}>
                   <div>
-                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}岁
+                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}
                   </div>
                   <div>{item.phone}</div>
                 </div>
@@ -445,7 +445,7 @@ class AddNewRegistrationScreen extends Component {
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
-                    <span>{getAgeByBirthday(patient.birthday)}岁</span>
+                    <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
