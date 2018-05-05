@@ -239,7 +239,9 @@ class AddReservation extends Component {
   showBaseInfo() {
     let patient = this.state.patientInfo
     return (
-      <div style={{ display: 'flex', margin: '31px 20px 63px 66px', backgroundColor: '#FFFFFF', height: 'auto', flexDirection: 'column', padding: '31px 47px 31px 47px' }}>
+      <div
+        style={{display: 'flex', margin: '31px 20px 63px 66px', backgroundColor: '#FFFFFF', height: 'auto', flexDirection: 'column', padding: '31px 47px 31px 47px', width: '1004px'}}
+      >
         <div style={{ width: '100%' }}>
           <label className='titleLabel'>新增预约</label>
         </div>
@@ -477,6 +479,7 @@ class AddReservation extends Component {
               display: flex;
               flex-direction: column;
               margin-top 20px;
+              position: relative;
             }
             .formDiv li > input[type='text'] {
               width: 100%;

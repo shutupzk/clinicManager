@@ -43,9 +43,10 @@ class TriageScreen extends Component {
     this.queryDepartmentList({ limit: 100 })
     this.queryDoctorsList({ limit: 100, personnel_type: 2 })
   }
-  queryDoctorsList({personnel_type, keyword, offset = 0, limit = 100}) {
+  queryDoctorsList({ keyword, limit = 100, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
-    queryDoctorList({ clinic_id, personnel_type, keyword, offset, limit })
+    console.log('department_id ========', department_id)
+    queryDoctorList({ clinic_id, keyword, limit: 10, personnel_type: 2, department_id })
   }
   queryDepartmentList({ keyword, limit }) {
     const { queryDepartmentList, clinic_id } = this.props
@@ -1166,6 +1167,27 @@ class TriageScreen extends Component {
   addNewReservation() {
     Router.push('/treatment/reservation_add')
   }
+  showExtraFilter() {
+    return (
+      <div className={'filterBox'}>
+        <div className={'boxLeft'}>
+          <input type='date' placeholder='预约日期'
+            style={{ margin: '14px 0 0 15px' }}
+          />
+          <input type='text'
+            style={{ margin: '14px 15px 0 15px' }}
+            placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+          />
+          {/* <input type='text' placeholder='搜索科室' /> */}
+          {/* <input type='text' placeholder='搜索科室' /> */}
+          {/* <input type='text' placeholder='搜索医生' /> */}
+          {/* <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
+          <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' /> */}
+          <button >查询</button>
+        </div>
+      </div>
+    )
+  }
   // 预约管理
   showReservation() {
     const {showType} = this.state
@@ -1192,6 +1214,13 @@ class TriageScreen extends Component {
                 placeholder='搜索科室'
                 options={this.getDepartmentOptions()}
                 height={32}
+                onChange={e => {
+                  let id = e.value
+                  console.log('id ========', id)
+                  this.setState({ department_id: id })
+                  this.queryDoctorsList({ department_id: id, limit: 100 })
+                  // this.queryListData({ department_id: id })
+                }}
               />
             </div>
             <div style={{width: '150px', float: 'left', margin: '14px 0 0 15px'}}>
@@ -1206,24 +1235,7 @@ class TriageScreen extends Component {
             <button onClick={() => this.addNewReservation()}>新增预约</button>
           </div>
         </div>
-        <div className={'filterBox'}>
-          <div className={'boxLeft'}>
-            <input type='date' placeholder='预约日期'
-              style={{ margin: '14px 0 0 15px' }}
-            />
-            <input type='text'
-              style={{ margin: '14px 0 0 15px' }}
-              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
-            />
-            {/* <input type='text' placeholder='搜索科室' /> */}
-            {/* <input type='text' placeholder='搜索科室' /> */}
-            {/* <input type='text' placeholder='搜索医生' /> */}
-            {/* <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
-            <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' /> */}
-            <button >查询</button>
-          </div>
-          
-        </div>
+        {showType === 2 ? this.showExtraFilter() : '' }
         {/* <div className={'regisListTop'}>
           <button className={'bigBtn'} onClick={() => this.addNewReservation()}>
             新增预约
@@ -1300,7 +1312,10 @@ class TriageScreen extends Component {
           </span>
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
-            onClick={() => this.setState({ pageType: 3 })}
+            onClick={() => {
+              this.setState({ pageType: 3, department_id: '' })
+              this.queryDoctorsList({ department_id: '', limit: 100 })
+            }}
           >
             预约管理
           </span>
