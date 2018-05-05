@@ -13,7 +13,8 @@ import {
   openScheduleByDate,
   createOneSchedule,
   deleteOneUnOpenScheduleByID,
-  stopScheduleByID
+  stopScheduleByID,
+  querySchedules
 } from './schedules'
 
 // keys
@@ -46,5 +47,6 @@ export {
   openScheduleByDate,
   createOneSchedule,
   deleteOneUnOpenScheduleByID,
-  stopScheduleByID
+  stopScheduleByID,
+  querySchedules
 }

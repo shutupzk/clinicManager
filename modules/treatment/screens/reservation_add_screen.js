@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import Router from 'next/router'
+// import Router from 'next/router'
 import { connect } from 'react-redux'
-import { addAppointment, queryScheduleDepartments, queryScheduleDoctors, getPatientByKeyword } from '../../../ducks'
+import { addAppointment, queryScheduleDepartments, queryScheduleDoctors, getPatientByKeyword, querySchedules } from '../../../ducks'
 import { provinces } from '../../../config/provinces'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../utils'
-import { Select } from '../../../components'
+import { Select, Confirm } from '../../../components'
 
 class AddReservation extends Component {
   constructor(props) {
@@ -24,25 +24,10 @@ class AddReservation extends Component {
       searchView: 0
     }
   }
-  async submit() {}
-  back() {
-    Router.push('/treatment')
-  }
+
   componentWillMount() {
     const { queryScheduleDepartments, clinic_id } = this.props
     queryScheduleDepartments({ clinic_id })
-  }
-
-  onDepartmentChange(department_id = -1) {
-    this.setState({ department_id })
-    const { queryScheduleDoctors } = this.props
-    queryScheduleDoctors({ department_id })
-  }
-
-  onDoctorChange(doctor_id = -1) {
-    this.setState({ doctor_id })
-    // const { queryScheduleDoctors } = this.props
-    // queryScheduleDoctors({ department_id })
   }
 
   async queryPatients(keyword) {
@@ -50,7 +35,45 @@ class AddReservation extends Component {
     getPatientByKeyword({ keyword })
   }
 
-  //
+  async querySchedules({ personnel_id, department_id }) {
+    if (!personnel_id || !department_id) return
+    const { clinic_id, querySchedules } = this.props
+    querySchedules({
+      clinic_id,
+      personnel_id,
+      department_id,
+      start_date: moment()
+        .add(1, 'day')
+        .format('YYYY-MM-DD'),
+      end_date: moment()
+        .add(30, 'day')
+        .format('YYYY-MM-DD')
+    })
+  }
+
+  checkSelectDate(visit_date) {
+    visit_date = moment(visit_date).format('YYYY-MM-DD')
+    let patient = this.state.patientInfo
+    const { personnel_id, department_id } = patient
+    let { schedules } = this.props
+    if (!schedules || !schedules.length) {
+      return this.refs.myAlert.alert('提示', '号源不存在，请重新选择科室，医生，日期')
+    }
+    let has = false
+    for (let schedule of schedules) {
+      if (moment(schedule.visit_date).format('YYYY-MM-DD') === visit_date && schedule.personnel_id === personnel_id && schedule.department_id === department_id) {
+        patient.doctor_visit_schedule_id = schedule.id
+        patient.visit_date = schedule.visit_date
+        this.setState({ patientInfo: patient })
+        has = true
+        break
+      }
+    }
+    if (!has) {
+      return this.refs.myAlert.alert('提示', '号源不存在，请重新选择科室，医生，日期')
+    }
+  }
+
   searchView() {
     const patients = this.props.patients || []
     return (
@@ -110,6 +133,18 @@ class AddReservation extends Component {
         </ul>
       </div>
     )
+  }
+
+  async submit() {
+    const { addAppointment, clinic_id } = this.props
+    const { patientInfo } = this.state
+    this.refs.myAlert.confirm('确认提示', '确认预约？', 'Success', async () => {
+      let error = await addAppointment({ ...patientInfo, clinic_id })
+      if (error) {
+        return this.refs.myAlert.alert('预约失败', error)
+      }
+      return this.refs.myAlert.alert('预约成功')
+    })
   }
 
   setPatientInfo(e, key) {
@@ -180,9 +215,21 @@ class AddReservation extends Component {
   getDepartmentOptions() {
     const { departments } = this.props
     let options = []
-    for (let { id, name } of departments) {
+    for (let { department_id, name } of departments) {
       options.push({
-        value: id,
+        value: department_id,
+        label: name
+      })
+    }
+    return options
+  }
+
+  getDoctorOptions() {
+    const { doctors } = this.props
+    let options = []
+    for (let { personnel_id, name } of doctors) {
+      options.push({
+        value: personnel_id,
         label: name
       })
     }
@@ -190,8 +237,6 @@ class AddReservation extends Component {
   }
 
   showBaseInfo() {
-    const { departments, doctors } = this.props
-    const this_department_id = this.state.department_id
     let patient = this.state.patientInfo
     return (
       <div style={{ display: 'flex', margin: '31px 20px 63px 66px', backgroundColor: '#FFFFFF', height: 'auto', flexDirection: 'column', padding: '31px 47px 31px 47px' }}>
@@ -257,11 +302,19 @@ class AddReservation extends Component {
               <label>
                 性别：<b style={{ color: 'red' }}> *</b>
               </label>
-              <div style={{ height: '40px', marginTop: '17px', display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center' }}>
-                <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
-                <label htmlFor='man'>男</label>
-                <input id='woman' type='radio' name='sex' value={'0'} style={{ marginLeft: '15px' }} checked={patient.sex + '' === '0'} onChange={e => this.setPatientInfo(e, 'sex')} />
-                <label htmlFor='woman'>女</label>
+              <div className='centerItems'>
+                <div style={{ flex: 1, height: '40px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <input id='woman' type='radio' name='sex' value={'0'} style={{ marginLeft: '15px' }} checked={patient.sex + '' === '0'} onChange={e => this.setPatientInfo(e, 'sex')} />
+                  <label style={{ marginLeft: '11px' }} htmlFor='woman'>
+                    女
+                  </label>
+                </div>
+                <div style={{ flex: 1, height: '40px', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
+                  <label style={{ marginLeft: '11px' }} htmlFor='man'>
+                    男
+                  </label>
+                </div>
               </div>
             </li>
             <li style={{ width: '100%' }}>
@@ -314,76 +367,102 @@ class AddReservation extends Component {
                     }}
                   />
                 </div>
-                <input style={{ flex: 1, marginTop: '0px' }} type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
+                <input className='lidivTextinput' style={{ flex: 1, marginTop: '0px' }} type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
             <li style={{ width: '24%', marginRight: '1%' }}>
               <label>预约科室</label>
-              <select
-                onChange={item => {
-                  this.onDepartmentChange(item.target.value)
-                }}
-              >
-                <option>请选择</option>
-                {departments.map(({ department_id, name }, index) => {
-                  return (
-                    <option key={index} value={department_id}>
-                      {name}
-                    </option>
-                  )
-                })}
-              </select>
+              <div style={{ width: '100%', height: '40px', marginTop: '17px' }}>
+                <Select
+                  placeholder='选择科室'
+                  options={this.getDepartmentOptions()}
+                  onChange={({ value }) => {
+                    let newPatient = patient
+                    newPatient.department_id = value
+                    this.setState({ patientInfo: newPatient })
+                    this.props.queryScheduleDoctors({ department_id: value })
+                  }}
+                />
+              </div>
             </li>
             <li style={{ width: '24%', marginRight: '1%' }}>
-              <label
-                onChange={item => {
-                  this.onDoctorChange(item.target.value)
-                }}
-              >
-                预约医生
-              </label>
-              <select>
-                <option>请选择</option>
-                {doctors.map(({ personnel_id, name, department_id }, index) => {
-                  if (this_department_id !== department_id) return null
-                  return (
-                    <option key={index} value={personnel_id}>
-                      {name}
-                    </option>
-                  )
-                })}
-              </select>
+              <label>预约医生</label>
+              <div style={{ width: '100%', height: '40px', marginTop: '17px' }}>
+                <Select
+                  placeholder='选择医生'
+                  options={this.getDoctorOptions()}
+                  onChange={({ value }) => {
+                    let newPatient = patient
+                    newPatient.personnel_id = value
+                    this.setState({ patientInfo: newPatient })
+                    this.querySchedules(newPatient)
+                  }}
+                />
+              </div>
             </li>
             <li style={{ width: '24%', marginRight: '1%' }}>
               <label>
                 预约类型<b style={{ color: 'red' }}> *</b>
               </label>
-              <div className='liDiv'>
-                <input id='first' type='radio' name='type' />
-                <label htmlFor='first'>首诊</label>
-                <input id='referral' type='radio' name='type' style={{ marginLeft: '15px' }} />
-                <label htmlFor='referral'>复诊</label>
-                <input id='operate' type='radio' name='type' style={{ marginLeft: '15px' }} />
-                <label htmlFor='operate'>术后诊</label>
+              <div className='centerItems'>
+                <input type='radio' name='visit_type' value={1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <label >首诊</label>
+                <input type='radio' name='visit_type' value={2} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <label >复诊</label>
+                <input type='radio' name='visit_type' value={3} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <label >术后诊</label>
               </div>
             </li>
             <li style={{ width: '24%', marginRight: '1%' }}>
               <label>预约时间</label>
               <input
                 type='date'
-                value={moment(this.state.visit_date).format('YYYY-MM-DD')}
+                value={moment(patient.visit_date).format('YYYY-MM-DD')}
                 onChange={e => {
                   let visit_date = moment(e.target.value).format('YYYYMMDD')
-                  this.setState({ visit_date })
+                  this.checkSelectDate(visit_date)
                 }}
               />
             </li>
           </ul>
         </div>
-        <div style={{ marginTop: '40px' }}>
-          <label>完善健康档案【展开】</label>
+        <div style={{ height: '1px', width: '100%', backgroundColor: `rgba(238,238,238,1)`, marginTop: '40px' }} />
+        <div className='formDiv'>
+          <ul style={{ width: '100%' }}>
+            <li style={{ width: '15%' }}>
+              <label>会员等级</label>
+              <input type='text' value={'无'} />
+            </li>
+            <li style={{ width: '15%', marginLeft: '3%' }}>
+              <label>就诊人来源</label>
+              <div>
+                <div style={{ width: '100%' }}>
+                  <Select
+                    placeholder='请选择'
+                    options={this.getChanelOptions()}
+                    onChange={({ value }) => {
+                      let newPatient = patient
+                      newPatient.patient_channel_id = value
+                      this.setState({ patientInfo: newPatient })
+                    }}
+                  />
+                </div>
+              </div>
+            </li>
+            <li style={{ width: '30%', marginLeft: '3%' }}>
+              <label>职业</label>
+              <input type='text' value={patient.profession} onChange={e => this.setPatientInfo(e, 'profession')} />
+            </li>
+            <li style={{ width: '30%', marginLeft: '3%' }}>
+              <label>备注</label>
+              <input type='text' value={patient.remark} onChange={e => this.setPatientInfo(e, 'remark')} />
+            </li>
+          </ul>
         </div>
-        <div style={{ width: '1000px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: '57px', marginBottom: '27px', paddingRight: '21px' }}>
+        <div style={{ marginTop: '20px', height: '40px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <label>展开跟多【收起】</label>
+        </div>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: '57px', marginBottom: '27px', paddingRight: '21px' }}>
           <button className='subButton' onClick={() => this.submit(this.props)}>
             保存
           </button>
@@ -403,7 +482,39 @@ class AddReservation extends Component {
               width: 100%;
               height: 40px;
               background: rgba(245, 248, 249, 1);
-              margin-top 20px;
+              margin-top 17px;
+              border-radius: 4px;
+              border: 1px solid #D9D9D9;
+            }
+            .formDiv li input[type='date'] {
+              width: 100%;
+              height: 40px;
+              background: rgba(245, 248, 249, 1);
+              margin-top 17px;
+              border-radius: 4px;
+              border: 1px solid #D9D9D9;
+            }
+            .formDiv li > div {
+              width: 100%;
+              height: 40px;
+              margin-top: 17px;
+            }
+            .centerItems {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+            }
+            .centerItems label {
+              width:36px;
+              height:18px; 
+              font-size:12px;
+              font-family:PingFangSC-Regular;
+              color:rgba(102,102,102,1);
+              line-height:18px;
+            }
+            .lidivTextinput {
+              height: 40px;
+              background: rgba(245, 248, 249, 1);
               border-radius: 4px;
               border: 1px solid #D9D9D9;
             }
@@ -414,7 +525,11 @@ class AddReservation extends Component {
   }
 
   render() {
-    return <div>{this.showBaseInfo()}</div>
+    return (
+      <div>
+        {this.showBaseInfo()} <Confirm ref='myAlert' />
+      </div>
+    )
   }
 }
 
@@ -429,4 +544,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { addAppointment, queryScheduleDepartments, queryScheduleDoctors, getPatientByKeyword })(AddReservation)
+export default connect(mapStateToProps, { addAppointment, queryScheduleDepartments, queryScheduleDoctors, getPatientByKeyword, querySchedules })(AddReservation)

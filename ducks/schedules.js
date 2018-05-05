@@ -1,4 +1,5 @@
 import { request } from './request'
+const SCHDULE_SCHEDULE_ADD = 'SCHDULE_SCHEDULE_ADD'
 const SCHDULE_DEPARTMENT_ADD = 'SCHDULE_DEPARTMENT_ADD'
 const SCHDULE_DOCTOR_ADD = 'SCHDULE_DOCTOR_ADD'
 const SCHDULE_SCHEDULE_DOCTOR_ADD = 'SCHDULE_SCHEDULE_DOCTOR_ADD'
@@ -14,6 +15,8 @@ const initState = {
 
 export function schedules(state = initState, action = {}) {
   switch (action.type) {
+    case SCHDULE_SCHEDULE_ADD:
+      return { ...state, schedules: action.data }
     case SCHDULE_DEPARTMENT_ADD:
       return { ...state, departments: action.data }
     case SCHDULE_DOCTOR_ADD:
@@ -42,13 +45,34 @@ export const queryScheduleDepartments = ({ clinic_id }) => async dispatch => {
   }
 }
 
+export const querySchedules = ({ clinic_id, department_id, personnel_id, start_date, end_date }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/list', {
+      clinic_id,
+      department_id,
+      personnel_id,
+      start_date,
+      end_date
+    })
+    const docs = data.data || []
+    dispatch({
+      type: SCHDULE_SCHEDULE_ADD,
+      data: docs
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const queryScheduleDoctors = ({ department_id }) => async dispatch => {
   try {
     const data = await request('/doctorVisitSchedule/doctors', {
       department_id
     })
     const docs = data.data || []
-    let array = docs.map((doc) => {
+    let array = docs.map(doc => {
       return { ...doc, department_id }
     })
     dispatch({
@@ -65,7 +89,13 @@ export const queryScheduleDoctors = ({ department_id }) => async dispatch => {
 export const queryDoctorsWithSchedule = ({ clinic_id, start_date, end_date, offset, limit, department_id, personnel_id }) => async dispatch => {
   try {
     const data = await request('/doctorVisitSchedule/DoctorsWithSchedule', {
-      clinic_id, start_date, end_date, offset, limit, department_id, personnel_id
+      clinic_id,
+      start_date,
+      end_date,
+      offset,
+      limit,
+      department_id,
+      personnel_id
     })
     console.log('data ========= ', data)
     const docs = data.data || []
@@ -89,7 +119,10 @@ export const queryDoctorsWithSchedule = ({ clinic_id, start_date, end_date, offs
 export const copyScheduleByDate = ({ clinic_id, copy_start_date, insert_start_date }) => async dispatch => {
   try {
     const data = await request('/doctorVisitSchedule/CopyScheduleByDate', {
-      clinic_id, copy_start_date, insert_start_date, day_long: 7
+      clinic_id,
+      copy_start_date,
+      insert_start_date,
+      day_long: 7
     })
     console.log('data ========= ', data)
     if (data.code === '200') return null
@@ -103,7 +136,9 @@ export const copyScheduleByDate = ({ clinic_id, copy_start_date, insert_start_da
 export const openScheduleByDate = ({ clinic_id, start_date }) => async dispatch => {
   try {
     const data = await request('/doctorVisitSchedule/OpenScheduleByDate', {
-      clinic_id, start_date, day_long: 7
+      clinic_id,
+      start_date,
+      day_long: 7
     })
     console.log('data ========= ', data)
     if (data.code === '200') return null
@@ -117,7 +152,10 @@ export const openScheduleByDate = ({ clinic_id, start_date }) => async dispatch 
 export const createOneSchedule = ({ department_id, personnel_id, visit_date, am_pm }) => async dispatch => {
   try {
     const data = await request('/doctorVisitSchedule/CreateOneSchedule', {
-      department_id, personnel_id, visit_date, am_pm
+      department_id,
+      personnel_id,
+      visit_date,
+      am_pm
     })
     console.log('data ========= ', data)
     if (data.code === '200') return null
