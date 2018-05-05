@@ -3,13 +3,13 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../ducks'
-import { getAgeByBirthday } from '../../../utils'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../../ducks'
+import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
-import { provinces } from '../../../config/provinces'
-import { PageCard, Select } from '../../../components'
+import { provinces } from '../../../../config/provinces'
+import { PageCard, Select } from '../../../../components'
 
-class AddNewRegistrationScreen extends Component {
+class RegistrationListScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -546,4 +546,4 @@ const mapStateToProps = state => {
     limit: state.triagePatients.page_info.limit
   }
 }
-export default connect(mapStateToProps, { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword })(RegistrationListScreen)

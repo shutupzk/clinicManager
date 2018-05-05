@@ -913,7 +913,7 @@ class TriageScreen extends Component {
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
-                    <span>{getAgeByBirthday(patient.birthday)}岁</span>
+                    <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
@@ -959,8 +959,8 @@ class TriageScreen extends Component {
                     <span
                       onClick={() => {
                         let clinic_triage_patient_id = patient.id
-                        this.setState({ clinic_triage_patient_id })
-                        this.showChooseDoctor()
+                        this.setState({clinic_triage_patient_id})
+                        this.showChooseDoctor({})
                       }}
                     >
                       {pageType === 1 ? '选择医生' : '换诊'}

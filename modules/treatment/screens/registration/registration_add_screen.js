@@ -3,13 +3,13 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../ducks'
-import { getAgeByBirthday } from '../../../utils'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../../ducks'
+import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
-import { provinces } from '../../../config/provinces'
-import { PageCard, Select } from '../../../components'
+import { provinces } from '../../../../config/provinces'
+import { PageCard, Select } from '../../../../components'
 
-class AddNewRegistrationScreen extends Component {
+class RegistrationAddScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -501,7 +501,7 @@ class AddNewRegistrationScreen extends Component {
   }
   // 查看详情
   seeDetail() {
-    Router.push('/treatment/newListDetail')
+    Router.push('/treatment/registration/newListDetail')
   }
 
   render() {
@@ -529,7 +529,6 @@ class AddNewRegistrationScreen extends Component {
         </div>
         {this.showAddNew()}
         {this.showNewList()}
-        {/* {this.state.pageType === 1 ? this.showAddNew() : this.showNewList()} */}
       </div>
     )
   }
@@ -546,4 +545,10 @@ const mapStateToProps = state => {
     limit: state.triagePatients.page_info.limit
   }
 }
-export default connect(mapStateToProps, { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword })(AddNewRegistrationScreen)
+export default connect(mapStateToProps, {
+  getPatientByCertNo,
+  queryDepartmentList,
+  addTriagePatientsList,
+  triagePatientsList,
+  getPatientByKeyword
+})(RegistrationAddScreen)
