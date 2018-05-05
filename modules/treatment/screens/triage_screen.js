@@ -911,7 +911,7 @@ class TriageScreen extends Component {
                       onClick={() => {
                         let clinic_triage_patient_id = patient.id
                         this.setState({clinic_triage_patient_id})
-                        this.showChooseDoctor()
+                        this.showChooseDoctor({})
                       }}
                     >
                       {pageType === 1 ? '选择医生' : '换诊'}</span>
