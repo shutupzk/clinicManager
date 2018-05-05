@@ -11,7 +11,8 @@ class ChargeScreen extends Component {
     this.state = {
       pageType: 1,
       showType: 1,
-      nowWeekNum: 1
+      nowWeekNum: 1,
+      OrderType: 1
     }
   }
 
@@ -64,15 +65,17 @@ class ChargeScreen extends Component {
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
-	// 显示分诊列表
+	// 显示待收费
   showTobeCharged() {
     const array = this.getUnTriagePatientListData(false)
+    let {pageType} = this.state
+    // if (pageType === 1) return null
     return (
       <div>
         <div className={'listContent'}>
           <ul>
             {array.map((patient, index) => {
-              let updateTime = patient.complete_time || patient.reception_time || patient.register_time
+              // let updateTime = patient.complete_time || patient.reception_time || patient.register_time
               let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
@@ -80,38 +83,24 @@ class ChargeScreen extends Component {
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已分诊' : '待分诊'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已收费' : '待收费'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
                       <a>门诊ID：</a>
                       <a>{patient.cert_no}</a>
                     </span>
-                    <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
-                    <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
-                    <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
-                    <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                    <span style={{ color: 'rgba(153,153,153,1)' }}>
-                      <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                      <a style={{ color: 'rgba(153,153,153,1)' }}>{moment(updateTime).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
+                    {pageType !== 3 ? <span><a>接诊科室：</a><a>{patient.department_name}</a></span> : ''}
+                    {pageType !== 3 ? <span><a>接诊医生：</a><a>{patient.doctor_name}</a></span> : ''}
+                    {pageType === 3 ? <span><a>挂账金额：</a><a>￥337</a></span> : ''}
+                    {pageType === 1 ? <span><a>登记人员：</a><a>{patient.register_personnel_name}</a></span> : ''}
+                    {pageType === 1 ? <span><a>登记时间：</a><a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a></span> : ''}
+                    {pageType === 2 ? <span><a>收费人员：</a><a>{patient.register_personnel_name}</a></span> : ''}
+                    {pageType === 2 ? <span><a>收费时间：</a><a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a></span> : ''}
+                    {pageType === 4 ? <span><a>退款人员：</a><a>{patient.register_personnel_name}</a></span> : ''}
+                    {pageType === 4 ? <span><a>退款时间：</a><a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a></span> : ''}
                   </div>
-                  <div className={'itemBottom'}>
-                    <span>￥337.0</span>
-                    <span onClick={() => this.gotoChargeDetail()}>收费</span>
-                  </div>
+                  {this.renderOperate()}
                 </li>
               )
             })}
@@ -121,10 +110,88 @@ class ChargeScreen extends Component {
       </div>
     )
   }
+  renderOperate() {
+    const {pageType} = this.state
+    switch (pageType) {
+      case 1:
+        return (
+          <div className={'itemBottom'}>
+            <span>￥337.0</span>
+            <span onClick={() => {
+              this.gotoChargeDetail()
+            }}>收费</span>
+          </div>
+        )
+      case 2:
+        return (
+          <div className={'itemBottom'}>
+            <span>￥337.0</span>
+            <span onClick={() => {}}>打印发票</span>
+            <span onClick={() => {}}>退费</span>
+          </div>
+        )
+      case 3:
+        return (
+          <div className={'itemBottom'}>
+            <span onClick={() => {}}>查看详情</span>
+            <span onClick={() => {}}>还账</span>
+          </div>
+        )
+      case 4:
+        return (
+          <div className={'itemBottom'}>
+            <span>￥337.0</span>
+            <span onClick={() => {}}>打印发票</span>
+          </div>
+        )
+    }
+  }
+
+  // 显示订单管理
+  showOrderManagement() {
+    return (
+      <div>
+        <div className={'listContent'} style={{background: '#909090'}}>
+          <ul>
+            <li>
+              <div>交易时间</div>
+              <div>交易时间</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    )
+  }
+
+  // 收费详情
   gotoChargeDetail() {
     Router.push('/treatment/charge/chargeDetail')
   }
+  // 选择异常/正常订单
+  renderOrderType() {
+    const {OrderType} = this.state
+    return (
+      <div>
+        <label style={{margin: '20px 15px', float: 'left'}}>
+          <input type='radio'
+            name={'listType'}
+            checked={OrderType === 1}
+            onChange={() => this.setState({ OrderType: 1 })}
+          /> 异常订单
+        </label>
+        <label style={{margin: '20px 15px', float: 'left'}}>
+          <input type='radio'
+            name={'listType'}
+            checked={OrderType === 2}
+            onChange={() => this.setState({ OrderType: 2 })}
+          /> 正常订单
+        </label>
+      </div>
+    )
+  }
+  // 加载
   render() {
+    const {pageType} = this.state
     return (
       <div>
         <div className={'childTopBar'}>
@@ -145,17 +212,14 @@ class ChargeScreen extends Component {
 					</span>
         </div>
         <div className={'filterBox'}>
+          {pageType === 5 ? this.renderOrderType() : ''}
           <div className={'boxLeft'}>
             <input type='date' placeholder='选择日期' />
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>
         </div>
-        {this.state.pageType === 1 ? this.showTobeCharged() : ''}
-        {/* {this.state.pageType === 2 ? this.showTriageRecord() : ''} */}
-        {/* {this.state.pageType === 3 ? this.showReservation() : ''} */}
-        {/* {this.state.alertType === 1 ? this.completeHealthFile() : ''}
-        {this.state.alertType === 2 ? this.chooseDoctor() : ''} */}
+        {pageType !== 5 ? this.showTobeCharged() : this.showOrderManagement()}
       </div>
     )
   }

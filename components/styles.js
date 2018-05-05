@@ -1102,7 +1102,7 @@ export function styles() {
 					display: flex;
 					flex-direction: column;
 					width: 332px;
-					margin: 10px auto 0 auto;
+					margin: 0 auto 0 auto;
 					justify-content: center;
 				}
 				.itemCenter span {
@@ -1139,12 +1139,16 @@ export function styles() {
 					line-height: 39px;
 					text-align: center;
 					cursor:pointer;
+					border-right: 2px solid #31b0b3;
 				}
 				.itemBottom span:nth-child(1) {
 					border-right: 2px solid #31b0b3;
 				}
 				.itemBottom span:nth-child(2) {
 					// border-right: 2px solid #31b0b3;
+				}
+				.itemBottom span:last-child{
+					border:none;
 				}
 				//顶部搜索栏
 				.filterBox {
