@@ -3,10 +3,12 @@ import Select from 'react-select'
 
 export default class MySelect extends Component {
   render() {
+    let { height } = this.props
     const customStyles = {
       control: (base, state) => {
         return {
           ...base,
+          height: height || 44,
           borderColor: state.isFocused ? 'rgb(16,142,233)' : '#d9d9d9',
           boxShadow: state.isFocused ? `0 0 0 2px rgba(16,142,233,0.2)` : null
         }
