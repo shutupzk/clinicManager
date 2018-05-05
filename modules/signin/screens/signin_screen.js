@@ -29,7 +29,7 @@ class SigninScreen extends Component {
 
     let error = await this.props.signin({ username, password })
     if (error) return alert('登录失败：' + error)
-    Router.push('/treatment')
+    Router.push('/treatment/registration')
   }
   render() {
     return (

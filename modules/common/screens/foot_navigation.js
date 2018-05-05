@@ -9,21 +9,24 @@ export default class Navigation extends Component {
   }
 
   render() {
-    const { data, url } = this.props
+		const { data, url } = this.props
+		console.log('url=====', url.split('/'))
+		let parentUrl = url.split('/')[2]
     return (
       <ul className='footNavUl'>
-        {data &&
-					data.map((item, itemKey) => {
-  return (
-    <Link key={item.navigateName} href={item.navigateName}>
-      <div className={url === item.navigateName ? 'selLeftMenu' : ''}>
-        <i />
-        <img src={item.icon} />
-        <a>{item.title}</a>
-      </div>
-    </Link>
-  )
-})}
+        {data && data.map((item, itemKey) => {
+					console.log('item======', item)
+					let itemUrl = item.navigateName.split('/')[2]
+					return (
+						<Link key={item.navigateName} href={item.navigateName}>
+							<div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
+								<i />
+								<img src={item.icon} />
+								<a>{item.title}</a>
+							</div>
+						</Link>
+					)
+				})}
         <style jsx global>{`
 					.footNavUl {
 						position: relative;
