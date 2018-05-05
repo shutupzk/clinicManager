@@ -10,12 +10,12 @@ export default class Navigation extends Component {
 
   render() {
 		const { data, url } = this.props
-		console.log('url=====', url.split('/'))
+		// console.log('url=====', url.split('/'))
 		let parentUrl = url.split('/')[2]
     return (
       <ul className='footNavUl'>
         {data && data.map((item, itemKey) => {
-					console.log('item======', item)
+					// console.log('item======', item)
 					let itemUrl = item.navigateName.split('/')[2]
 					return (
 						<Link key={item.navigateName} href={item.navigateName}>

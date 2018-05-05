@@ -1,13 +1,18 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-// import { styles } from '../../../components/styles'
-// import { theme } from '../../../components'
-import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../../ducks'
+
+import {
+  getPatientByCertNo,
+  queryDepartmentList,
+  addTriagePatientsList,
+  getPatientByKeyword
+} from '../../../../ducks'
+
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../config/provinces'
-import { PageCard, Select } from '../../../../components'
+import { Select } from '../../../../components'
 
 class RegistrationAddScreen extends Component {
   constructor(props) {
@@ -33,8 +38,8 @@ class RegistrationAddScreen extends Component {
   componentWillMount() {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, limit: 100 })
-    this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
   }
+
   // 保存新增登记
   async submit() {
     const { addTriagePatientsList, clinic_id, personnel_id } = this.props
@@ -45,13 +50,8 @@ class RegistrationAddScreen extends Component {
     if (error) {
       alert(error)
     } else {
-      this.setState({ patientInfo: {}, keyword: '', pageType: 2 })
-      this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
+      Router.push('/treatment/registration/list')
     }
-  }
-  // 改变显示内容
-  changeContent({ type }) {
-    this.setState({ pageType: type })
   }
 
   setPatientInfo(e, key) {
@@ -59,10 +59,12 @@ class RegistrationAddScreen extends Component {
     newPatient[key] = e.target.value
     this.setState({ patientInfo: newPatient })
   }
+
   async queryPatients(keyword) {
     const { getPatientByKeyword } = this.props
     getPatientByKeyword({ keyword })
   }
+
   searchView() {
     const patients = this.props.patients || []
     return (
@@ -220,7 +222,6 @@ class RegistrationAddScreen extends Component {
                   this.setState({ toSearch: true })
                 }}
                 onBlur={e => {
-                  console.log('this.state.toSearch====', this.state.toSearch)
                   if (this.state.toSearch && this.state.searchView === 1) {
                     this.setState({ searchView: 0 })
                   }
@@ -399,136 +400,14 @@ class RegistrationAddScreen extends Component {
     )
   }
 
-  quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit }) {
-    const { clinic_id, triagePatientsList } = this.props
-    let params = { clinic_id, is_today: true, offset, limit, keyword }
-    if (status_start && status_end) {
-      params.status_start = status_start
-      params.status_end = status_end
-    }
-    triagePatientsList(params)
-  }
-
-  // 显示新增列表
-  showNewList() {
-    const { pageType } = this.state
-    if (pageType !== 2) return null
-    const { triagePatients, patient_page_info } = this.props
-    return (
-      <div>
-        <div className={'filterBox'}>
-          <div className={'boxLeft'}>
-            <input
-              type='text'
-              placeholder='搜索就诊人姓名/身份证号码/手机号码'
-              value={this.state.keyword}
-              onChange={e => {
-                this.setState({ keyword: e.target.value })
-              }}
-            />
-            <button
-              onClick={() => {
-                let keyword = this.state.keyword
-                this.quetryTriagePatientsList({ keyword, status_start: 10, status_end: 100 })
-              }}
-            >
-              查询
-            </button>
-          </div>
-        </div>
-        <div className={'listContent'}>
-          <ul>
-            {triagePatients.map((patient, index) => {
-              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
-              return (
-                <li key={index}>
-                  <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
-                    <span>{patient.sex === 0 ? '女' : '男'}</span>
-                    <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
-                  </div>
-                  <div className={'itemCenter'}>
-                    <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
-                    <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
-                    <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
-                    <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                    <span>
-                      <a>更新时间：</a>
-                      <a>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                  </div>
-                  <div className={'itemBottom'}>
-                    <span onClick={() => this.seeDetail()}>查看详情 >></span>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <PageCard
-          offset={patient_page_info.offset}
-          limit={patient_page_info.limit}
-          total={patient_page_info.total}
-          onItemClick={({ offset, limit }) => {
-            const keyword = this.state.keyword
-            this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
-          }}
-        />
-        <style jsx>{`
-          .itemBottom span:nth-child(1) {
-            flex: 1;
-            border-right: none;
-          }
-          .formList {
-            margin: 20px 66px 33px 66px;
-          }
-        `}</style>
-      </div>
-    )
-  }
-  // 查看详情
-  seeDetail() {
-    Router.push('/treatment/registration/newListDetail')
-  }
-
   render() {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span
-            className={this.state.pageType === 1 ? 'sel' : ''}
-            onClick={() => {
-              this.changeContent({ type: 1 })
-            }}
-          >
-            + 新增登记
-          </span>
-          <span
-            className={this.state.pageType === 2 ? 'sel' : ''}
-            onClick={() => {
-              this.changeContent({ type: 2 })
-              const keyword = this.state.keyword
-              this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
-            }}
-          >
-            登记列表
-          </span>
+          <span className={'sel'}> + 新增登记</span>
+          <span onClick={() => Router.push('/treatment/registration/list')}>登记列表</span>
         </div>
         {this.showAddNew()}
-        {this.showNewList()}
       </div>
     )
   }
@@ -539,16 +418,12 @@ const mapStateToProps = state => {
     personnel_id: state.user.data.id,
     patients: state.patients.data,
     departments: state.departments.data,
-    triagePatients: state.triagePatients.data,
-    patient_page_info: state.triagePatients.page_info,
-    clinic_id: state.user.data.clinic_id,
-    limit: state.triagePatients.page_info.limit
+    clinic_id: state.user.data.clinic_id
   }
 }
 export default connect(mapStateToProps, {
   getPatientByCertNo,
   queryDepartmentList,
   addTriagePatientsList,
-  triagePatientsList,
   getPatientByKeyword
 })(RegistrationAddScreen)
