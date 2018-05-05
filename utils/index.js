@@ -58,8 +58,28 @@ const foreachJsonKey = (oldkey, json, fkey, tKey) => {
 }
 
 export const getAgeByBirthday = birthday => {
-  if (!birthday) return null
-  let birhYear = moment(birthday).year()
-  let currentYear = moment().year()
-  return currentYear - birhYear
+  if (!birthday) return '未知'
+  let days = moment().diff(moment(birthday), 'day')
+  if (days < 1) {
+    let hours = moment().diff(moment(birthday), 'h')
+    return `${hours}小时`
+  }
+  let months = moment().diff(moment(birthday), 'month')
+  if (months < 1) return `${days}天`
+  if (months < 12) {
+    let d = moment()
+      .add(months * -1, 'month')
+      .diff(moment(birthday), 'day')
+    if (d === 0) return `${months}月`
+    return `${months}月${d}天`
+  }
+  let years = moment().diff(moment(birthday), 'year')
+  if (years < 7) {
+    let y = moment()
+      .add(years * -1, 'year')
+      .diff(moment(birthday), 'month')
+    if (y === 0) return `${years}岁`
+    return `${years}岁${months % 12}月`
+  }
+  return `${years}岁`
 }
