@@ -14,7 +14,7 @@ const MAINFUNCTION = [
     navigateName: '/treatment/registration',
     children: [
 			{ title: '就诊人登记', navigateName: '/treatment/registration', icon: '/static/icons/patient.svg' },
-			{ title: '预约分诊', navigateName: '/treatment/triage', icon: '/static/icons/triage.svg' },
+			{ title: '预约分诊', navigateName: '/treatment/triage/triage', icon: '/static/icons/triage.svg' },
 			{ title: '医生接诊', navigateName: '/treatment/admission', icon: '/static/icons/admission.svg' },
 			{ title: '收费管理', navigateName: '/treatment/charge', icon: '/static/icons/charge.svg' },
 			{ title: '门诊发药', navigateName: '/treatment/drugdelivery', icon: '/static/icons/drugdelivery.svg' },
