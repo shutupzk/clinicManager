@@ -26,7 +26,6 @@ export {
   TriageScreen,
   AddReservation,
   AddmisionScreen,
-  ChargeDetails,
   AppointmentListScreen,
   AppointmentAddScreen,
   TriageRecordScreen,
