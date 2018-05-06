@@ -56,7 +56,6 @@ export const triagePatientsList = ({
       offset,
       limit
     })
-    console.log(data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     // let json = {}
