@@ -4,7 +4,6 @@ import { triagePatients, triagePatientsList, triagePatientsSelect, addTriagePati
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
-import { saveTriagePatientId, clinic_triage_patient_id } from './regitration_list_detail_patient'
 import {
   schedules,
   queryScheduleDepartments,
@@ -19,7 +18,7 @@ import {
 } from './schedules'
 
 // keys
-export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, clinic_triage_patient_id }
+export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules }
 
 // actions
 export {
@@ -50,6 +49,5 @@ export {
   deleteOneUnOpenScheduleByID,
   stopScheduleByID,
   querySchedules,
-  queryAppointmentsByDate,
-  saveTriagePatientId
+  queryAppointmentsByDate
 }

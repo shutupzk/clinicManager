@@ -10,6 +10,9 @@ import AlreadyChargedScreen from './screens/charge/alreadyCharged_screen'
 import RefundedScreen from './screens/charge/refunded_screen'
 import OrderManagementScreen from './screens/charge/orderManagement_screen'
 import TollScreen from './screens/charge/toll_screen'
+import PendingDrugScreen from './screens/drugdelivery/pending_drug_screen'
+import DrugHasBeenIssuedScreen from './screens/drugdelivery/drug_hasbeen_issued_screen'
+import DrugHasBeenWithdrawnScreen from './screens/drugdelivery/drug_hasbeen_withdrawn_screen'
 
 export {
   RegistrationAddScreen,
@@ -23,5 +26,8 @@ export {
   AlreadyChargedScreen,
   RefundedScreen,
   OrderManagementScreen,
-  TollScreen
+  TollScreen,
+  PendingDrugScreen,
+  DrugHasBeenIssuedScreen,
+  DrugHasBeenWithdrawnScreen
 }

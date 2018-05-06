@@ -45,6 +45,13 @@ class ListDetailScreen extends Component {
     Router.push('/treatment/registration')
   }
   componentWillMount () {
+    const {clinic_triage_patient_id, triagePatients} = this.props
+    for (let item of triagePatients) {
+      if (item.clinic_triage_patient_id === clinic_triage_patient_id) {
+        this.setState({patientInfo: item})
+        break
+      }
+    }
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id })
     this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
@@ -145,6 +152,7 @@ class ListDetailScreen extends Component {
   showBaseInfo () {
     if (this.state.pageType !== 1) return null
     let patient = this.state.patientInfo
+    console.log('patient========', patient)
     const { cities, counties } = this.state
     let departments = this.queryDepartment()
     const searchView = this.state.searchView
@@ -353,7 +361,7 @@ class ListDetailScreen extends Component {
       </div>
     )
   }
-// 会员信息
+  // 会员信息
   showMemberInfo () {
     return (
       <div className={'detailBox'}>
@@ -491,6 +499,9 @@ class ListDetailScreen extends Component {
           <span className={this.state.pageType === 6 ? 'sel' : ''} onClick={() => this.changeContent({ type: 6 })}>
 						登记预约
 					</span>
+          <span onClick={() => Router.push('/treatment/registration/list')}>
+						返回列表
+					</span>
         </div>
         {this.state.pageType === 1 ? this.showBaseInfo() : ''}
         {this.state.pageType === 2 ? this.showMemberInfo() : ''}
@@ -510,7 +521,8 @@ const mapStateToProps = state => {
     triagePatients: state.triagePatients.data,
     patient_page_info: state.triagePatients.page_info,
     clinic_id: state.user.data.clinic_id,
-    limit: state.triagePatients.page_info.limit
+    limit: state.triagePatients.page_info.limit,
+    clinic_triage_patient_id: state.triagePatients.selectId
   }
 }
 export default connect(mapStateToProps, {

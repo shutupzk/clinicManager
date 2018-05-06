@@ -9,7 +9,7 @@ import {
   addTriagePatientsList,
   triagePatientsList,
   getPatientByKeyword,
-  saveTriagePatientId
+  triagePatientsSelect
 } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
@@ -123,7 +123,7 @@ class RegistrationListScreen extends Component {
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => {
-                      this.seeDetail({clinic_triage_patient_id:patient.clinic_triage_patient_id})
+                      this.seeDetail({clinic_triage_patient_id: patient.clinic_triage_patient_id})
                     }}>查看详情 >></span>
                   </div>
                 </li>
@@ -154,8 +154,8 @@ class RegistrationListScreen extends Component {
   }
   // 查看详情
   seeDetail({clinic_triage_patient_id}) {
-    const {saveTriagePatientId} = this.props
-    saveTriagePatientId({clinic_triage_patient_id})
+    const {triagePatientsSelect} = this.props
+    triagePatientsSelect({clinic_triage_patient_id})
     Router.push('/treatment/registration/list_detail')
   }
 
@@ -196,5 +196,5 @@ export default connect(mapStateToProps, {
   addTriagePatientsList,
   triagePatientsList,
   getPatientByKeyword,
-  saveTriagePatientId
+  triagePatientsSelect
 })(RegistrationListScreen)
