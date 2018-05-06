@@ -281,10 +281,10 @@ class AppointmentListScreen extends Component {
                           <td key={index}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
                               <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex', borderRight: '1px solid #c7c7cc' }}>
-                                <span style={{ color: '#000000', fontWeight: 'bold' }}>{item.am}</span>
+                                <span style={{ color: item.am > 0 ? 'rgba(42,205,200,1' : '#000000', fontWeight: 'bold' }}>{item.am}</span>
                               </div>
                               <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-                                <span style={{ color: '#000000', fontWeight: 'bold' }}>{item.pm}</span>
+                                <span style={{ color: item.pm > 0 ? 'rgba(42,205,200,1' : '#000000', fontWeight: 'bold' }}>{item.pm}</span>
                               </div>
                             </div>
                           </td>
@@ -300,10 +300,10 @@ class AppointmentListScreen extends Component {
                               <td key={index}>
                                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
                                   <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex', borderRight: '1px solid #c7c7cc' }}>
-                                    <span>{item.am}</span>
+                                    <span style={{ color: item.am > 0 ? 'rgba(42,205,200,1' : '#000000' }}>{item.am}</span>
                                   </div>
                                   <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
-                                    <span>{item.pm}</span>
+                                    <span style={{ color: item.pm > 0 ? 'rgba(42,205,200,1' : '#000000' }}>{item.pm}</span>
                                   </div>
                                 </div>
                               </td>
