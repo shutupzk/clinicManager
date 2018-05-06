@@ -68,10 +68,12 @@ class AddmisionScreen extends Component {
     let { status, clinic_triage_patient_id } = patient
     triagePatientsSelect({ clinic_triage_patient_id })
     if (status === 20) {
-      let error = await triageReception({ clinic_triage_patient_id, recept_personnel_id: triage_personnel_id })
-      if (error) {
-        return this.refs.myAlert.alert('接诊失败', error)
-      }
+      this.refs.myConfirm.confirm('确定接诊？', '', 'Success', async () => {
+        let error = await triageReception({ clinic_triage_patient_id, recept_personnel_id: triage_personnel_id })
+        if (error) {
+          return this.refs.myAlert.alert('接诊失败', error)
+        }
+      })
     }
     Router.push('/treatment/reception')
   }
@@ -79,6 +81,17 @@ class AddmisionScreen extends Component {
   receptionOperation(clinic_triage_patient_id) {
     triagePatientsSelect({ clinic_triage_patient_id })
     Router.push('/treatment/reception')
+  }
+
+  formatWaittingTime(time) {
+    if (time > 1440) {
+      return `${Math.floor(time / 1440)}天${Math.floor((time % 1440) / 60)}时${time % 60}分`
+    }
+    if (time > 60) {
+      return `${Math.floor(time / 60)}时${time % 60}分`
+    }
+    if (time <= 0) return `小于1分钟`
+    return time
   }
 
   // 显示待接诊列表
@@ -90,9 +103,9 @@ class AddmisionScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {triagePatients.map((patient, index) => {
-              let updateTime = patient.complete_time || patient.reception_time || patient.register_time
+              let updateTime = patient.complete_time || patient.reception_time || patient.updated_time || patient.register_time
               // let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
-              let waittingTime = Math.floor(moment().diff(moment(updateTime)) / 60000)
+              let waittingTime = this.formatWaittingTime(Math.floor(moment().diff(moment(updateTime)) / 60000))
 
               let treat_status = '待接诊'
               let statusColor = '#F24A01'
@@ -131,7 +144,7 @@ class AddmisionScreen extends Component {
                       <a>接诊医生：</a>
                       <a>
                         {patient.doctor_name}
-                        {patient.status === 20 ? ` \\ 已等候${waittingTime}分钟` : ''}
+                        {patient.status === 20 ? ` \\ 已等候${waittingTime}` : ''}
                       </a>
                     </span>
                     <span>
@@ -258,6 +271,7 @@ class AddmisionScreen extends Component {
         </div>
         {this.showTriageList()}
         <Confirm ref='myAlert' isAlert />
+        <Confirm ref='myConfirm' />
       </div>
     )
   }
