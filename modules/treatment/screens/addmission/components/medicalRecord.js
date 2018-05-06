@@ -12,6 +12,7 @@ class PrescriptionScreen extends Component {
       family_medical_history: '',
       allergic_history: '',
       allergic_reaction: '',
+      body_examination: '',
       immunizations: '',
       diagnosis: '',
       cure_suggestion: '',
@@ -20,11 +21,41 @@ class PrescriptionScreen extends Component {
     }
   }
 
+  save() {
+    console.log('params', this.state)
+  }
+
+  cancel() {
+    this.setState({
+      morbidity_date: '',
+      chief_complaint: '',
+      history_of_present_illness: '',
+      history_of_past_illness: '',
+      family_medical_history: '',
+      allergic_history: '',
+      allergic_reaction: '',
+      body_examination: '',
+      immunizations: '',
+      diagnosis: '',
+      cure_suggestion: '',
+      remark: '',
+      files: ''
+    })
+  }
+
   render() {
+    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
-          <input type='date' />
+          <input
+            type='date'
+            placeholder='开始日期'
+            value={morbidity_date}
+            onChange={e => {
+              this.setState({ morbidity_date: e.target.value })
+            }}
+          />
           <button>选择模板</button>
           <button>复制病历</button>
         </div>
@@ -35,36 +66,79 @@ class PrescriptionScreen extends Component {
                 <label>
                   主述<b style={{ color: 'red' }}> *</b>
                 </label>
-                <textarea />
+                <textarea
+                  value={chief_complaint}
+                  onChange={e => {
+                    this.setState({ chief_complaint: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>现病史</label>
-                <textarea />
+                <textarea
+                  value={history_of_present_illness}
+                  onChange={e => {
+                    this.setState({ history_of_present_illness: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>既往史</label>
-                <textarea />
+                <textarea
+                  value={history_of_past_illness}
+                  onChange={e => {
+                    this.setState({ history_of_past_illness: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>家族史</label>
-                <textarea />
+                <textarea
+                  value={family_medical_history}
+                  onChange={e => {
+                    this.setState({ family_medical_history: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>过敏史</label>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={allergic_history}
+                  onChange={e => {
+                    this.setState({ allergic_history: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>过敏反应</label>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={allergic_reaction}
+                  onChange={e => {
+                    this.setState({ allergic_reaction: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>疫苗接种史</label>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={immunizations}
+                  onChange={e => {
+                    this.setState({ immunizations: e.target.value })
+                  }}
+                />
               </li>
               <li style={{ height: '58px' }} />
               <li>
                 <label>体格检查</label>
-                <textarea />
+                <textarea
+                  value={body_examination}
+                  onChange={e => {
+                    this.setState({ body_examination: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>上传文件</label>
@@ -76,24 +150,53 @@ class PrescriptionScreen extends Component {
               </li>
               <li>
                 <label>初步诊断</label>
-                <textarea />
+                <textarea
+                  value={diagnosis}
+                  onChange={e => {
+                    this.setState({ diagnosis: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <a className={'chooseTemp'}>选择诊断模板</a>
               </li>
               <li>
                 <label>治疗意见</label>
-                <textarea />
+                <textarea
+                  value={cure_suggestion}
+                  onChange={e => {
+                    this.setState({ cure_suggestion: e.target.value })
+                  }}
+                />
               </li>
               <li>
                 <label>备注</label>
-                <textarea />
+                <textarea
+                  value={remark}
+                  onChange={e => {
+                    this.setState({ remark: e.target.value })
+                  }}
+                />
               </li>
             </ul>
             <div className={'formListBottom'}>
               <div className={'bottomCenter'}>
-                <button className={'cancel'}>取消</button>
-                <button className={'save'}>保存</button>
+                <button
+                  className={'cancel'}
+                  onClick={() => {
+                    this.cancel()
+                  }}
+                >
+                  取消
+                </button>
+                <button
+                  className={'save'}
+                  onClick={() => {
+                    this.save()
+                  }}
+                >
+                  保存
+                </button>
               </div>
               <div className={'bottomRight'}>
                 <button>存为模板</button>
@@ -106,7 +209,7 @@ class PrescriptionScreen extends Component {
           .filterBox {
             flex-direction: column;
             // margin-top: -10px;
-            margin-bottom:50px;
+            margin-bottom: 50px;
           }
           .filterBox .boxLeft {
             border-bottom: 1px solid #d8d8d8;
@@ -144,14 +247,14 @@ class PrescriptionScreen extends Component {
           .chooseFile {
             // height: 66px;
             margin-top: 42px;
-            display:flex;
+            display: flex;
             position: relative;
           }
-          .chooseFile input{
+          .chooseFile input {
             opacity: 0;
             position: absolute;
             width: 100%;
-            height:100%;
+            height: 100%;
             margin: 0;
           }
           .chooseFile button {
