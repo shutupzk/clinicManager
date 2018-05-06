@@ -73,25 +73,27 @@ class AddmisionScreen extends Component {
         if (error) {
           return this.refs.myAlert.alert('接诊失败', error)
         }
+        Router.push('/treatment/admission/reception')
       })
+    } else {
+      Router.push('/treatment/admission/reception')
     }
-    Router.push('/treatment/reception')
   }
 
   receptionOperation(clinic_triage_patient_id) {
     triagePatientsSelect({ clinic_triage_patient_id })
-    Router.push('/treatment/reception')
+    Router.push('/treatment/admission/reception')
   }
 
   formatWaittingTime(time) {
     if (time > 1440) {
-      return `${Math.floor(time / 1440)}天${Math.floor((time % 1440) / 60)}时${time % 60}分`
+      return `${Math.floor(time / 1440)}天${Math.floor((time % 1440) / 60)}小时${time % 60}分钟`
     }
     if (time > 60) {
-      return `${Math.floor(time / 60)}时${time % 60}分`
+      return `${Math.floor(time / 60)}小时${time % 60}分钟`
     }
     if (time <= 0) return `小于1分钟`
-    return time
+    return `${time}分钟`
   }
 
   // 显示待接诊列表
@@ -112,7 +114,7 @@ class AddmisionScreen extends Component {
 
               switch (patient.status) {
                 case 40:
-                  treat_status = '已完成'
+                  treat_status = '已接诊'
                   statusColor = '#31B0B3'
                   break
                 case 30:
@@ -144,7 +146,7 @@ class AddmisionScreen extends Component {
                       <a>接诊医生：</a>
                       <a>
                         {patient.doctor_name}
-                        {patient.status === 20 ? ` \\ 已等候${waittingTime}` : ''}
+                        {patient.status === 20 ? ` \\ 已等候 ${waittingTime}` : ''}
                       </a>
                     </span>
                     <span>
@@ -260,7 +262,7 @@ class AddmisionScreen extends Component {
               this.commonQueryList({ pageType: 2 })
             }}
           >
-            今日已接诊
+            已接诊记录
           </span>
         </div>
         <div className={'filterBox'}>
