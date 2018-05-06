@@ -95,7 +95,6 @@ export const triagePatient = ({ doctor_visit_schedule_id, clinic_triage_patient_
 export const triageReception = ({ clinic_triage_patient_id, recept_personnel_id }) => async dispatch => {
   try {
     const data = await request('/triage/reception', { clinic_triage_patient_id, recept_personnel_id })
-    console.log('data ====', data)
     if (data.code === '200') {
       return null
     } else {
@@ -106,21 +105,20 @@ export const triageReception = ({ clinic_triage_patient_id, recept_personnel_id 
   }
 }
 
-export const addAppointment = ({
-  cert_no,
-  name,
-  birthday,
-  sex,
-  phone,
-  address,
-  profession,
-  remark,
-  patient_channel_id,
-  clinic_id,
-  doctor_visit_schedule_id,
-  personnel_id,
-  visit_type
-}) => async dispatch => {
+export const triageFinish = ({ clinic_triage_patient_id, recept_personnel_id }) => async dispatch => {
+  try {
+    const data = await request('/triage/complete', { clinic_triage_patient_id, recept_personnel_id })
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    return e.message
+  }
+}
+
+export const addAppointment = ({ cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id, visit_type }) => async dispatch => {
   try {
     console.log('data ====', { cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id, visit_type })
     const data = await request('/appointment/create', {

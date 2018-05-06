@@ -4,6 +4,8 @@ import MedicalRecordScreen from './components/medicalRecord'
 import PrescriptionScreen from './components/prescription'
 import TreatmentScreen from './components/treatment'
 import { getAgeByBirthday } from '../../../../utils'
+import { Confirm } from '../../../../components'
+import { triageFinish } from '../../../../ducks'
 
 class RecptionScreen extends Component {
   constructor(props) {
@@ -27,6 +29,17 @@ class RecptionScreen extends Component {
     return map[pageType] || null
   }
 
+  finishTriage() {
+    let { triage_personnel_id, clinic_triage_patient_id, triageFinish } = this.props
+    this.refs.myConfirm.confirm('确定完成接诊？', '', 'Success', async () => {
+      let error = await triageFinish({ clinic_triage_patient_id, recept_personnel_id: triage_personnel_id })
+      if (error) {
+        return this.refs.myAlert.alert('结束失败', error)
+      }
+      Router.push('/treatment/admission')
+    })
+  }
+
   render() {
     let { triagePatients, clinic_triage_patient_id } = this.props
     let triagePatient = {}
@@ -36,9 +49,7 @@ class RecptionScreen extends Component {
     return (
       <div className={'contentBox'}>
         <div className='filterBox'>
-          <div>
-            就诊人姓名：{triagePatient.patient_name}
-          </div>
+          <div>就诊人姓名：{triagePatient.patient_name}</div>
           <div>
             <a>性别：</a>
             <a>{triagePatient.sex === 1 ? '男' : '女'}</a>
@@ -56,7 +67,7 @@ class RecptionScreen extends Component {
             <a>{triagePatient.phone}</a>
           </div>
           <div className={'boxRight'}>
-            <button>
+            <button onClick={() => this.finishTriage()}>
               <a>结束就诊</a>
             </button>
             <button>
@@ -123,28 +134,30 @@ class RecptionScreen extends Component {
           </span>
         </div>
         {this.showDataList()}
+        <Confirm ref='myAlert' isAlert />
+        <Confirm ref='myConfirm' />
         <style jsx>
           {`
-            .filterBox{
+            .filterBox {
               margin: 20px 0 0 65px;
               display: flex;
               line-height: 60px;
               font-size: 14px;
               font-family: MicrosoftYaHei;
-              color: rgba(102,102,102,1);
+              color: rgba(102, 102, 102, 1);
             }
-            .filterBox>div{
-              flex:1;
-              text-align:center;
+            .filterBox > div {
+              flex: 1;
+              text-align: center;
             }
-            .filterBox>div:last-child{
-              flex:2;
-              text-align:center;
+            .filterBox > div:last-child {
+              flex: 2;
+              text-align: center;
             }
-            .filterBox>div:last-child>button{
-              float:left;
-              margin-left:30px;
-              margin-right:0;
+            .filterBox > div:last-child > button {
+              float: left;
+              margin-left: 30px;
+              margin-right: 0;
             }
           `}
         </style>
@@ -156,8 +169,9 @@ class RecptionScreen extends Component {
 const mapStateToProps = state => {
   return {
     triagePatients: state.triagePatients.data,
-    clinic_triage_patient_id: state.triagePatients.selectId
+    clinic_triage_patient_id: state.triagePatients.selectId,
+    triage_personnel_id: state.user.data.id
   }
 }
 
-export default connect(mapStateToProps, {})(RecptionScreen)
+export default connect(mapStateToProps, { triageFinish })(RecptionScreen)

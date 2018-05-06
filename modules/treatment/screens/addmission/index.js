@@ -114,7 +114,7 @@ class AddmisionScreen extends Component {
 
               switch (patient.status) {
                 case 40:
-                  treat_status = '已完成'
+                  treat_status = '已接诊'
                   statusColor = '#31B0B3'
                   break
                 case 30:
@@ -262,7 +262,7 @@ class AddmisionScreen extends Component {
               this.commonQueryList({ pageType: 2 })
             }}
           >
-            今日已接诊
+            已接诊记录
           </span>
         </div>
         <div className={'filterBox'}>
