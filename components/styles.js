@@ -760,13 +760,13 @@ export function styles() {
 					cursor: pointer;
 				}
 				.healthFile_menu {
-					width: 667px;
+					width: 720px;
 					margin: 20px auto 20px auto;
 					height: 31px;
 				}
 				.healthFile_menu span {
 					float: left;
-					width: 220px;
+					width: 238px;
 					height: 30px;
 					text-align: center;
 					line-height: 30px;
@@ -774,7 +774,7 @@ export function styles() {
 					cursor: pointer;
 				}
 				.progress {
-					width: 667px;
+					width: 720px;
 					height: 15px;
 					margin: 10px auto;
 					border: 1px solid #d8d8d8;

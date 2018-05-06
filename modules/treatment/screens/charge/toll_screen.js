@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 // import { theme } from '../../../components'
 // import { queryBaseApis, selectBaseApi, removeBaseApi } from '../../../ducks'
 
-class ChargeDetails extends Component {
+class TollScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -240,4 +240,4 @@ class ChargeDetails extends Component {
     )
   }
 }
-export default connect(null)(ChargeDetails)
+export default connect(null)(TollScreen)
