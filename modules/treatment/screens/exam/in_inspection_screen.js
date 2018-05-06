@@ -5,7 +5,7 @@ import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 
-class DrugHasBeenIssuedScreen extends Component {
+class InInspectionScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -81,7 +81,7 @@ class DrugHasBeenIssuedScreen extends Component {
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#F24A01', border: '1px solid #F24A01' }}>已发药</span>
+                    <span style={{ color: '#F24A01', border: '1px solid #F24A01' }}>检查中</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -98,7 +98,8 @@ class DrugHasBeenIssuedScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>查看已发药</span>
+                    <span>检查中（1）</span>
+                    <span>已检查（2）</span>
                   </div>
                 </li>
               )
@@ -119,12 +120,12 @@ class DrugHasBeenIssuedScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/treatment/drugdelivery')}>待发药</span>
+          <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
           <span className={'sel'}>
-						已发药
+						检查中
 					</span>
-          <span onClick={() => Router.push('/treatment/drugdelivery/hasBeenWithdrawn')}>
-						已退药
+          <span onClick={() => Router.push('/treatment/exam/checked')}>
+						已检查
 					</span>
         </div>
         <div className={'filterBox'}>
@@ -153,4 +154,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(DrugHasBeenIssuedScreen)
+export default connect(mapStateToProps, { triagePatientsList })(InInspectionScreen)

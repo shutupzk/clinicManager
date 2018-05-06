@@ -290,6 +290,7 @@ class AppointmentListScreen extends Component {
           offset={page_info.offset}
           limit={page_info.limit}
           total={page_info.total}
+          style={{marginTop: '20px'}}
           onItemClick={({ offset, limit }) => {
             this.queryAppointmentsByDate({ offset, limit })
           }}

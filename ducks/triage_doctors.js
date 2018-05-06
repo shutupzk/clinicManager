@@ -21,7 +21,7 @@ export function triageDoctors(state = initState, action = {}) {
 
 export const triageDoctorsList = ({ clinic_id, department_id, offset, limit, keyword }) => async dispatch => {
   try {
-    console.log('department_id', department_id)
+    console.log('{ clinic_id, department_id, offset, limit, keyword }=======', { clinic_id, department_id, offset, limit, keyword })
     const data = await request('/triage/personnelList', {
       clinic_id,
       department_id,

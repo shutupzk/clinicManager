@@ -1176,6 +1176,13 @@ export function styles() {
 					text-indent: 10px;
 					padding: 0;
 				}
+				.filterBox .boxLeft>input[type='date']{
+					height: 20px;
+					padding: 5px 0;
+					width: 120px;
+					text-indent: 0;
+					margin: 14px 0 0 30px;
+				}
 				.filterBox .boxLeft button {
 					float: left;
 					width: 60px;
@@ -1773,6 +1780,10 @@ export function styles() {
 					background: rgba(245, 248, 249, 1);
 					border-radius: 4px;
 					border: 1px solid #d9d9d9;
+				}
+				.formList ul li > input[type='date']{
+					height: 20px;
+					padding:10px 0;
 				}
 				.formList ul li > select {
 					margin-top: 17px;

@@ -133,6 +133,7 @@ class PendingDrugScreen extends Component {
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
             <input type='date' placeholder='选择日期' />
+            <input type='date' placeholder='选择日期' />
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>

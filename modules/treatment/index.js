@@ -1,6 +1,6 @@
 import RegistrationAddScreen from './screens/registration/registration_add_screen'
 import RegistrationListScreen from './screens/registration/registration_list_screen'
-import NewListDetails from './screens/newListDetail_screen'
+// import NewListDetails from './screens/newListDetail_screen'
 import TriageScreen from './screens/triage/triage_screen'
 import AddReservation from './screens/reservation_add_screen'
 import AddmisionScreen from './screens/addmission'
@@ -18,6 +18,9 @@ import PendingDrugScreen from './screens/drugdelivery/pending_drug_screen'
 import DrugHasBeenIssuedScreen from './screens/drugdelivery/drug_hasbeen_issued_screen'
 import DrugHasBeenWithdrawnScreen from './screens/drugdelivery/drug_hasbeen_withdrawn_screen'
 import RecptionScreen from './screens/addmission/reception_screen'
+import TobeCheckedScreen from './screens/exam/tobe_checked_screen'
+import InInspectionScreen from './screens/exam/in_inspection_screen'
+import CheckedScreen from './screens/exam/checked_screen'
 
 export {
   RegistrationAddScreen,
@@ -35,9 +38,12 @@ export {
   RefundedScreen,
   OrderManagementScreen,
   TollScreen,
-  NewListDetails,
+  // NewListDetails,
   PendingDrugScreen,
   DrugHasBeenIssuedScreen,
   DrugHasBeenWithdrawnScreen,
-  RecptionScreen
+  RecptionScreen,
+  TobeCheckedScreen,
+  InInspectionScreen,
+  CheckedScreen
 }

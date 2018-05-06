@@ -25,7 +25,7 @@ export default class PatientCard extends Component {
           <span>{patient.patient_name}</span>
           <span>{patient.sex === 0 ? '女' : '男'}</span>
           <span>{getAgeByBirthday(patient.birthday)}</span>
-          <span style={{ color: '31B0B3', border: '1px solid #31B0B3' }}>{status[patient.status]}</span>
+          <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>{status[patient.status]}</span>
         </div>
         <div className={'itemCenter'}>
           <span>
