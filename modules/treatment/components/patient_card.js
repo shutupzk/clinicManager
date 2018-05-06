@@ -41,7 +41,7 @@ export default class PatientCard extends Component {
             <a>{patient.register_personnel_name}</a>
           </span>
           <span>
-            <a>登记时间：</a>
+            <a>{patient.register_type === 1 ? '预约时间：' : '登记时间：'}</a>
             <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
           </span>
           <span style={{ color: 'rgba(153,153,153,1)' }}>
