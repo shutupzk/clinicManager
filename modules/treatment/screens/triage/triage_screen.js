@@ -60,12 +60,10 @@ class TriageScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {triagePatients.map((patient, index) => {
-              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <PatientCard
                     patient={patient}
-                    statusColor={statusColor}
                     buttons={[
                       {
                         title: '完善健康档案',
