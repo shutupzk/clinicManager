@@ -121,7 +121,9 @@ class RegistrationListScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span onClick={() => this.seeDetail()}>查看详情 >></span>
+                    <span onClick={() => {
+                      this.seeDetail()
+                    }}>查看详情 >></span>
                   </div>
                 </li>
               )
@@ -151,7 +153,7 @@ class RegistrationListScreen extends Component {
   }
   // 查看详情
   seeDetail() {
-    Router.push('/treatment/registration/newListDetail')
+    Router.push('/treatment/registration/list_detail')
   }
 
   render() {
