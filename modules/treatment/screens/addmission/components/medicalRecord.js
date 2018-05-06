@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Confirm } from '../../../../../components'
 // 病历
 class PrescriptionScreen extends Component {
   constructor(props) {
@@ -22,7 +23,12 @@ class PrescriptionScreen extends Component {
   }
 
   save() {
-    console.log('params', this.state)
+    let { chief_complaint } = this.state
+    if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
+    this.refs.myConfirm.confirm('确定提交病历？', '', 'Success', async () => {
+      console.log(this.state)
+      this.cancel()
+    })
   }
 
   cancel() {
@@ -205,6 +211,8 @@ class PrescriptionScreen extends Component {
             </div>
           </div>
         </div>
+        <Confirm ref='myAlert' isAlert />
+        <Confirm ref='myConfirm' />
         <style jsx>{`
           .filterBox {
             flex-direction: column;
@@ -220,7 +228,7 @@ class PrescriptionScreen extends Component {
           }
           .formList {
             margin: 0;
-            box-shadow:none;
+            box-shadow: none;
           }
           .formListBox {
             display: flex;
