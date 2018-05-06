@@ -60,29 +60,38 @@ class TriageRecordScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {triagePatients.map((patient, index) => {
-              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
+              let statusColor = '#F24A01'
               return (
                 <li key={index}>
                   <PatientCard
                     patient={patient}
                     statusColor={statusColor}
-                    buttons={[
-                      {
-                        title: '完善健康档案',
-                        onClick: () => {
-                          let { clinic_triage_patient_id } = patient
-                          this.showCompleteHealthFile(clinic_triage_patient_id)
-                          this.setState({ clinic_triage_patient_id })
-                        }
-                      },
-                      {
-                        title: '换诊',
-                        onClick: () => {
-                          let { clinic_triage_patient_id } = patient
-                          this.showChooseDoctor(clinic_triage_patient_id)
-                        }
-                      }
-                    ]}
+                    buttons={
+                      patient.status === 20
+                        ? [
+                          {
+                            title: '完善健康档案',
+                            onClick: () => {
+                              let { clinic_triage_patient_id } = patient
+                              this.showCompleteHealthFile(clinic_triage_patient_id)
+                              this.setState({ clinic_triage_patient_id })
+                            }
+                          },
+                          {
+                            title: '换诊',
+                            onClick: () => {
+                              let { clinic_triage_patient_id } = patient
+                              this.showChooseDoctor(clinic_triage_patient_id)
+                            }
+                          }
+                        ]
+                        : [
+                          {
+                            title: '查看详情',
+                            onClick: () => {}
+                          }
+                        ]
+                    }
                   />
                 </li>
               )

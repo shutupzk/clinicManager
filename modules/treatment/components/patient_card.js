@@ -2,6 +2,14 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../utils'
 
+const status = {
+  '10': '待分诊',
+  '20': '待接诊',
+  '30': '接诊中',
+  '40': '已接诊',
+  '100': '已取消'
+}
+
 export default class PatientCard extends Component {
   constructor(props) {
     super(props)
@@ -17,7 +25,7 @@ export default class PatientCard extends Component {
           <span>{patient.patient_name}</span>
           <span>{patient.sex === 0 ? '女' : '男'}</span>
           <span>{getAgeByBirthday(patient.birthday)}</span>
-          <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
+          <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{status[patient.status]}</span>
         </div>
         <div className={'itemCenter'}>
           <span>
