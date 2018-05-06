@@ -130,6 +130,7 @@ class PrescriptionScreen extends Component {
             border-radius: 4px ; 
             resize:none;
             margin-top: 10px;
+            border: 1px solid #d8d8d8;
           }
           .formListBox input{
             width:479px;
