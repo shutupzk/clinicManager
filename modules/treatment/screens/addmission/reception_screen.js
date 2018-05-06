@@ -36,7 +36,6 @@ class RecptionScreen extends Component {
     return (
       <div className={'contentBox'}>
         <div className='filterBox'>
-<<<<<<< HEAD
           <div>
             就诊人姓名：{triagePatient.patient_name}
           </div>
@@ -63,38 +62,9 @@ class RecptionScreen extends Component {
             <button>
               <a>费用预览</a>
             </button>
-=======
-          <div className='boxLeft'>
-            <span>
-              <a>就诊人姓名：</a>
-              <a>{triagePatient.patient_name}</a>
-            </span>
-            <span>
-              <a>性别：</a>
-              <a>{triagePatient.sex === 1 ? '男' : '女'}</a>
-            </span>
-            <span>
-              <a>年龄：</a>
-              <a>{getAgeByBirthday(triagePatient.birthday)}</a>
-            </span>
-            <span>
-              <a>门诊ID：</a>
-              <a>{triagePatient.cert_no}</a>
-            </span>
-            <span>
-              <a>手机号：</a>
-              <a>{triagePatient.phone}</a>
-            </span>
-            <span>
-              <a>结束就诊</a>
-            </span>
-            <span>
-              <a>费用预览</a>
-            </span>
->>>>>>> f3fc759fd7ac3b3b3455ae63fdfc7f804d3adbf1
           </div>
         </div>
-        <div className={'filterBox'}>
+        <div className={'childTopBar'}>
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
@@ -157,9 +127,6 @@ class RecptionScreen extends Component {
           {`
             .filterBox{
               margin: 20px 0 0 65px;
-              display: -webkit-box;
-              display: -webkit-flex;
-              display: -ms-flexbox;
               display: flex;
               line-height: 60px;
               font-size: 14px;
