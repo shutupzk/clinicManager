@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Router from 'next/router'
 import MedicalRecordScreen from './components/medicalRecord'
 import PrescriptionScreen from './components/prescription'
 import TreatmentScreen from './components/treatment'

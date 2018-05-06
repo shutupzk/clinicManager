@@ -41,7 +41,6 @@ export const triagePatientsList = ({ clinic_id, status_start, status_end, keywor
       offset,
       limit
     })
-    console.log(data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     // let json = {}
