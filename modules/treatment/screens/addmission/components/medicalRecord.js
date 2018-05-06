@@ -117,6 +117,7 @@ class PrescriptionScreen extends Component {
           }
           .formList {
             margin: 0;
+            box-shadow:none;
           }
           .formListBox {
             display: flex;
