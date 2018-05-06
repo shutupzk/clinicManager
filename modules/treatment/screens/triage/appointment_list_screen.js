@@ -396,7 +396,7 @@ class AppointmentListScreen extends Component {
 
   // 新增预约
   addNewReservation() {
-    Router.push('/treatment/reservation_add')
+    Router.push('/treatment/triage/appointment/create')
   }
 
   showExtraFilter() {
