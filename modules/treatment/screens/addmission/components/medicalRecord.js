@@ -21,7 +21,6 @@ class PrescriptionScreen extends Component {
   }
 
   render() {
-    let { morbidity_date } = this.state
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
@@ -33,7 +32,9 @@ class PrescriptionScreen extends Component {
           <div className={'formListBox'} style={{}}>
             <ul>
               <li>
-                <label>主述<b style={{ color: 'red' }}> *</b></label>
+                <label>
+                  主述<b style={{ color: 'red' }}> *</b>
+                </label>
                 <textarea />
               </li>
               <li>
@@ -60,7 +61,7 @@ class PrescriptionScreen extends Component {
                 <label>疫苗接种史</label>
                 <input type='text' />
               </li>
-              <li style={{height: '58px'}} />
+              <li style={{ height: '58px' }} />
               <li>
                 <label>体格检查</label>
                 <textarea />
@@ -101,118 +102,118 @@ class PrescriptionScreen extends Component {
           </div>
         </div>
         <style jsx>{`
-          .filterBox{
+          .filterBox {
             flex-direction: column;
             margin-top: -10px;
-            margin-bottom:50px;
+            margin-bottom: 50px;
           }
-          .filterBox .boxLeft{
-            border-bottom:1px solid #d8d8d8;
+          .filterBox .boxLeft {
+            border-bottom: 1px solid #d8d8d8;
           }
-          .filterBox .boxLeft button{
+          .filterBox .boxLeft button {
             width: auto;
-            margin-left:15px;
+            margin-left: 15px;
           }
-          .formList{
+          .formList {
             margin: 0;
           }
-          .formListBox{
+          .formListBox {
             display: flex;
             flex-direction: column;
           }
-          .formList ul li{
-            margin-top:20px;
+          .formList ul li {
+            margin-top: 20px;
           }
-          .formListBox textarea{
-            width:479px;
-            height:60px; 
-            background:rgba(245,248,249,1);
-            border-radius: 4px ; 
-            resize:none;
+          .formListBox textarea {
+            width: 479px;
+            height: 60px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            resize: none;
             margin-top: 10px;
             border: 1px solid #d8d8d8;
           }
-          .formListBox input{
-            width:479px;
-            height:30px; 
-            background:rgba(245,248,249,1);
-            border-radius: 4px ; 
+          .formListBox input {
+            width: 479px;
+            height: 30px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
             margin-top: 10px;
           }
-          .chooseFile{
+          .chooseFile {
             // height: 66px;
             margin-top: 42px;
-            display:flex;
+            display: flex;
           }
-          .chooseFile button{
+          .chooseFile button {
             height: 30px;
             width: 200px;
             border: 1px dashed #d9d9d9;
             border-radius: 4px;
             background: transparent;
             cursor: pointer;
-            color: rgba(102,102,102,1);
+            color: rgba(102, 102, 102, 1);
           }
-          .chooseFile a{
-            width:145px;
-            height:34px; 
-            font-size:12px;
-            font-family:PingFangSC-Regular;
-            color:rgba(102,102,102,1);
-            line-height:15px;
-            display:block;
+          .chooseFile a {
+            width: 145px;
+            height: 34px;
+            font-size: 12px;
+            font-family: PingFangSC-Regular;
+            color: rgba(102, 102, 102, 1);
+            line-height: 15px;
+            display: block;
           }
-          .chooseTemp{
-            font-size:14px;
-            font-family:PingFangSC-Regular;
-            color:rgba(49,176,179,1);
+          .chooseTemp {
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: rgba(49, 176, 179, 1);
             margin-top: 71px;
             cursor: pointer;
           }
-          .formListBottom{
+          .formListBottom {
             width: 1000px;
             margin: 30px auto;
           }
-          .formListBottom .bottomCenter{
+          .formListBottom .bottomCenter {
             margin: 0 auto;
             display: block;
             width: 150px;
           }
-          .formListBottom .bottomCenter button.cancel{
-            width:70px;
-            height:26px; 
-            background:rgba(167,167,167,1);
-            color:rgba(255,255,255,1);
-            border-radius: 15px ; 
-            border:none;
-            float:left;
-            cursor:pointer;
+          .formListBottom .bottomCenter button.cancel {
+            width: 70px;
+            height: 26px;
+            background: rgba(167, 167, 167, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: left;
+            cursor: pointer;
           }
-          .formListBottom .bottomCenter button.save{
-            width:70px;
-            height:26px; 
-            background:rgba(49,176,179,1);
-            color:rgba(255,255,255,1);
-            border-radius: 15px ; 
-            border:none;
-            float:right;
-            cursor:pointer;
+          .formListBottom .bottomCenter button.save {
+            width: 70px;
+            height: 26px;
+            background: rgba(49, 176, 179, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: right;
+            cursor: pointer;
           }
-          .formListBottom .bottomRight{
+          .formListBottom .bottomRight {
             float: right;
             margin-top: -23px;
           }
-          .formListBottom .bottomRight button{
-            width:70px;
-            height:26px; 
-            border-radius: 15px ; 
-            border:1px solid #2ACDC8;
-            font-size:12px;
-            font-family:MicrosoftYaHei;
-            color:rgba(49,176,179,1);
-            background:transparent;
-            margin-right:10px;
-            cursor:pointer;
+          .formListBottom .bottomRight button {
+            width: 70px;
+            height: 26px;
+            border-radius: 15px;
+            border: 1px solid #2acdc8;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: rgba(49, 176, 179, 1);
+            background: transparent;
+            margin-right: 10px;
+            cursor: pointer;
           }
         `}</style>
       </div>
