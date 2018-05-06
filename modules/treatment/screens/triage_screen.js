@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import moment from 'moment'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList } from '../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, queryAppointmentsByDate } from '../../../ducks'
 import { getAgeByBirthday } from '../../../utils'
 import { PageCard, Select } from '../../../components'
 
@@ -34,7 +34,8 @@ class TriageScreen extends Component {
       preDiagnosisRecords: {}, // 诊前预诊
       BMI: 0,
       department_id: '',
-      clinic_triage_patient_id: ''
+      clinic_triage_patient_id: '',
+      appointment_sate: {}
     }
   }
 
@@ -248,7 +249,7 @@ class TriageScreen extends Component {
     } else {
       bodySign[key] = e.value
     }
-    this.setState({bodySign})
+    this.setState({ bodySign })
   }
   // 保存体征数据
   submitBodySign() {
@@ -268,7 +269,8 @@ class TriageScreen extends Component {
           <ul>
             <li>
               <label>体重（Kg）</label>
-              <input type='number'
+              <input
+                type='number'
                 value={bodySign.weight}
                 placeholder='请填写体重'
                 onChange={e => {
@@ -276,35 +278,39 @@ class TriageScreen extends Component {
                   let bmi = ''
                   if (bodySign.height) {
                     let weight = e.target.value
-                    bmi = weight / ((bodySign.height * bodySign.height) / 10000)
-                    this.setState({BMI: bmi})
+                    bmi = weight / (bodySign.height * bodySign.height / 10000)
+                    this.setState({ BMI: bmi })
                   }
                   bodySign.bmi = bmi
-                  this.setState({bodySign})
+                  this.setState({ bodySign })
                 }}
               />
             </li>
             <li>
               <label>身高（cm）</label>
-              <input type='number'
+              <input
+                type='number'
                 value={bodySign.height}
                 placeholder='请填写升高（m）'
                 onChange={e => {
                   let bmi = ''
                   if (bodySign.weight) {
                     let height = e.target.value
-                    bmi = bodySign.weight / ((height * height) / 10000)
-                    this.setState({BMI: bmi})
+                    bmi = bodySign.weight / (height * height / 10000)
+                    this.setState({ BMI: bmi })
                   }
                   bodySign.bmi = bmi
                   this.setBodySign(1, e, 'height')
-                  this.setState({bodySign})
+                  this.setState({ bodySign })
                 }}
               />
             </li>
             <li>
               <label>BMI</label>
-              <input type='text' value={bodySign.bmi} readOnly
+              <input
+                type='text'
+                value={bodySign.bmi}
+                readOnly
                 onChange={e => {
                   this.setBodySign(1, e, 'bmi')
                 }}
@@ -312,8 +318,11 @@ class TriageScreen extends Component {
             </li>
             <li style={{ width: '25%' }}>
               <label>血型</label>
-              <div style={{display: 'block', width: '115px'}}>
-                <Select placeholder='请选择...' options={this.bloodType()} height={39}
+              <div style={{ display: 'block', width: '115px' }}>
+                <Select
+                  placeholder='请选择...'
+                  options={this.bloodType()}
+                  height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'blood_type')
                   }}
@@ -322,8 +331,11 @@ class TriageScreen extends Component {
             </li>
             <li style={{ width: '25%' }}>
               <label>RH血型</label>
-              <div style={{display: 'block', width: '115px'}}>
-                <Select placeholder='请选择...' options={this.rhBloodType()} height={39}
+              <div style={{ display: 'block', width: '115px' }}>
+                <Select
+                  placeholder='请选择...'
+                  options={this.rhBloodType()}
+                  height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'rh_blood_type')
                   }}
@@ -332,14 +344,18 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>体温（°C）</label>
-              <div style={{display: 'block', width: '115px', float: 'left', marginTop: '3px'}}>
-                <Select placeholder='请选择...' options={this.temperatureType()} height={39}
+              <div style={{ display: 'block', width: '115px', float: 'left', marginTop: '3px' }}>
+                <Select
+                  placeholder='请选择...'
+                  options={this.temperatureType()}
+                  height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'temperature_type')
                   }}
                 />
               </div>
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '200px', marginLeft: '10px' }}
                 placeholder='请填写温度数值'
                 onChange={e => {
@@ -349,7 +365,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>呼吸(次/分钟)</label>
-              <input type='number'
+              <input
+                type='number'
                 placeholder='请填写呼吸次数'
                 onChange={e => {
                   this.setBodySign(1, e, 'breathe')
@@ -358,7 +375,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>脉搏(次/分钟)</label>
-              <input type='number'
+              <input
+                type='number'
                 placeholder='请填写脉搏次数'
                 onChange={e => {
                   this.setBodySign(1, e, 'pulse')
@@ -367,14 +385,16 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>血压(mmHg)</label>
-              <input type='number'
+              <input
+                type='number'
                 style={{ width: '140px' }}
                 placeholder='请填写血压收缩压'
                 onChange={e => {
                   this.setBodySign(1, e, 'systolic_blood_pressure')
                 }}
               />
-              <input type='number'
+              <input
+                type='number'
                 style={{ width: '140px', marginLeft: '10px' }}
                 placeholder='请填写血压舒张压'
                 onChange={e => {
@@ -385,7 +405,8 @@ class TriageScreen extends Component {
             <li>
               <label>血糖浓度(mmol/I)</label>
               {/* //时间控件 */}
-              <input type='datetime-local'
+              <input
+                type='datetime-local'
                 style={{ width: '95px', float: 'left' }}
                 placeholder='请填写血糖时间'
                 onChange={e => {
@@ -396,14 +417,17 @@ class TriageScreen extends Component {
                   console.log('血糖时间  ======', e.target.value)
                 }}
               />
-              <div style={{display: 'block', width: '105px', float: 'left', marginTop: '3px', marginLeft: '10px'}}>
-                <Select placeholder='请选择...' options={this.bloodSugarType()}
+              <div style={{ display: 'block', width: '105px', float: 'left', marginTop: '3px', marginLeft: '10px' }}>
+                <Select
+                  placeholder='请选择...'
+                  options={this.bloodSugarType()}
                   onChange={e => {
                     this.setBodySign(2, e, 'diastolic_blood_pressure')
                   }}
                 />
               </div>
-              <input type='text'
+              <input
+                type='text'
                 placeholder='请填写血糖浓度'
                 style={{ width: '105px', float: 'left', marginLeft: '10px' }}
                 onChange={e => {
@@ -413,7 +437,9 @@ class TriageScreen extends Component {
             </li>
             <li style={{ width: '25%' }}>
               <label>左眼视力</label>
-              <input type='text' style={{ width: '130px' }}
+              <input
+                type='text'
+                style={{ width: '130px' }}
                 placeholder='请填写左眼视力'
                 onChange={e => {
                   this.setBodySign(1, e, 'left_vision')
@@ -422,7 +448,9 @@ class TriageScreen extends Component {
             </li>
             <li style={{ width: '25%' }}>
               <label>右眼视力</label>
-              <input type='text' style={{ width: '130px' }}
+              <input
+                type='text'
+                style={{ width: '130px' }}
                 placeholder='请填写右眼视力'
                 onChange={e => {
                   this.setBodySign(1, e, 'right_vision')
@@ -431,7 +459,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>氧饱和度(%)</label>
-              <input type='text'
+              <input
+                type='text'
                 placeholder='请填写氧饱和度'
                 onChange={e => {
                   this.setBodySign(1, e, 'oxygen_saturation')
@@ -440,8 +469,11 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>疼痛评分（1-10分）</label>
-              <div style={{display: 'block', width: '326px', float: 'left', marginTop: '3px'}}>
-                <Select placeholder='请选择...' options={this.painScore()} height={39}
+              <div style={{ display: 'block', width: '326px', float: 'left', marginTop: '3px' }}>
+                <Select
+                  placeholder='请选择...'
+                  options={this.painScore()}
+                  height={39}
                   onChange={e => {
                     this.setBodySign(2, e, 'pain_score')
                   }}
@@ -450,7 +482,7 @@ class TriageScreen extends Component {
             </li>
           </ul>
         </div>
-        <div className={'bottomBtn'} style={{width: '300px'}}>
+        <div className={'bottomBtn'} style={{ width: '300px' }}>
           <button className='addBtn' onClick={() => this.submitBodySign()}>
             保存
           </button>
@@ -465,7 +497,7 @@ class TriageScreen extends Component {
   setPreMedicalRecords(e, key) {
     const { preMedicalRecords } = this.state
     preMedicalRecords[key] = e.target.value
-    this.setState({preMedicalRecords})
+    this.setState({ preMedicalRecords })
   }
   // 保存诊前病历数据
   submitPreMedicalRecords() {
@@ -474,7 +506,7 @@ class TriageScreen extends Component {
   }
   // 显示诊前病历
   showPreMedicalRecords() {
-    let {preMedicalRecords} = this.state
+    let { preMedicalRecords } = this.state
     console.log('preMedicalRecords======', preMedicalRecords)
     return (
       <div>
@@ -485,9 +517,10 @@ class TriageScreen extends Component {
           <ul>
             <li>
               <label>过敏史</label>
-              <label
-                style={{ width: '150px', lineHeight: '30px', marginTop: '5px' }}>
-                <input type='radio' name='allergy'
+              <label style={{ width: '150px', lineHeight: '30px', marginTop: '5px' }}>
+                <input
+                  type='radio'
+                  name='allergy'
                   style={{ width: 'auto', height: 'auto' }}
                   value={!false}
                   onChange={e => {
@@ -496,9 +529,10 @@ class TriageScreen extends Component {
                   }}
                 />是
               </label>
-              <label
-                style={{ width: '150px', lineHeight: '30px', marginTop: '5px' }}>
-                <input type='radio' name='allergy'
+              <label style={{ width: '150px', lineHeight: '30px', marginTop: '5px' }}>
+                <input
+                  type='radio'
+                  name='allergy'
                   style={{ width: 'auto', height: 'auto' }}
                   value={false}
                   onChange={e => {
@@ -506,7 +540,8 @@ class TriageScreen extends Component {
                   }}
                 />否
               </label>
-              <input type='text'
+              <input
+                type='text'
                 placeholder={'对什么过敏'}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'allergic_history')
@@ -545,49 +580,56 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>月经史</label>
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '170px' }}
                 placeholder='月经初潮年龄'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menarche_age')
                 }}
               />
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '120px', marginLeft: '15px' }}
                 placeholder='月经经期开始时间'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_period_start_day')
                 }}
               />
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '120px', marginLeft: '5px' }}
                 placeholder='月经经期结束时间'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_period_end_day')
                 }}
               />
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '120px', marginLeft: '15px', marginTop: '10px' }}
                 placeholder='月经周期开始时间'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
                 }}
               />
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '120px', marginLeft: '5px', marginTop: '10px' }}
                 placeholder='月经周期结束时间'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
                 }}
               />
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '170px', marginTop: '10px' }}
                 placeholder='末次月经时间'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_last_day')
                 }}
               />
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '170px', marginLeft: '15px', marginTop: '10px' }}
                 placeholder='孕周'
                 onChange={e => {
@@ -597,7 +639,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>生育史</label>
-              <input type='text'
+              <input
+                type='text'
                 style={{ width: '661px' }}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'childbearing_history')
@@ -606,7 +649,7 @@ class TriageScreen extends Component {
             </li>
           </ul>
         </div>
-        <div className={'bottomBtn'} style={{width: '300px'}}>
+        <div className={'bottomBtn'} style={{ width: '300px' }}>
           <button className='addBtn' onClick={() => this.submitPreMedicalRecords()}>
             保存
           </button>
@@ -621,7 +664,7 @@ class TriageScreen extends Component {
   setPreDiagnosisRecords(e, key) {
     const { preDiagnosisRecords } = this.state
     preDiagnosisRecords[key] = e.target.value
-    this.setState({preDiagnosisRecords})
+    this.setState({ preDiagnosisRecords })
   }
   // 保存诊前预诊
   submitPreDiagnosisRecords() {
@@ -641,7 +684,8 @@ class TriageScreen extends Component {
               <label>
                 主诉<b style={{ color: 'red' }}>*</b>
               </label>
-              <textarea style={{ height: '70px' }}
+              <textarea
+                style={{ height: '70px' }}
                 placeholder='请填写主述'
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'chief_complaint')
@@ -650,7 +694,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>现病史</label>
-              <textarea style={{ height: '70px' }}
+              <textarea
+                style={{ height: '70px' }}
                 placeholder='请填写现病史'
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'history_of_rresent_illness')
@@ -659,7 +704,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>既往史</label>
-              <textarea style={{ height: '70px' }}
+              <textarea
+                style={{ height: '70px' }}
                 placeholder='请填写既往史'
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'history_of_past_illness')
@@ -668,7 +714,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>体格检查</label>
-              <textarea style={{ height: '70px' }}
+              <textarea
+                style={{ height: '70px' }}
                 placeholder='请填写体格检查'
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'physical_examination')
@@ -677,7 +724,8 @@ class TriageScreen extends Component {
             </li>
             <li>
               <label>备注</label>
-              <textarea style={{ height: '70px' }}
+              <textarea
+                style={{ height: '70px' }}
                 placeholder='请填写备注'
                 onChange={e => {
                   setPreDiagnosisRecords(e, 'remark')
@@ -686,9 +734,8 @@ class TriageScreen extends Component {
             </li>
           </ul>
         </div>
-        <div className={'bottomBtn'} style={{width: '300px'}}>
-          <button className='addBtn'
-            onClick={() => this.submitPreDiagnosisRecords()}>
+        <div className={'bottomBtn'} style={{ width: '300px' }}>
+          <button className='addBtn' onClick={() => this.submitPreDiagnosisRecords()}>
             保存
           </button>
           <button className='addBtn' onClick={() => {}}>
@@ -726,14 +773,14 @@ class TriageScreen extends Component {
     )
   }
   // 选择医生
-  showChooseDoctor({department_id, keyword, offset = 0, limit = 6}) {
+  showChooseDoctor({ department_id, keyword, offset = 0, limit = 6 }) {
     const { triageDoctorsList, clinic_id } = this.props
     if (department_id === '-1') {
       department_id = null
     } else {
       department_id = department_id || this.state.department_id
     }
-    const {clinic_triage_patient_id} = this.state
+    const { clinic_triage_patient_id } = this.state
     triageDoctorsList({ clinic_id, department_id, offset, limit, keyword })
     this.setState({ alertType: 2, clinic_triage_patient_id })
   }
@@ -779,14 +826,14 @@ class TriageScreen extends Component {
                 <option>全科门诊</option>
                 <option>中医科</option>
               </select> */}
-              <div style={{width: '200px', float: 'left', margin: '30px 0 0 15px'}}>
+              <div style={{ width: '200px', float: 'left', margin: '30px 0 0 15px' }}>
                 <Select
                   placeholder='请选择科室'
                   options={this.getDepartmentOptions()}
                   onChange={e => {
                     // alert(0)
                     let id = e.value
-                    this.setState({department_id: id})
+                    this.setState({ department_id: id })
                     this.showChooseDoctor({ department_id: id })
                   }}
                 />
@@ -833,7 +880,7 @@ class TriageScreen extends Component {
             offset={doctor_page_info.offset}
             limit={doctor_page_info.limit}
             total={doctor_page_info.total}
-            style={{width: '910px', float: 'none', display: 'table', margin: '40px auto'}}
+            style={{ width: '910px', float: 'none', display: 'table', margin: '40px auto' }}
             onItemClick={({ offset, limit }) => {
               this.commonQueryList({ offset, limit })
             }}
@@ -904,9 +951,11 @@ class TriageScreen extends Component {
                         let preDiagnosisRecords = {}
                         // 设置选择的病人ID
                         let clinic_triage_patient_id = patient.id
-                        this.setState({clinic_triage_patient_id, bodySign, preMedicalRecords, preDiagnosisRecords})
+                        this.setState({ clinic_triage_patient_id, bodySign, preMedicalRecords, preDiagnosisRecords })
                       }}
-                    >完善健康档案</span>
+                    >
+                      完善健康档案
+                    </span>
                     <span
                       onClick={() => {
                         let clinic_triage_patient_id = patient.id
@@ -914,7 +963,8 @@ class TriageScreen extends Component {
                         this.showChooseDoctor({})
                       }}
                     >
-                      {pageType === 1 ? '选择医生' : '换诊'}</span>
+                      {pageType === 1 ? '选择医生' : '换诊'}
+                    </span>
                   </div>
                 </li>
               )
@@ -938,17 +988,140 @@ class TriageScreen extends Component {
   changeShowType({ type }) {
     this.setState({ showType: type })
   }
+
+  queryAppointmentsByDate({ department_id, personnel_id, nowWeekNum, offset, limit }) {
+    nowWeekNum = nowWeekNum || this.state.nowWeekNum
+    let start_date = moment()
+      .day(nowWeekNum)
+      .format('YYYY-MM-DD')
+    department_id = department_id || this.state.appointment_sate.department_id
+    personnel_id = personnel_id || this.state.appointment_sate.personnel_id
+    const { queryAppointmentsByDate, clinic_id } = this.props
+    queryAppointmentsByDate({ clinic_id, department_id, personnel_id, start_date, offset, limit, day_long: 7 })
+  }
+
+  formatAppointmentData() {
+    const { date_appointments } = this.props
+    const { nowWeekNum } = this.state
+    const { clinic_array, doctor_array, page_info } = date_appointments
+    console.log('date_appointments =========', date_appointments)
+    let totalArray = []
+    for (let i = 0; i < 7; i++) {
+      let visit_date = moment()
+        .day(nowWeekNum + i)
+        .format('YYYY-MM-DD')
+      let clinic = {
+        visit_date,
+        am: 0,
+        pm: 0
+      }
+      for (let item of clinic_array) {
+        if (moment(item.visit_date).format('YYYY-MM-DD') === visit_date) {
+          if (item.am_pm === 'a') clinic.am = item.count || 0
+          if (item.am_pm === 'p') clinic.pm = item.count || 0
+        }
+      }
+      totalArray.push(clinic)
+    }
+    let doctorArray = []
+    for (let item of doctor_array) {
+      let doctor = {
+        personnel_id: item.personnel_id,
+        department_id: item.department_id,
+        personnel_name: item.personnel_name,
+        department_name: item.department_name,
+        days: [
+          {
+            am: 0,
+            pm: 0
+          },
+          {
+            am: 0,
+            pm: 0
+          },
+          {
+            am: 0,
+            pm: 0
+          },
+          {
+            am: 0,
+            pm: 0
+          },
+          {
+            am: 0,
+            pm: 0
+          },
+          {
+            am: 0,
+            pm: 0
+          },
+          {
+            am: 0,
+            pm: 0
+          }
+        ]
+      }
+      let has = false
+      let count = 0
+      for (let obj of doctorArray) {
+        if (obj.personnel_id === item.personnel_id && obj.department_id === item.department_id) {
+          doctor = obj
+          has = true
+          break
+        }
+        count++
+      }
+
+      let day = moment(item.visit_date).weekday() - 1
+      if (day === -1) day = 6
+      if (item.am_pm === 'a') {
+        doctor.days[day].am = item.count || 0
+      }
+      if (item.am_pm === 'p') {
+        doctor.days[day].pm = item.count || 0
+      }
+      if (has) {
+        doctorArray[count] = doctor
+      } else {
+        doctorArray.push(doctor)
+      }
+    }
+    return { totalArray, doctorArray, page_info }
+  }
+
+  getWeekTds() {
+    const weeks = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    const { nowWeekNum } = this.state
+    let dArray = []
+    let apArray = []
+    for (let i = 0; i < 7; i++) {
+      dArray.push(
+        `${weeks[i]} ( ${moment()
+          .day(nowWeekNum + i)
+          .format('MM-DD')} )`
+      )
+    }
+    return { dArray }
+  }
+
   // 显示日历列表
   showCalendarList() {
     // const weekArray = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     let nowWeekNum = this.state.nowWeekNum
-    const dateTime = this.state.dateTime
+    const { totalArray, doctorArray, page_info } = this.formatAppointmentData()
+    const { dArray } = this.getWeekTds()
     return (
       <div className={'listContent'}>
         <div className={'calendarCotent'}>
           <div className={'calenderFilter'}>
             <div className={'filterCnter'}>
-              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum - 7 })}>
+              <span
+                style={{ flex: 3 }}
+                onClick={() => {
+                  this.setState({ nowWeekNum: nowWeekNum - 7 })
+                  this.queryAppointmentsByDate({ nowWeekNum: nowWeekNum + 7 })
+                }}
+              >
                 {'上一周'}
               </span>
               <span style={{ flex: 1 }}>{'《'}</span>
@@ -962,7 +1135,13 @@ class TriageScreen extends Component {
               </span>
               <span style={{ flex: 1 }}>{'>'}</span>
               <span style={{ flex: 1 }}>{'》'}</span>
-              <span style={{ flex: 3 }} onClick={() => this.setState({ nowWeekNum: nowWeekNum + 7 })}>
+              <span
+                style={{ flex: 3 }}
+                onClick={() => {
+                  this.setState({ nowWeekNum: nowWeekNum + 7 })
+                  this.queryAppointmentsByDate({ nowWeekNum: nowWeekNum + 7 })
+                }}
+              >
                 下一周
               </span>
             </div>
@@ -973,64 +1152,67 @@ class TriageScreen extends Component {
                 <thead>
                   <tr>
                     <td />
-                    <td>
-                      周一（{moment()
-                        .day(nowWeekNum)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周二（{moment()
-                        .day(nowWeekNum + 1)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周三（{moment()
-                        .day(nowWeekNum + 2)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周四（{moment()
-                        .day(nowWeekNum + 3)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周五（{moment()
-                        .day(nowWeekNum + 4)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周六（{moment()
-                        .day(nowWeekNum + 5)
-                        .format('MM-DD')}）
-                    </td>
-                    <td>
-                      周日（{moment()
-                        .day(nowWeekNum + 6)
-                        .format('MM-DD')}）
-                    </td>
+                    {dArray.map((item, i) => {
+                      return <td key={i}> {item}</td>
+                    })}
+                  </tr>
+                  <tr>
+                    <td />
+                    {dArray.map((item, i) => {
+                      return (
+                        <td key={i}>
+                          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
+                            <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex', borderRight: '1px solid #c7c7cc' }}>
+                              <span>上午</span>
+                            </div>
+                            <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                              <span>下午</span>
+                            </div>
+                          </div>
+                        </td>
+                      )
+                    })}
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>上午</td>
-                    <td>1人</td>
-                    <td>2人</td>
-                    <td>3人</td>
-                    <td>4人</td>
-                    <td>5人</td>
-                    <td>6人</td>
-                    <td>7人</td>
+                    <td />
+                    {totalArray.map((item, index) => {
+                      return (
+                        <td key={index}>
+                          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
+                            <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex', borderRight: '1px solid #c7c7cc' }}>
+                              <span style={{ color: '#000000', fontWeight: 'bold' }}>{item.am}</span>
+                            </div>
+                            <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                              <span style={{ color: '#000000', fontWeight: 'bold' }}>{item.pm}</span>
+                            </div>
+                          </div>
+                        </td>
+                      )
+                    })}
                   </tr>
-                  <tr>
-                    <td>下午</td>
-                    <td>1人</td>
-                    <td>2人</td>
-                    <td>3人</td>
-                    <td>4人</td>
-                    <td>5人</td>
-                    <td>6人</td>
-                    <td>7人</td>
-                  </tr>
+                  {doctorArray.map((doctor, index) => {
+                    return (
+                      <tr key={index}>
+                        <td> {doctor.personnel_name}</td>
+                        {doctor.days.map((item, index) => {
+                          return (
+                            <td key={index}>
+                              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100%' }}>
+                                <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex', borderRight: '1px solid #c7c7cc' }}>
+                                  <span>{item.am}</span>
+                                </div>
+                                <div style={{ height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                                  <span>{item.pm}</span>
+                                </div>
+                              </div>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
@@ -1080,12 +1262,8 @@ class TriageScreen extends Component {
                 </span>
               </div>
               <div className={'itemBottom'}>
-                <span
-                  onClick={() => {}}
-                >修改</span>
-                <span
-                  onClick={() => {}}
-                >取消</span>
+                <span onClick={() => {}}>修改</span>
+                <span onClick={() => {}}>取消</span>
               </div>
             </li>
             {/* {triagePatients.map((patient, index) => {
@@ -1171,45 +1349,41 @@ class TriageScreen extends Component {
     return (
       <div className={'filterBox'}>
         <div className={'boxLeft'}>
-          <input type='date' placeholder='预约日期'
-            style={{ margin: '14px 0 0 15px' }}
-          />
-          <input type='text'
-            style={{ margin: '14px 15px 0 15px' }}
-            placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
-          />
+          <input type='date' placeholder='预约日期' style={{ margin: '14px 0 0 15px' }} />
+          <input type='text' style={{ margin: '14px 15px 0 15px' }} placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
           {/* <input type='text' placeholder='搜索科室' /> */}
           {/* <input type='text' placeholder='搜索科室' /> */}
           {/* <input type='text' placeholder='搜索医生' /> */}
           {/* <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
           <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' /> */}
-          <button >查询</button>
+          <button>查询</button>
         </div>
       </div>
     )
   }
   // 预约管理
   showReservation() {
-    const {showType} = this.state
+    const { showType } = this.state
     return (
       <div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <label style={{marginLeft: '15px'}}>
-              <input type='radio'
+            <label style={{ marginLeft: '15px' }}>
+              <input
+                type='radio'
                 name={'listType'}
                 checked={showType === 1}
-                onChange={() => this.changeShowType({ type: 1 })}
-              /> 日历列表
+                onChange={() => {
+                  this.changeShowType({ type: 1 })
+                  this.queryAppointmentsByDate({})
+                }}
+              />{' '}
+              日历列表
             </label>
-            <label style={{marginLeft: '15px'}}>
-              <input type='radio'
-                name={'listType'}
-                checked={showType === 2}
-                onChange={() => this.changeShowType({ type: 2 })}
-              /> 就诊人列表
+            <label style={{ marginLeft: '15px' }}>
+              <input type='radio' name={'listType'} checked={showType === 2} onChange={() => this.changeShowType({ type: 2 })} /> 就诊人列表
             </label>
-            <div style={{width: '150px', float: 'left', margin: '14px 0 0 15px'}}>
+            <div style={{ width: '150px', float: 'left', margin: '14px 0 0 15px' }}>
               <Select
                 placeholder='搜索科室'
                 options={this.getDepartmentOptions()}
@@ -1223,19 +1397,15 @@ class TriageScreen extends Component {
                 }}
               />
             </div>
-            <div style={{width: '150px', float: 'left', margin: '14px 0 0 15px'}}>
-              <Select
-                placeholder='搜索医生'
-                options={this.getDoctorOptions()}
-                height={32}
-              />
+            <div style={{ width: '150px', float: 'left', margin: '14px 0 0 15px' }}>
+              <Select placeholder='搜索医生' options={this.getDoctorOptions()} height={32} />
             </div>
           </div>
           <div className={'boxRight'}>
             <button onClick={() => this.addNewReservation()}>新增预约</button>
           </div>
         </div>
-        {showType === 2 ? this.showExtraFilter() : '' }
+        {showType === 2 ? this.showExtraFilter() : ''}
         {/* <div className={'regisListTop'}>
           <button className={'bigBtn'} onClick={() => this.addNewReservation()}>
             新增预约
@@ -1315,6 +1485,7 @@ class TriageScreen extends Component {
             onClick={() => {
               this.setState({ pageType: 3, department_id: '' })
               this.queryDoctorsList({ department_id: '', limit: 100 })
+              this.queryAppointmentsByDate({})
             }}
           >
             预约管理
@@ -1339,8 +1510,9 @@ const mapStateToProps = state => {
     triageDoctors: state.triageDoctors.data,
     departments: state.departments.data,
     doctor_page_info: state.triageDoctors.page_info,
-    selectDoctors: state.doctors.data
+    selectDoctors: state.doctors.data,
+    date_appointments: state.triagePatients.date_appointments
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList })(TriageScreen)
+export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, queryAppointmentsByDate })(TriageScreen)

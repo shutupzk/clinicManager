@@ -5,7 +5,7 @@ import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 
-class TobeChargedScreen extends Component {
+class PendingDrugScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -74,14 +74,14 @@ class TobeChargedScreen extends Component {
           <ul>
             {array.map((patient, index) => {
               // let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-              let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
+              // let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已收费' : '待收费'}</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待发药</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -96,20 +96,12 @@ class TobeChargedScreen extends Component {
                       <a>接诊医生：</a>
                       <a>{patient.doctor_name}</a>
                     </span>
-                    <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
-                    <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>￥337.0</span>
+                    <span>发药</span>
                     <span onClick={() => {
                       this.gotoChargeDetail()
-                    }}>收费</span>
+                    }}>查看已发药</span>
                   </div>
                 </li>
               )
@@ -123,25 +115,19 @@ class TobeChargedScreen extends Component {
 
   // 收费详情
   gotoChargeDetail() {
-    Router.push('/treatment/charge/toll')
+    // Router.push('/treatment/charge/toll')
   }
   // 加载
   render() {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={'sel'}>待收费</span>
-          <span onClick={() => Router.push('/treatment/charge/charged')}>
-						已收费
+          <span className={'sel'}>待发药</span>
+          <span onClick={() => Router.push('/treatment/drugdelivery/drugHasBeenIssued')}>
+						已发药
 					</span>
-          <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
-						已挂账
-					</span>
-          <span onClick={() => Router.push('/treatment/charge/refunded')}>
-						已退款
-					</span>
-          <span onClick={() => Router.push('/treatment/charge/orderManagement')}>
-						订单管理
+          <span onClick={() => Router.push('/treatment/drugdelivery/hasBeenWithdrawn')}>
+						已退药
 					</span>
         </div>
         <div className={'filterBox'}>
@@ -169,4 +155,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(TobeChargedScreen)
+export default connect(mapStateToProps, { triagePatientsList })(PendingDrugScreen)
