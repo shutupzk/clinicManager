@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MedicalRecordScreen from './medicalRecord_screen'
-import PrescriptionScreen from './prescription_screen'
-import TreatmentScreen from './treatment_screen'
+import MedicalRecordScreen from './components/medicalRecord'
+import PrescriptionScreen from './components/prescription'
+import TreatmentScreen from './components/treatment'
 import { getAgeByBirthday } from '../../../../utils'
 
 class RecptionScreen extends Component {
