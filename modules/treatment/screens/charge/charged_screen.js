@@ -5,11 +5,11 @@ import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 
-class TobeChargedScreen extends Component {
+class ChargedScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1,
+      pageType: 2,
       showType: 1,
       nowWeekNum: 1,
       OrderType: 1
@@ -97,19 +97,18 @@ class TobeChargedScreen extends Component {
                       <a>{patient.doctor_name}</a>
                     </span>
                     <span>
-                      <a>登记人员：</a>
+                      <a>收费人员：</a>
                       <a>{patient.register_personnel_name}</a>
                     </span>
                     <span>
-                      <a>登记时间：</a>
+                      <a>收费时间：</a>
                       <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
                     </span>
                   </div>
                   <div className={'itemBottom'}>
                     <span>￥337.0</span>
-                    <span onClick={() => {
-                      this.gotoChargeDetail()
-                    }}>收费</span>
+                    <span onClick={() => {}}>打印发票</span>
+                    <span onClick={() => {}}>退费</span>
                   </div>
                 </li>
               )
@@ -130,8 +129,8 @@ class TobeChargedScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={'sel'}>待收费</span>
-          <span onClick={() => Router.push('/treatment/charge/charged')}>
+          <span onClick={() => Router.push('/treatment/charge')}>待收费</span>
+          <span className={'sel'}>
 						已收费
 					</span>
           <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
@@ -169,4 +168,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(TobeChargedScreen)
+export default connect(mapStateToProps, { triagePatientsList })(ChargedScreen)

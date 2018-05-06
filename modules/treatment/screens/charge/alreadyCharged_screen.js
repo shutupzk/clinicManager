@@ -5,11 +5,11 @@ import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 
-class TobeChargedScreen extends Component {
+class AlreadyChargedScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1,
+      pageType: 3,
       showType: 1,
       nowWeekNum: 1,
       OrderType: 1
@@ -89,27 +89,13 @@ class TobeChargedScreen extends Component {
                       <a>{patient.cert_no}</a>
                     </span>
                     <span>
-                      <a>接诊科室：</a>
-                      <a>{patient.department_name}</a>
-                    </span>
-                    <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
-                    <span>
-                      <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
-                    </span>
-                    <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                      <a>挂账金额：</a>
+                      <a>￥337</a>
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>￥337.0</span>
-                    <span onClick={() => {
-                      this.gotoChargeDetail()
-                    }}>收费</span>
+                    <span onClick={() => {}}>查看详情</span>
+                    <span onClick={() => {}}>还账</span>
                   </div>
                 </li>
               )
@@ -130,11 +116,11 @@ class TobeChargedScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={'sel'}>待收费</span>
+          <span onClick={() => Router.push('/treatment/charge')}>待收费</span>
           <span onClick={() => Router.push('/treatment/charge/charged')}>
 						已收费
 					</span>
-          <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
+          <span className={'sel'}>
 						已挂账
 					</span>
           <span onClick={() => Router.push('/treatment/charge/refunded')}>
@@ -169,4 +155,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(TobeChargedScreen)
+export default connect(mapStateToProps, { triagePatientsList })(AlreadyChargedScreen)

@@ -4,16 +4,22 @@ import NewListDetails from './screens/newListDetail_screen'
 import TriageScreen from './screens/triage/triage_screen'
 import AddReservation from './screens/reservation_add_screen'
 import AddmisionScreen from './screens/addmission'
-import ChargeScreen from './screens/charge'
 import ChargeDetails from './screens/chargeDetail_screen'
 import AppointmentListScreen from './screens/triage/appointment_list_screen'
 import AppointmentAddScreen from './screens/triage/appointment_add_screen'
 import TriageRecordScreen from './screens/triage/triage_record_screen'
+import ListDetailScreen from './screens/registration/list_detail_screen'
+import TobeChargedScreen from './screens/charge'
+import ChargedScreen from './screens/charge/charged_screen'
+import AlreadyChargedScreen from './screens/charge/alreadyCharged_screen'
+import RefundedScreen from './screens/charge/refunded_screen'
+import OrderManagementScreen from './screens/charge/orderManagement_screen'
+import TollScreen from './screens/charge/toll_screen'
 
 export {
   RegistrationAddScreen,
   RegistrationListScreen,
-  NewListDetails,
+  ListDetailScreen,
   TriageScreen,
   AddReservation,
   AddmisionScreen,
@@ -21,5 +27,12 @@ export {
   ChargeDetails,
   AppointmentListScreen,
   AppointmentAddScreen,
-  TriageRecordScreen
+  TriageRecordScreen,
+  TobeChargedScreen,
+  ChargedScreen,
+  AlreadyChargedScreen,
+  RefundedScreen,
+  OrderManagementScreen,
+  TollScreen,
+  NewListDetails
 }

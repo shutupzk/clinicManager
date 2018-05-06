@@ -11,7 +11,7 @@ const MAINFUNCTION = [
   {
     title: '就诊流程',
     short_name: 'treatment',
-    navigateName: '/treatment',
+    navigateName: '/treatment/registration',
     children: [
 			{ title: '就诊人登记', navigateName: '/treatment/registration', icon: '/static/icons/patient.svg' },
 			{ title: '预约分诊', navigateName: '/treatment/triage/triage', icon: '/static/icons/triage.svg' },
