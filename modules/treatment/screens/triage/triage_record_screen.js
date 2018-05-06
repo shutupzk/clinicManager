@@ -60,12 +60,10 @@ class TriageRecordScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {triagePatients.map((patient, index) => {
-              let statusColor = '#F24A01'
               return (
                 <li key={index}>
                   <PatientCard
                     patient={patient}
-                    statusColor={statusColor}
                     buttons={
                       patient.status === 20
                         ? [
