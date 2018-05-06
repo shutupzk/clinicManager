@@ -24,16 +24,10 @@ class PrescriptionScreen extends Component {
     let { morbidity_date } = this.state
     return (
       <div className='listContent'>
-        <div>
-          <input
-            type='date'
-            placeholder='就诊日期'
-            value={morbidity_date}
-            onChange={e => {
-              this.setState({ morbidity_date: e.target.value })
-            }}
-          />
-        </div>
+        <ur>
+          <li>diagnosis</li>
+          <li>{morbidity_date}</li>
+        </ur>
       </div>
     )
   }

@@ -34,34 +34,36 @@ class RecptionScreen extends Component {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }
     return (
-      <div className={'childTopBar'}>
+      <div className={'contentBox'}>
         <div className='filterBox'>
-          <span>
-            <a>就诊人姓名：</a>
-            <a>{triagePatient.patient_name}</a>
-          </span>
-          <span>
-            <a>性别：</a>
-            <a>{triagePatient.sex === 1 ? '男' : '女'}</a>
-          </span>
-          <span>
-            <a>年龄：</a>
-            <a>{getAgeByBirthday(triagePatient.birthday)}</a>
-          </span>
-          <span>
-            <a>门诊ID：</a>
-            <a>{triagePatient.cert_no}</a>
-          </span>
-          <span>
-            <a>手机号：</a>
-            <a>{triagePatient.phone}</a>
-          </span>
-          <span>
-            <a>结束就诊</a>
-          </span>
-          <span>
-            <a>费用预览</a>
-          </span>
+          <div className='boxLeft'>
+            <span>
+              <a>就诊人姓名：</a>
+              <a>{triagePatient.patient_name}</a>
+            </span>
+            <span>
+              <a>性别：</a>
+              <a>{triagePatient.sex === 1 ? '男' : '女'}</a>
+            </span>
+            <span>
+              <a>年龄：</a>
+              <a>{getAgeByBirthday(triagePatient.birthday)}</a>
+            </span>
+            <span>
+              <a>门诊ID：</a>
+              <a>{triagePatient.cert_no}</a>
+            </span>
+            <span>
+              <a>手机号：</a>
+              <a>{triagePatient.phone}</a>
+            </span>
+            <span>
+              <a>结束就诊</a>
+            </span>
+            <span>
+              <a>费用预览</a>
+            </span>
+          </div>
         </div>
         <div className={'filterBox'}>
           <span
