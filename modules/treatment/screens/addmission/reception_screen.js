@@ -64,7 +64,7 @@ class RecptionScreen extends Component {
             </button>
           </div>
         </div>
-        <div className={'filterBox'}>
+        <div className={'childTopBar'}>
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
@@ -127,9 +127,6 @@ class RecptionScreen extends Component {
           {`
             .filterBox{
               margin: 20px 0 0 65px;
-              display: -webkit-box;
-              display: -webkit-flex;
-              display: -ms-flexbox;
               display: flex;
               line-height: 60px;
               font-size: 14px;
