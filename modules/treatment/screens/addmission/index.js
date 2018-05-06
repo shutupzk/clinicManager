@@ -73,9 +73,11 @@ class AddmisionScreen extends Component {
         if (error) {
           return this.refs.myAlert.alert('接诊失败', error)
         }
+        Router.push('/treatment/admission/reception')
       })
+    } else {
+      Router.push('/treatment/admission/reception')
     }
-    Router.push('/treatment/admission/reception')
   }
 
   receptionOperation(clinic_triage_patient_id) {
