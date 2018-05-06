@@ -5,6 +5,7 @@ import moment from 'moment'
 import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, queryAppointmentsByDate } from '../../../../ducks'
 // import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Select } from '../../../../components'
+import { PatientCard } from '../../components'
 
 class AppointmentListScreen extends Component {
   constructor(props) {
@@ -14,8 +15,7 @@ class AppointmentListScreen extends Component {
       showType: 1,
       nowWeekNum: 1,
       department_id: '',
-      clinic_triage_patient_id: '',
-      appointment_sate: {}
+      personnel_id: ''
     }
   }
 
@@ -25,7 +25,6 @@ class AppointmentListScreen extends Component {
   }
   queryDoctorsList({ keyword, limit = 100, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
-    console.log('department_id ========', department_id)
     queryDoctorList({ clinic_id, keyword, limit: 10, personnel_type: 2, department_id })
   }
   queryDepartmentList({ keyword, limit }) {
@@ -35,7 +34,7 @@ class AppointmentListScreen extends Component {
 
   getDepartmentOptions() {
     const { departments } = this.props
-    let options = [{ value: '-1', label: '全部科室' }]
+    let options = [{ value: -1, label: '全部科室' }]
     for (let { id, name } of departments) {
       options.push({
         value: id,
@@ -46,7 +45,7 @@ class AppointmentListScreen extends Component {
   }
   getDoctorOptions() {
     const { selectDoctors } = this.props
-    let options = [{ value: '-1', label: '全部医生' }]
+    let options = [{ value: -1, label: '全部医生' }]
     for (let { id, name } of selectDoctors) {
       options.push({
         value: id,
@@ -56,13 +55,47 @@ class AppointmentListScreen extends Component {
     return options
   }
 
+  getDoctorSelectValue() {
+    const { selectDoctors } = this.props
+    const { personnel_id } = this.state
+    for (let { id, name } of selectDoctors) {
+      if (id === personnel_id) {
+        return {
+          value: id,
+          label: name
+        }
+      }
+    }
+    return { value: -1, label: '全部医生' }
+  }
+
+  getDepartmentSelectValue() {
+    const { departments } = this.props
+    const { department_id } = this.state
+    for (let { id, name } of departments) {
+      if (id === department_id) {
+        return {
+          value: id,
+          label: name
+        }
+      }
+    }
+    return { value: -1, label: '全部科室' }
+  }
+
   queryAppointmentsByDate({ department_id, personnel_id, nowWeekNum, offset, limit }) {
     nowWeekNum = nowWeekNum || this.state.nowWeekNum
     let start_date = moment()
       .day(nowWeekNum)
       .format('YYYY-MM-DD')
-    department_id = department_id || this.state.appointment_sate.department_id
-    personnel_id = personnel_id || this.state.appointment_sate.personnel_id
+    department_id = department_id || this.state.department_id
+    if (department_id === -1) {
+      department_id = null
+    }
+    personnel_id = personnel_id || this.state.personnel_id
+    if (personnel_id === -1) {
+      personnel_id = null
+    }
     const { queryAppointmentsByDate, clinic_id } = this.props
     queryAppointmentsByDate({ clinic_id, department_id, personnel_id, start_date, offset, limit, day_long: 7 })
   }
@@ -71,7 +104,6 @@ class AppointmentListScreen extends Component {
     const { date_appointments } = this.props
     const { nowWeekNum } = this.state
     const { clinic_array, doctor_array, page_info } = date_appointments
-    console.log('date_appointments =========', date_appointments)
     let totalArray = []
     for (let i = 0; i < 7; i++) {
       let visit_date = moment()
@@ -290,7 +322,7 @@ class AppointmentListScreen extends Component {
           offset={page_info.offset}
           limit={page_info.limit}
           total={page_info.total}
-          style={{marginTop: '20px'}}
+          style={{ marginTop: '20px' }}
           onItemClick={({ offset, limit }) => {
             this.queryAppointmentsByDate({ offset, limit })
           }}
@@ -298,61 +330,66 @@ class AppointmentListScreen extends Component {
       </div>
     )
   }
+
+  commonQueryList({ offset = 0, limit = 6, department_id, personnel_id }) {
+    const { keyword, startDate, endDate } = this.state
+    let status_start = 10
+    let status_end = 100
+    this.quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit, department_id, personnel_id, startDate, endDate })
+  }
+
+  quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit, department_id, personnel_id, startDate, endDate }) {
+    const { clinic_id, triagePatientsList } = this.props
+    department_id = department_id || this.state.department_id
+    if (department_id === -1) {
+      department_id = null
+    }
+    personnel_id = personnel_id || this.state.personnel_id
+    if (personnel_id === -1) {
+      personnel_id = null
+    }
+    let params = { clinic_id, offset, limit, keyword, register_type: 1, department_id, personnel_id }
+    if (status_start && status_end) {
+      params.status_start = status_start
+      params.status_end = status_end
+    }
+    triagePatientsList(params)
+  }
   // 显示就诊人列表
   showPatientList() {
-    // const { triagePatients, patient_page_info } = this.props
+    const { triagePatients, patient_page_info } = this.props
     return (
       <div>
         <div className={'listContent'}>
           <ul>
-            <li key={1}>
-              <div className={'itemTop'}>
-                <span>龙超</span>
-                <span>男</span>
-                <span>18岁</span>
-                <span style={{ color: '#F24A01', border: '1px solid #F24A01' }}>已分诊</span>
-              </div>
-              <div className={'itemCenter'}>
-                <span>
-                  <a>门诊ID：</a>
-                  <a>1515151515</a>
-                </span>
-                <span>
-                  <a>接诊科室：</a>
-                  <a>骨科</a>
-                </span>
-                <span>
-                  <a>接诊医生：</a>
-                  <a>关云长</a>
-                </span>
-                <span>
-                  <a>登记人员：</a>
-                  <a>扁鹊</a>
-                </span>
-                <span>
-                  <a>登记时间：</a>
-                  <a>{moment('20180505').format('YYYY-MM-DD HH:mm:ss')}</a>
-                </span>
-                <span style={{ color: 'rgba(153,153,153,1)' }}>
-                  <a style={{ color: 'rgba(153,153,153,1)' }}>更新时间：</a>
-                  <a style={{ color: 'rgba(153,153,153,1)' }}>{moment('20180505').format('YYYY-MM-DD HH:mm:ss')}</a>
-                </span>
-              </div>
-              <div className={'itemBottom'}>
-                <span onClick={() => {}}>修改</span>
-                <span onClick={() => {}}>取消</span>
-              </div>
-            </li>
+            {triagePatients.map((patient, index) => {
+              return (
+                <li key={index}>
+                  <PatientCard
+                    patient={patient}
+                    buttons={[
+                      {
+                        title: '查看预约详情',
+                        onClick: () => {
+                          let { clinic_triage_patient_id } = patient
+                          this.showChooseDoctor(clinic_triage_patient_id)
+                        }
+                      }
+                    ]}
+                  />
+                </li>
+              )
+            })}
           </ul>
         </div>
-        {/* <PageCard
+        <PageCard
           offset={patient_page_info.offset}
           limit={patient_page_info.limit}
           total={patient_page_info.total}
           onItemClick={({ offset, limit }) => {
             this.commonQueryList({ offset, limit })
           }}
-        /> */}
+        />
       </div>
     )
   }
@@ -361,18 +398,21 @@ class AppointmentListScreen extends Component {
   addNewReservation() {
     Router.push('/treatment/reservation_add')
   }
+
   showExtraFilter() {
     return (
       <div className={'filterBox'}>
         <div className={'boxLeft'}>
           <input type='date' placeholder='预约日期' style={{ margin: '14px 0 0 15px' }} />
-          <input type='text' style={{ margin: '14px 15px 0 15px' }} placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-          {/* <input type='text' placeholder='搜索科室' /> */}
-          {/* <input type='text' placeholder='搜索科室' /> */}
-          {/* <input type='text' placeholder='搜索医生' /> */}
-          {/* <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' />
-          <input className={'datebox'} style={{ marginLeft: '15px' }} type='text' placeholder='预约日期' /> */}
-          <button>查询</button>
+          <input
+            type='text'
+            style={{ margin: '14px 15px 0 15px' }}
+            placeholder='搜索就诊人姓名/身份证号码/手机号码'
+            onChange={e => {
+              this.setState({ keyword: e.target.value })
+            }}
+          />
+          <button onClick={() => this.commonQueryList({})}>查询</button>
         </div>
       </div>
     )
@@ -390,31 +430,58 @@ class AppointmentListScreen extends Component {
                 name={'listType'}
                 checked={showType === 1}
                 onChange={() => {
-                  this.changeShowType({ type: 1 })
+                  this.setState({ showType: 1 })
                   this.queryAppointmentsByDate({})
                 }}
               />{' '}
               日历列表
             </label>
             <label style={{ marginLeft: '15px' }}>
-              <input type='radio' name={'listType'} checked={showType === 2} onChange={() => this.changeShowType({ type: 2 })} /> 就诊人列表
+              <input
+                type='radio'
+                name={'listType'}
+                checked={showType === 2}
+                onChange={() => {
+                  this.setState({ showType: 2 })
+                  this.commonQueryList({})
+                }}
+              />{' '}
+              就诊人列表
             </label>
             <div style={{ width: '150px', float: 'left', margin: '14px 0 0 15px' }}>
               <Select
                 placeholder='搜索科室'
                 options={this.getDepartmentOptions()}
                 height={32}
+                value={this.getDepartmentSelectValue()}
                 onChange={e => {
                   let id = e.value
-                  console.log('id ========', id)
-                  this.setState({ department_id: id })
-                  this.queryDoctorsList({ department_id: id, limit: 100 })
-                  // this.queryListData({ department_id: id })
+                  this.setState({ department_id: id, personnel_id: -1 })
+                  this.queryDoctorsList({ department_id: id, personnel_id: -1, limit: 100 })
+                  if (showType === 1) {
+                    this.queryAppointmentsByDate({ department_id: id, personnel_id: -1 })
+                  } else {
+                    this.commonQueryList({ department_id: id, personnel_id: -1 })
+                  }
                 }}
               />
             </div>
             <div style={{ width: '150px', float: 'left', margin: '14px 0 0 15px' }}>
-              <Select placeholder='搜索医生' options={this.getDoctorOptions()} height={32} />
+              <Select
+                placeholder='搜索医生'
+                options={this.getDoctorOptions()}
+                height={32}
+                value={this.getDoctorSelectValue()}
+                onChange={e => {
+                  let id = e.value
+                  this.setState({ personnel_id: id })
+                  if (showType === 1) {
+                    this.queryAppointmentsByDate({ personnel_id: id })
+                  } else {
+                    this.commonQueryList({ personnel_id: id })
+                  }
+                }}
+              />
             </div>
           </div>
           <div className={'boxRight'}>
@@ -460,7 +527,7 @@ class AppointmentListScreen extends Component {
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 1, keyword2: '' })
+              this.setState({ pageType: 1 })
               Router.push('/treatment/triage/triage')
             }}
           >
@@ -478,7 +545,7 @@ class AppointmentListScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 3, department_id: '' })
+              this.setState({ pageType: 3 })
               this.queryDoctorsList({ department_id: '', limit: 100 })
               this.queryAppointmentsByDate({})
             }}
@@ -500,7 +567,9 @@ const mapStateToProps = state => {
     triageDoctors: state.triageDoctors.data,
     departments: state.departments.data,
     selectDoctors: state.doctors.data,
-    date_appointments: state.triagePatients.date_appointments
+    date_appointments: state.triagePatients.date_appointments,
+    triagePatients: state.triagePatients.data,
+    patient_page_info: state.triagePatients.page_info
   }
 }
 

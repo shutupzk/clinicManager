@@ -27,10 +27,25 @@ export function triagePatients(state = initState, action = {}) {
   }
 }
 
-export const triagePatientsList = ({ clinic_id, status_start, status_end, keyword, is_today, register_type, startDate, endDate, offset = 0, limit = 6 }) => async dispatch => {
+export const triagePatientsList = ({
+  clinic_id,
+  department_id,
+  personnel_id,
+  status_start,
+  status_end,
+  keyword,
+  is_today,
+  register_type,
+  startDate,
+  endDate,
+  offset = 0,
+  limit = 6
+}) => async dispatch => {
   try {
     const data = await request('/triage/patientlist', {
       clinic_id,
+      department_id,
+      personnel_id,
       status_start,
       status_end,
       keyword,
@@ -150,7 +165,6 @@ export const addAppointment = ({ cert_no, name, birthday, sex, phone, address, p
 
 export const queryAppointmentsByDate = ({ clinic_id, department_id, personnel_id, start_date, offset, limit, day_long }) => async dispatch => {
   try {
-    console.log('queryAppointmentsByDate ====', { clinic_id, department_id, personnel_id, start_date, offset, limit, day_long })
     const data = await request('/triage/AppointmentsByDate', { clinic_id, department_id, personnel_id, start_date, offset, limit, day_long })
     if (data.code !== '200') return data.msg
     let { clinic_array, doctor_array, page_info } = data
