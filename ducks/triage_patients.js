@@ -106,7 +106,21 @@ export const triageReception = ({ clinic_triage_patient_id, recept_personnel_id 
   }
 }
 
-export const addAppointment = ({ cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id, visit_type }) => async dispatch => {
+export const addAppointment = ({
+  cert_no,
+  name,
+  birthday,
+  sex,
+  phone,
+  address,
+  profession,
+  remark,
+  patient_channel_id,
+  clinic_id,
+  doctor_visit_schedule_id,
+  personnel_id,
+  visit_type
+}) => async dispatch => {
   try {
     console.log('data ====', { cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, clinic_id, doctor_visit_schedule_id, personnel_id, visit_type })
     const data = await request('/appointment/create', {
@@ -153,6 +167,135 @@ export const queryAppointmentsByDate = ({ clinic_id, department_id, personnel_id
         page_info
       }
     })
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const completeBodySign = ({
+  clinic_triage_patient_id,
+  weight,
+  height,
+  bmi,
+  blood_type,
+  rh_blood_type,
+  temperature_type,
+  temperature,
+  breathe,
+  pulse,
+  systolic_blood_pressure,
+  diastolic_blood_pressure,
+  blood_sugar_time,
+  blood_sugar_type,
+  left_vision,
+  right_vision,
+  oxygen_saturation,
+  pain_score
+}) => async dispatch => {
+  try {
+    console.log(' completeBodySign ======= ', {
+      clinic_triage_patient_id,
+      weight,
+      height,
+      bmi,
+      blood_type,
+      rh_blood_type,
+      temperature_type,
+      temperature,
+      breathe,
+      pulse,
+      systolic_blood_pressure,
+      diastolic_blood_pressure,
+      blood_sugar_time,
+      blood_sugar_type,
+      left_vision,
+      right_vision,
+      oxygen_saturation,
+      pain_score
+    })
+    const data = await request('/triage/completeBodySign', {
+      clinic_triage_patient_id,
+      weight,
+      height,
+      bmi,
+      blood_type,
+      rh_blood_type,
+      temperature_type,
+      temperature,
+      breathe,
+      pulse,
+      systolic_blood_pressure,
+      diastolic_blood_pressure,
+      blood_sugar_time,
+      blood_sugar_type,
+      left_vision,
+      right_vision,
+      oxygen_saturation,
+      pain_score
+    })
+    console.log('data ========', data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const completePreMedicalRecord = ({
+  clinic_triage_patient_id,
+  has_allergic_history,
+  allergic_history,
+  personal_medical_history,
+  family_medical_history,
+  vaccination,
+  menarche_age,
+  menstrual_period_start_day,
+  menstrual_period_end_day,
+  menstrual_cycle_start_day,
+  menstrual_cycle_end_day,
+  menstrual_last_day,
+  gestational_weeks,
+  childbearing_history
+}) => async dispatch => {
+  try {
+    const data = await request('/triage/completePreMedicalRecord', {
+      clinic_triage_patient_id,
+      has_allergic_history,
+      allergic_history,
+      personal_medical_history,
+      family_medical_history,
+      vaccination,
+      menarche_age,
+      menstrual_period_start_day,
+      menstrual_period_end_day,
+      menstrual_cycle_start_day,
+      menstrual_cycle_end_day,
+      menstrual_last_day,
+      gestational_weeks,
+      childbearing_history
+    })
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const completePreDiagnosis = ({ clinic_triage_patient_id, chief_complaint, history_of_rresent_illness, history_of_past_illness, physical_examination, remark }) => async dispatch => {
+  try {
+    const data = await request('/triage/completePreDiagnosis', {
+      clinic_triage_patient_id,
+      chief_complaint,
+      history_of_rresent_illness,
+      history_of_past_illness,
+      physical_examination,
+      remark
+    })
+    if (data.code !== '200') return data.msg
+    return null
   } catch (e) {
     console.log(e)
     return e.message

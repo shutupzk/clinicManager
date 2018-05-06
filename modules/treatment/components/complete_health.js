@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Select } from '../../../components'
+import { Select, Confirm } from '../../../components'
 
 export default class CompleteHealth extends Component {
   constructor(props) {
@@ -185,9 +185,14 @@ export default class CompleteHealth extends Component {
   }
 
   // 保存体征数据
-  submitBodySign() {
+  async submitBodySign() {
     const { clinic_triage_patient_id, bodySign } = this.state
-    bodySign.clinic_triage_patient_id = clinic_triage_patient_id
+    const { completeBodySign } = this.props
+    let error = await completeBodySign({ ...bodySign, clinic_triage_patient_id })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    }
+    this.refs.myAlert.alert('保存成功')
   }
 
   // 显示体征表单
@@ -436,9 +441,14 @@ export default class CompleteHealth extends Component {
   }
 
   // 保存诊前病历数据
-  submitPreMedicalRecords() {
+  async submitPreMedicalRecords() {
     const { clinic_triage_patient_id, preMedicalRecords } = this.state
-    preMedicalRecords.clinic_triage_patient_id = clinic_triage_patient_id
+    const { completePreMedicalRecord } = this.props
+    let error = await completePreMedicalRecord({ ...preMedicalRecords, clinic_triage_patient_id })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    }
+    this.refs.myAlert.alert('保存成功')
   }
 
   // 显示诊前病历
@@ -606,9 +616,14 @@ export default class CompleteHealth extends Component {
   }
 
   // 保存诊前预诊
-  submitPreDiagnosisRecords() {
+  async submitPreDiagnosisRecords() {
     const { clinic_triage_patient_id, preDiagnosisRecords } = this.state
-    preDiagnosisRecords.clinic_triage_patient_id = clinic_triage_patient_id
+    const { completePreDiagnosis } = this.props
+    let error = await completePreDiagnosis({ ...preDiagnosisRecords, clinic_triage_patient_id })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    }
+    this.refs.myAlert.alert('保存成功')
   }
 
   // 诊前预诊
@@ -719,6 +734,7 @@ export default class CompleteHealth extends Component {
           {this.state.alertPageType === 2 ? this.showPreMedicalRecords() : ''}
           {this.state.alertPageType === 3 ? this.showPreDiagnosisRecords() : ''}
         </div>
+        <Confirm ref='myAlert' />
       </div>
     )
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList } from '../../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
@@ -104,7 +104,7 @@ class TriageScreen extends Component {
   }
 
   render() {
-    const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id } = this.props
+    const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id, completeBodySign, completePreMedicalRecord, completePreDiagnosis } = this.props
     return (
       <div>
         <div className={'childTopBar'}>
@@ -137,7 +137,7 @@ class TriageScreen extends Component {
           </span>
         </div>
         {this.showTriageList()}
-        <CompleteHealth ref='CompleteHealth' />
+        <CompleteHealth ref='CompleteHealth' completeBodySign={completeBodySign} completePreMedicalRecord={completePreMedicalRecord} completePreDiagnosis={completePreDiagnosis} />
         <ChooseDoctor
           ref='ChooseDoctor'
           triageDoctors={triageDoctors}
@@ -167,4 +167,13 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList })(TriageScreen)
+export default connect(mapStateToProps, {
+  triagePatientsList,
+  triageDoctorsList,
+  triagePatient,
+  queryDepartmentList,
+  queryDoctorList,
+  completeBodySign,
+  completePreMedicalRecord,
+  completePreDiagnosis
+})(TriageScreen)

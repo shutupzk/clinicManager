@@ -56,7 +56,7 @@ export default class Confirm extends Component {
             <div className='title'>{title}</div>
           </div>
           <div style={{ width: '369px', display: 'flex', flexDirection: 'row', flex: 1, marginLeft: '32px', marginRight: '32px', marginTop: '12px', marginBottom: '24px' }}>
-            <div className='content'>{content}</div>
+            <div className='content'>{content ? content + '' : ''}</div>
           </div>
 
           <div style={{ width: '369px', display: 'flex', flexDirection: 'row', height: '32px', marginLeft: '32px', marginRight: '32px', marginBottom: '24px' }}>
