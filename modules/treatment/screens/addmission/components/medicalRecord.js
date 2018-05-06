@@ -109,7 +109,7 @@ class PrescriptionScreen extends Component {
             margin-bottom:50px;
           }
           .filterBox .boxLeft {
-            border-bottom: 1px solid #d8d8d8;
+            border-bottom: 1px solid #dbdbdb;
           }
           .filterBox .boxLeft button {
             width: auto;

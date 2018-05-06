@@ -13,83 +13,81 @@ class MedicalRecordScreen extends Component {
       <div className='filterBox'>
         <div className='boxLeft'>
           <label>
-            <input />
+            <input type='radio' name='prescriptionType' />
+            西/成药处方1
           </label>
-          <button>选择模板</button>
-          <button>复制病历</button>
+          <label>
+            <input type='radio' name='prescriptionType' />
+            中/成药处方1
+          </label>
+          <div className={'boxRight'}>
+            <button>选择模板</button>
+            <button>复制处方</button>
+          </div>
         </div>
-        <div className={'formList'}>
-          <div className={'formListBox'} style={{}}>
+        <div className={'formListCenter'}>
+          <div className={'alergyBlank'}>
+            <div>
+              <label>过敏史</label>
+              <input type='text' />
+            </div>
+            <div>
+              <label>过敏反应</label>
+              <input type='text' />
+            </div>
+          </div>
+          <div className={'feeScheduleBox'}>
             <ul>
               <li>
-                <label>
-                  主述<b style={{ color: 'red' }}> *</b>
-                </label>
-                <textarea />
+                <div>药品名称</div>
+                <div>规格</div>
+                <div>库存</div>
+                <div>单次剂量</div>
+                <div>用法</div>
+                <div>用药频次</div>
+                <div>天数</div>
+                <div>总量</div>
+                <div>药房</div>
+                <div>用药说明</div>
+                <div>操作</div>
               </li>
               <li>
-                <label>现病史</label>
-                <textarea />
+                <div>药品名称</div>
+                <div>规格</div>
+                <div>库存</div>
+                <div>单次剂量</div>
+                <div>用法</div>
+                <div>用药频次</div>
+                <div>天数</div>
+                <div>总量</div>
+                <div>药房</div>
+                <div>用药说明</div>
+                <div>操作</div>
               </li>
               <li>
-                <label>既往史</label>
-                <textarea />
-              </li>
-              <li>
-                <label>家族史</label>
-                <textarea />
-              </li>
-              <li>
-                <label>过敏史</label>
-                <input type='text' />
-              </li>
-              <li>
-                <label>过敏反应</label>
-                <input type='text' />
-              </li>
-              <li>
-                <label>疫苗接种史</label>
-                <input type='text' />
-              </li>
-              <li style={{ height: '58px' }} />
-              <li>
-                <label>体格检查</label>
-                <textarea />
-              </li>
-              <li>
-                <label>上传文件</label>
-                <div className={'chooseFile'}>
-                  <input type='file' />
-                  <button> + 添加文件</button>
-                  <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
-                </div>
-              </li>
-              <li>
-                <label>初步诊断</label>
-                <textarea />
-              </li>
-              <li>
-                <a className={'chooseTemp'}>选择诊断模板</a>
-              </li>
-              <li>
-                <label>治疗意见</label>
-                <textarea />
-              </li>
-              <li>
-                <label>备注</label>
-                <textarea />
+                <div>药品名称</div>
+                <div>规格</div>
+                <div>库存</div>
+                <div>单次剂量</div>
+                <div>用法</div>
+                <div>用药频次</div>
+                <div>天数</div>
+                <div>总量</div>
+                <div>药房</div>
+                <div>用药说明</div>
+                <div>操作</div>
               </li>
             </ul>
-            <div className={'formListBottom'}>
-              <div className={'bottomCenter'}>
-                <button className={'cancel'}>取消</button>
-                <button className={'save'}>保存</button>
-              </div>
-              <div className={'bottomRight'}>
-                <button>存为模板</button>
-                <button>打印病历</button>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div className={'formListBottom'}>
+          <div className={'bottomCenter'}>
+            <button className={'cancel'}>取消</button>
+            <button className={'save'}>保存</button>
+          </div>
+          <div className={'bottomRight'}>
+            <button>存为模板</button>
+            <button>打印病历</button>
           </div>
         </div>
         <style jsx>{`
@@ -99,75 +97,55 @@ class MedicalRecordScreen extends Component {
             margin-bottom:50px;
           }
           .filterBox .boxLeft {
-            border-bottom: 1px solid #d8d8d8;
+            border-bottom: 1px solid #dbdbdb;
           }
-          .filterBox .boxLeft button {
+          .filterBox .boxLeft label{
+            float: left;
+            margin: 21px 0 21px 15px;
+          }
+          .filterBox .boxRight button {
             width: auto;
-            margin-left: 15px;
+            margin: 16px 15px 16px 0;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42,205,200,1);
+            font-size: 12px;
+            background: none;
           }
-          .formList {
-            margin: 0;
-          }
-          .formListBox {
-            display: flex;
+          .formListCenter{
+            display:flex;
+            width: 1000px;
+            margin: 25px auto;
+            // background: #ababab;
             flex-direction: column;
           }
-          .formList ul li {
-            margin-top: 20px;
-          }
-          .formListBox textarea {
-            width: 479px;
-            height: 60px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            resize: none;
-            margin-top: 10px;
-            border: 1px solid #d8d8d8;
-          }
-          .formListBox input {
-            width: 479px;
-            height: 30px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            margin-top: 10px;
-          }
-          .chooseFile {
-            // height: 66px;
-            margin-top: 42px;
+          .alergyBlank{
             display:flex;
-            position: relative;
           }
-          .chooseFile input{
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height:100%;
-            margin: 0;
+          .alergyBlank div{
+            flex:1;
+            width:50%;
+            display:flex;
+            flex-direction: column;
           }
-          .chooseFile button {
-            height: 30px;
-            width: 200px;
-            border: 1px dashed #d9d9d9;
-            border-radius: 4px;
-            background: transparent;
-            cursor: pointer;
-            color: rgba(102, 102, 102, 1);
+          .alergyBlank div label{
+            width:100%;
           }
-          .chooseFile a {
-            width: 145px;
-            height: 34px;
-            font-size: 12px;
-            font-family: PingFangSC-Regular;
-            color: rgba(102, 102, 102, 1);
-            line-height: 15px;
-            display: block;
+          .alergyBlank div input{
+            width:479px;
+            height:30px; 
+            background:rgba(245,248,249,1);
+            border-radius: 4px ; 
+            border:1px solid #d8d8d8;
+            margin-top: 15px;
           }
-          .chooseTemp {
-            font-size: 14px;
-            font-family: PingFangSC-Regular;
-            color: rgba(49, 176, 179, 1);
-            margin-top: 71px;
-            cursor: pointer;
+          .feeScheduleBox{
+            margin-left: 0;
+            width: 1000px;
+          }
+          .feeScheduleBox ul li>div:first-child{
+            flex:2;
           }
           .formListBottom {
             width: 1000px;
