@@ -4,7 +4,6 @@ import NewListDetails from './screens/newListDetail_screen'
 import TriageScreen from './screens/triage/triage_screen'
 import AddReservation from './screens/reservation_add_screen'
 import AddmisionScreen from './screens/addmission'
-import ChargeDetails from './screens/chargeDetail_screen'
 import AppointmentListScreen from './screens/triage/appointment_list_screen'
 import AppointmentAddScreen from './screens/triage/appointment_add_screen'
 import TriageRecordScreen from './screens/triage/triage_record_screen'
@@ -15,6 +14,9 @@ import AlreadyChargedScreen from './screens/charge/alreadyCharged_screen'
 import RefundedScreen from './screens/charge/refunded_screen'
 import OrderManagementScreen from './screens/charge/orderManagement_screen'
 import TollScreen from './screens/charge/toll_screen'
+import PendingDrugScreen from './screens/drugdelivery/pending_drug_screen'
+import DrugHasBeenIssuedScreen from './screens/drugdelivery/drug_hasbeen_issued_screen'
+import DrugHasBeenWithdrawnScreen from './screens/drugdelivery/drug_hasbeen_withdrawn_screen'
 
 export {
   RegistrationAddScreen,
@@ -34,5 +36,8 @@ export {
   RefundedScreen,
   OrderManagementScreen,
   TollScreen,
-  NewListDetails
+  NewListDetails,
+  PendingDrugScreen,
+  DrugHasBeenIssuedScreen,
+  DrugHasBeenWithdrawnScreen
 }
