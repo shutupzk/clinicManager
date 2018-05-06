@@ -1,11 +1,12 @@
 {
   "apps" : [{
-    "name"        : "clinic_manage",
-    "script"      : "NODE_ENV=production node server.js",
+    "name"        : "manage-jytk",
+    "script"      : "server.js",
     "watch"       : true,
     "env":{
       "NODE_ENV": "production"
     },
-    "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    "log_date_format": "YYYY-MM-DD HH:mm:ss",
+    "exec_interpreter" : "node"
   }]
 }
