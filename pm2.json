@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"        : "manage-jytk",
+    "name"        : "clinic-manage",
     "script"      : "server.js",
     "watch"       : true,
     "env":{
