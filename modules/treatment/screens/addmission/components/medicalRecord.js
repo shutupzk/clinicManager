@@ -104,7 +104,7 @@ class PrescriptionScreen extends Component {
         <style jsx>{`
           .filterBox{
             flex-direction: column;
-            margin-top: -10px;
+            // margin-top: -10px;
             margin-bottom:50px;
           }
           .filterBox .boxLeft{

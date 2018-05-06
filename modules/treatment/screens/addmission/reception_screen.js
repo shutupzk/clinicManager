@@ -138,6 +138,14 @@ class RecptionScreen extends Component {
         <Confirm ref='myConfirm' />
         <style jsx>
           {`
+            .childTopBar{
+              width: 1098px;
+              margin: 31px 0 0 66px;
+              background: #ffffff;
+            }
+            .childTopBar span{
+              margin:0;
+            }
             .filterBox {
               margin: 20px 0 0 65px;
               display: flex;
