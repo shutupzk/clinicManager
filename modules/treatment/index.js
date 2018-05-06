@@ -2,7 +2,6 @@ import RegistrationAddScreen from './screens/registration/registration_add_scree
 import RegistrationListScreen from './screens/registration/registration_list_screen'
 // import NewListDetails from './screens/newListDetail_screen'
 import TriageScreen from './screens/triage/triage_screen'
-import AddReservation from './screens/reservation_add_screen'
 import AddmisionScreen from './screens/addmission'
 import AppointmentListScreen from './screens/triage/appointment_list_screen'
 import AppointmentAddScreen from './screens/triage/appointment_add_screen'
@@ -27,7 +26,6 @@ export {
   RegistrationListScreen,
   ListDetailScreen,
   TriageScreen,
-  AddReservation,
   AddmisionScreen,
   AppointmentListScreen,
   AppointmentAddScreen,

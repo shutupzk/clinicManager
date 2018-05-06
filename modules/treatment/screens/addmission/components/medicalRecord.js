@@ -69,6 +69,7 @@ class PrescriptionScreen extends Component {
               <li>
                 <label>上传文件</label>
                 <div className={'chooseFile'}>
+                  <input type='file' />
                   <button> + 添加文件</button>
                   <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
                 </div>
@@ -143,7 +144,15 @@ class PrescriptionScreen extends Component {
           .chooseFile {
             // height: 66px;
             margin-top: 42px;
-            display: flex;
+            display:flex;
+            position: relative;
+          }
+          .chooseFile input{
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height:100%;
+            margin: 0;
           }
           .chooseFile button {
             height: 30px;
