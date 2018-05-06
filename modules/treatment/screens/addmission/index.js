@@ -144,7 +144,7 @@ class AddmisionScreen extends Component {
                       <a>接诊医生：</a>
                       <a>
                         {patient.doctor_name}
-                        {patient.status === 20 ? ` \\ 已等候${waittingTime}` : ''}
+                        {patient.status === 20 ? ` \\ 已等候 ${waittingTime}` : ''}
                       </a>
                     </span>
                     <span>
