@@ -5,11 +5,48 @@ class MedicalRecordScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      c_presc_btn: 0,
+      cPrescItemArray: [],
+      selItem: 'wPresc'
     }
   }
   // 添加中药处方项
   addChineseMedicinePres() {
-
+    const {c_presc_btn, cPrescItemArray, selItem} = this.state
+    // let array = []
+    return (
+      <div>
+        {cPrescItemArray.map((item, index) => <div
+          onClick={() => {
+            this.setState({selItem: item.id})
+          }}
+          className={'prescItem ' + (selItem === item.id ? 'sel' : '')}
+          ref={item.id}>{item.name}</div>)}
+        <style jsx>{`
+          .prescItem{
+            float: left;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42,205,200,1);
+            font-size: 12px;
+            margin: 16px 0;
+            background: none;
+            cursor: pointer;
+            width:100px;
+            margin-left:10px;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .sel{
+            background: rgba(42,205,200,1);
+            color: rgba(255,255,255,1);
+            border: none;
+          }
+        `}</style>
+      </div>
+    )
   }
   // 显示处方详情
   renderPrescriptionDetail() {
@@ -56,24 +93,43 @@ class MedicalRecordScreen extends Component {
             <div>操作</div>
           </li>
         </ul>
+        <style jsx>{`
+          .feeScheduleBox{
+            margin-left: 0;
+            width: 1000px;
+          }
+          .feeScheduleBox ul li>div:first-child{
+            flex:2;
+          }
+        `}</style>
       </div>
     )
   }
   render() {
+    let {c_presc_btn, selItem, cPrescItemArray} = this.state
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
-          {/* <label>
-            <input type='radio' name='prescriptionType' />
-            西/成药处方1
-          </label>
-          <label>
-            <input type='radio' name='prescriptionType' />
-            中/成药处方1
-          </label> */}
-          <button>西/成药处方</button>
-          {this.addChineseMedicinePres()}
-          <button>中药处方</button>
+          <div className={'prescriptionLank'}>
+            <div className={'prescItem ' + (selItem === 'wPresc' ? 'sel' : '')}
+              onClick={() => {
+                this.setState({selItem: 'wPresc'})
+              }}
+            >西/成药处方</div>
+            {this.addChineseMedicinePres()}
+            <button onClick={e => {
+              c_presc_btn++
+              cPrescItemArray = []
+              for (let i = 0; i < c_presc_btn; i++) {
+                let item = {
+                  name: '中药处方' + (i + 1),
+                  id: 'cPresc' + (i + 1)
+                }
+                cPrescItemArray.push(item)
+              }
+              this.setState({c_presc_btn})
+            }}> + 中药处方</button>
+          </div>
           <div className={'boxRight'}>
             <button>选择模板</button>
             <button>复制处方</button>
@@ -103,6 +159,31 @@ class MedicalRecordScreen extends Component {
           </div>
         </div>
         <style jsx>{`
+          .prescriptionLank{
+
+          }
+          .prescriptionLank button,
+          .prescriptionLank .prescItem{
+            float: left;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42,205,200,1);
+            font-size: 12px;
+            margin: 16px 0;
+            background: none;
+            cursor: pointer;
+            width:100px;
+            margin-left:10px;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .prescriptionLank .sel{
+            background: rgba(42,205,200,1);
+            color: rgba(255,255,255,1);
+            border: none;
+          }
           .filterBox {
             flex-direction: column;
             // margin-top: -10px;
@@ -151,13 +232,6 @@ class MedicalRecordScreen extends Component {
             border-radius: 4px ; 
             border:1px solid #d8d8d8;
             margin-top: 15px;
-          }
-          .feeScheduleBox{
-            margin-left: 0;
-            width: 1000px;
-          }
-          .feeScheduleBox ul li>div:first-child{
-            flex:2;
           }
           .formListBottom {
             width: 1000px;
