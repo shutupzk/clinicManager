@@ -18,7 +18,7 @@ class RightContent extends Component {
 		// this.onWindowResize.bind(this);
     this.state = {
       showLogutBtn: false,
-      windowWidth: 1920
+			windowWidth: 1920
     }
   }
 

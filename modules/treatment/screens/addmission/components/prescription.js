@@ -7,19 +7,73 @@ class MedicalRecordScreen extends Component {
     this.state = {
     }
   }
+  // 添加中药处方项
+  addChineseMedicinePres() {
 
+  }
+  // 显示处方详情
+  renderPrescriptionDetail() {
+    return (
+      <div className={'feeScheduleBox'}>
+        <ul>
+          <li>
+            <div>药品名称</div>
+            <div>规格</div>
+            <div>库存</div>
+            <div>单次剂量</div>
+            <div>用法</div>
+            <div>用药频次</div>
+            <div>天数</div>
+            <div>总量</div>
+            <div>药房</div>
+            <div>用药说明</div>
+            <div>操作</div>
+          </li>
+          <li>
+            <div>药品名称</div>
+            <div>规格</div>
+            <div>库存</div>
+            <div>单次剂量</div>
+            <div>用法</div>
+            <div>用药频次</div>
+            <div>天数</div>
+            <div>总量</div>
+            <div>药房</div>
+            <div>用药说明</div>
+            <div>操作</div>
+          </li>
+          <li>
+            <div>药品名称</div>
+            <div>规格</div>
+            <div>库存</div>
+            <div>单次剂量</div>
+            <div>用法</div>
+            <div>用药频次</div>
+            <div>天数</div>
+            <div>总量</div>
+            <div>药房</div>
+            <div>用药说明</div>
+            <div>操作</div>
+          </li>
+        </ul>
+      </div>
+    )
+  }
   render() {
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
-          <label>
+          {/* <label>
             <input type='radio' name='prescriptionType' />
             西/成药处方1
           </label>
           <label>
             <input type='radio' name='prescriptionType' />
             中/成药处方1
-          </label>
+          </label> */}
+          <button>西/成药处方</button>
+          {this.addChineseMedicinePres()}
+          <button>中药处方</button>
           <div className={'boxRight'}>
             <button>选择模板</button>
             <button>复制处方</button>
@@ -36,49 +90,7 @@ class MedicalRecordScreen extends Component {
               <input type='text' />
             </div>
           </div>
-          <div className={'feeScheduleBox'}>
-            <ul>
-              <li>
-                <div>药品名称</div>
-                <div>规格</div>
-                <div>库存</div>
-                <div>单次剂量</div>
-                <div>用法</div>
-                <div>用药频次</div>
-                <div>天数</div>
-                <div>总量</div>
-                <div>药房</div>
-                <div>用药说明</div>
-                <div>操作</div>
-              </li>
-              <li>
-                <div>药品名称</div>
-                <div>规格</div>
-                <div>库存</div>
-                <div>单次剂量</div>
-                <div>用法</div>
-                <div>用药频次</div>
-                <div>天数</div>
-                <div>总量</div>
-                <div>药房</div>
-                <div>用药说明</div>
-                <div>操作</div>
-              </li>
-              <li>
-                <div>药品名称</div>
-                <div>规格</div>
-                <div>库存</div>
-                <div>单次剂量</div>
-                <div>用法</div>
-                <div>用药频次</div>
-                <div>天数</div>
-                <div>总量</div>
-                <div>药房</div>
-                <div>用药说明</div>
-                <div>操作</div>
-              </li>
-            </ul>
-          </div>
+          {this.renderPrescriptionDetail()}
         </div>
         <div className={'formListBottom'}>
           <div className={'bottomCenter'}>
