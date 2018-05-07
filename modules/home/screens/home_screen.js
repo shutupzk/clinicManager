@@ -7,17 +7,17 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 
 class Home extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.autoSignin()
   }
 
   // 自动登陆，
-  async autoSignin () {
+  async autoSignin() {
     // const error = await this.props.signin({ username: null, password: null })
     // if (error) {
     //   this.props.showPrompt({text: error})
@@ -29,14 +29,18 @@ class Home extends Component {
     // } else {
     //   Router.push('/signin')
     // }
-    const token = await localforage.getItem('token')
-    if (token) {
-      Router.push(HOME_PAGE.url)
-    } else {
+    try {
+      const token = await localforage.getItem('token')
+      if (token) {
+        Router.push(HOME_PAGE.url)
+      } else {
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
-  render () {
+  render() {
     if (this.props.loading) {
       return <Loading showLoading />
     }
@@ -44,7 +48,7 @@ class Home extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     // token: state.user.data.token,
     // adminId: state.user.data.id,

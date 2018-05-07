@@ -12,8 +12,12 @@ export default function(Component) {
     }
 
     async componentWillMount() {
-      let token = await localforage.getItem('token')
-      this.setState({ token })
+      try {
+        let token = await localforage.getItem('token')
+        this.setState({ token })
+      } catch (e) {
+        console.log('get Token Error', e.message())
+      }
     }
 
     render() {
