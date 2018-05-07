@@ -7,65 +7,28 @@ class MedicalRecordScreen extends Component {
     this.state = {
       c_presc_btn: 0,
       cPrescItemArray: [],
-      selItem: 'wPresc'
+      cPrescArray: [],
+      selItem: 'wPresc',
+      selIndex: 1
     }
   }
   // 添加中药处方项
   addChineseMedicinePres() {
-    const {c_presc_btn, cPrescItemArray, selItem} = this.state
-    // let array = []
-    return (
-      <div>
-        {cPrescItemArray.map((item, index) => <div
-          onClick={() => {
-            this.setState({selItem: item.id})
-          }}
-          className={'prescItem ' + (selItem === item.id ? 'sel' : '')}
-          ref={item.id}>{item.name}</div>)}
-        <style jsx>{`
-          .prescItem{
-            float: left;
-            height: 28px;
-            border-radius: 4px;
-            border: 1px solid #2acdc8;
-            color: rgba(42,205,200,1);
-            font-size: 12px;
-            margin: 16px 0;
-            background: none;
-            cursor: pointer;
-            width:100px;
-            margin-left:10px;
-            display:flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .sel{
-            background: rgba(42,205,200,1);
-            color: rgba(255,255,255,1);
-            border: none;
-          }
-        `}</style>
-      </div>
-    )
+    const { cPrescItemArray } = this.state
+    this.setState({ cPrescItemArray: [...cPrescItemArray, []] })
+  }
+  // 删除中药处方项
+  removecPrescItem(index) {
+    const { cPrescItemArray } = this.state
+    let array = [...cPrescItemArray]
+    array.splice(index, 1)
+    this.setState({ cPrescItemArray: array })
   }
   // 显示处方详情
   renderPrescriptionDetail() {
     return (
       <div className={'feeScheduleBox'}>
         <ul>
-          <li>
-            <div>药品名称</div>
-            <div>规格</div>
-            <div>库存</div>
-            <div>单次剂量</div>
-            <div>用法</div>
-            <div>用药频次</div>
-            <div>天数</div>
-            <div>总量</div>
-            <div>药房</div>
-            <div>用药说明</div>
-            <div>操作</div>
-          </li>
           <li>
             <div>药品名称</div>
             <div>规格</div>
@@ -105,8 +68,38 @@ class MedicalRecordScreen extends Component {
       </div>
     )
   }
+  renderCPrescDetail() {
+    const {selIndex, cPrescItemArray} = this.setState
+    let array = cPrescItemArray[selIndex]
+    return (
+      <div>
+        <div className={'feeScheduleBox'}>
+          <ul>
+            <li>
+              <div>药品名称</div>
+              <div>库存</div>
+              <div>单次剂量</div>
+              <div>单位</div>
+              <div>特殊要求</div>
+              <div>总量</div>
+              <div>新增</div>
+            </li>
+          </ul>
+          <style jsx>{`
+            .feeScheduleBox{
+              margin-left: 0;
+              width: 1000px;
+            }
+            .feeScheduleBox ul li>div:first-child{
+              flex:2;
+            }
+          `}</style>
+        </div>
+      </div>
+    )
+  }
   render() {
-    let {c_presc_btn, selItem, cPrescItemArray} = this.state
+    const {selItem, cPrescItemArray} = this.state
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
@@ -116,18 +109,20 @@ class MedicalRecordScreen extends Component {
                 this.setState({selItem: 'wPresc'})
               }}
             >西/成药处方</div>
-            {this.addChineseMedicinePres()}
+            {cPrescItemArray.map((item, index) => {
+              return (
+                <div className={'prescItem ' + (selItem === 'cPresc' + index ? 'sel' : '')}
+                  onClick={() => {
+                    this.setState({selItem: 'cPresc' + index, selIndex: index + 1})
+                  }}
+                >
+                  中药处方{index + 1}
+                  <i onClick={() => this.removecPrescItem(index)}>×</i>
+                </div>
+              )
+            })}
             <button onClick={e => {
-              c_presc_btn++
-              cPrescItemArray = []
-              for (let i = 0; i < c_presc_btn; i++) {
-                let item = {
-                  name: '中药处方' + (i + 1),
-                  id: 'cPresc' + (i + 1)
-                }
-                cPrescItemArray.push(item)
-              }
-              this.setState({c_presc_btn})
+              this.addChineseMedicinePres()
             }}> + 中药处方</button>
           </div>
           <div className={'boxRight'}>
@@ -146,7 +141,7 @@ class MedicalRecordScreen extends Component {
               <input type='text' />
             </div>
           </div>
-          {this.renderPrescriptionDetail()}
+          {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
         </div>
         <div className={'formListBottom'}>
           <div className={'bottomCenter'}>
@@ -178,11 +173,19 @@ class MedicalRecordScreen extends Component {
             display:flex;
             align-items: center;
             justify-content: center;
+            position:relative;
           }
           .prescriptionLank .sel{
             background: rgba(42,205,200,1);
             color: rgba(255,255,255,1);
             border: none;
+          }
+          .prescItem i{
+            position:absolute;
+            top: 0;
+            right: 2px;
+            font-size: 18px;
+            line-height: 15px;
           }
           .filterBox {
             flex-direction: column;
