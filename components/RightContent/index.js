@@ -13,18 +13,19 @@ import { connect } from 'react-redux'
 class RightContent extends Component {
   constructor(props) {
     super(props)
-		// console.log(window,window);
-		// let windowWidth = window.innerWidth;
-		// this.onWindowResize.bind(this);
+    // console.log(window,window);
+    // let windowWidth = window.innerWidth;
+    // this.onWindowResize.bind(this);
     this.state = {
       showLogutBtn: false,
-      windowWidth: 1920
+      windowWidth: 1920,
+      windowHeight: 1080
     }
   }
 
-	// 登出
+  // 登出
   async doSignout() {
-		// localforage.clear()
+    // localforage.clear()
     let error = await this.props.signout()
     if (error) return alert('注销失败：' + error)
     Router.push('/login')
@@ -41,7 +42,7 @@ class RightContent extends Component {
               showLogutBtn: !prevshowLogutBtn
             })
           }}
-				>
+        >
           <img src='/static/icons/doctorheader.png' style={{ height: '.14rem' }} />
           <span className='left'>{'管理员'}</span>
           <article className='sanjiao headerUserBack' style={{ borderTopColor: theme.nfontcolor }} />
@@ -51,17 +52,17 @@ class RightContent extends Component {
             onClick={() => {
               this.doSignout()
             }}
-					>
-						退出
-					</article>
+          >
+            退出
+          </article>
         </section>
       </div>
     )
   }
-	// 退出登录
-	// logout() {
-	//   Router.push('/login')
-	// }
+  // 退出登录
+  // logout() {
+  //   Router.push('/login')
+  // }
   componentWillMount() {}
   componentDidMount() {
     this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight })
@@ -76,18 +77,18 @@ class RightContent extends Component {
   }
 
   render() {
-		// this.state.winWidth = window.innerWidth;
-		// const hideRightCon = this.props.hideRightCon || false
-		// const { showLogutBtn } = this.state
+    // this.state.winWidth = window.innerWidth;
+    // const hideRightCon = this.props.hideRightCon || false
+    // const { showLogutBtn } = this.state
     const curUrl = this.props.url && this.props.url.pathname
-		// const imgstylenormal = { height: '.26rem', padding: '0 .1rem 0 .3rem', marginTop: '.16rem' }
-		// console.log('curUrl =========', curUrl)
-		// const url = (this.props.url && this.props.url.pathname) || '/'
-		// const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
-		// const winWidth = this.state.winWidth;
-		// console.log("winWidth"+winWidth);
-		// window.re();
-		// console.log("curUrl",this.props.url.pathname+"==="+curUrl);
+    // const imgstylenormal = { height: '.26rem', padding: '0 .1rem 0 .3rem', marginTop: '.16rem' }
+    // console.log('curUrl =========', curUrl)
+    // const url = (this.props.url && this.props.url.pathname) || '/'
+    // const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
+    // const winWidth = this.state.winWidth;
+    // console.log("winWidth"+winWidth);
+    // window.re();
+    // console.log("curUrl",this.props.url.pathname+"==="+curUrl);
     return (
       <div className={'rightContent'} style={{ width: this.state.windowWidth - 256 }}>
         <div className={'right_nav_menu'}>
@@ -100,7 +101,7 @@ class RightContent extends Component {
                   onClick={() => {
                     Router.push(item.navigateName)
                   }}
-								>
+                >
                   {item.title}
                   {/* <img src={'/static/home/u141.png'} /> */}
                 </li>
@@ -126,12 +127,14 @@ class RightContent extends Component {
               onClick={() => {
                 this.doSignout()
               }}
-						>
-							退出
-						</span>
+            >
+              退出
+            </span>
           </div>
         </div>
-        <div className={'contentBox'} style={{height: this.state.windowHeight - 64}}>{this.props.children}</div>
+        <div className={'contentBox'} style={{ height: this.state.windowHeight - 64 }}>
+          {this.props.children}
+        </div>
         <style jsx>{`
 					.rightContent {
 						// float: left;
@@ -235,10 +238,10 @@ class RightContent extends Component {
 
 function mapStateToProps(state) {
   return {
-		// token: state.user.data.token,
+    // token: state.user.data.token,
     name: state.user.data.name
-		// loading: state.user.loading,
-		// error: state.user.error
+    // loading: state.user.loading,
+    // error: state.user.error
   }
 }
 
