@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import localforage from 'localforage'
 
 class HeaderBar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showLogutBtn: false
@@ -17,14 +17,18 @@ class HeaderBar extends Component {
   }
 
   // 登出
-  async doSignout () {
+  async doSignout() {
     // let error = await this.props.signout()
     // console.log(error)
-    localforage.clear()
-    Router.push('/signin')
+    try {
+      localforage.clear()
+      Router.push('/signin')
+    } catch (e) {
+      console.log(e)
+    }
   }
 
-  headerUser () {
+  headerUser() {
     return (
       <div className={'headerUser left'}>
         <div
@@ -55,12 +59,12 @@ class HeaderBar extends Component {
       </div>
     )
   }
-  //退出登录
-  logout(){
+  // 退出登录
+  logout() {
     Router.push('/login')
   }
 
-  render () {
+  render() {
     // const hideRightCon = this.props.hideRightCon || false
     // const { showLogutBtn } = this.state
     const curUrl = this.props.url && this.props.url.pathname
@@ -162,7 +166,7 @@ class HeaderBar extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     // token: state.user.data.token,
     // adminId: state.user.data.id,

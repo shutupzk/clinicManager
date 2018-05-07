@@ -16,7 +16,7 @@ export default function(Component) {
         let token = await localforage.getItem('token')
         this.setState({ token })
       } catch (e) {
-        console.log('get Token Error', e.message())
+        console.log('get Token Error', e)
       }
     }
 
