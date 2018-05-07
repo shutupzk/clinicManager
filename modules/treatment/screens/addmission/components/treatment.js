@@ -15,6 +15,15 @@ class TreatmentScreen extends Component {
     return [{ value: 1, label: '静脉输液（门诊/不含输液器)' }, { value: 2, label: '静脉输液' }]
   }
 
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
+      }
+    }
+    return null
+  }
+
   getUnitoptions() {
     return [{ value: 1, label: '次' }, { value: 2, label: '个' }]
   }
@@ -31,9 +40,12 @@ class TreatmentScreen extends Component {
     this.setState({ treatments: array })
   }
 
-  setItemValue(e, index, key) {
+  setItemValue(e, index, key, type = 1) {
     const { treatments } = this.state
-    let value = e.target.value
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
     let array = [...treatments]
     array[index][key] = value
     this.setState({ treatments: array })
@@ -64,12 +76,24 @@ class TreatmentScreen extends Component {
                 <li key={index}>
                   <div>
                     <div style={{ width: '100%' }}>
-                      <Select placeholder='搜索名称' height={38} options={this.getNameOptions()} />
+                      <Select
+                        value={this.getSelectValue(treatments[index].treatment_id, this.getNameOptions())}
+                        onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
+                        placeholder='搜索名称'
+                        height={38}
+                        options={this.getNameOptions()}
+                      />
                     </div>
                   </div>
                   <div>
                     <div style={{ width: '100%' }}>
-                      <Select placeholder='搜索单位' height={38} options={this.getUnitoptions()} />
+                      <Select
+                        value={this.getSelectValue(treatments[index].unit_id, this.getUnitoptions())}
+                        onChange={({ value }) => this.setItemValue(value, index, 'unit_id', 2)}
+                        placeholder='搜索单位'
+                        height={38}
+                        options={this.getUnitoptions()}
+                      />
                     </div>
                   </div>
                   <div>
@@ -140,7 +164,20 @@ class TreatmentScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  return {}
+  return {
+    treatments: [
+      {
+        id: 1,
+        name: '静脉输液（门诊/不含输液器)',
+        py_code: 'JMSY'
+      },
+      {
+        id: 1,
+        name: '静脉输液（门诊/不含输液器)',
+        py_code: 'JMSY'
+      }
+    ]
+  }
 }
 
 export default connect(mapStateToProps, {})(TreatmentScreen)
