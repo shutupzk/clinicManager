@@ -9,7 +9,7 @@ class MedicalRecordScreen extends Component {
       cPrescItemArray: [],
       cPrescArray: [],
       selItem: 'wPresc',
-      selIndex: 1
+      selIndex: 0
     }
   }
   // 添加中药处方项
@@ -68,8 +68,24 @@ class MedicalRecordScreen extends Component {
       </div>
     )
   }
+  // 添加中药处方药品
+  addCPresc() {
+    const {selIndex, cPrescItemArray} = this.state
+    cPrescItemArray[selIndex].push({})
+    this.setState({ cPrescItemArray })
+  }
+  // 删除中药处方药品
+  removecPresc(index) {
+    const { selIndex, cPrescItemArray } = this.state
+    let array = cPrescItemArray[selIndex]
+    array.splice(index, 1)
+    cPrescItemArray[selIndex] = array
+    this.setState({ cPrescItemArray })
+  }
+  // 中药处方详情
   renderCPrescDetail() {
-    const {selIndex, cPrescItemArray} = this.setState
+    const {selIndex, cPrescItemArray} = this.state
+    console.log('selIndex=====', selIndex, cPrescItemArray)
     let array = cPrescItemArray[selIndex]
     return (
       <div>
@@ -82,8 +98,25 @@ class MedicalRecordScreen extends Component {
               <div>单位</div>
               <div>特殊要求</div>
               <div>总量</div>
-              <div>新增</div>
+              <div onClick={() => {
+                this.addCPresc()
+              }}>新增</div>
             </li>
+            {array.map((item, index) => {
+              return (
+                <li>
+                  <div>药品名称</div>
+                  <div>库存</div>
+                  <div>单次剂量</div>
+                  <div>单位</div>
+                  <div>特殊要求</div>
+                  <div>总量</div>
+                  <div onClick={() => {
+                    this.removecPresc(index)
+                  }}>删除</div>
+                </li>
+              )
+            })}
           </ul>
           <style jsx>{`
             .feeScheduleBox{
@@ -113,7 +146,7 @@ class MedicalRecordScreen extends Component {
               return (
                 <div className={'prescItem ' + (selItem === 'cPresc' + index ? 'sel' : '')}
                   onClick={() => {
-                    this.setState({selItem: 'cPresc' + index, selIndex: index + 1})
+                    this.setState({selItem: 'cPresc' + index, selIndex: index})
                   }}
                 >
                   中药处方{index + 1}
