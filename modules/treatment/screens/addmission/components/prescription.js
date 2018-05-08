@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Select } from '../../../../../components'
 // 处方
 class MedicalRecordScreen extends Component {
   constructor(props) {
@@ -7,15 +8,56 @@ class MedicalRecordScreen extends Component {
     this.state = {
       c_presc_btn: 0,
       cPrescItemArray: [],
-      cPrescArray: [],
+      wPrescItemArray: [],
       selItem: 'wPresc',
       selIndex: 0
     }
   }
+  getCNameOptions() {
+    return [{ value: 1, label: '黄芪' }, { value: 2, label: '静脉输液' }]
+  }
+  getWNameOptions() {
+    return [{ value: 1, label: '5%葡萄糖注射液1111' }, { value: 2, label: '静脉输液' }]
+  }
+  getUnitoptions() {
+    return [{ value: 1, label: '次' }, { value: 2, label: '个' }, { value: 3, label: '颗' }]
+  }
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
+      }
+    }
+    return null
+  }
+  // 设置中药药品信息
+  setCItemValue(e, index, key, type = 1) {
+    const { selIndex, cPrescItemArray } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = cPrescItemArray[selIndex].data // [...treatments]
+    array[index][key] = value
+    cPrescItemArray[selIndex].data = array
+    this.setState({ cPrescItemArray })
+  }
+  // 设置中药药品总信息
+  setCInfoValue(e, key, type = 1) {
+    const { selIndex, cPrescItemArray } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let info = cPrescItemArray[selIndex].info // [...treatments]
+    info[key] = value
+    cPrescItemArray[selIndex].info = info
+    this.setState({ cPrescItemArray })
+  }
   // 添加中药处方项
   addChineseMedicinePres() {
     const { cPrescItemArray } = this.state
-    this.setState({ cPrescItemArray: [...cPrescItemArray, []] })
+    this.setState({ cPrescItemArray: [...cPrescItemArray, {info: {}, data: []}] })
   }
   // 删除中药处方项
   removecPrescItem(index) {
@@ -24,8 +66,21 @@ class MedicalRecordScreen extends Component {
     array.splice(index, 1)
     this.setState({ cPrescItemArray: array })
   }
+  // 添加西药处方药品
+  addWestMedicinePres() {
+    const { wPrescItemArray } = this.state
+    this.setState({ wPrescItemArray: [...wPrescItemArray, {}] })
+  }
+  // 删除西药处方药品
+  removeWestMedicinePres(index) {
+    const { wPrescItemArray } = this.state
+    let array = [...wPrescItemArray]
+    array.splice(index, 1)
+    this.setState({ wPrescItemArray: array })
+  }
   // 显示处方详情
   renderPrescriptionDetail() {
+    const { wPrescItemArray } = this.state
     return (
       <div className={'feeScheduleBox'}>
         <ul>
@@ -41,22 +96,28 @@ class MedicalRecordScreen extends Component {
             <div>药房</div>
             <div>用药说明</div>
             <div className={'addItem'} onClick={() => {
-
+              this.addWestMedicinePres()
             }}>新增</div>
           </li>
-          <li>
-            <div>药品名称</div>
-            <div>规格</div>
-            <div>库存</div>
-            <div>单次剂量</div>
-            <div>用法</div>
-            <div>用药频次</div>
-            <div>天数</div>
-            <div>总量</div>
-            <div>药房</div>
-            <div>用药说明</div>
-            <div>删除</div>
-          </li>
+          {wPrescItemArray.map((item, index) => {
+            return (
+              <li key={index}>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div className={'removeItem'} onClick={() => {
+                  this.removeWestMedicinePres(index)
+                }}>删除</div>
+              </li>
+            )
+          })}
         </ul>
         <style jsx>{`
           .feeScheduleBox{
@@ -66,6 +127,14 @@ class MedicalRecordScreen extends Component {
           .feeScheduleBox ul li>div:first-child{
             flex:2;
           }
+          .addItem{
+            color: rgb(42, 205, 200);
+            cursor: pointer;
+          }
+          .removeItem{
+            color: red;
+            cursor: pointer;
+          }
         `}</style>
       </div>
     )
@@ -73,25 +142,26 @@ class MedicalRecordScreen extends Component {
   // 添加中药处方药品
   addCPresc() {
     const {selIndex, cPrescItemArray} = this.state
-    cPrescItemArray[selIndex].push({})
+    cPrescItemArray[selIndex].data.push({})
     this.setState({ cPrescItemArray })
   }
   // 删除中药处方药品
   removecPresc(index) {
     const { selIndex, cPrescItemArray } = this.state
-    let array = cPrescItemArray[selIndex]
+    let array = cPrescItemArray[selIndex].data
     array.splice(index, 1)
-    cPrescItemArray[selIndex] = array
+    cPrescItemArray[selIndex].data = array
     this.setState({ cPrescItemArray })
   }
   // 中药处方详情
   renderCPrescDetail() {
     const {selIndex, cPrescItemArray} = this.state
     console.log('selIndex=====', selIndex, cPrescItemArray)
-    let array = cPrescItemArray[selIndex] || []
+    let array = cPrescItemArray[selIndex].data || []
+    let info = cPrescItemArray[selIndex].info || {}
     return (
       <div>
-        <div className={'feeScheduleBox'}>
+        <div className={'tableDIV'}>
           <ul>
             <li>
               <div>药品名称</div>
@@ -107,29 +177,191 @@ class MedicalRecordScreen extends Component {
             {array.map((item, index) => {
               return (
                 <li>
-                  <div>药品名称</div>
-                  <div>库存</div>
-                  <div>单次剂量</div>
-                  <div>单位</div>
-                  <div>特殊要求</div>
-                  <div>总量</div>
-                  <div onClick={() => {
+                  <div>
+                    <div>
+                      <Select
+                        value={this.getSelectValue(array[index].drug_id, this.getCNameOptions())}
+                        onChange={e => this.setCItemValue(e.value, index, 'drug_id', 2)}
+                        placeholder='名称'
+                        height={38}
+                        options={this.getCNameOptions()}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    100000瓶
+                  </div>
+                  <div>
+                    <input
+                      value={array[index].dose}
+                      type='number'
+                      onChange={e => this.setCItemValue(e, index, 'dose')}
+                    />
+                  </div>
+                  <div>
+                    <div>
+                      <Select
+                        value={this.getSelectValue(array[index].unit_id, this.getUnitoptions())}
+                        onChange={({ value }) => this.setCItemValue(value, index, 'unit_id', 2)}
+                        placeholder='搜索单位'
+                        height={38}
+                        options={this.getUnitoptions()}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <input
+                      value={array[index].special_requirements}
+                      type='text'
+                      onChange={e => this.setCItemValue(e, index, 'special_requirements')}
+                    />
+                  </div>
+                  <div>
+                    <input
+                      value={array[index].total_amount}
+                      type='number'
+                      onChange={e => this.setCItemValue(e, index, 'total_amount')}
+                    />
+                  </div>
+                  <div className={'removeItem'} onClick={() => {
                     this.removecPresc(index)
                   }}>删除</div>
                 </li>
               )
             })}
           </ul>
-          <style jsx>{`
-            .feeScheduleBox{
-              margin-left: 0;
-              width: 1000px;
-            }
-            .feeScheduleBox ul li>div:first-child{
-              flex:2;
-            }
-          `}</style>
         </div>
+        <div className={'tableDIV'}>
+          <ul>
+            <li>
+              <div>用法</div>
+              <div>每日剂量</div>
+              <div>天数</div>
+              <div>单位</div>
+              <div>总剂量</div>
+              <div>频次</div>
+              <div>取药地点</div>
+              <div>服药要求</div>
+            </li>
+            <li>
+              <div>
+                <input
+                  value={info.default_remark}
+                  type='text'
+                  onChange={e => this.setCInfoValue(e, 'default_remark')}
+                />
+              </div>
+              <div>
+                <input
+                  value={info.once_dose}
+                  type='number'
+                  onChange={e => this.setCInfoValue(e, 'once_dose')}
+                />
+              </div>
+              <div>
+                <input
+                  value={info.days}
+                  type='number'
+                  onChange={e => this.setCInfoValue(e, 'days')}
+                />
+              </div>
+              <div>
+                <div>
+                  <Select
+                    value={this.getSelectValue(info.unit_id, this.getUnitoptions())}
+                    onChange={({ value }) => this.setCInfoValue(value, 'unit_id', 2)}
+                    placeholder='搜索单位'
+                    height={38}
+                    options={this.getUnitoptions()}
+                  />
+                </div>
+              </div>
+              <div>
+                <input
+                  value={info.total_dose}
+                  type='number'
+                  onChange={e => this.setCInfoValue(e, 'total_dose')}
+                />
+              </div>
+              <div>
+                <input
+                  value={info.frequency_id}
+                  type='number'
+                  onChange={e => this.setCInfoValue(e, 'frequency_id')}
+                />
+              </div>
+              <div>
+                <input
+                  value={info.get_address}
+                  type='text'
+                  onChange={e => this.setCInfoValue(e, 'get_address')}
+                />
+              </div>
+              <div>
+                <input
+                  value={info.requirements}
+                  type='text'
+                  onChange={e => this.setCInfoValue(e, 'requirements')}
+                />
+              </div>
+            </li>
+          </ul>
+        </div>
+        <style jsx>{`
+          .tableDIV {
+            display: flex;
+            width: 987px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin: 30px 0;
+          }
+          .tableDIV ul {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9e9e9;
+            border-bottom: none;
+          }
+          .tableDIV ul li {
+            display: flex;
+            height: 50px;
+            border-bottom: 1px solid #e9e9e9;
+            line-height: 40px;
+            text-align: center;
+          }
+          .tableDIV ul li:nth-child(1) {
+            background: rgba(247, 247, 247, 1);
+          }
+          .tableDIV ul li > div {
+            flex: 2;
+            border-left: 1px #e9e9e9 dashed;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+          }
+          .tableDIV ul li > div > div{
+            width:100%;
+          }
+          .tableDIV ul li > div > input {
+            width: 90%;
+            height: 30px;
+            border-radius: 4px;
+            outline-style: none;
+            border: none;
+          }
+          .tableDIV ul li > div:nth-child(1) {
+            flex: 3;
+          }
+          .addItem{
+            color: rgb(42, 205, 200);
+            cursor: pointer;
+          }
+          .removeItem{
+            color: red;
+            cursor: pointer;
+          }
+        `}</style>
       </div>
     )
   }
