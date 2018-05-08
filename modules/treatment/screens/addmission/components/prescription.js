@@ -5,21 +5,161 @@ class MedicalRecordScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      c_presc_btn: 0,
+      cPrescItemArray: [],
+      cPrescArray: [],
+      selItem: 'wPresc',
+      selIndex: 0
     }
   }
+  // 添加中药处方项
+  addChineseMedicinePres() {
+    const { cPrescItemArray } = this.state
+    this.setState({ cPrescItemArray: [...cPrescItemArray, []] })
+  }
+  // 删除中药处方项
+  removecPrescItem(index) {
+    const { cPrescItemArray } = this.state
+    let array = [...cPrescItemArray]
+    array.splice(index, 1)
+    this.setState({ cPrescItemArray: array })
+  }
+  // 显示处方详情
+  renderPrescriptionDetail() {
+    return (
+      <div className={'feeScheduleBox'}>
+        <ul>
+          <li>
+            <div>药品名称</div>
+            <div>规格</div>
+            <div>库存</div>
+            <div>单次剂量</div>
+            <div>用法</div>
+            <div>用药频次</div>
+            <div>天数</div>
+            <div>总量</div>
+            <div>药房</div>
+            <div>用药说明</div>
+            <div className={'addItem'} onClick={() => {
 
+            }}>新增</div>
+          </li>
+          <li>
+            <div>药品名称</div>
+            <div>规格</div>
+            <div>库存</div>
+            <div>单次剂量</div>
+            <div>用法</div>
+            <div>用药频次</div>
+            <div>天数</div>
+            <div>总量</div>
+            <div>药房</div>
+            <div>用药说明</div>
+            <div>删除</div>
+          </li>
+        </ul>
+        <style jsx>{`
+          .feeScheduleBox{
+            margin-left: 0;
+            width: 1000px;
+          }
+          .feeScheduleBox ul li>div:first-child{
+            flex:2;
+          }
+        `}</style>
+      </div>
+    )
+  }
+  // 添加中药处方药品
+  addCPresc() {
+    const {selIndex, cPrescItemArray} = this.state
+    cPrescItemArray[selIndex].push({})
+    this.setState({ cPrescItemArray })
+  }
+  // 删除中药处方药品
+  removecPresc(index) {
+    const { selIndex, cPrescItemArray } = this.state
+    let array = cPrescItemArray[selIndex]
+    array.splice(index, 1)
+    cPrescItemArray[selIndex] = array
+    this.setState({ cPrescItemArray })
+  }
+  // 中药处方详情
+  renderCPrescDetail() {
+    const {selIndex, cPrescItemArray} = this.state
+    console.log('selIndex=====', selIndex, cPrescItemArray)
+    let array = cPrescItemArray[selIndex] || []
+    return (
+      <div>
+        <div className={'feeScheduleBox'}>
+          <ul>
+            <li>
+              <div>药品名称</div>
+              <div>库存</div>
+              <div>单次剂量</div>
+              <div>单位</div>
+              <div>特殊要求</div>
+              <div>总量</div>
+              <div className={'addItem'} onClick={() => {
+                this.addCPresc()
+              }}>新增</div>
+            </li>
+            {array.map((item, index) => {
+              return (
+                <li>
+                  <div>药品名称</div>
+                  <div>库存</div>
+                  <div>单次剂量</div>
+                  <div>单位</div>
+                  <div>特殊要求</div>
+                  <div>总量</div>
+                  <div onClick={() => {
+                    this.removecPresc(index)
+                  }}>删除</div>
+                </li>
+              )
+            })}
+          </ul>
+          <style jsx>{`
+            .feeScheduleBox{
+              margin-left: 0;
+              width: 1000px;
+            }
+            .feeScheduleBox ul li>div:first-child{
+              flex:2;
+            }
+          `}</style>
+        </div>
+      </div>
+    )
+  }
   render() {
+    const {selItem, cPrescItemArray} = this.state
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
-          <label>
-            <input type='radio' name='prescriptionType' />
-            西/成药处方1
-          </label>
-          <label>
-            <input type='radio' name='prescriptionType' />
-            中/成药处方1
-          </label>
+          <div className={'prescriptionLank'}>
+            <div className={'prescItem ' + (selItem === 'wPresc' ? 'sel' : '')}
+              onClick={() => {
+                this.setState({selItem: 'wPresc'})
+              }}
+            >西/成药处方</div>
+            {cPrescItemArray.map((item, index) => {
+              return (
+                <div className={'prescItem ' + (selItem === 'cPresc' + index ? 'sel' : '')}
+                  onClick={() => {
+                    this.setState({selItem: 'cPresc' + index, selIndex: index})
+                  }}
+                >
+                  中药处方{index + 1}
+                  <i onClick={() => this.removecPrescItem(index)}>×</i>
+                </div>
+              )
+            })}
+            <button onClick={e => {
+              this.addChineseMedicinePres()
+            }}> + 中药处方</button>
+          </div>
           <div className={'boxRight'}>
             <button>选择模板</button>
             <button>复制处方</button>
@@ -36,49 +176,7 @@ class MedicalRecordScreen extends Component {
               <input type='text' />
             </div>
           </div>
-          <div className={'feeScheduleBox'}>
-            <ul>
-              <li>
-                <div>药品名称</div>
-                <div>规格</div>
-                <div>库存</div>
-                <div>单次剂量</div>
-                <div>用法</div>
-                <div>用药频次</div>
-                <div>天数</div>
-                <div>总量</div>
-                <div>药房</div>
-                <div>用药说明</div>
-                <div>操作</div>
-              </li>
-              <li>
-                <div>药品名称</div>
-                <div>规格</div>
-                <div>库存</div>
-                <div>单次剂量</div>
-                <div>用法</div>
-                <div>用药频次</div>
-                <div>天数</div>
-                <div>总量</div>
-                <div>药房</div>
-                <div>用药说明</div>
-                <div>操作</div>
-              </li>
-              <li>
-                <div>药品名称</div>
-                <div>规格</div>
-                <div>库存</div>
-                <div>单次剂量</div>
-                <div>用法</div>
-                <div>用药频次</div>
-                <div>天数</div>
-                <div>总量</div>
-                <div>药房</div>
-                <div>用药说明</div>
-                <div>操作</div>
-              </li>
-            </ul>
-          </div>
+          {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
         </div>
         <div className={'formListBottom'}>
           <div className={'bottomCenter'}>
@@ -91,6 +189,39 @@ class MedicalRecordScreen extends Component {
           </div>
         </div>
         <style jsx>{`
+          .prescriptionLank{
+
+          }
+          .prescriptionLank button,
+          .prescriptionLank .prescItem{
+            float: left;
+            height: 28px;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42,205,200,1);
+            font-size: 12px;
+            margin: 16px 0;
+            background: none;
+            cursor: pointer;
+            width:100px;
+            margin-left:10px;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            position:relative;
+          }
+          .prescriptionLank .sel{
+            background: rgba(42,205,200,1);
+            color: rgba(255,255,255,1);
+            border: none;
+          }
+          .prescItem i{
+            position:absolute;
+            top: 0;
+            right: 2px;
+            font-size: 18px;
+            line-height: 15px;
+          }
           .filterBox {
             flex-direction: column;
             // margin-top: -10px;
@@ -139,13 +270,6 @@ class MedicalRecordScreen extends Component {
             border-radius: 4px ; 
             border:1px solid #d8d8d8;
             margin-top: 15px;
-          }
-          .feeScheduleBox{
-            margin-left: 0;
-            width: 1000px;
-          }
-          .feeScheduleBox ul li>div:first-child{
-            flex:2;
           }
           .formListBottom {
             width: 1000px;

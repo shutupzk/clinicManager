@@ -3,16 +3,16 @@ import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
 
 // 病历
-class TreatmentScreen extends Component {
+class LaboratoryScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      treatments: []
+      laboratories: []
     }
   }
 
   getNameOptions() {
-    return [{ value: 1, label: '静脉输液（门诊/不含输液器)' }, { value: 2, label: '静脉输液' }]
+    return [{ value: 1, label: '肌红蛋白' }, { value: 2, label: '幽门螺杆菌抗原快速检测' }]
   }
 
   getSelectValue(value, array) {
@@ -29,30 +29,30 @@ class TreatmentScreen extends Component {
   }
 
   addColumn() {
-    const { treatments } = this.state
-    this.setState({ treatments: [...treatments, {}] })
+    const { laboratories } = this.state
+    this.setState({ laboratories: [...laboratories, {}] })
   }
 
   removeColumn(index) {
-    const { treatments } = this.state
-    let array = [...treatments]
+    const { laboratories } = this.state
+    let array = [...laboratories]
     array.splice(index, 1)
-    this.setState({ treatments: array })
+    this.setState({ laboratories: array })
   }
 
   setItemValue(e, index, key, type = 1) {
-    const { treatments } = this.state
+    const { laboratories } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
-    let array = [...treatments]
+    let array = [...laboratories]
     array[index][key] = value
-    this.setState({ treatments: array })
+    this.setState({ laboratories: array })
   }
 
   render() {
-    const { treatments } = this.state
+    const { laboratories } = this.state
     return (
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -63,7 +63,6 @@ class TreatmentScreen extends Component {
             <ul>
               <li>
                 <div>名称</div>
-                <div>单位</div>
                 <div>次数</div>
                 <div>说明</div>
                 <div>
@@ -72,12 +71,12 @@ class TreatmentScreen extends Component {
                   </div>
                 </div>
               </li>
-              {treatments.map((item, index) => (
+              {laboratories.map((item, index) => (
                 <li key={index}>
                   <div>
                     <div style={{ width: '100%' }}>
                       <Select
-                        value={this.getSelectValue(treatments[index].treatment_id, this.getNameOptions())}
+                        value={this.getSelectValue(laboratories[index].treatment_id, this.getNameOptions())}
                         onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
                         placeholder='搜索名称'
                         height={38}
@@ -86,21 +85,10 @@ class TreatmentScreen extends Component {
                     </div>
                   </div>
                   <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(treatments[index].unit_id, this.getUnitoptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'unit_id', 2)}
-                        placeholder='搜索单位'
-                        height={38}
-                        options={this.getUnitoptions()}
-                      />
-                    </div>
+                    <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                   </div>
                   <div>
-                    <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                  </div>
-                  <div>
-                    <input value={treatments[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                    <input value={laboratories[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
                   </div>
                   <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -118,7 +106,7 @@ class TreatmentScreen extends Component {
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
-              <button>打印治疗单</button>
+              <button>打印申请单</button>
             </div>
           </div>
         </div>
@@ -200,7 +188,7 @@ class TreatmentScreen extends Component {
               margin-top: -23px;
             }
             .formListBottom .bottomRight button {
-              width: 70px;
+              width: 80px;
               height: 26px;
               border-radius: 15px;
               border: 1px solid #2acdc8;
@@ -220,7 +208,7 @@ class TreatmentScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    treatments: [
+    laboratories: [
       {
         id: 1,
         name: '静脉输液（门诊/不含输液器)',
@@ -235,4 +223,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {})(TreatmentScreen)
+export default connect(mapStateToProps, {})(LaboratoryScreen)
