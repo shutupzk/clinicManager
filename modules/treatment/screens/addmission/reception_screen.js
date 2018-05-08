@@ -4,6 +4,10 @@ import Router from 'next/router'
 import MedicalRecordScreen from './components/medicalRecord'
 import PrescriptionScreen from './components/prescription'
 import TreatmentScreen from './components/treatment'
+import LaboratoryScreen from './components/laboratory'
+import ExamineScreen from './components/examine'
+import MaterialScreen from './components/material'
+import OtherScreen from './components/other'
 import { getAgeByBirthday } from '../../../../utils'
 import { Confirm } from '../../../../components'
 import { triageFinish } from '../../../../ducks'
@@ -22,10 +26,10 @@ class RecptionScreen extends Component {
       1: <MedicalRecordScreen />,
       2: <PrescriptionScreen />,
       3: <TreatmentScreen />,
-      4: <MedicalRecordScreen />,
-      5: <MedicalRecordScreen />,
-      6: <MedicalRecordScreen />,
-      7: <MedicalRecordScreen />
+      4: <LaboratoryScreen />,
+      5: <ExamineScreen />,
+      6: <MaterialScreen />,
+      7: <OtherScreen />
     }
     return map[pageType] || null
   }
