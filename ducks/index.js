@@ -1,13 +1,45 @@
 import { user, signin, signout } from './user'
 import { doctors, queryDoctorList, doctorSelect, doctorCreate } from './doctors'
-import { triagePatients, triagePatientsList, triagePatientsSelect, addTriagePatientsList, triagePatient, addAppointment, triageReception, triageFinish, queryAppointmentsByDate, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from './triage_patients'
+import {
+  triagePatients,
+  triagePatientsList,
+  triagePatientsSelect,
+  addTriagePatientsList,
+  triagePatient,
+  addAppointment,
+  triageReception,
+  triageFinish,
+  queryAppointmentsByDate,
+  completeBodySign,
+  completePreMedicalRecord,
+  completePreDiagnosis
+} from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
-import { schedules, queryScheduleDepartments, queryScheduleDoctors, queryDoctorsWithSchedule, copyScheduleByDate, openScheduleByDate, createOneSchedule, deleteOneUnOpenScheduleByID, stopScheduleByID, querySchedules } from './schedules'
+import {
+  schedules,
+  queryScheduleDepartments,
+  queryScheduleDoctors,
+  queryDoctorsWithSchedule,
+  copyScheduleByDate,
+  openScheduleByDate,
+  createOneSchedule,
+  deleteOneUnOpenScheduleByID,
+  stopScheduleByID,
+  querySchedules
+} from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord } from './medicRecord'
+import { drugs, drugCreate } from './drug'
+import { examinations, examinationCreate, queryExaminationList } from './examination'
+import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
+import { materials, materialCreate, queryMaterialList } from './material'
+import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
+import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
+import { doseUnits, queryDoseUnitList } from './dose_unit'
+
 // keys
-export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, medicalRecords }
+export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, medicalRecords, drugs, examinations, laboratories, materials, otherCostS, treatments, doseUnits }
 
 // actions
 export {
@@ -46,5 +78,17 @@ export {
   completePreDiagnosis,
   createMedicalRecord,
   createMedicalRecordAsModel,
-  queryMedicalRecord
+  queryMedicalRecord,
+  drugCreate,
+  examinationCreate,
+  laboratoryCreate,
+  materialCreate,
+  otherCostsCreate,
+  treatmentCreate,
+  queryExaminationList,
+  queryLaboratoryList,
+  queryMaterialList,
+  queryOtherCostList,
+  queryTreatmentList,
+  queryDoseUnitList
 }
