@@ -386,7 +386,7 @@ class DoctorListScreen extends Component {
             <div />
             <span onClick={() => this.setState({ showAddPersonnel: false })}>×</span>
           </div>
-          <div className={'doctorList_content'}>
+          <div className={'newList_content'}>
             <ul>
               <li>
                 <label>{keyName}编码：</label>
@@ -472,7 +472,7 @@ class DoctorListScreen extends Component {
                 border-bottom-left-radius: 100%;
                 cursor: pointer;
               }
-              .doctorList_content ul {
+              .newList_content ul {
                 margin: 0 50px;
                 display: flex;
                 width: auto;
@@ -480,24 +480,24 @@ class DoctorListScreen extends Component {
                 // height: 400px;
                 // background: #909090;
               }
-              .doctorList_content ul li {
+              .newList_content ul li {
                 margin: 10px 0;
                 display: flex;
               }
-              .doctorList_content ul li label {
+              .newList_content ul li label {
                 // width: 25%;
                 vertical-align: middle;
                 line-height: 40px;
                 flex: 1;
               }
-              .doctorList_content ul li input {
+              .newList_content ul li input {
                 height: 40px;
                 border-radius: 5px;
                 border: 1px solid #d8d8d8;
                 text-indent: 10px;
                 flex: 6;
               }
-              .doctorList_content ul li select {
+              .newList_content ul li select {
                 height: 40px;
                 border-radius: 5px;
                 border: 1px solid #d8d8d8;

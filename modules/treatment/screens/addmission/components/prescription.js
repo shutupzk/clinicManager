@@ -40,7 +40,9 @@ class MedicalRecordScreen extends Component {
             <div>总量</div>
             <div>药房</div>
             <div>用药说明</div>
-            <div>操作</div>
+            <div className={'addItem'} onClick={() => {
+
+            }}>新增</div>
           </li>
           <li>
             <div>药品名称</div>
@@ -53,7 +55,7 @@ class MedicalRecordScreen extends Component {
             <div>总量</div>
             <div>药房</div>
             <div>用药说明</div>
-            <div>操作</div>
+            <div>删除</div>
           </li>
         </ul>
         <style jsx>{`
@@ -86,7 +88,7 @@ class MedicalRecordScreen extends Component {
   renderCPrescDetail() {
     const {selIndex, cPrescItemArray} = this.state
     console.log('selIndex=====', selIndex, cPrescItemArray)
-    let array = cPrescItemArray[selIndex]
+    let array = cPrescItemArray[selIndex] || []
     return (
       <div>
         <div className={'feeScheduleBox'}>
@@ -98,7 +100,7 @@ class MedicalRecordScreen extends Component {
               <div>单位</div>
               <div>特殊要求</div>
               <div>总量</div>
-              <div onClick={() => {
+              <div className={'addItem'} onClick={() => {
                 this.addCPresc()
               }}>新增</div>
             </li>
