@@ -1,37 +1,13 @@
 import { user, signin, signout } from './user'
 import { doctors, queryDoctorList, doctorSelect, doctorCreate } from './doctors'
-import {
-  triagePatients,
-  triagePatientsList,
-  triagePatientsSelect,
-  addTriagePatientsList,
-  triagePatient,
-  addAppointment,
-  triageReception,
-  triageFinish,
-  queryAppointmentsByDate,
-  completeBodySign,
-  completePreMedicalRecord,
-  completePreDiagnosis
-} from './triage_patients'
+import { triagePatients, triagePatientsList, triagePatientsSelect, addTriagePatientsList, triagePatient, addAppointment, triageReception, triageFinish, queryAppointmentsByDate, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
-import {
-  schedules,
-  queryScheduleDepartments,
-  queryScheduleDoctors,
-  queryDoctorsWithSchedule,
-  copyScheduleByDate,
-  openScheduleByDate,
-  createOneSchedule,
-  deleteOneUnOpenScheduleByID,
-  stopScheduleByID,
-  querySchedules
-} from './schedules'
-
+import { schedules, queryScheduleDepartments, queryScheduleDoctors, queryDoctorsWithSchedule, copyScheduleByDate, openScheduleByDate, createOneSchedule, deleteOneUnOpenScheduleByID, stopScheduleByID, querySchedules } from './schedules'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord } from './medicRecord'
 // keys
-export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules }
+export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, medicalRecords }
 
 // actions
 export {
@@ -67,5 +43,8 @@ export {
   queryAppointmentsByDate,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis
+  completePreDiagnosis,
+  createMedicalRecord,
+  createMedicalRecordAsModel,
+  queryMedicalRecord
 }

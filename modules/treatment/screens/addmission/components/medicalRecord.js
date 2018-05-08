@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm } from '../../../../../components'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel } from '../../../../../ducks'
 // 病历
 class PrescriptionScreen extends Component {
   constructor(props) {
@@ -18,17 +19,170 @@ class PrescriptionScreen extends Component {
       diagnosis: '',
       cure_suggestion: '',
       remark: '',
-      files: ''
+      files: '',
+      saveAsModel: false
     }
+  }
+
+  async componentWillMount() {
+    const { queryMedicalRecord, clinic_triage_patient_id } = this.props
+    let record = await queryMedicalRecord(clinic_triage_patient_id)
+    this.setState({ ...record })
   }
 
   save() {
     let { chief_complaint } = this.state
+    let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
     this.refs.myConfirm.confirm('确定提交病历？', '', 'Success', async () => {
-      console.log(this.state)
-      this.cancel()
+      let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+      if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
+      else {
+        this.refs.myAlert.alert('保存病历成功！')
+      }
     })
+  }
+
+  saveAsModel() {
+    let { chief_complaint } = this.state
+    let { createMedicalRecordAsModel, triage_personnel_id, clinic_triage_patient_id } = this.props
+    if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
+    this.refs.myConfirm.confirm('确定保存病历为模板？', '', 'Success', async () => {
+      let res = await createMedicalRecordAsModel({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+      if (res) this.refs.myAlert.alert(`保存失败！【${res}】`)
+      else {
+        this.refs.myAlert.alert('保存成功！')
+      }
+    })
+  }
+
+  showSaveModel() {
+    if (!this.state.saveAsModel) return null
+    let { chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '900px', height: '683px', left: '324px' }}>
+          <div className='doctorList_top'>
+            <span>新增科室</span>
+            <span onClick={() => this.setState({ saveAsModel: false })}>x</span>
+          </div>
+          <div className={'formListBox'} style={{}}>
+            <ul>
+              <li>
+                <label>
+                  主述<b style={{ color: 'red' }}> *</b>
+                </label>
+                <textarea
+                  value={chief_complaint}
+                  onChange={e => {
+                    this.setState({ chief_complaint: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>现病史</label>
+                <textarea
+                  value={history_of_present_illness}
+                  onChange={e => {
+                    this.setState({ history_of_present_illness: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>既往史</label>
+                <textarea
+                  value={history_of_past_illness}
+                  onChange={e => {
+                    this.setState({ history_of_past_illness: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>家族史</label>
+                <textarea
+                  value={family_medical_history}
+                  onChange={e => {
+                    this.setState({ family_medical_history: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>过敏史</label>
+                <input
+                  type='text'
+                  value={allergic_history}
+                  onChange={e => {
+                    this.setState({ allergic_history: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>过敏反应</label>
+                <input
+                  type='text'
+                  value={allergic_reaction}
+                  onChange={e => {
+                    this.setState({ allergic_reaction: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>疫苗接种史</label>
+                <input
+                  type='text'
+                  value={immunizations}
+                  onChange={e => {
+                    this.setState({ immunizations: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>体格检查</label>
+                <textarea
+                  value={body_examination}
+                  onChange={e => {
+                    this.setState({ body_examination: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>初步诊断</label>
+                <textarea
+                  value={diagnosis}
+                  onChange={e => {
+                    this.setState({ diagnosis: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <a className={'chooseTemp'}>选择诊断模板</a>
+              </li>
+              <li>
+                <label>治疗意见</label>
+                <textarea
+                  value={cure_suggestion}
+                  onChange={e => {
+                    this.setState({ cure_suggestion: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>备注</label>
+                <textarea
+                  value={remark}
+                  onChange={e => {
+                    this.setState({ remark: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <button>保存</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   cancel() {
@@ -205,12 +359,25 @@ class PrescriptionScreen extends Component {
                 </button>
               </div>
               <div className={'bottomRight'}>
-                <button>存为模板</button>
-                <button>打印病历</button>
+                <button
+                  onClick={() => {
+                    this.setState({ saveAsModel: true })
+                  }}
+                >
+                  存为模板
+                </button>
+                <button
+                  onClick={() => {
+                    this.setState({ saveAsModel: true })
+                  }}
+                >
+                  打印病历
+                </button>
               </div>
             </div>
           </div>
         </div>
+        {this.showSaveModel()}
         <Confirm ref='myAlert' isAlert />
         <Confirm ref='myConfirm' />
         <style jsx>{`
@@ -343,7 +510,11 @@ class PrescriptionScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  return {}
+  return {
+    clinic_triage_patient_id: state.triagePatients.selectId,
+    triage_personnel_id: state.user.data.id,
+    medicalRecord: state.medicalRecords.data
+  }
 }
 
-export default connect(mapStateToProps, {})(PrescriptionScreen)
+export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel })(PrescriptionScreen)
