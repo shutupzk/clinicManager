@@ -81,12 +81,19 @@ class MedicalRecordScreen extends Component {
   }
   // 删除中药处方项
   removecPrescItem(index) {
-    const { cPrescItemArray } = this.state
+    const { selIndex, cPrescItemArray } = this.state
     let array = [...cPrescItemArray]
     array.splice(index, 1)
-    if (index > 0) index = index - 1
-    // console.log('array=========', array)
-    this.setState({ cPrescItemArray: array, selIndex: index, selItem: 'cPresc' + index })
+    index = selIndex - 1
+    if (index < 0) {
+      index = 0
+    }
+    let selItem = 'cPresc' + index
+    // console.log('array=========', array, index, selItem)
+    if (array.length === 0) {
+      selItem = 'wPresc'
+    }
+    this.setState({ cPrescItemArray: array, selIndex: index, selItem: selItem })
   }
   // 添加西药处方药品
   addWestMedicinePres() {
@@ -103,7 +110,7 @@ class MedicalRecordScreen extends Component {
   // 显示西药处方详情
   renderPrescriptionDetail() {
     const { wPrescItemArray } = this.state
-    console.log('wPrescItemArray=======', wPrescItemArray)
+    // console.log('wPrescItemArray=======', wPrescItemArray)
     return (
       <div className={'tableDIV'}>
         <ul>
@@ -140,7 +147,7 @@ class MedicalRecordScreen extends Component {
                 <div style={{width: '90px'}}>1000034548瓶</div>
                 <div style={{width: '62px'}}>
                   <input
-                    value={wPrescItemArray[index].dose}
+                    value={wPrescItemArray[index].dose === undefined ? '' : wPrescItemArray[index].dose}
                     type='number'
                     onChange={e => this.setWItemValue(e, index, 'dose')}
                   />
@@ -169,14 +176,14 @@ class MedicalRecordScreen extends Component {
                 </div>
                 <div style={{width: '50px'}}>
                   <input
-                    value={wPrescItemArray[index].days}
+                    value={wPrescItemArray[index].days === undefined ? '' : wPrescItemArray[index].days}
                     type='number'
                     onChange={e => this.setWItemValue(e, index, 'days')}
                   />
                 </div>
                 <div style={{width: '50px'}}>
                   <input
-                    value={wPrescItemArray[index].total_amount}
+                    value={wPrescItemArray[index].total_amount === undefined ? '' : wPrescItemArray[index].total_amount}
                     type='number'
                     onChange={e => this.setWItemValue(e, index, 'total_amount')}
                   />
@@ -194,7 +201,7 @@ class MedicalRecordScreen extends Component {
                 </div>
                 <div style={{width: '113px'}}>
                   <input
-                    value={wPrescItemArray[index].default_remark}
+                    value={wPrescItemArray[index].default_remark === undefined ? '' : wPrescItemArray[index].default_remark}
                     type='text'
                     onChange={e => this.setWItemValue(e, index, 'default_remark')}
                   />
@@ -283,7 +290,7 @@ class MedicalRecordScreen extends Component {
   // 删除中药处方药品
   removecPresc(index) {
     const { selIndex, cPrescItemArray } = this.state
-    let array = cPrescItemArray[selIndex].data
+    let array = [...cPrescItemArray[selIndex].data]
     array.splice(index, 1)
     cPrescItemArray[selIndex].data = array
     this.setState({ cPrescItemArray })
@@ -291,13 +298,13 @@ class MedicalRecordScreen extends Component {
   // 中药处方详情
   renderCPrescDetail() {
     const {selIndex, cPrescItemArray} = this.state
-    console.log('selIndex=====', selIndex, cPrescItemArray, cPrescItemArray[selIndex])
     let array = []
     let info = {}
     if (cPrescItemArray[selIndex] !== undefined) {
       array = cPrescItemArray[selIndex].data
       info = cPrescItemArray[selIndex].info
     }
+    // console.log('selIndex=====', selIndex, array, info)
     // let array = cPrescItemArray[selIndex].data || []
     // let info = cPrescItemArray[selIndex].info || {}
     return (
@@ -334,7 +341,7 @@ class MedicalRecordScreen extends Component {
                   </div>
                   <div>
                     <input
-                      value={array[index].dose}
+                      value={array[index].dose === undefined ? '' : array[index].dose}
                       type='number'
                       onChange={e => this.setCItemValue(e, index, 'dose')}
                     />
@@ -352,14 +359,14 @@ class MedicalRecordScreen extends Component {
                   </div>
                   <div>
                     <input
-                      value={array[index].special_requirements}
+                      value={array[index].special_requirements === undefined ? '' : array[index].special_requirements}
                       type='text'
                       onChange={e => this.setCItemValue(e, index, 'special_requirements')}
                     />
                   </div>
                   <div>
                     <input
-                      value={array[index].total_amount}
+                      value={array[index].total_amount === undefined ? '' : array[index].total_amount}
                       type='number'
                       onChange={e => this.setCItemValue(e, index, 'total_amount')}
                     />
@@ -398,14 +405,14 @@ class MedicalRecordScreen extends Component {
               </div>
               <div>
                 <input
-                  value={info.once_dose}
+                  value={info.once_dose === undefined ? '' : info.once_dose}
                   type='number'
                   onChange={e => this.setCInfoValue(e, 'once_dose')}
                 />
               </div>
               <div>
                 <input
-                  value={info.days}
+                  value={info.days === undefined ? '' : info.days}
                   type='number'
                   onChange={e => this.setCInfoValue(e, 'days')}
                 />
@@ -423,7 +430,7 @@ class MedicalRecordScreen extends Component {
               </div>
               <div>
                 <input
-                  value={info.total_dose}
+                  value={info.total_dose === undefined ? '' : info.total_dose}
                   type='number'
                   onChange={e => this.setCInfoValue(e, 'total_dose')}
                 />
@@ -441,14 +448,14 @@ class MedicalRecordScreen extends Component {
               </div>
               <div>
                 <input
-                  value={info.get_address}
+                  value={info.get_address === undefined ? '' : info.get_address}
                   type='text'
                   onChange={e => this.setCInfoValue(e, 'get_address')}
                 />
               </div>
               <div>
                 <input
-                  value={info.default_remark}
+                  value={info.default_remark === undefined ? '' : info.default_remark}
                   type='text'
                   onChange={e => this.setCInfoValue(e, 'default_remark')}
                 />
@@ -514,6 +521,9 @@ class MedicalRecordScreen extends Component {
       </div>
     )
   }
+  // 保存处方
+  submit() {}
+
   render() {
     const {selItem, cPrescItemArray} = this.state
     return (
@@ -566,7 +576,9 @@ class MedicalRecordScreen extends Component {
         <div className={'formListBottom'}>
           <div className={'bottomCenter'}>
             <button className={'cancel'}>取消</button>
-            <button className={'save'}>保存</button>
+            <button className={'save'} onClick={() => {
+              this.submit()
+            }}>保存</button>
           </div>
           <div className={'bottomRight'}>
             <button>存为模板</button>
