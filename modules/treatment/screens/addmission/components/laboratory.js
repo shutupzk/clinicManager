@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
+import { queryLaboratoryList } from '../../../../../ducks'
 
 // 病历
 class LaboratoryScreen extends Component {
@@ -11,8 +12,36 @@ class LaboratoryScreen extends Component {
     }
   }
 
-  getNameOptions() {
-    return [{ value: 1, label: '肌红蛋白' }, { value: 2, label: '幽门螺杆菌抗原快速检测' }]
+  queryLaboratoryList(keyword) {
+    const { queryLaboratoryList, clinic_id } = this.props
+    if (keyword) {
+      queryLaboratoryList({ clinic_id, status: true, keyword })
+    }
+  }
+
+  getNameOptions(defaultOption) {
+    // return [{ value: 1, label: '肌红蛋白' }, { value: 2, label: '幽门螺杆菌抗原快速检测' }]
+    const { laboratories } = this.props
+    let array = []
+    let has = false
+    for (let { clinic_laboratory_id, name } of laboratories) {
+      array.push({
+        value: clinic_laboratory_id,
+        label: name
+      })
+      if (defaultOption && defaultOption.clinic_laboratory_id === clinic_laboratory_id) has = true
+    }
+    if (!has && defaultOption && defaultOption.clinic_laboratory_id) {
+      const { clinic_laboratory_id, name } = defaultOption
+      array = [
+        {
+          value: clinic_laboratory_id,
+          label: name
+        },
+        array
+      ]
+    }
+    return array
   }
 
   getSelectValue(value, array) {
@@ -53,6 +82,7 @@ class LaboratoryScreen extends Component {
 
   render() {
     const { laboratories } = this.state
+    console.log('laboratories====', laboratories)
     return (
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -71,32 +101,40 @@ class LaboratoryScreen extends Component {
                   </div>
                 </div>
               </li>
-              {laboratories.map((item, index) => (
-                <li key={index}>
-                  <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(laboratories[index].treatment_id, this.getNameOptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
-                        placeholder='搜索名称'
-                        height={38}
-                        options={this.getNameOptions()}
-                      />
+              {laboratories.map((item, index) => {
+                let nameOptions = this.getNameOptions(laboratories[index])
+                return (
+                  <li key={index}>
+                    <div>
+                      <div style={{ width: '100%' }}>
+                        <Select
+                          value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
+                          onChange={({ value, label }) => {
+                            this.setItemValue(value, index, 'clinic_laboratory_id', 2)
+                            this.setItemValue(label, index, 'name', 2)
+                          }}
+                          placeholder='搜索名称'
+                          height={38}
+                          onInputChange={keyword => this.queryLaboratoryList(keyword)}
+                          options={nameOptions}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                  </div>
-                  <div>
-                    <input value={laboratories[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
-                  </div>
-                  <div>
-                    <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                      删除
+                    <div>
+                      <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                     </div>
-                  </div>
-                </li>
-              ))}
+                    <div>
+                      <input value={laboratories[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                    </div>
+                    <div>
+                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        删除
+                      </div>
+                    </div>
+                  </li>
+                )
+              }
+            )}
             </ul>
           </div>
           <div className='formListBottom'>
@@ -208,19 +246,9 @@ class LaboratoryScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    laboratories: [
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      },
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      }
-    ]
+    laboratories: state.laboratories.data,
+    clinic_id: state.user.data.clinic_id
   }
 }
 
-export default connect(mapStateToProps, {})(LaboratoryScreen)
+export default connect(mapStateToProps, { queryLaboratoryList })(LaboratoryScreen)
