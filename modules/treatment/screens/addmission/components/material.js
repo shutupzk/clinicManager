@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
+import { queryMaterialList } from '../../../../../ducks'
 
 // 材料费
 class MaterialScreen extends Component {
@@ -11,8 +12,27 @@ class MaterialScreen extends Component {
     }
   }
 
+  queryMaterialList(keyword) {
+    const { queryMaterialList, clinic_id } = this.props
+    if (keyword) {
+      queryMaterialList({ clinic_id, keyword })
+    }
+  }
+
   getNameOptions() {
-    return [{ value: 1, label: '针管' }, { value: 2, label: '纱布' }, { value: 2, label: '胶带' }]
+    const { materials } = this.props
+    let array = []
+    for (let key in materials) {
+      const { material_stock_id, name, specification, unit_id, unit_name } = materials[key]
+      array.push({
+        value: material_stock_id,
+        label: name,
+        specification,
+        unit_id,
+        unit_name
+      })
+    }
+    return array
   }
 
   getSelectValue(value, array) {
@@ -70,41 +90,51 @@ class MaterialScreen extends Component {
                   </div>
                 </div>
               </li>
-              {eaterials.map((item, index) => (
-                <li key={index}>
-                  <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(eaterials[index].treatment_id, this.getNameOptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
-                        placeholder='搜索名称'
-                        height={38}
-                        options={this.getNameOptions()}
-                      />
+              {eaterials.map((item, index) => {
+                let nameOptions = this.getNameOptions()
+                return (
+                  <li key={index}>
+                    <div>
+                      <div style={{ width: '100%' }}>
+                        <Select
+                          value={this.getSelectValue(eaterials[index].material_stock_id, nameOptions)}
+                          onChange={({ value, label, specification, unit_id, unit_name }) => {
+                            this.setItemValue(value, index, 'material_stock_id', 2)
+                            this.setItemValue(label, index, 'name', 2)
+                            this.setItemValue(specification, index, 'specification', 2)
+                            this.setItemValue(unit_id, index, 'unit_id', 2)
+                            this.setItemValue(unit_name, index, 'unit_name', 2)
+                          }}
+                          placeholder='搜索名称'
+                          height={38}
+                          onInputChange={keyword => this.queryMaterialList(keyword)}
+                          options={nameOptions}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <input value={eaterials[index].times} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specifications')} />
-                  </div>
-                  <div>
-                    <input value={eaterials[index].times} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit')} />
-                  </div>
-                  <div>
-                    <input value={eaterials[index].times} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock')} />
-                  </div>
-                  <div>
-                    <input value={eaterials[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                  </div>
-                  <div>
-                    <input value={eaterials[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
-                  </div>
-                  <div>
-                    <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                      删除
+                    <div>
+                      <input value={eaterials[index].specification} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
                     </div>
-                  </div>
-                </li>
-              ))}
+                    <div>
+                      <input value={eaterials[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
+                    </div>
+                    <div>
+                      <input value={eaterials[index].times} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock')} />
+                    </div>
+                    <div>
+                      <input value={eaterials[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                    </div>
+                    <div>
+                      <input value={eaterials[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                    </div>
+                    <div>
+                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        删除
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </div>
           <div className='formListBottom'>
@@ -216,19 +246,9 @@ class MaterialScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    eaterials: [
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      },
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      }
-    ]
+    clinic_id: state.user.data.clinic_id,
+    materials: state.materials.data
   }
 }
 
-export default connect(mapStateToProps, {})(MaterialScreen)
+export default connect(mapStateToProps, { queryMaterialList })(MaterialScreen)

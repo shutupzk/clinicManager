@@ -10,7 +10,7 @@ const initState = {
 export function materials(state = initState, action = {}) {
   switch (action.type) {
     case MATERIAL_PROJECT_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
     default:
       return state
   }
@@ -28,9 +28,13 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
     })
     const docs = data.data || []
     const page_info = data.page_info || {}
+    let json = {}
+    for (let doc of docs) {
+      json[doc.material_stock_id] = doc
+    }
     dispatch({
       type: MATERIAL_PROJECT_ADD,
-      data: docs,
+      data: json,
       page_info
     })
     return null
