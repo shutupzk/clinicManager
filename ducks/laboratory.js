@@ -29,6 +29,11 @@ export const queryLaboratoryList = ({ clinic_id, keyword, status, offset = 0, li
     const docs = data.data || []
     const page_info = data.page_info || {}
     console.log('docs======', docs)
+    let json = {}
+    for (let doc of docs) {
+      json[doc.clinic_laboratory_id] = doc
+      json[doc.name] = doc
+    }
     dispatch({
       type: LABORATORY_PROJECT_ADD,
       data: docs,

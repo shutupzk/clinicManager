@@ -2,7 +2,7 @@ import { request } from './request'
 const EXAM_PROJECT_ADD = 'EXAM_PROJECT_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   page_info: {},
   selectId: null
 }
@@ -10,7 +10,7 @@ const initState = {
 export function examinations(state = initState, action = {}) {
   switch (action.type) {
     case EXAM_PROJECT_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     default:
       return state
   }
@@ -28,6 +28,12 @@ export const queryExaminationList = ({ clinic_id, keyword, status, offset = 0, l
     })
     const docs = data.data || []
     const page_info = data.page_info || {}
+    let json = {}
+    for (let doc of docs) {
+      json[doc.clinic_examination_id] = doc
+      json[doc.name] = doc
+      json[doc.organ] = doc
+    }
     dispatch({
       type: EXAM_PROJECT_ADD,
       data: docs,

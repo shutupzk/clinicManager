@@ -19,28 +19,17 @@ class ExamineScreen extends Component {
     }
   }
 
-  getNameOptions(defaultOption) {
+  getNameOptions() {
     const { examinations } = this.props
+    console.log('examinations=====', examinations)
     let array = []
-    let has = false
-    for (let { clinic_examination_id, name, organ } of examinations) {
+    for (let key in examinations) {
+      const { clinic_examination_id, name, organ } = examinations[key]
       array.push({
         value: clinic_examination_id,
         label: name,
         organ
       })
-      if (defaultOption && defaultOption.clinic_examination_id === clinic_examination_id) has = true
-    }
-    if (!has && defaultOption && defaultOption.clinic_examination_id) {
-      const { clinic_examination_id, name, organ } = defaultOption
-      array = [
-        {
-          value: clinic_examination_id,
-          label: name,
-          organ
-        },
-        array
-      ]
     }
     return array
   }
@@ -61,25 +50,15 @@ class ExamineScreen extends Component {
     }
   }
 
-  getOrganOptions(defaultOption) {
+  getOrganOptions() {
     const { examinationOrgans } = this.props
     let array = []
-    let has = false
-    for ({ name } of examinationOrgans) {
-      if (name === defaultOption.organ) has = true
+    for (let key in examinationOrgans) {
+      const { name } = examinationOrgans[key]
       array.push({
         value: name,
         label: name
       })
-    }
-    if (!has && defaultOption.organ) {
-      array = [
-        {
-          value: defaultOption.organ,
-          label: defaultOption.organ
-        },
-        ...array
-      ]
     }
     return array
   }
