@@ -37,9 +37,27 @@ import { materials, materialCreate, queryMaterialList } from './material'
 import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
 import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
 import { doseUnits, queryDoseUnitList } from './dose_unit'
+import { examinationOrgans, queryExaminationOrganList } from './examination_organs'
 
 // keys
-export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, medicalRecords, drugs, examinations, laboratories, materials, otherCostS, treatments, doseUnits }
+export {
+  user,
+  doctors,
+  triagePatients,
+  patients,
+  departments,
+  triageDoctors,
+  schedules,
+  medicalRecords,
+  drugs,
+  examinations,
+  laboratories,
+  materials,
+  otherCostS,
+  treatments,
+  doseUnits,
+  examinationOrgans
+}
 
 // actions
 export {
@@ -90,5 +108,6 @@ export {
   queryMaterialList,
   queryOtherCostList,
   queryTreatmentList,
-  queryDoseUnitList
+  queryDoseUnitList,
+  queryExaminationOrganList
 }
