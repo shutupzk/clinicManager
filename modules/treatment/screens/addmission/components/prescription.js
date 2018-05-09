@@ -22,6 +22,15 @@ class MedicalRecordScreen extends Component {
   getUnitoptions() {
     return [{ value: 1, label: '次' }, { value: 2, label: '个' }, { value: 3, label: '颗' }]
   }
+  getUsageOptions() {
+    return [{ value: 1, label: '口服' }, { value: 2, label: '外敷' }]
+  }
+  getPharmacyOptions() {
+    return [{ value: 1, label: '药房1' }, { value: 2, label: '药房1' }]
+  }
+  getFrequencyOptions() {
+    return [{ value: 1, label: '一次' }, { value: 2, label: '两次' }]
+  }
   getSelectValue(value, array) {
     for (let obj of array) {
       if (obj.value === value) {
@@ -54,6 +63,17 @@ class MedicalRecordScreen extends Component {
     cPrescItemArray[selIndex].info = info
     this.setState({ cPrescItemArray })
   }
+  // 设置西药信息
+  setWItemValue(e, index, key, type = 1) {
+    const { wPrescItemArray } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = [...wPrescItemArray] // [...treatments]
+    array[index][key] = value
+    this.setState({ wPrescItemArray: array })
+  }
   // 添加中药处方项
   addChineseMedicinePres() {
     const { cPrescItemArray } = this.state
@@ -64,7 +84,9 @@ class MedicalRecordScreen extends Component {
     const { cPrescItemArray } = this.state
     let array = [...cPrescItemArray]
     array.splice(index, 1)
-    this.setState({ cPrescItemArray: array })
+    if (index > 0) index = index - 1
+    console.log('array=========', array)
+    this.setState({ cPrescItemArray: array, selIndex: index, selItem: 'cPresc' + index })
   }
   // 添加西药处方药品
   addWestMedicinePres() {
@@ -78,41 +100,106 @@ class MedicalRecordScreen extends Component {
     array.splice(index, 1)
     this.setState({ wPrescItemArray: array })
   }
-  // 显示处方详情
+  // 显示西药处方详情
   renderPrescriptionDetail() {
     const { wPrescItemArray } = this.state
+    console.log('wPrescItemArray=======', wPrescItemArray)
     return (
-      <div className={'feeScheduleBox'}>
+      <div className={'tableDIV'}>
         <ul>
           <li>
-            <div>药品名称</div>
-            <div>规格</div>
-            <div>库存</div>
-            <div>单次剂量</div>
-            <div>用法</div>
-            <div>用药频次</div>
-            <div>天数</div>
-            <div>总量</div>
-            <div>药房</div>
-            <div>用药说明</div>
-            <div className={'addItem'} onClick={() => {
+            <div style={{width: '120px'}}>药品名称</div>
+            <div style={{width: '78px'}}>规格</div>
+            <div style={{width: '90px'}}>库存</div>
+            <div style={{width: '62px'}}>单次剂量</div>
+            <div style={{width: '120px'}}>用法</div>
+            <div style={{width: '120px'}}>用药频次</div>
+            <div style={{width: '50px'}}>天数</div>
+            <div style={{width: '50px'}}>总量</div>
+            <div style={{width: '120px'}}>药房</div>
+            <div style={{width: '113px'}}>用药说明</div>
+            <div style={{width: '50px'}} className={'addItem'} onClick={() => {
               this.addWestMedicinePres()
             }}>新增</div>
           </li>
           {wPrescItemArray.map((item, index) => {
             return (
               <li key={index}>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div className={'removeItem'} onClick={() => {
+                <div style={{width: '120px'}}>
+                  <div>
+                    <Select
+                      value={this.getSelectValue(wPrescItemArray[index].drug_id, this.getWNameOptions())}
+                      onChange={({ value }) => this.setWItemValue(value, index, 'drug_id', 2)}
+                      placeholder='搜索名称'
+                      height={38}
+                      options={this.getWNameOptions()}
+                    />
+                  </div>
+                </div>
+                <div style={{width: '78px'}}>250ml:12.5g</div>
+                <div style={{width: '90px'}}>1000034548瓶</div>
+                <div style={{width: '62px'}}>
+                  <input
+                    value={wPrescItemArray[index].dose}
+                    type='number'
+                    onChange={e => this.setWItemValue(e, index, 'dose')}
+                  />
+                </div>
+                <div style={{width: '120px'}}>
+                  <div>
+                    <Select
+                      value={this.getSelectValue(wPrescItemArray[index].route_administration_id, this.getUsageOptions())}
+                      onChange={({ value }) => this.setWItemValue(value, index, 'route_administration_id', 2)}
+                      placeholder='搜索用法'
+                      height={38}
+                      options={this.getUsageOptions()}
+                    />
+                  </div>
+                </div>
+                <div style={{width: '120px'}}>
+                  <div>
+                    <Select
+                      value={this.getSelectValue(wPrescItemArray[index].frequency_id, this.getFrequencyOptions())}
+                      onChange={({ value }) => this.setWItemValue(value, index, 'frequency_id', 2)}
+                      placeholder='搜索频次'
+                      height={38}
+                      options={this.getFrequencyOptions()}
+                    />
+                  </div>
+                </div>
+                <div style={{width: '50px'}}>
+                  <input
+                    value={wPrescItemArray[index].days}
+                    type='number'
+                    onChange={e => this.setWItemValue(e, index, 'days')}
+                  />
+                </div>
+                <div style={{width: '50px'}}>
+                  <input
+                    value={wPrescItemArray[index].total_amount}
+                    type='number'
+                    onChange={e => this.setWItemValue(e, index, 'total_amount')}
+                  />
+                </div>
+                <div style={{width: '120px'}}>
+                  <div>
+                    <Select
+                      value={this.getSelectValue(wPrescItemArray[index].pharmacy_id, this.getPharmacyOptions())}
+                      onChange={({ value }) => this.setWItemValue(value, index, 'pharmacy_id', 2)}
+                      placeholder='搜索药房'
+                      height={38}
+                      options={this.getPharmacyOptions()}
+                    />
+                  </div>
+                </div>
+                <div style={{width: '113px'}}>
+                  <input
+                    value={wPrescItemArray[index].default_remark}
+                    type='text'
+                    onChange={e => this.setWItemValue(e, index, 'default_remark')}
+                  />
+                </div>
+                <div style={{width: '50px'}} className={'removeItem'} onClick={() => {
                   this.removeWestMedicinePres(index)
                 }}>删除</div>
               </li>
@@ -120,20 +207,68 @@ class MedicalRecordScreen extends Component {
           })}
         </ul>
         <style jsx>{`
-          .feeScheduleBox{
-            margin-left: 0;
-            width: 1000px;
+          .tableDIV {
+            display: flex;
+            width: 987px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin: 30px 0;
           }
-          .feeScheduleBox ul li>div:first-child{
-            flex:2;
+          .tableDIV ul {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9e9e9;
+            border-bottom: none;
+          }
+          .tableDIV ul li {
+            // display: flex;
+            height: 50px;
+            border-bottom: 1px solid #e9e9e9;
+            line-height: 40px;
+            text-align: center;
+            float:left;
+          }
+          .tableDIV ul li:nth-child(1) {
+            background: rgba(247, 247, 247, 1);
+          }
+          .tableDIV ul li:nth-child(1)>div{
+            line-height:50px;
+          }
+          .tableDIV ul li > div {
+            flex: 2;
+            border-left: 1px #e9e9e9 dashed;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            float:left;
+            line-height:16px;
+            height:50px;
+            // background:#909090;
+          }
+          .tableDIV ul li > div > div{
+            width:100%;
+          }
+          .tableDIV ul li > div > input {
+            width: 90%;
+            height: 30px;
+            border-radius: 4px;
+            outline-style: none;
+            border: none;
+          }
+          .tableDIV ul li > div:nth-child(1) {
+            flex: 3;
           }
           .addItem{
             color: rgb(42, 205, 200);
             cursor: pointer;
+            text-align:center;
           }
           .removeItem{
             color: red;
             cursor: pointer;
+            text-align:center;
           }
         `}</style>
       </div>
@@ -156,9 +291,15 @@ class MedicalRecordScreen extends Component {
   // 中药处方详情
   renderCPrescDetail() {
     const {selIndex, cPrescItemArray} = this.state
-    console.log('selIndex=====', selIndex, cPrescItemArray)
-    let array = cPrescItemArray[selIndex].data || []
-    let info = cPrescItemArray[selIndex].info || {}
+    console.log('selIndex=====', selIndex, cPrescItemArray, cPrescItemArray[selIndex])
+    let array = []
+    let info = {}
+    if (cPrescItemArray[selIndex] !== undefined) {
+      array = cPrescItemArray[selIndex].data
+      info = cPrescItemArray[selIndex].info
+    }
+    // let array = cPrescItemArray[selIndex].data || []
+    // let info = cPrescItemArray[selIndex].info || {}
     return (
       <div>
         <div className={'tableDIV'}>
@@ -245,11 +386,15 @@ class MedicalRecordScreen extends Component {
             </li>
             <li>
               <div>
-                <input
-                  value={info.default_remark}
-                  type='text'
-                  onChange={e => this.setCInfoValue(e, 'default_remark')}
-                />
+                <div>
+                  <Select
+                    value={this.getSelectValue(info.route_administration_id, this.getUsageOptions())}
+                    onChange={({ value }) => this.setCInfoValue(value, 'route_administration_id', 2)}
+                    placeholder='搜索用法'
+                    height={38}
+                    options={this.getUsageOptions()}
+                  />
+                </div>
               </div>
               <div>
                 <input
@@ -284,11 +429,15 @@ class MedicalRecordScreen extends Component {
                 />
               </div>
               <div>
-                <input
-                  value={info.frequency_id}
-                  type='number'
-                  onChange={e => this.setCInfoValue(e, 'frequency_id')}
-                />
+                <div>
+                  <Select
+                    value={this.getSelectValue(info.frequency_id, this.getFrequencyOptions())}
+                    onChange={({ value }) => this.setCInfoValue(value, 'frequency_id', 2)}
+                    placeholder='搜索频次'
+                    height={38}
+                    options={this.getFrequencyOptions()}
+                  />
+                </div>
               </div>
               <div>
                 <input
@@ -299,9 +448,9 @@ class MedicalRecordScreen extends Component {
               </div>
               <div>
                 <input
-                  value={info.requirements}
+                  value={info.default_remark}
                   type='text'
-                  onChange={e => this.setCInfoValue(e, 'requirements')}
+                  onChange={e => this.setCInfoValue(e, 'default_remark')}
                 />
               </div>
             </li>
@@ -371,24 +520,28 @@ class MedicalRecordScreen extends Component {
       <div className='filterBox'>
         <div className='boxLeft'>
           <div className={'prescriptionLank'}>
-            <div className={'prescItem ' + (selItem === 'wPresc' ? 'sel' : '')}
-              onClick={() => {
-                this.setState({selItem: 'wPresc'})
-              }}
-            >西/成药处方</div>
+            <div className={'prescItemParent ' + (selItem === 'wPresc' ? 'sel' : '')}>
+              <div className={'prescItem'}
+                onClick={() => {
+                  this.setState({selItem: 'wPresc'})
+                }}
+              >西/成药处方</div>
+            </div>
             {cPrescItemArray.map((item, index) => {
               return (
-                <div className={'prescItem ' + (selItem === 'cPresc' + index ? 'sel' : '')}
-                  onClick={() => {
-                    this.setState({selItem: 'cPresc' + index, selIndex: index})
-                  }}
-                >
-                  中药处方{index + 1}
+                <div className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{position: 'relative'}}>
+                  <div className={'prescItem'}
+                    onClick={() => {
+                      this.setState({selItem: 'cPresc' + index, selIndex: index})
+                    }}
+                  >
+                    中药处方{index + 1}
+                  </div>
                   <i onClick={() => this.removecPrescItem(index)}>×</i>
                 </div>
               )
             })}
-            <button onClick={e => {
+            <button style={{height: '30px'}} onClick={e => {
               this.addChineseMedicinePres()
             }}> + 中药处方</button>
           </div>
@@ -422,17 +575,17 @@ class MedicalRecordScreen extends Component {
         </div>
         <style jsx>{`
           .prescriptionLank{
-
+            margin-left:30px;
           }
           .prescriptionLank button,
-          .prescriptionLank .prescItem{
+          .prescriptionLank .prescItemParent{
             float: left;
             height: 28px;
             border-radius: 4px;
             border: 1px solid #2acdc8;
             color: rgba(42,205,200,1);
             font-size: 12px;
-            margin: 16px 0;
+            margin: 16px 0 0 0;
             background: none;
             cursor: pointer;
             width:100px;
@@ -442,12 +595,18 @@ class MedicalRecordScreen extends Component {
             justify-content: center;
             position:relative;
           }
-          .prescriptionLank .sel{
+          .prescriptionLank .prescItemParent .prescItem{
+            width:100%;
+            height:100%;
+            text-align:center;
+            line-height:28px;
+          }
+          .prescriptionLank .prescItemParent.sel{
             background: rgba(42,205,200,1);
             color: rgba(255,255,255,1);
-            border: none;
+            // border: none;
           }
-          .prescItem i{
+          .prescItemParent i{
             position:absolute;
             top: 0;
             right: 2px;

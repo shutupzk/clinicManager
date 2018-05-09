@@ -118,7 +118,7 @@ class TreatmentScreen extends Component {
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
-              <button>打印治疗单</button>
+              <button style={{width: '80px'}}>打印治疗单</button>
             </div>
           </div>
         </div>
