@@ -85,7 +85,7 @@ class MedicalRecordScreen extends Component {
     let array = [...cPrescItemArray]
     array.splice(index, 1)
     if (index > 0) index = index - 1
-    console.log('array=========', array)
+    // console.log('array=========', array)
     this.setState({ cPrescItemArray: array, selIndex: index, selItem: 'cPresc' + index })
   }
   // 添加西药处方药品
