@@ -29,9 +29,17 @@ import {
   stopScheduleByID,
   querySchedules
 } from './schedules'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord } from './medicRecord'
+import { drugs, drugCreate } from './drug'
+import { examinations, examinationCreate, queryExaminationList } from './examination'
+import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
+import { materials, materialCreate, queryMaterialList } from './material'
+import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
+import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
+import { doseUnits, queryDoseUnitList } from './dose_unit'
 
 // keys
-export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules }
+export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, medicalRecords, drugs, examinations, laboratories, materials, otherCostS, treatments, doseUnits }
 
 // actions
 export {
@@ -67,5 +75,20 @@ export {
   queryAppointmentsByDate,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis
+  completePreDiagnosis,
+  createMedicalRecord,
+  createMedicalRecordAsModel,
+  queryMedicalRecord,
+  drugCreate,
+  examinationCreate,
+  laboratoryCreate,
+  materialCreate,
+  otherCostsCreate,
+  treatmentCreate,
+  queryExaminationList,
+  queryLaboratoryList,
+  queryMaterialList,
+  queryOtherCostList,
+  queryTreatmentList,
+  queryDoseUnitList
 }

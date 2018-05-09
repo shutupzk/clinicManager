@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
+import { queryTreatmentList, queryDoseUnitList } from '../../../../../ducks'
 
 // 病历
 class TreatmentScreen extends Component {
@@ -11,8 +12,23 @@ class TreatmentScreen extends Component {
     }
   }
 
+  queryTreatmentList(keyword) {
+    const { queryTreatmentList, clinic_id } = this.props
+    if (keyword) {
+      queryTreatmentList({ clinic_id, status: true, keyword })
+    }
+  }
+
   getNameOptions() {
-    return [{ value: 1, label: '静脉输液（门诊/不含输液器)' }, { value: 2, label: '静脉输液' }]
+    const { treatments } = this.props
+    let array = []
+    for (let { clinic_treatment_id, name } of treatments) {
+      array.push({
+        value: clinic_treatment_id,
+        label: name
+      })
+    }
+    return array
   }
 
   getSelectValue(value, array) {
@@ -24,8 +40,23 @@ class TreatmentScreen extends Component {
     return null
   }
 
+  queryDoseUnitList(keyword) {
+    const { queryDoseUnitList } = this.props
+    if (keyword) {
+      queryDoseUnitList({ keyword })
+    }
+  }
+
   getUnitoptions() {
-    return [{ value: 1, label: '次' }, { value: 2, label: '个' }]
+    const { doseUnits } = this.props
+    let array = []
+    for (let {id, name} of doseUnits) {
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
 
   addColumn() {
@@ -81,6 +112,7 @@ class TreatmentScreen extends Component {
                         onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
                         placeholder='搜索名称'
                         height={38}
+                        onInputChange={(keyword) => this.queryTreatmentList(keyword)}
                         options={this.getNameOptions()}
                       />
                     </div>
@@ -93,6 +125,7 @@ class TreatmentScreen extends Component {
                         placeholder='搜索单位'
                         height={38}
                         options={this.getUnitoptions()}
+                        onInputChange={(keyword) => this.queryDoseUnitList(keyword)}
                       />
                     </div>
                   </div>
@@ -220,19 +253,10 @@ class TreatmentScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    treatments: [
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      },
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      }
-    ]
+    treatments: state.treatments.data,
+    doseUnits: state.doseUnits.data,
+    clinic_id: state.user.data.clinic_id
   }
 }
 
-export default connect(mapStateToProps, {})(TreatmentScreen)
+export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList })(TreatmentScreen)
