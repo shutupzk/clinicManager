@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
+import { queryExaminationList, queryExaminationOrganList } from '../../../../../ducks'
 
 // 检查
 class ExamineScreen extends Component {
@@ -11,8 +12,37 @@ class ExamineScreen extends Component {
     }
   }
 
-  getNameOptions() {
-    return [{ value: 1, label: '腕舟骨位(左)' }, { value: 2, label: '膝关节应力位(左)' }, { value: 2, label: '胸部正位+侧位' }]
+  queryExaminationList(keyword) {
+    const { queryExaminationList, clinic_id } = this.props
+    if (keyword) {
+      queryExaminationList({ clinic_id, status: true, keyword })
+    }
+  }
+
+  getNameOptions(defaultOption) {
+    const { examinations } = this.props
+    let array = []
+    let has = false
+    for (let { clinic_examination_id, name, organ } of examinations) {
+      array.push({
+        value: clinic_examination_id,
+        label: name,
+        organ
+      })
+      if (defaultOption && defaultOption.clinic_examination_id === clinic_examination_id) has = true
+    }
+    if (!has && defaultOption && defaultOption.clinic_examination_id) {
+      const { clinic_examination_id, name, organ } = defaultOption
+      array = [
+        {
+          value: clinic_examination_id,
+          label: name,
+          organ
+        },
+        array
+      ]
+    }
+    return array
   }
 
   getSelectValue(value, array) {
@@ -24,8 +54,34 @@ class ExamineScreen extends Component {
     return null
   }
 
-  getOrganOptions() {
-    return [{ value: 1, label: '肝' }, { value: 2, label: '胃' }]
+  queryExaminationOrganList(keyword) {
+    const { queryExaminationOrganList, clinic_id } = this.props
+    if (keyword) {
+      queryExaminationOrganList({ clinic_id, keyword })
+    }
+  }
+
+  getOrganOptions(defaultOption) {
+    const { examinationOrgans } = this.props
+    let array = []
+    let has = false
+    for ({ name } of examinationOrgans) {
+      if (name === defaultOption.organ) has = true
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (!has && defaultOption.organ) {
+      array = [
+        {
+          value: defaultOption.organ,
+          label: defaultOption.organ
+        },
+        ...array
+      ]
+    }
+    return array
   }
 
   addColumn() {
@@ -72,43 +128,53 @@ class ExamineScreen extends Component {
                   </div>
                 </div>
               </li>
-              {examines.map((item, index) => (
-                <li key={index}>
-                  <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(examines[index].treatment_id, this.getNameOptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
-                        placeholder='搜索名称'
-                        height={38}
-                        options={this.getNameOptions()}
-                      />
+              {examines.map((item, index) => {
+                let nameOptions = this.getNameOptions(examines[index])
+                let organOptions = this.getOrganOptions(examines[index])
+                return (
+                  <li key={index}>
+                    <div>
+                      <div style={{ width: '100%' }}>
+                        <Select
+                          value={this.getSelectValue(examines[index].clinic_examination_id, nameOptions)}
+                          onChange={({ value, organ, label }) => {
+                            this.setItemValue(value, index, 'clinic_examination_id', 2)
+                            this.setItemValue(label, index, 'name', 2)
+                            this.setItemValue(organ, index, 'organ', 2)
+                          }}
+                          placeholder='搜索名称'
+                          height={38}
+                          onInputChange={keyword => this.queryExaminationList(keyword)}
+                          options={nameOptions}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <input value={examines[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                  </div>
-                  <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(examines[index].organ_id, this.getOrganOptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'organ_id', 2)}
-                        placeholder='搜索部位'
-                        height={38}
-                        options={this.getOrganOptions()}
-                      />
+                    <div>
+                      <input value={examines[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                     </div>
-                  </div>
-                  <div>
-                    <input value={examines[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
-                  </div>
-                  <div>
-                    <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                      删除
+                    <div>
+                      <div style={{ width: '100%' }}>
+                        <Select
+                          value={this.getSelectValue(examines[index].organ, organOptions)}
+                          onChange={({ value }) => this.setItemValue(value, index, 'organ', 2)}
+                          placeholder='搜索部位'
+                          height={38}
+                          onInputChange={keyword => this.queryExaminationOrganList(keyword)}
+                          options={organOptions}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                    <div>
+                      <input value={examines[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                    </div>
+                    <div>
+                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        删除
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </div>
           <div className='formListBottom'>
@@ -220,19 +286,10 @@ class ExamineScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    examines: [
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      },
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      }
-    ]
+    examinations: state.examinations.data,
+    examinationOrgans: state.examinationOrgans.data,
+    clinic_id: state.user.data.clinic_id
   }
 }
 
-export default connect(mapStateToProps, {})(ExamineScreen)
+export default connect(mapStateToProps, { queryExaminationList, queryExaminationOrganList })(ExamineScreen)
