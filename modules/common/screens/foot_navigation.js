@@ -6,18 +6,22 @@ export default class Navigation extends Component {
   constructor(props) {
     super(props)
     this.state = {}
-  }
-
+	}
   render() {
-		const { data, url } = this.props
-		// console.log('url=====', url.split('/'))
-		let parentUrl = url.split('/')[2]
+    const { data, url } = this.props
+    let parentUrl = url.split('/')[2]
     return (
       <ul className='footNavUl'>
-        {data && data.map((item, itemKey) => {
-					// console.log('item======', item)
-					let itemUrl = item.navigateName.split('/')[2]
-					return (
+        {data &&
+					data.map((item, itemKey) => {
+  				console.log('item======', item)
+  				let itemUrl = item.navigateName.split('/')[2]
+					let children = []
+					if (item.children) {
+						children = item.children
+					}
+  				console.log('children=======', children)
+  				return (
 						<Link key={item.navigateName} href={item.navigateName}>
 							<div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
 								<i />
