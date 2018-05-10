@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
+import { queryTreatmentList, queryDoseUnitList } from '../../../../../ducks'
 
 // 病历
 class TreatmentScreen extends Component {
@@ -11,8 +12,39 @@ class TreatmentScreen extends Component {
     }
   }
 
-  getNameOptions() {
-    return [{ value: 1, label: '静脉输液（门诊/不含输液器)' }, { value: 2, label: '静脉输液' }]
+  queryTreatmentList(keyword) {
+    const { queryTreatmentList, clinic_id } = this.props
+    if (keyword) {
+      queryTreatmentList({ clinic_id, status: true, keyword })
+    }
+  }
+
+  getNameOptions(data) {
+    const { treatments } = this.props
+    console.log('treatments =====', treatments)
+    let array = []
+    let has = false
+    for (let { clinic_treatment_id, name, unit_id, unit_name } of treatments) {
+      array.push({
+        value: clinic_treatment_id,
+        label: name,
+        unit_id,
+        unit_name
+      })
+      if (data.clinic_treatment_id === clinic_treatment_id) has = true
+    }
+    if (!has && data.clinic_treatment_id) {
+      array = [
+        {
+          value: data.clinic_treatment_id,
+          label: data.name,
+          unit_id: data.unit_id,
+          unit_name: data.unit_name
+        },
+        ...array
+      ]
+    }
+    return array
   }
 
   getSelectValue(value, array) {
@@ -24,8 +56,34 @@ class TreatmentScreen extends Component {
     return null
   }
 
-  getUnitoptions() {
-    return [{ value: 1, label: '次' }, { value: 2, label: '个' }]
+  queryDoseUnitList(keyword) {
+    const { queryDoseUnitList } = this.props
+    if (keyword) {
+      queryDoseUnitList({ keyword })
+    }
+  }
+
+  getUnitoptions(data) {
+    const { doseUnits } = this.props
+    let array = []
+    let has = false
+    for (let { id, name } of doseUnits) {
+      array.push({
+        value: id,
+        label: name
+      })
+      if (data.unit_id === id) has = true
+    }
+    if (!has) {
+      array = [
+        {
+          value: data.unit_id,
+          label: data.unit_name
+        },
+        ...array
+      ]
+    }
+    return array
   }
 
   addColumn() {
@@ -72,43 +130,57 @@ class TreatmentScreen extends Component {
                   </div>
                 </div>
               </li>
-              {treatments.map((item, index) => (
-                <li key={index}>
-                  <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(treatments[index].treatment_id, this.getNameOptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'treatment_id', 2)}
-                        placeholder='搜索名称'
-                        height={38}
-                        options={this.getNameOptions()}
-                      />
+              {treatments.map((item, index) => {
+                let nameOptions = this.getNameOptions(treatments[index])
+                let unitoptions = this.getUnitoptions(treatments[index])
+                return (
+                  <li key={index}>
+                    <div>
+                      <div style={{ width: '100%' }}>
+                        <Select
+                          value={this.getSelectValue(treatments[index].clinic_treatment_id, nameOptions)}
+                          onChange={({ value, unit_id, label, unit_name }) => {
+                            this.setItemValue(value, index, 'clinic_treatment_id', 2)
+                            this.setItemValue(label, index, 'name', 2)
+                            this.setItemValue(unit_id, index, 'unit_id', 2)
+                            this.setItemValue(unit_name, index, 'unit_name', 2)
+                          }}
+                          placeholder='搜索名称'
+                          height={38}
+                          onInputChange={keyword => this.queryTreatmentList(keyword)}
+                          options={nameOptions}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <div style={{ width: '100%' }}>
-                      <Select
-                        value={this.getSelectValue(treatments[index].unit_id, this.getUnitoptions())}
-                        onChange={({ value }) => this.setItemValue(value, index, 'unit_id', 2)}
-                        placeholder='搜索单位'
-                        height={38}
-                        options={this.getUnitoptions()}
-                      />
+                    <div>
+                      <div style={{ width: '100%' }}>
+                        <Select
+                          value={this.getSelectValue(treatments[index].unit_id, unitoptions)}
+                          onChange={({ value, label }) => {
+                            this.setItemValue(value, index, 'unit_id', 2)
+                            this.setItemValue(label, index, 'unit_name', 2)
+                          }}
+                          placeholder='搜索单位'
+                          height={38}
+                          options={unitoptions}
+                          onInputChange={keyword => this.queryDoseUnitList(keyword)}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                  </div>
-                  <div>
-                    <input value={treatments[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
-                  </div>
-                  <div>
-                    <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                      删除
+                    <div>
+                      <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                     </div>
-                  </div>
-                </li>
-              ))}
+                    <div>
+                      <input value={treatments[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                    </div>
+                    <div>
+                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        删除
+                      </div>
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </div>
           <div className='formListBottom'>
@@ -118,7 +190,7 @@ class TreatmentScreen extends Component {
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
-              <button>打印治疗单</button>
+              <button style={{ width: '80px' }}>打印治疗单</button>
             </div>
           </div>
         </div>
@@ -220,19 +292,10 @@ class TreatmentScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    treatments: [
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      },
-      {
-        id: 1,
-        name: '静脉输液（门诊/不含输液器)',
-        py_code: 'JMSY'
-      }
-    ]
+    treatments: state.treatments.data,
+    doseUnits: state.doseUnits.data,
+    clinic_id: state.user.data.clinic_id
   }
 }
 
-export default connect(mapStateToProps, {})(TreatmentScreen)
+export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList })(TreatmentScreen)
