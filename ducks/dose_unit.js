@@ -10,7 +10,7 @@ const initState = {
 export function doseUnits(state = initState, action = {}) {
   switch (action.type) {
     case DOSE_UNIT_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, data: { ...state.data, ...action.data } }
     default:
       return state
   }
@@ -24,12 +24,15 @@ export const queryDoseUnitList = ({ keyword, offset = 0, limit = 6 }) => async d
       offset,
       limit
     })
+    console.log('data =====', data)
     const docs = data.data || []
-    const page_info = data.page_info || {}
+    let json = {}
+    for (let doc of docs) {
+      json[json.id] = doc
+    }
     dispatch({
       type: DOSE_UNIT_ADD,
-      data: docs,
-      page_info
+      data: json
     })
     return null
   } catch (e) {

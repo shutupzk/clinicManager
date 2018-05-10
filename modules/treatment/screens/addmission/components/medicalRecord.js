@@ -20,7 +20,9 @@ class PrescriptionScreen extends Component {
       cure_suggestion: '',
       remark: '',
       files: '',
-      saveAsModel: false
+      saveAsModel: false,
+      name: '',
+      is_common: true
     }
   }
 
@@ -34,7 +36,7 @@ class PrescriptionScreen extends Component {
     let { chief_complaint } = this.state
     let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
-    this.refs.myConfirm.confirm('确定提交病历？', '', 'Success', async () => {
+    this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
       let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
@@ -44,65 +46,97 @@ class PrescriptionScreen extends Component {
   }
 
   saveAsModel() {
-    let { chief_complaint } = this.state
+    let { name } = this.state
     let { createMedicalRecordAsModel, triage_personnel_id, clinic_triage_patient_id } = this.props
-    if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
-    this.refs.myConfirm.confirm('确定保存病历为模板？', '', 'Success', async () => {
-      let res = await createMedicalRecordAsModel({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
-      if (res) this.refs.myAlert.alert(`保存失败！【${res}】`)
+    if (!name) return this.refs.myAlert.alert('请填写模板名称！')
+    this.refs.myAlert.confirm('确定保存病历为模板？', '', 'Success', async () => {
+      let res = await createMedicalRecordAsModel({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id, model_name: name })
+      if (res) this.refs.myAlert.alert(`保存模板失败！【${res}】`)
       else {
-        this.refs.myAlert.alert('保存成功！')
+        this.refs.myAlert.alert('保存模板成功！', '', async () => {
+          this.setState({ saveAsModel: false })
+        })
       }
     })
   }
 
   showSaveModel() {
     if (!this.state.saveAsModel) return null
-    let { chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
+    let { is_common, name, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '900px', height: '683px', left: '324px' }}>
+        <div className='doctorList' style={{ width: '900px', height: '680px', left: '324px' }}>
           <div className='doctorList_top'>
-            <span>新增科室</span>
+            <span>新增病历模板</span>
             <span onClick={() => this.setState({ saveAsModel: false })}>x</span>
           </div>
-          <div className={'formListBox'} style={{}}>
+          <div className={'contentBox'}>
             <ul>
               <li>
                 <label>
-                  主述<b style={{ color: 'red' }}> *</b>
+                  模板名称<b style={{ color: 'red' }}> *</b>
                 </label>
-                <textarea
+                <input
+                  value={name}
+                  onChange={e => {
+                    this.setState({ name: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <input type='radio' style={{ width: '15px', margin: '4px 0 0 50px' }} checked={is_common} onChange={e => this.setState({ is_common: true })} />
+                <label style={{ marginLeft: '15px' }}>通用模板</label>
+                <input type='radio' style={{ width: '15px', margin: '4px 0 0 15px' }} checked={!is_common} onChange={e => this.setState({ is_common: false })} />
+                <label style={{ marginLeft: '15px' }}>非通用模板</label>
+              </li>
+              <li>
+                <label>主诉</label>
+                <input
                   value={chief_complaint}
                   onChange={e => {
                     this.setState({ chief_complaint: e.target.value })
                   }}
                 />
               </li>
+              <li />
               <li>
                 <label>现病史</label>
-                <textarea
+                <input
                   value={history_of_present_illness}
                   onChange={e => {
                     this.setState({ history_of_present_illness: e.target.value })
                   }}
                 />
               </li>
+              <li />
               <li>
                 <label>既往史</label>
-                <textarea
+                <input
+                  type='text'
                   value={history_of_past_illness}
                   onChange={e => {
                     this.setState({ history_of_past_illness: e.target.value })
                   }}
                 />
               </li>
+              <li />
               <li>
                 <label>家族史</label>
-                <textarea
+                <input
+                  type='text'
                   value={family_medical_history}
                   onChange={e => {
                     this.setState({ family_medical_history: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>体格检查</label>
+                <input
+                  type='text'
+                  value={body_examination}
+                  onChange={e => {
+                    this.setState({ body_examination: e.target.value })
                   }}
                 />
               </li>
@@ -119,7 +153,6 @@ class PrescriptionScreen extends Component {
               <li>
                 <label>过敏反应</label>
                 <input
-                  type='text'
                   value={allergic_reaction}
                   onChange={e => {
                     this.setState({ allergic_reaction: e.target.value })
@@ -129,7 +162,6 @@ class PrescriptionScreen extends Component {
               <li>
                 <label>疫苗接种史</label>
                 <input
-                  type='text'
                   value={immunizations}
                   onChange={e => {
                     this.setState({ immunizations: e.target.value })
@@ -137,17 +169,8 @@ class PrescriptionScreen extends Component {
                 />
               </li>
               <li>
-                <label>体格检查</label>
-                <textarea
-                  value={body_examination}
-                  onChange={e => {
-                    this.setState({ body_examination: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
                 <label>初步诊断</label>
-                <textarea
+                <input
                   value={diagnosis}
                   onChange={e => {
                     this.setState({ diagnosis: e.target.value })
@@ -155,11 +178,8 @@ class PrescriptionScreen extends Component {
                 />
               </li>
               <li>
-                <a className={'chooseTemp'}>选择诊断模板</a>
-              </li>
-              <li>
-                <label>治疗意见</label>
-                <textarea
+                <label>诊疗意见</label>
+                <input
                   value={cure_suggestion}
                   onChange={e => {
                     this.setState({ cure_suggestion: e.target.value })
@@ -168,18 +188,64 @@ class PrescriptionScreen extends Component {
               </li>
               <li>
                 <label>备注</label>
-                <textarea
+                <input
                   value={remark}
                   onChange={e => {
                     this.setState({ remark: e.target.value })
                   }}
                 />
               </li>
+              <li />
               <li>
-                <button>保存</button>
+                <button
+                  onClick={() => {
+                    this.saveAsModel()
+                  }}
+                  style={{
+                    width: '70px',
+                    height: '26px',
+                    background: 'rgba(49, 176, 179, 1)',
+                    color: 'rgba(255, 255, 255, 1)',
+                    borderRadius: '15px',
+                    border: 'none',
+                    marginLeft: '200px'
+                  }}
+                >
+                  保存
+                </button>
               </li>
             </ul>
           </div>
+          <style jsx>{`
+            .contentBox {
+              margin: 2px 45px 0 45px;
+              height: 591px;
+            }
+            .contentBox ul li {
+              margin:0
+              height: 30px;
+              display: flex;
+              float: left;
+              position: relative;
+              width: 49%
+              margin-right: 1%;
+              margin-top: 20px;
+            }
+            .contentBox ul li>label{
+              margin:0
+              width: 89px;
+              height: 30px;
+              line-height:35px
+            }
+            .contentBox input {
+              margin:0
+              width: 300px;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              padding-right: 5px
+            }
+          `}</style>
         </div>
       </div>
     )
@@ -379,7 +445,6 @@ class PrescriptionScreen extends Component {
         </div>
         {this.showSaveModel()}
         <Confirm ref='myAlert' isAlert />
-        <Confirm ref='myConfirm' />
         <style jsx>{`
           .filterBox {
             flex-direction: column;
