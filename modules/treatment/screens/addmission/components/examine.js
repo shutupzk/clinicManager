@@ -52,6 +52,7 @@ class ExamineScreen extends Component {
 
   getOrganOptions() {
     const { examinationOrgans } = this.props
+    console.log('examinationOrgans =====', examinationOrgans)
     let array = []
     for (let key in examinationOrgans) {
       const { name } = examinationOrgans[key]
@@ -108,8 +109,8 @@ class ExamineScreen extends Component {
                 </div>
               </li>
               {examines.map((item, index) => {
-                let nameOptions = this.getNameOptions(examines[index])
-                let organOptions = this.getOrganOptions(examines[index])
+                let nameOptions = this.getNameOptions()
+                let organOptions = this.getOrganOptions()
                 return (
                   <li key={index}>
                     <div>
