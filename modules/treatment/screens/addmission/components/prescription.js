@@ -526,6 +526,7 @@ class MedicalRecordScreen extends Component {
 
   render() {
     const {selItem, cPrescItemArray} = this.state
+    const { medicalRecord } = this.props
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
@@ -564,11 +565,11 @@ class MedicalRecordScreen extends Component {
           <div className={'alergyBlank'}>
             <div>
               <label>过敏史</label>
-              <input type='text' />
+              <input type='text' value={medicalRecord.allergic_history} />
             </div>
             <div>
               <label>过敏反应</label>
-              <input type='text' />
+              <input type='text' value={medicalRecord.allergic_reaction} />
             </div>
           </div>
           {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
@@ -727,6 +728,7 @@ class MedicalRecordScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    medicalRecord: state.medicalRecords.data
   }
 }
 
