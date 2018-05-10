@@ -89,11 +89,22 @@ class ExamineScreen extends Component {
 
   render() {
     const { examines } = this.state
+    const { medicalRecord } = this.props
     return (
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
             <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>选择模板</button>
+          </div>
+          <div className={'alergyBlank'}>
+            <div>
+              <label>过敏史</label>
+              <input readOnly type='text' value={medicalRecord.allergic_history} />
+            </div>
+            <div style={{marginLeft: '40px'}}>
+              <label>过敏反应</label>
+              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+            </div>
           </div>
           <div className='tableDIV'>
             <ul>
@@ -257,6 +268,27 @@ class ExamineScreen extends Component {
               margin-right: 10px;
               cursor: pointer;
             }
+            .alergyBlank {
+              display: flex;
+              flex-direction: row;
+              margin: 0 65px 20px 47px;
+            }
+            .alergyBlank div {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+            }
+            .alergyBlank div label {
+              width: 98%;
+            }
+            .alergyBlank div input {
+              width: 100%;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              border: 1px solid #d8d8d8;
+              margin-top: 15px;
+            }
           `}
         </style>
       </div>
@@ -268,7 +300,8 @@ const mapStateToProps = state => {
   return {
     examinations: state.examinations.data,
     examinationOrgans: state.examinationOrgans.data,
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    medicalRecord: state.medicalRecords.data
   }
 }
 
