@@ -14,11 +14,12 @@ export default class Confirm extends Component {
     }
   }
 
-  alert(title, content) {
+  alert(title, content, confirmFun) {
     this.setState({
       title,
       content,
       showConfirm: true,
+      confirmFun,
       isAlert: true
     })
   }
@@ -70,7 +71,7 @@ export default class Confirm extends Component {
               className={`buttonDiv buttonDiv${type}`}
               onClick={() => {
                 this.closeConfirm()
-                if (!isAlert && confirmFun) {
+                if (confirmFun) {
                   confirmFun()
                 }
               }}
