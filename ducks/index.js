@@ -12,7 +12,8 @@ import {
   queryAppointmentsByDate,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis
+  completePreDiagnosis,
+  TreatmentPatientCreate
 } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
@@ -110,5 +111,6 @@ export {
   queryOtherCostList,
   queryTreatmentList,
   queryDoseUnitList,
-  queryExaminationOrganList
+  queryExaminationOrganList,
+  TreatmentPatientCreate
 }
