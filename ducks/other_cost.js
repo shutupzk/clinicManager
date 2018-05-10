@@ -1,5 +1,5 @@
 import { request } from './request'
-const MATERIAL_PROJECT_ADD = 'MATERIAL_PROJECT_ADD'
+const OTHER_COST_ADD = 'OTHER_COST_ADD'
 
 const initState = {
   data: {},
@@ -9,7 +9,7 @@ const initState = {
 
 export function otherCostS(state = initState, action = {}) {
   switch (action.type) {
-    case MATERIAL_PROJECT_ADD:
+    case OTHER_COST_ADD:
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     default:
       return state
@@ -29,12 +29,13 @@ export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, lim
     console.log('otherCost=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
+    let json = {}
     for (let doc of docs) {
-      json[doc.name] = doc
+      json[doc.clinic_other_cost_id] = doc
       // json[doc.name] = doc
     }
     dispatch({
-      type: MATERIAL_PROJECT_ADD,
+      type: OTHER_COST_ADD,
       data: json,
       page_info
     })

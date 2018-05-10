@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, Loading } from '../../../../../components'
+import { Select } from '../../../../../components'
 import { queryOtherCostList } from '../../../../../ducks'
 
 // 其他收费
@@ -8,11 +8,11 @@ class OtherScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      laboratories: []
+      othercosts: []
     }
   }
 
-  queryMaterialList(keyword) {
+  queryOtherCostLists(keyword) {
     const { queryOtherCostList, clinic_id } = this.props
     if (keyword) {
       queryOtherCostList({ clinic_id, keyword })
@@ -23,10 +23,11 @@ class OtherScreen extends Component {
     const { otherCostS } = this.props
     let array = []
     for (let key in otherCostS) {
-      const { name } = otherCostS[key]
+      const { name, clinic_other_cost_id, unit_name } = otherCostS[key]
       array.push({
-        value: name,
-        label: name
+        value: clinic_other_cost_id,
+        label: name,
+        unit_name
       })
     }
     return array
@@ -47,30 +48,30 @@ class OtherScreen extends Component {
   }
 
   addColumn() {
-    const { laboratories } = this.state
-    this.setState({ laboratories: [...laboratories, {}] })
+    const { othercosts } = this.state
+    this.setState({ othercosts: [...othercosts, {}] })
   }
 
   removeColumn(index) {
-    const { laboratories } = this.state
-    let array = [...laboratories]
+    const { othercosts } = this.state
+    let array = [...othercosts]
     array.splice(index, 1)
-    this.setState({ laboratories: array })
+    this.setState({ othercosts: array })
   }
 
   setItemValue(e, index, key, type = 1) {
-    const { laboratories } = this.state
+    const { othercosts } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
-    let array = [...laboratories]
+    let array = [...othercosts]
     array[index][key] = value
-    this.setState({ laboratories: array })
+    this.setState({ othercosts: array })
   }
 
   render() {
-    const { laboratories } = this.state
+    const { othercosts } = this.state
     return (
       <div className='filterBox'>
         {/* <Loading showLoading /> */}
@@ -91,29 +92,34 @@ class OtherScreen extends Component {
                   </div>
                 </div>
               </li>
-              {laboratories.map((item, index) => {
+              {othercosts.map((item, index) => {
                 let nameOptions = this.getNameOptions()
                 return (
                   <li key={index}>
                     <div>
                       <div style={{ width: '100%' }}>
                         <Select
-                          value={this.getSelectValue(laboratories[index].name, nameOptions)}
-                          onChange={({ value }) => this.setItemValue(value, index, 'name', 2)}
+                          value={this.getSelectValue(othercosts[index].clinic_other_cost_id, nameOptions)}
+                          onChange={({ value, name, unit_name }) => {
+                            this.setItemValue(value, index, 'clinic_other_cost_id', 2)
+                            this.setItemValue(name, index, 'name', 2)
+                            this.setItemValue(unit_name, index, 'unit_name', 2)
+                          }}
                           placeholder='搜索名称'
                           height={38}
+                          onInputChange={keyword => this.queryOtherCostLists(keyword)}
                           options={nameOptions}
                         />
                       </div>
                     </div>
                     <div>
-                      <input value={laboratories[index].times} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit')} />
+                      <input readOnly value={othercosts[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
                     </div>
                     <div>
-                      <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                      <input value={othercosts[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                     </div>
                     <div>
-                      <input value={laboratories[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                      <input value={othercosts[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>

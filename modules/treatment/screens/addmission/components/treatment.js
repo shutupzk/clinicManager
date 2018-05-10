@@ -109,7 +109,7 @@ class TreatmentScreen extends Component {
               </li>
               {treatments.map((item, index) => {
                 let nameOptions = this.getNameOptions(treatments[index])
-                let unitoptions = this.getUnitoptions(treatments[index])
+                // let unitoptions = this.getUnitoptions(treatments[index])
                 return (
                   <li key={index}>
                     <div>
@@ -130,7 +130,8 @@ class TreatmentScreen extends Component {
                       </div>
                     </div>
                     <div>
-                      <div style={{ width: '100%' }}>
+                      <input readOnly type='text' value={treatments[index].unit_name} />
+                      {/* <div style={{ width: '100%' }}>
                         <Select
                           value={this.getSelectValue(treatments[index].unit_id, unitoptions)}
                           onChange={({ value, label }) => {
@@ -142,7 +143,7 @@ class TreatmentScreen extends Component {
                           options={unitoptions}
                           onInputChange={keyword => this.queryDoseUnitList(keyword)}
                         />
-                      </div>
+                      </div> */}
                     </div>
                     <div>
                       <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
