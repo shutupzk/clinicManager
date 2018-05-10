@@ -36,7 +36,7 @@ export const queryLaboratoryList = ({ clinic_id, keyword, status, offset = 0, li
     }
     dispatch({
       type: LABORATORY_PROJECT_ADD,
-      data: docs,
+      data: json,
       page_info
     })
     return null

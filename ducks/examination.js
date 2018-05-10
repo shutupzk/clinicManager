@@ -37,7 +37,7 @@ export const queryExaminationList = ({ clinic_id, keyword, status, offset = 0, l
     }
     dispatch({
       type: EXAM_PROJECT_ADD,
-      data: docs,
+      data: json,
       page_info
     })
     dispatch({
