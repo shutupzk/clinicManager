@@ -1,14 +1,18 @@
 import { request } from './request'
 const MEDICAL_RECORD_ADD = 'MEDICAL_RECORD_ADD'
+const MEDICAL_MODEL_ADD = 'MEDICAL_MODEL_ADD'
 
 const initState = {
-  data: {}
+  data: {},
+  models: []
 }
 
 export function medicalRecords(state = initState, action = {}) {
   switch (action.type) {
     case MEDICAL_RECORD_ADD:
       return { ...state, data: action.data }
+    case MEDICAL_MODEL_ADD:
+      return { ...state, models: action.data }
     default:
       return state
   }
@@ -27,6 +31,16 @@ export const queryMedicalRecord = clinic_triage_patient_id => async dispatch => 
     console.log(e)
     return null
   }
+}
+
+export const queryMedicalModels = ({ keword, offset = 0, limit = 6 }) => async dispatch => {
+  const data = await request('/medicalRecord/model/list', { keword, offset, limit })
+  const doc = data.data || []
+  dispatch({
+    type: MEDICAL_MODEL_ADD,
+    data: doc
+  })
+  return doc
 }
 
 export const createMedicalRecord = ({
@@ -72,6 +86,8 @@ export const createMedicalRecord = ({
 }
 
 export const createMedicalRecordAsModel = ({
+  model_name,
+  is_common,
   operation_id,
   morbidity_date,
   chief_complaint,
@@ -88,7 +104,8 @@ export const createMedicalRecordAsModel = ({
   files
 }) => async dispatch => {
   try {
-    const data = await request('/medicalRecord/createModel', {
+    const data = await request('/medicalRecord/model/create', {
+      is_common,
       model_name,
       operation_id,
       morbidity_date,

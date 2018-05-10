@@ -5,7 +5,7 @@ import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
 import { schedules, queryScheduleDepartments, queryScheduleDoctors, queryDoctorsWithSchedule, copyScheduleByDate, openScheduleByDate, createOneSchedule, deleteOneUnOpenScheduleByID, stopScheduleByID, querySchedules } from './schedules'
-import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord } from './medicRecord'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels } from './medicRecord'
 // keys
 export { user, doctors, triagePatients, patients, departments, triageDoctors, schedules, medicalRecords }
 
@@ -46,5 +46,6 @@ export {
   completePreDiagnosis,
   createMedicalRecord,
   createMedicalRecordAsModel,
-  queryMedicalRecord
+  queryMedicalRecord,
+  queryMedicalModels
 }
