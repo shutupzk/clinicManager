@@ -26,6 +26,7 @@ export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, lim
       limit,
       status
     })
+    console.log('otherCost=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     for (let doc of docs) {

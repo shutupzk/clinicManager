@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
+import { Select, Loading } from '../../../../../components'
 import { queryOtherCostList } from '../../../../../ducks'
 
 // 其他收费
@@ -73,6 +73,7 @@ class OtherScreen extends Component {
     const { laboratories } = this.state
     return (
       <div className='filterBox'>
+        {/* <Loading showLoading /> */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
             <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>选择模板</button>

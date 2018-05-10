@@ -23,13 +23,14 @@ class MaterialScreen extends Component {
     const { materials } = this.props
     let array = []
     for (let key in materials) {
-      const { material_stock_id, name, specification, unit_id, unit_name } = materials[key]
+      const { material_stock_id, name, specification, unit_id, unit_name, stock_amount } = materials[key]
       array.push({
         value: material_stock_id,
         label: name,
         specification,
         unit_id,
-        unit_name
+        unit_name,
+        stock_amount
       })
     }
     return array
@@ -69,6 +70,7 @@ class MaterialScreen extends Component {
 
   render() {
     const { eaterials } = this.state
+    console.log('eaterials=====', eaterials)
     return (
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -98,12 +100,13 @@ class MaterialScreen extends Component {
                       <div style={{ width: '100%' }}>
                         <Select
                           value={this.getSelectValue(eaterials[index].material_stock_id, nameOptions)}
-                          onChange={({ value, label, specification, unit_id, unit_name }) => {
+                          onChange={({ value, label, specification, unit_id, unit_name, stock_amount }) => {
                             this.setItemValue(value, index, 'material_stock_id', 2)
                             this.setItemValue(label, index, 'name', 2)
                             this.setItemValue(specification, index, 'specification', 2)
                             this.setItemValue(unit_id, index, 'unit_id', 2)
                             this.setItemValue(unit_name, index, 'unit_name', 2)
+                            this.setItemValue(stock_amount, index, 'stock_amount', 2)
                           }}
                           placeholder='搜索名称'
                           height={38}
@@ -113,13 +116,13 @@ class MaterialScreen extends Component {
                       </div>
                     </div>
                     <div>
-                      <input value={eaterials[index].specification} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
+                      <input readOnly value={eaterials[index].specification} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
                     </div>
                     <div>
-                      <input value={eaterials[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
+                      <input readOnly value={eaterials[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
                     </div>
                     <div>
-                      <input value={eaterials[index].times} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock')} />
+                      <input readOnly value={eaterials[index].stock_amount} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
                     </div>
                     <div>
                       <input value={eaterials[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
