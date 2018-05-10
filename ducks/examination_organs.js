@@ -10,7 +10,7 @@ const initState = {
 export function examinationOrgans(state = initState, action = {}) {
   switch (action.type) {
     case EXAMINATION_ORGAN_ADD:
-      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
+      return { ...state, data: {...state.data, ...action.data} }
     default:
       return state
   }
@@ -25,15 +25,13 @@ export const queryExaminationOrganList = ({ keyword, offset = 0, limit = 6 }) =>
       limit
     })
     const docs = data.data || []
-    const page_info = data.page_info || {}
     let json = {}
     for (let doc of docs) {
       json[doc.name] = doc
     }
     dispatch({
       type: EXAMINATION_ORGAN_ADD,
-      data: json,
-      page_info
+      data: json
     })
     return null
   } catch (e) {

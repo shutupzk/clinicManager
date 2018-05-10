@@ -29,15 +29,20 @@ export const queryExaminationList = ({ clinic_id, keyword, status, offset = 0, l
     const docs = data.data || []
     const page_info = data.page_info || {}
     let json = {}
+    let organ = {}
     for (let doc of docs) {
       json[doc.clinic_examination_id] = doc
-      json[doc.name] = doc
-      json[doc.organ] = doc
+      // json[doc.name] = doc
+      organ[doc.organ] = {name: doc.organ}
     }
     dispatch({
       type: EXAM_PROJECT_ADD,
       data: docs,
       page_info
+    })
+    dispatch({
+      type: 'EXAMINATION_ORGAN_ADD',
+      data: organ
     })
     return null
   } catch (e) {
