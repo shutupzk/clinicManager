@@ -98,11 +98,11 @@ class TreatmentScreen extends Component {
           <div className={'alergyBlank'}>
             <div>
               <label>过敏史</label>
-              <input type='text' value={medicalRecord.allergic_history} />
+              <input readOnly type='text' value={medicalRecord.allergic_history} />
             </div>
             <div style={{marginLeft: '40px'}}>
               <label>过敏反应</label>
-              <input type='text' value={medicalRecord.allergic_reaction} />
+              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
             </div>
           </div>
           <div className='tableDIV'>

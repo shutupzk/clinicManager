@@ -324,7 +324,7 @@ class MedicalRecordScreen extends Component {
             </li>
             {array.map((item, index) => {
               return (
-                <li>
+                <li key={index}>
                   <div>
                     <div>
                       <Select
@@ -565,11 +565,11 @@ class MedicalRecordScreen extends Component {
           <div className={'alergyBlank'}>
             <div>
               <label>过敏史</label>
-              <input type='text' value={medicalRecord.allergic_history} />
+              <input readOnly type='text' value={medicalRecord.allergic_history} />
             </div>
             <div>
               <label>过敏反应</label>
-              <input type='text' value={medicalRecord.allergic_reaction} />
+              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
             </div>
           </div>
           {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
