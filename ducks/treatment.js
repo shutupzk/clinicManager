@@ -10,7 +10,7 @@ const initState = {
 export function treatments(state = initState, action = {}) {
   switch (action.type) {
     case TREATMENT_PROJECT_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, data: { ...state.data, ...action.data } }
     default:
       return state
   }
@@ -27,12 +27,30 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
       status
     })
     const docs = data.data || []
-    const page_info = data.page_info || {}
+    let json = {}
+    let unitJson = {}
+    for (let doc of docs) {
+      json[doc.clinic_treatment_id] = doc
+      const { unit_id, unit_name } = doc
+      unitJson[doc.unit_id] = { id: unit_id, name: unit_name }
+    }
     dispatch({
       type: TREATMENT_PROJECT_ADD,
-      data: docs,
-      page_info
+      data: json
     })
+
+    dispatch({
+      type: 'DOSE_UNIT_ADD',
+      data: unitJson
+    })
+
+    // array.push({
+    //   value: clinic_treatment_id,
+    //   label: name,
+    //   unit_id,
+    //   unit_name
+    // })
+
     return null
   } catch (e) {
     console.log(e)

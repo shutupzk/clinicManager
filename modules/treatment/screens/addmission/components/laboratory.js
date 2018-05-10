@@ -20,7 +20,6 @@ class LaboratoryScreen extends Component {
   }
 
   getNameOptions(defaultOption) {
-    // return [{ value: 1, label: '肌红蛋白' }, { value: 2, label: '幽门螺杆菌抗原快速检测' }]
     const { laboratories } = this.props
     let array = []
     for (let key in laboratories) {
@@ -31,25 +30,6 @@ class LaboratoryScreen extends Component {
       })
     }
     return array
-    // let has = false
-    // for (let { clinic_laboratory_id, name } of laboratories) {
-    //   array.push({
-    //     value: clinic_laboratory_id,
-    //     label: name
-    //   })
-    //   if (defaultOption && defaultOption.clinic_laboratory_id === clinic_laboratory_id) has = true
-    // }
-    // if (!has && defaultOption && defaultOption.clinic_laboratory_id) {
-    //   const { clinic_laboratory_id, name } = defaultOption
-    //   array = [
-    //     {
-    //       value: clinic_laboratory_id,
-    //       label: name
-    //     },
-    //     array
-    //   ]
-    // }
-    // return array
   }
 
   getSelectValue(value, array) {

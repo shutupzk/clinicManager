@@ -21,28 +21,15 @@ class TreatmentScreen extends Component {
 
   getNameOptions(data) {
     const { treatments } = this.props
-    console.log('treatments =====', treatments)
     let array = []
-    let has = false
-    for (let { clinic_treatment_id, name, unit_id, unit_name } of treatments) {
+    for (let key in treatments) {
+      const { clinic_treatment_id, name, unit_id, unit_name } = treatments[key]
       array.push({
         value: clinic_treatment_id,
         label: name,
         unit_id,
         unit_name
       })
-      if (data.clinic_treatment_id === clinic_treatment_id) has = true
-    }
-    if (!has && data.clinic_treatment_id) {
-      array = [
-        {
-          value: data.clinic_treatment_id,
-          label: data.name,
-          unit_id: data.unit_id,
-          unit_name: data.unit_name
-        },
-        ...array
-      ]
     }
     return array
   }
@@ -66,22 +53,12 @@ class TreatmentScreen extends Component {
   getUnitoptions(data) {
     const { doseUnits } = this.props
     let array = []
-    let has = false
-    for (let { id, name } of doseUnits) {
+    for (let key in doseUnits) {
+      let { id, name } = doseUnits[key]
       array.push({
         value: id,
         label: name
       })
-      if (data.unit_id === id) has = true
-    }
-    if (!has) {
-      array = [
-        {
-          value: data.unit_id,
-          label: data.unit_name
-        },
-        ...array
-      ]
     }
     return array
   }
