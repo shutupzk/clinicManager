@@ -315,9 +315,11 @@ export const completePreDiagnosis = ({ clinic_triage_patient_id, chief_complaint
 
 export const TreatmentPatientCreate = ({ clinic_triage_patient_id, personnel_id, items }) => async dispatch => {
   try {
-    const data = await request('/triage//treatmentPatient/create', {
-      clinic_triage_patient_id, personnel_id, items
+    const data = await request('/triage/treatmentPatient/create', {
+      clinic_triage_patient_id, personnel_id, items: JSON.stringify(items)
     })
+    console.log(clinic_triage_patient_id, personnel_id, items)
+    console.log('data ======', data)
     if (data.code !== '200') return data.msg
     return null
   } catch (e) {
