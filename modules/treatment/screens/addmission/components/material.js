@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
-import { queryMaterialList } from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import { queryMaterialList, MaterialPatientCreate, MaterialPatientGet } from '../../../../../ducks'
 
 // 材料费
 class MaterialScreen extends Component {
@@ -10,6 +10,12 @@ class MaterialScreen extends Component {
     this.state = {
       eaterials: []
     }
+  }
+
+  async componentDidMount() {
+    const { MaterialPatientGet, clinic_triage_patient_id } = this.props
+    const eaterials = await MaterialPatientGet({ clinic_triage_patient_id })
+    this.setState({ eaterials })
   }
 
   queryMaterialList(keyword) {
@@ -66,6 +72,25 @@ class MaterialScreen extends Component {
     let array = [...eaterials]
     array[index][key] = value
     this.setState({ eaterials: array })
+  }
+
+  async submit() {
+    const { MaterialPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
+    const { eaterials } = this.state
+    let items = []
+    for (let { material_stock_id, amount, illustration } of eaterials) {
+      items.push({
+        material_stock_id: material_stock_id + '',
+        amount: amount + '',
+        illustration: illustration + ''
+      })
+    }
+    let error = await MaterialPatientCreate({ personnel_id, clinic_triage_patient_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      return this.refs.myAlert.alert('保存成功')
+    }
   }
 
   render() {
@@ -135,10 +160,10 @@ class MaterialScreen extends Component {
                       <input readOnly value={eaterials[index].stock_amount} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
                     </div>
                     <div>
-                      <input value={eaterials[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                      <input value={eaterials[index].amount} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
                     </div>
                     <div>
-                      <input value={eaterials[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                      <input value={eaterials[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -153,7 +178,9 @@ class MaterialScreen extends Component {
           <div className='formListBottom'>
             <div className={'bottomCenter'}>
               <button className={'cancel'}>取消</button>
-              <button className={'save'}>保存</button>
+              <button className={'save'} onClick={() => this.submit()}>
+                保存
+              </button>
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
@@ -273,6 +300,7 @@ class MaterialScreen extends Component {
             }
           `}
         </style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -280,10 +308,13 @@ class MaterialScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    clinic_triage_patient_id: state.triagePatients.selectId,
+    personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     materials: state.materials.data,
-    medicalRecord: state.medicalRecords.data
+    medicalRecord: state.medicalRecords.data,
+    materialPatients: state.materialPatients.data
   }
 }
 
-export default connect(mapStateToProps, { queryMaterialList })(MaterialScreen)
+export default connect(mapStateToProps, { queryMaterialList, MaterialPatientCreate, MaterialPatientGet })(MaterialScreen)
