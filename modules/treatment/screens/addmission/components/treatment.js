@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm } from '../../../../../components'
-import { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate } from '../../../../../ducks'
+import { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet } from '../../../../../ducks'
 
 // 病历
 class TreatmentScreen extends Component {
@@ -10,6 +10,12 @@ class TreatmentScreen extends Component {
     this.state = {
       treatments: []
     }
+  }
+
+  async componentDidMount() {
+    const { TreatmentPatientGet, clinic_triage_patient_id } = this.props
+    const treatments = await TreatmentPatientGet({ clinic_triage_patient_id })
+    this.setState({ treatments })
   }
 
   queryTreatmentList(keyword) {
@@ -317,8 +323,9 @@ const mapStateToProps = state => {
     personnel_id: state.user.data.id,
     doseUnits: state.doseUnits.data,
     clinic_id: state.user.data.clinic_id,
-    medicalRecord: state.medicalRecords.data
+    medicalRecord: state.medicalRecords.data,
+    treatmentPatients: state.treatmentPatients.data
   }
 }
 
-export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate })(TreatmentScreen)
+export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet })(TreatmentScreen)

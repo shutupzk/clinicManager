@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
-import { queryExaminationList, queryExaminationOrganList } from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import { queryExaminationList, queryExaminationOrganList, ExaminationPatientCreate, ExaminationPatientGet } from '../../../../../ducks'
 
 // 检查
 class ExamineScreen extends Component {
@@ -10,6 +10,12 @@ class ExamineScreen extends Component {
     this.state = {
       examines: []
     }
+  }
+
+  async componentDidMount() {
+    const { ExaminationPatientGet, clinic_triage_patient_id } = this.props
+    const examines = await ExaminationPatientGet({ clinic_triage_patient_id })
+    this.setState({ examines })
   }
 
   queryExaminationList(keyword) {
@@ -87,6 +93,26 @@ class ExamineScreen extends Component {
     this.setState({ examines: array })
   }
 
+  async submit() {
+    const { ExaminationPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
+    const { examines } = this.state
+    let items = []
+    for (let { clinic_examination_id, times, organ, illustration } of examines) {
+      items.push({
+        clinic_examination_id: clinic_examination_id + '',
+        times: times + '',
+        organ: organ + '',
+        illustration: illustration + ''
+      })
+    }
+    let error = await ExaminationPatientCreate({ personnel_id, clinic_triage_patient_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
   render() {
     const { examines } = this.state
     const { medicalRecord } = this.props
@@ -101,7 +127,7 @@ class ExamineScreen extends Component {
               <label>过敏史</label>
               <input readOnly type='text' value={medicalRecord.allergic_history} />
             </div>
-            <div style={{marginLeft: '40px'}}>
+            <div style={{ marginLeft: '40px' }}>
               <label>过敏反应</label>
               <input readOnly type='text' value={medicalRecord.allergic_reaction} />
             </div>
@@ -156,7 +182,7 @@ class ExamineScreen extends Component {
                       </div>
                     </div>
                     <div>
-                      <input value={examines[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                      <input value={examines[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -171,7 +197,9 @@ class ExamineScreen extends Component {
           <div className='formListBottom'>
             <div className={'bottomCenter'}>
               <button className={'cancel'}>取消</button>
-              <button className={'save'}>保存</button>
+              <button className={'save'} onClick={() => this.submit()}>
+                保存
+              </button>
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
@@ -291,6 +319,7 @@ class ExamineScreen extends Component {
             }
           `}
         </style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -298,11 +327,14 @@ class ExamineScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    clinic_triage_patient_id: state.triagePatients.selectId,
+    personnel_id: state.user.data.id,
     examinations: state.examinations.data,
     examinationOrgans: state.examinationOrgans.data,
     clinic_id: state.user.data.clinic_id,
-    medicalRecord: state.medicalRecords.data
+    medicalRecord: state.medicalRecords.data,
+    examinationPatients: state.examinationPatients.data
   }
 }
 
-export default connect(mapStateToProps, { queryExaminationList, queryExaminationOrganList })(ExamineScreen)
+export default connect(mapStateToProps, { queryExaminationList, queryExaminationOrganList, ExaminationPatientCreate, ExaminationPatientGet })(ExamineScreen)

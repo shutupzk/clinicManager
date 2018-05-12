@@ -12,8 +12,7 @@ import {
   queryAppointmentsByDate,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis,
-  TreatmentPatientCreate
+  completePreDiagnosis
 } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
@@ -39,6 +38,9 @@ import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
 import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
 import { doseUnits, queryDoseUnitList } from './dose_unit'
 import { examinationOrgans, queryExaminationOrganList } from './examination_organs'
+import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
+import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
+import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
 
 // keys
 export {
@@ -57,7 +59,10 @@ export {
   otherCostS,
   treatments,
   doseUnits,
-  examinationOrgans
+  examinationOrgans,
+  treatmentPatients,
+  laboratoryPatients,
+  examinationPatients
 }
 
 // actions
@@ -112,5 +117,10 @@ export {
   queryTreatmentList,
   queryDoseUnitList,
   queryExaminationOrganList,
-  TreatmentPatientCreate
+  TreatmentPatientCreate,
+  TreatmentPatientGet,
+  LaboratoryPatientCreate,
+  LaboratoryPatientGet,
+  ExaminationPatientCreate,
+  ExaminationPatientGet
 }
