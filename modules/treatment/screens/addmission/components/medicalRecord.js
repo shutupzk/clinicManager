@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Confirm } from '../../../../../components'
+import { Confirm, PageCard } from '../../../../../components'
+import moment from 'moment'
 import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels } from '../../../../../ducks'
 // 病历
 class PrescriptionScreen extends Component {
@@ -254,7 +255,7 @@ class PrescriptionScreen extends Component {
   }
 
   showMedicalModels() {
-    const { medicalModels } = this.props
+    const { medicalModels, medicalModelPage } = this.props
     if (!this.state.showModicalModels) return null
     return (
       <div className='mask'>
@@ -276,35 +277,72 @@ class PrescriptionScreen extends Component {
             </div>
             <span onClick={() => this.setState({ showModicalModels: false })}>x</span>
           </div>
-          <div className={'contentBox'}>
-            <div className={'contentItem'}>
-              <ul>
+          <div className={'meical_nodel_item'}>
+            <div style={{ margin: '20px 0 20px 0' }}>
+              <ul style={{ background: '#efeaea' }}>
                 <li>模板名称</li>
                 <li>模板类型</li>
                 <li>更新时间</li>
+                <li>操 作</li>
               </ul>
-              {medicalModels.map((item, iKey) => {
-                console.log(item)
-                if (!item) return null
-                // return (
-                //   <ul>
-                //     <li>{item.model_name}</li>
-                //     <li>{item.create}</li>
-                //     <li>{moment(item.created_time).format(YYYY-MM-DD)}</li>
-                //   </ul>
-                // )
-              })}
             </div>
+            {medicalModels.map((item, iKey) => {
+              if (!item) return null
+              const { model_name, is_common, created_time } = item
+              return (
+                <div key={iKey}>
+                  <ul>
+                    <li>{model_name}</li>
+                    <li>{is_common ? '通用模板' : '非通用模板'}</li>
+                    <li>{moment(created_time).format('YYYY-MM-DD')}</li>
+                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.setState({ ...this.state, ...item, showModicalModels: false })}>
+                      复 制
+                    </li>
+                  </ul>
+                </div>
+              )
+            })}
           </div>
+          <PageCard
+            style={{ width: '90%' }}
+            offset={medicalModelPage.offset}
+            limit={medicalModelPage.limit}
+            total={medicalModelPage.total}
+            onItemClick={({ offset, limit }) => {
+              this.props.queryMedicalModels({ keyword: this.state.model_keyword, offset, limit })
+            }}
+          />
         </div>
         <style jsx>{`
-          .contentItem {
-            margin: 30px 20px 0 20px;
+          .meical_nodel_item {
+            width: 90%;
+            margin: 22px 5% 0 5%;
+            padding: 0;
           }
-          .contentItem ul li {
+          .meical_nodel_item div {
+            width: 100%;
+            height: 20px;
+            border: 1px solid #d8d8d8;
+            margin-top: 10px;
+          }
+
+          .meical_nodel_item ul li {
+            margin:0;
+            border-right: 1px solid #d8d8d8;
             float: left;
-            position: relative;
-            width: 33%;
+            flex:3
+            height: 20px;
+            text-align: center;
+          }
+
+          .meical_nodel_item ul {
+            display: flex;
+          }
+
+          .meical_nodel_item ul li:nth-child(4){
+            float: left;
+            flex:1
+            border-right: none
             text-align: center;
           }
         `}</style>
@@ -647,7 +685,8 @@ const mapStateToProps = state => {
     clinic_triage_patient_id: state.triagePatients.selectId,
     triage_personnel_id: state.user.data.id,
     medicalRecord: state.medicalRecords.data,
-    medicalModels: state.medicalRecords.models
+    medicalModels: state.medicalRecords.models.data,
+    medicalModelPage: state.medicalRecords.models.page_info
   }
 }
 

@@ -4,8 +4,7 @@ const MEDICAL_MODEL_ADD = 'MEDICAL_MODEL_ADD'
 
 const initState = {
   data: {},
-  models: [],
-  modelsPageInfo: {}
+  models: []
 }
 
 export function medicalRecords(state = initState, action = {}) {
@@ -13,7 +12,7 @@ export function medicalRecords(state = initState, action = {}) {
     case MEDICAL_RECORD_ADD:
       return { ...state, data: action.data }
     case MEDICAL_MODEL_ADD:
-      return { ...state, models: action.data, modelsPageInfo: action.page_info }
+      return { ...state, models: action.data }
     default:
       return state
   }
@@ -36,7 +35,7 @@ export const queryMedicalRecord = clinic_triage_patient_id => async dispatch => 
 
 export const queryMedicalModels = ({ keyword, offset = 0, limit = 6 }) => async dispatch => {
   const data = await request('/medicalRecord/model/list', { keyword, offset, limit })
-  const doc = data.data || []
+  const doc = data || {}
   dispatch({
     type: MEDICAL_MODEL_ADD,
     data: doc
