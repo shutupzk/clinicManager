@@ -29,7 +29,7 @@ import {
   stopScheduleByID,
   querySchedules
 } from './schedules'
-import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels } from './medicRecord'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient } from './medicRecord'
 import { drugs, drugCreate } from './drug'
 import { examinations, examinationCreate, queryExaminationList } from './examination'
 import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
@@ -104,6 +104,7 @@ export {
   createMedicalRecordAsModel,
   queryMedicalRecord,
   queryMedicalModels,
+  queryMedicalsByPatient,
   drugCreate,
   examinationCreate,
   laboratoryCreate,
