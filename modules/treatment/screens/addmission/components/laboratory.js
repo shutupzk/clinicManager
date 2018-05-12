@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
-import { queryLaboratoryList } from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet } from '../../../../../ducks'
 
 // 病历
 class LaboratoryScreen extends Component {
@@ -10,6 +10,12 @@ class LaboratoryScreen extends Component {
     this.state = {
       laboratories: []
     }
+  }
+
+  async componentDidMount() {
+    const { LaboratoryPatientGet, clinic_triage_patient_id } = this.props
+    const laboratories = await LaboratoryPatientGet({ clinic_triage_patient_id })
+    this.setState({ laboratories })
   }
 
   queryLaboratoryList(keyword) {
@@ -68,6 +74,25 @@ class LaboratoryScreen extends Component {
     this.setState({ laboratories: array })
   }
 
+  async submit() {
+    const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
+    const { laboratories } = this.state
+    let items = []
+    for (let { clinic_laboratory_id, times, illustration } of laboratories) {
+      items.push({
+        clinic_laboratory_id: clinic_laboratory_id + '',
+        times: times + '',
+        illustration: illustration + ''
+      })
+    }
+    let error = await LaboratoryPatientCreate({ personnel_id, clinic_triage_patient_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
   render() {
     const { laboratories } = this.state
     const { medicalRecord } = this.props
@@ -82,7 +107,7 @@ class LaboratoryScreen extends Component {
               <label>过敏史</label>
               <input readOnly type='text' value={medicalRecord.allergic_history} />
             </div>
-            <div style={{marginLeft: '40px'}}>
+            <div style={{ marginLeft: '40px' }}>
               <label>过敏反应</label>
               <input readOnly type='text' value={medicalRecord.allergic_reaction} />
             </div>
@@ -122,7 +147,7 @@ class LaboratoryScreen extends Component {
                       <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                     </div>
                     <div>
-                      <input value={laboratories[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                      <input value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -131,14 +156,15 @@ class LaboratoryScreen extends Component {
                     </div>
                   </li>
                 )
-              }
-            )}
+              })}
             </ul>
           </div>
           <div className='formListBottom'>
             <div className={'bottomCenter'}>
               <button className={'cancel'}>取消</button>
-              <button className={'save'}>保存</button>
+              <button className={'save'} onClick={() => this.submit()}>
+                保存
+              </button>
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
@@ -258,6 +284,7 @@ class LaboratoryScreen extends Component {
             }
           `}
         </style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -265,10 +292,13 @@ class LaboratoryScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    clinic_triage_patient_id: state.triagePatients.selectId,
+    personnel_id: state.user.data.id,
     laboratories: state.laboratories.data,
     clinic_id: state.user.data.clinic_id,
-    medicalRecord: state.medicalRecords.data
+    medicalRecord: state.medicalRecords.data,
+    laboratoryPatients: state.laboratoryPatients.data
   }
 }
 
-export default connect(mapStateToProps, { queryLaboratoryList })(LaboratoryScreen)
+export default connect(mapStateToProps, { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet })(LaboratoryScreen)

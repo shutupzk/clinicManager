@@ -17,7 +17,9 @@ import {
   otherCostS,
   treatments,
   doseUnits,
-  examinationOrgans
+  examinationOrgans,
+  treatmentPatients,
+  laboratoryPatients
 } from '../ducks'
 import thunk from 'redux-thunk'
 
@@ -44,11 +46,13 @@ const appReducer = persistCombineReducers(persistConfig, {
   otherCostS,
   treatments,
   doseUnits,
-  examinationOrgans
+  examinationOrgans,
+  treatmentPatients,
+  laboratoryPatients
 })
 
 const rootReducer = (state, action) => {
-  if (action.type === 'PROFILE_USER_SINGOUT') {
+  if (action.type === 'USER_SIGNOUT') {
     state = {}
   }
   return appReducer(state, action)
