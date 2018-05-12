@@ -61,7 +61,7 @@ const MAINFUNCTION = [
           {title: '检验医嘱', navigateName: '/setting/chargeItemSetting/inspectionPhysician'},
           {title: '检验项目', navigateName: '/setting/chargeItemSetting/testItems'},
           {title: '检查医嘱', navigateName: '/setting/chargeItemSetting/checkAdvice'},
-          {title: '治疗医嘱', navigateName: '/setting/chargeItemSetting/treatmentDoctor'},
+          {title: '治疗医嘱', navigateName: '/setting/chargeItemSetting/treatDoctor'},
           {title: '材料费用', navigateName: '/setting/chargeItemSetting/meterialCosts'},
           {title: '其他费用', navigateName: '/setting/chargeItemSetting/otherFee'},
           {title: '诊疗项目', navigateName: '/setting/chargeItemSetting/medicalTreatmentItems'}
@@ -74,7 +74,7 @@ const MAINFUNCTION = [
           {title: '病历模板', navigateName: '/setting/template/medicalRecordTemplate'},
           {title: '检验模板', navigateName: '/setting/template/inspectionTemplate'},
           {title: '检查模板', navigateName: '/setting/template/checkTemplate'},
-          {title: '治疗模板', navigateName: '/setting/template/treatmentTemplate'},
+          {title: '治疗模板', navigateName: '/setting/template/treatTemplate'},
           {title: '西/成药处方模板', navigateName: '/setting/template/wMedicinePrescriptionTemplate'},
           {title: '中药处方模板', navigateName: '/setting/template/cMedicinePrescriptionTemplate'}
         ]

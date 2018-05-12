@@ -7,7 +7,6 @@ import MedicalTreatmentItemsScreen from './screens/chargeItemSetting/medicalTrea
 import InspectionPhysicianScreen from './screens/chargeItemSetting/inspectionPhysician_screen'
 import CMedicinePrescriptionScreen from './screens/chargeItemSetting/cMedicinePrescription_screen'
 import CheckAdviceScreen from './screens/chargeItemSetting/checkAdvice_screen'
-
 import WMedicinePrescriptionTemplateScreen from './screens/template/wMedicinePrescriptionTemplate_screen'
 import TreatmentTemplateScreen from './screens/template/treatmentTemplate_screen'
 import MedicalRecordTemplateScreen from './screens/template/medicalRecordTemplate_screen'
