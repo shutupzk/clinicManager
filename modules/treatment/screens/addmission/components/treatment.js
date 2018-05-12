@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
-import { queryTreatmentList, queryDoseUnitList } from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate } from '../../../../../ducks'
 
 // 病历
 class TreatmentScreen extends Component {
@@ -24,6 +24,7 @@ class TreatmentScreen extends Component {
     let array = []
     for (let key in treatments) {
       const { clinic_treatment_id, name, unit_id, unit_name } = treatments[key]
+      console.log(treatments[key])
       array.push({
         value: clinic_treatment_id,
         label: name,
@@ -86,13 +87,43 @@ class TreatmentScreen extends Component {
     this.setState({ treatments: array })
   }
 
+  async submit() {
+    const { TreatmentPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
+    const { treatments } = this.state
+    let items = []
+    for (let { clinic_treatment_id, times, illustration } of treatments) {
+      items.push({
+        clinic_treatment_id: clinic_treatment_id + '',
+        times: times + '',
+        illustration: illustration + ''
+      })
+    }
+    let error = await TreatmentPatientCreate({ personnel_id, clinic_triage_patient_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
   render() {
     const { treatments } = this.state
+    const { medicalRecord } = this.props
     return (
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
             <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>选择模板</button>
+          </div>
+          <div className={'alergyBlank'}>
+            <div>
+              <label>过敏史</label>
+              <input readOnly type='text' value={medicalRecord.allergic_history} />
+            </div>
+            <div style={{ marginLeft: '40px' }}>
+              <label>过敏反应</label>
+              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+            </div>
           </div>
           <div className='tableDIV'>
             <ul>
@@ -109,7 +140,7 @@ class TreatmentScreen extends Component {
               </li>
               {treatments.map((item, index) => {
                 let nameOptions = this.getNameOptions(treatments[index])
-                let unitoptions = this.getUnitoptions(treatments[index])
+                // let unitoptions = this.getUnitoptions(treatments[index])
                 return (
                   <li key={index}>
                     <div>
@@ -130,25 +161,13 @@ class TreatmentScreen extends Component {
                       </div>
                     </div>
                     <div>
-                      <div style={{ width: '100%' }}>
-                        <Select
-                          value={this.getSelectValue(treatments[index].unit_id, unitoptions)}
-                          onChange={({ value, label }) => {
-                            this.setItemValue(value, index, 'unit_id', 2)
-                            this.setItemValue(label, index, 'unit_name', 2)
-                          }}
-                          placeholder='搜索单位'
-                          height={38}
-                          options={unitoptions}
-                          onInputChange={keyword => this.queryDoseUnitList(keyword)}
-                        />
-                      </div>
+                      <input readOnly type='text' value={treatments[index].unit_name} />
                     </div>
                     <div>
                       <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                     </div>
                     <div>
-                      <input value={treatments[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                      <input value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -163,7 +182,9 @@ class TreatmentScreen extends Component {
           <div className='formListBottom'>
             <div className={'bottomCenter'}>
               <button className={'cancel'}>取消</button>
-              <button className={'save'}>保存</button>
+              <button className={'save'} onClick={() => this.submit()}>
+                保存
+              </button>
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
@@ -260,8 +281,30 @@ class TreatmentScreen extends Component {
               margin-right: 10px;
               cursor: pointer;
             }
+            .alergyBlank {
+              display: flex;
+              flex-direction: row;
+              margin: 0 65px 20px 47px;
+            }
+            .alergyBlank div {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+            }
+            .alergyBlank div label {
+              width: 98%;
+            }
+            .alergyBlank div input {
+              width: 100%;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              border: 1px solid #d8d8d8;
+              margin-top: 15px;
+            }
           `}
         </style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -269,10 +312,13 @@ class TreatmentScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    clinic_triage_patient_id: state.triagePatients.selectId,
     treatments: state.treatments.data,
+    personnel_id: state.user.data.id,
     doseUnits: state.doseUnits.data,
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    medicalRecord: state.medicalRecords.data
   }
 }
 
-export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList })(TreatmentScreen)
+export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate })(TreatmentScreen)

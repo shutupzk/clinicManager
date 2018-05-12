@@ -51,12 +51,51 @@ const MAINFUNCTION = [
     short_name: 'setting',
     navigateName: '/setting',
     children: [
-			{ title: '收费项目设置', navigateName: '/setting', icon: '/static/icons/charge2.svg' },
-			{ title: '模板设置', navigateName: '/setting/template', icon: '/static/icons/template.svg' },
-			{ title: '权限分组', navigateName: '/setting/permissionGroup', icon: '/static/icons/permissionGroup.svg' },
-			{ title: '用户权限', navigateName: '/setting/userRights', icon: '/static/icons/userRights.svg' },
-			{ title: '会员规则管理', navigateName: '/setting/membershipRules', icon: '/static/icons/membershipRules.svg' },
-			{ title: '供应商管理', navigateName: '/setting/supplier', icon: '/static/icons/supplier.svg' }
+      {
+        title: '收费项目设置',
+        navigateName: '/setting',
+        icon: '/static/icons/charge2.svg',
+        children: [
+          {title: '西/成药处方', navigateName: '/wMedicinePrescription'},
+          {title: '中药处方', navigateName: '/cMedicinePrescription'},
+          {title: '检验医嘱', navigateName: '/inspectionPhysician'},
+          {title: '检验项目', navigateName: '/testItems'},
+          {title: '检查医嘱', navigateName: '/checkAdvice'},
+          {title: '治疗医嘱', navigateName: '/treatmentDoctor'},
+          {title: '材料费用', navigateName: '/meterialCosts'},
+          {title: '其他费用', navigateName: '/otherFee'},
+          {title: '诊疗项目', navigateName: '/medicalTreatmentItems'}
+        ]
+      }, {
+        title: '模板设置',
+        navigateName: '/setting/template',
+        icon: '/static/icons/template.svg',
+        children: [
+          {title: '病历模板', navigateName: '/medicalRecordTemplate'},
+          {title: '检验模板', navigateName: '/inspectionTemplate'},
+          {title: '检查模板', navigateName: '/checkTemplate'},
+          {title: '治疗模板', navigateName: '/treatmentTemplate'},
+          {title: '西/成药处方模板', navigateName: '/wMedicinePrescriptionTemplate'},
+          {title: '中药处方模板', navigateName: '/cMedicinePrescriptionTemplate'}
+        ]
+      }, {
+        title: '权限分组',
+        navigateName: '/setting/permissionGroup',
+        icon: '/static/icons/permissionGroup.svg'
+      }, {
+        title: '用户权限',
+        navigateName: '/setting/userRights',
+        icon: '/static/icons/userRights.svg'
+      }
+      // , {
+      //   title: '会员规则管理',
+      //   navigateName: '/setting/membershipRules',
+      //   icon: '/static/icons/membershipRules.svg'
+      // }, {
+      //   title: '供应商管理',
+      //   navigateName: '/setting/supplier',
+      //   icon: '/static/icons/supplier.svg'
+      // }
     ]
   },
   {
