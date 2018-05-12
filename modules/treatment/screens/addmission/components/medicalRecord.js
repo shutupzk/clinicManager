@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm } from '../../../../../components'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel } from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels } from '../../../../../ducks'
 // 病历
 class PrescriptionScreen extends Component {
   constructor(props) {
@@ -21,15 +21,17 @@ class PrescriptionScreen extends Component {
       remark: '',
       files: '',
       saveAsModel: false,
+      showModicalModels: false,
       name: '',
-      is_common: true
+      is_common: true,
+      model_keyword: ''
     }
   }
 
   async componentWillMount() {
     const { queryMedicalRecord, clinic_triage_patient_id } = this.props
     let record = await queryMedicalRecord(clinic_triage_patient_id)
-    this.setState({ ...record })
+    this.setState({ ...this.state, ...record })
   }
 
   save() {
@@ -251,6 +253,71 @@ class PrescriptionScreen extends Component {
     )
   }
 
+  showMedicalModels() {
+    const { medicalModels } = this.props
+    if (!this.state.showModicalModels) return null
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
+          <div className='doctorList_top'>
+            <span>选择病历模板</span>
+            <div style={{ float: 'left', marginLeft: '20%' }}>
+              <input
+                type='text'
+                placeholder='模板名称'
+                value={this.state.model_keyword}
+                onChange={e => {
+                  this.setState({ model_keyword: e.target.value })
+                }}
+              />
+              <button style={{ float: 'none' }} onClick={() => this.props.queryMedicalModels({ keyword: this.state.model_keyword })}>
+                查询
+              </button>
+            </div>
+            <span onClick={() => this.setState({ showModicalModels: false })}>x</span>
+          </div>
+          <div className={'contentBox'}>
+            <div className={'contentItem'}>
+              <ul>
+                <li>模板名称</li>
+                <li>模板类型</li>
+                <li>更新时间</li>
+              </ul>
+              {medicalModels.map((item, iKey) => {
+                console.log(item)
+                if (!item) return null
+                // return (
+                //   <ul>
+                //     <li>{item.model_name}</li>
+                //     <li>{item.create}</li>
+                //     <li>{moment(item.created_time).format(YYYY-MM-DD)}</li>
+                //   </ul>
+                // )
+              })}
+            </div>
+          </div>
+        </div>
+        <style jsx>{`
+          .contentItem {
+            margin: 30px 20px 0 20px;
+          }
+          .contentItem ul li {
+            float: left;
+            position: relative;
+            width: 33%;
+            text-align: center;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  async setMedicalModesl() {
+    const { queryMedicalModels } = this.props
+    await queryMedicalModels({})
+    this.setState({ showModicalModels: true })
+  }
+
   cancel() {
     this.setState({
       morbidity_date: '',
@@ -282,7 +349,7 @@ class PrescriptionScreen extends Component {
               this.setState({ morbidity_date: e.target.value })
             }}
           />
-          <button>选择模板</button>
+          <button onClick={() => this.setMedicalModesl()}>选择模板</button>
           <button>复制病历</button>
         </div>
         <div className={'formList'}>
@@ -444,6 +511,7 @@ class PrescriptionScreen extends Component {
           </div>
         </div>
         {this.showSaveModel()}
+        {this.showMedicalModels()}
         <Confirm ref='myAlert' isAlert />
         <style jsx>{`
           .filterBox {
@@ -578,8 +646,9 @@ const mapStateToProps = state => {
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
     triage_personnel_id: state.user.data.id,
-    medicalRecord: state.medicalRecords.data
+    medicalRecord: state.medicalRecords.data,
+    medicalModels: state.medicalRecords.models
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel })(PrescriptionScreen)
+export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels })(PrescriptionScreen)

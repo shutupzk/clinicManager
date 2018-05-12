@@ -4,7 +4,8 @@ const MEDICAL_MODEL_ADD = 'MEDICAL_MODEL_ADD'
 
 const initState = {
   data: {},
-  models: []
+  models: [],
+  modelsPageInfo: {}
 }
 
 export function medicalRecords(state = initState, action = {}) {
@@ -12,7 +13,7 @@ export function medicalRecords(state = initState, action = {}) {
     case MEDICAL_RECORD_ADD:
       return { ...state, data: action.data }
     case MEDICAL_MODEL_ADD:
-      return { ...state, models: action.data }
+      return { ...state, models: action.data, modelsPageInfo: action.page_info }
     default:
       return state
   }
@@ -33,8 +34,8 @@ export const queryMedicalRecord = clinic_triage_patient_id => async dispatch => 
   }
 }
 
-export const queryMedicalModels = ({ keword, offset = 0, limit = 6 }) => async dispatch => {
-  const data = await request('/medicalRecord/model/list', { keword, offset, limit })
+export const queryMedicalModels = ({ keyword, offset = 0, limit = 6 }) => async dispatch => {
+  const data = await request('/medicalRecord/model/list', { keyword, offset, limit })
   const doc = data.data || []
   dispatch({
     type: MEDICAL_MODEL_ADD,
@@ -77,6 +78,26 @@ export const createMedicalRecord = ({
       cure_suggestion,
       remark,
       files
+    })
+    dispatch({
+      type: MEDICAL_RECORD_ADD,
+      data: {
+        clinic_triage_patient_id,
+        operation_id,
+        morbidity_date,
+        chief_complaint,
+        history_of_present_illness,
+        history_of_past_illness,
+        family_medical_history,
+        allergic_history,
+        allergic_reaction,
+        body_examination,
+        immunizations,
+        diagnosis,
+        cure_suggestion,
+        remark,
+        files
+      }
     })
     if (data.code === '200') return null
     return data.msg
