@@ -39,17 +39,19 @@ export const ExaminationPatientGet = ({ clinic_triage_patient_id }) => async dis
     if (data.code !== '200') return []
     let docs = data.data || []
     let json = {}
+    let organJson = {}
     for (let doc of docs) {
-      const { clinic_examination_id, name } = doc
+      const { clinic_examination_id, name, organ } = doc
       json[clinic_examination_id] = { clinic_examination_id, name }
+      organJson[organ] = {name: organ}
     }
     dispatch({
       type: EXAMINATION_PATIENT_ADD,
       data: docs
     })
     dispatch({
-      type: 'EXAMINATION_PROJECT_ADD',
-      data: json
+      type: 'EXAMINATION_ORGAN_ADD',
+      data: organJson
     })
     return docs
   } catch (e) {
