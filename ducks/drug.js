@@ -16,18 +16,10 @@ export function drugs(state = initState, action = {}) {
   }
 }
 
-export const queryDrugList = ({ clinic_id, type, keyword, drug_class_id, status, offset = 0, limit = 6 }) => async dispatch => {
+export const queryDrugList = (requetData) => async dispatch => {
   try {
-    console.log('limit====', limit)
-    const data = await request('/drug/list', {
-      clinic_id,
-      type,
-      keyword,
-      drug_class_id,
-      status,
-      offset,
-      limit
-    })
+    console.log('limit====', requetData)
+    const data = await request('/drug/list', requetData)
     console.log('queryDrugList=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}

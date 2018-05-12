@@ -13,18 +13,26 @@ class WMPrescriptionScreen extends Component {
     this.state = {
       drugClassification: [],
       selDrugType: 0,
-      pageType: 1
+      pageType: 1,
+      keyword: '',
+      status: '',
+      type: 0,
+      drug_class_id: -1
     }
   }
 
   componentWillMount() {
+    this.getDrugsList({ offset: 0, limit: 10 })
     this.getDrugClassification()
   }
   showView() {
     let { pageType } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddDrugScreen />,
+      2: <AddDrugScreen back2List={() => {
+        this.setState({pageType: 1})
+        this.getDrugsList({offset: 0, limit: 10})
+      }} />,
       3: <AddDrugScreen />,
       4: <AddDrugScreen />,
       5: <AddDrugScreen />,
@@ -33,30 +41,50 @@ class WMPrescriptionScreen extends Component {
     }
     return map[pageType] || null
   }
+  // 获取药品列表
+  getDrugsList({ offset = 0, limit = 10 }) {
+    const {clinic_id, queryDrugList} = this.props
+    const {type, status, keyword, drug_class_id} = this.state
+    // console.log('{type, status, keyword}======', {type, status, keyword})
+    let requestData = {
+      clinic_id,
+      type,
+      keyword,
+      offset,
+      limit
+    }
+    if (drug_class_id !== -1) {
+      requestData.drug_class_id = drug_class_id
+    }
+    if (status !== '' && status !== -1) {
+      requestData.status = status
+    }
+    console.log('requestData======', requestData)
+    queryDrugList(requestData)
+  }
   // 获取药品分类列表
   getDrugClassification() {
-    // let drugClassification = []
-    // for (let i = 0; i < 10; i++) {
-    //   let item = {
-    //     name: '药品分类' + i,
-    //     quantity: 300,
-    //     children: [
-    //       {
-    //         name: '药品分类1' + i,
-    //         quantity: 20 + i
-    //       },
-    //       {
-    //         name: '药品分类2' + i,
-    //         quantity: 20 + i
-    //       }
-    //     ]
-    //   }
-    //   drugClassification.push(item)
-    // }
-    // this.setState({drugClassification})
-    const {clinic_id, queryDrugList} = this.props
-    queryDrugList({clinic_id})
+    let drugClassification = []
+    for (let i = 0; i < 10; i++) {
+      let item = {
+        name: '药品分类' + i,
+        quantity: 300,
+        children: [
+          {
+            name: '药品分类1' + i,
+            quantity: 20 + i
+          },
+          {
+            name: '药品分类2' + i,
+            quantity: 20 + i
+          }
+        ]
+      }
+      drugClassification.push(item)
+    }
+    this.setState({drugClassification})
   }
+  // 加载左侧药品分类
   renderLeftTree() {
     const {drugClassification, selDrugType} = this.state
     return (
@@ -163,17 +191,38 @@ class WMPrescriptionScreen extends Component {
       </div>
     )
   }
-
+  // 状态筛选
+  getStatusOptions() {
+    return [
+      {value: -1, label: '全部'},
+      {value: true, label: '正常'},
+      {value: false, label: '停用'}
+    ]
+  }
+  // 加载右侧表格
   renderRightTable() {
+    // const {keyword, status} = this.state
     return (
       <div className={'contentCenterRight'}>
         <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
-            <input placeholder={'处方医嘱名称或条形码'} />
+            <input
+              placeholder={'处方医嘱名称或条形码'}
+              onChange={e => {
+                this.setState({keyword: e.target.value})
+              }}
+            />
             <div style={{width: '100px', marginLeft: '10px'}}>
-              <Select placeholder={'状态'} height={32} />
+              <Select
+                placeholder={'状态'}
+                height={32}
+                options={this.getStatusOptions()}
+                onChange={({value}) => {
+                  this.setState({status: value})
+                }}
+              />
             </div>
-            <button>查询</button>
+            <button onClick={() => { this.getDrugsList({offset: 0, limit: 10}) }}>查询</button>
           </div>
           <div className={'rightTopFilterRight'}>
             <button>批量导入</button>
@@ -185,8 +234,8 @@ class WMPrescriptionScreen extends Component {
         </div>
         <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
-            <button>批量设置折扣</button>
-            <button>批量设置有效期限</button>
+            <button onClick={() => {}}>批量设置折扣</button>
+            <button onClick={() => {}}>批量设置有效期限</button>
           </div>
         </div>
         <div className={'contentTable'}>
@@ -300,6 +349,16 @@ class WMPrescriptionScreen extends Component {
             })}
           </tbody>
         </table>
+        <PageCard
+          offset={pageInfo.offset}
+          limit={pageInfo.limit}
+          total={pageInfo.total}
+          style={{margin: '20px 0', width: '758px'}}
+          onItemClick={({ offset, limit }) => {
+            // const keyword = this.state.keyword
+            this.getDrugsList({ offset, limit })
+          }}
+        />
         <style jsx>{`
           .tableContent{
 

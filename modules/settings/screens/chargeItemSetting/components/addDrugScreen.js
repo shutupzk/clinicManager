@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import { Select, Confirm } from '../../../../../components'
-import { drugCreate } from '../../../../../ducks'
+import { drugCreate, queryDrugList } from '../../../../../ducks'
 
 // 病历
 class AddDrugScreen extends Component {
@@ -165,9 +165,8 @@ class AddDrugScreen extends Component {
     if (error) {
       alert(error)
     } else {
-      Router.push('/setting/chargeItemSetting/wMedicinePrescription')
+      this.props.back2List()
     }
-    // console.log('保存drugInfo=========', drugInfo)
   }
   // 保存并入库
   saveInStock() {
@@ -782,4 +781,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {drugCreate})(AddDrugScreen)
+export default connect(mapStateToProps, {drugCreate, queryDrugList})(AddDrugScreen)
