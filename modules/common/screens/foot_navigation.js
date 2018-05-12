@@ -10,7 +10,7 @@ export default class Navigation extends Component {
 	}
 	renderLongMenu(children) {
     const { url } = this.props
-		console.log('children=======', children)
+		// console.log('children=======', children)
 		return (
 			<div className={'childDiv'}>
 				{children.map((item, index) => {
