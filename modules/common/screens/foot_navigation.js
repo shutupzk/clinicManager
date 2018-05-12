@@ -1,12 +1,41 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 import { theme } from '../../../components'
+import Router from 'next/router'
 
 export default class Navigation extends Component {
   constructor(props) {
     super(props)
     this.state = {}
-  }
+	}
+	renderLongMenu(children) {
+    const { url } = this.props
+		// console.log('children=======', children)
+		return (
+			<div className={'childDiv'}>
+				{children.map((item, index) => {
+          let navigateName = item.navigateName
+					return (
+            <Link key={item.navigateName} href={item.navigateName}>
+              <div
+                className={'childItem ' + (navigateName === url ? 'sel' : '')}
+              >{item.title}</div>
+            </Link>
+					)
+				})}
+				<style jsx>{`
+					.childItem{
+						text-indent: 112px;
+						font-family:MicrosoftYaHei;
+					}
+					.childItem.sel,
+					.childItem:hover{
+						color:rgba(42,205,200,1);
+					}
+				`}</style>
+			</div>
+		)
+	}
   render() {
     const { data, url } = this.props
     let parentUrl = url.split('/')[2]
@@ -14,22 +43,23 @@ export default class Navigation extends Component {
       <ul className='footNavUl'>
         {data &&
           data.map((item, itemKey) => {
-            console.log('item======', item)
+            // console.log('item======', item)
             let itemUrl = item.navigateName.split('/')[2]
             let children = []
             if (item.children) {
-              children = item.children
+							children = item.children
             }
-            console.log('children=======', children)
-            return (
-              <Link key={item.navigateName} href={item.navigateName}>
-                <div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
+						return (
+              <div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
+                <div onClick={() => Router.push(item.navigateName)}>
                   <i />
                   <img src={item.icon} />
                   <a>{item.title}</a>
                 </div>
-              </Link>
-            )
+                {children.length > 0 ? this.renderLongMenu(children) : ''}
+              </div>
+						)
+            // console.log('children=======', children)
           })}
         <style jsx global>{`
           .footNavUl {
@@ -57,7 +87,7 @@ export default class Navigation extends Component {
             line-height: 0.4rem;
             border-top: 1px solid ${theme.bordercolor};
           }
-          .footNavUl div {
+          .footNavUl>div {
             width: 256px;
             height: 50px;
             line-height: 50px;
@@ -66,7 +96,11 @@ export default class Navigation extends Component {
             text-indent: 40px;
             font-size: 14px;
             font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
+						color: rgba(102, 102, 102, 1);
+						display: flex;
+						flex-direction: column;
+						height: auto;
+						min-height: 50px;
           }
           .footNavUl div i {
             display: none;
@@ -88,15 +122,21 @@ export default class Navigation extends Component {
             float: left;
             margin-left: 36px;
             text-indent: 0;
-          }
-          .footNavUl div:hover,
-          .footNavUl div.selLeftMenu {
+					}
+					.footNavUl>div>div.childDiv{
+						display:none;
+					}
+					.footNavUl>div.selLeftMenu>div.childDiv{
+						display:block;
+					}
+          .footNavUl>div>div:first-child:hover,
+          .footNavUl>div.selLeftMenu>div:first-child {
             background: rgba(42, 205, 200, 0.23309999999999997);
             // opacity:0.23309999999999997;
             color: rgba(52, 52, 52, 1);
           }
-          .footNavUl div:hover i,
-          .footNavUl div.selLeftMenu i {
+          .footNavUl>div:hover i,
+          .footNavUl>div.selLeftMenu i {
             display: block;
           }
         `}</style>
