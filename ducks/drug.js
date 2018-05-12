@@ -28,6 +28,7 @@ export const queryDrugList = ({ clinic_id, type, keyword, drug_class_id, status,
       offset,
       limit
     })
+    console.log('queryDrugList=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     dispatch({
@@ -42,24 +43,11 @@ export const queryDrugList = ({ clinic_id, type, keyword, drug_class_id, status,
   }
 }
 
-export const drugCreate = ({ clinic_id, type, barcode, name, py_code, print_name, specification, manu_factory, status, license_no, dose_form_id, drug_class_id }) => async dispatch => {
+export const drugCreate = ({ drugInfo }) => async dispatch => {
   try {
-    const data = await request('/drug/create', { clinic_id, type, barcode, name, py_code, print_name, specification, manu_factory, status, license_no, dose_form_id, drug_class_id })
+    const data = await request('/drug/create', drugInfo)
     console.log(
-      {
-        clinic_id,
-        type,
-        barcode,
-        name,
-        py_code,
-        print_name,
-        specification,
-        manu_factory,
-        status,
-        license_no,
-        dose_form_id,
-        drug_class_id
-      },
+      drugInfo,
       data
     )
     if (data.code === '200') return null

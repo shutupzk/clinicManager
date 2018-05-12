@@ -8,6 +8,7 @@ class ConLayout extends Component {
   render() {
     const url = (this.props.url && this.props.url.pathname) || '/'
     const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
+    // console.log('conList======', conList, url)
     // const screenHeight = process.browser ? document.documentElement.clientHeight : 1000
     // const appConHeight = screenHeight - 126
     return (
