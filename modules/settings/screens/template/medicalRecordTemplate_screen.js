@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 // import { PageCard } from '../../../../components'
 // import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
-class CMedicinePrescriptionScreen extends Component {
+class MedicalRecordTemplateScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -29,4 +29,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {})(CMedicinePrescriptionScreen)
+export default connect(mapStateToProps, {})(MedicalRecordTemplateScreen)

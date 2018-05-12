@@ -18,7 +18,7 @@ class OtherFeeScreen extends Component {
 
   render() {
     return (
-      <div>治疗医嘱</div>
+      <div>其他费用</div>
     )
   }
 }

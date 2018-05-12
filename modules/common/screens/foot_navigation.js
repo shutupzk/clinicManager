@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 import { theme } from '../../../components'
+import Router from 'next/router'
 
 export default class Navigation extends Component {
   constructor(props) {
@@ -8,12 +9,18 @@ export default class Navigation extends Component {
     this.state = {}
 	}
 	renderLongMenu(children) {
+    const { url } = this.props
 		console.log('children=======', children)
 		return (
 			<div className={'childDiv'}>
 				{children.map((item, index) => {
+          let navigateName = item.navigateName
 					return (
-						<div className={'childItem'}>{item.title}</div>
+            <Link key={item.navigateName} href={item.navigateName}>
+              <div
+                className={'childItem ' + (navigateName === url ? 'sel' : '')}
+              >{item.title}</div>
+            </Link>
 					)
 				})}
 				<style jsx>{`
@@ -36,23 +43,21 @@ export default class Navigation extends Component {
       <ul className='footNavUl'>
         {data &&
           data.map((item, itemKey) => {
-            console.log('item======', item)
+            // console.log('item======', item)
             let itemUrl = item.navigateName.split('/')[2]
             let children = []
             if (item.children) {
 							children = item.children
             }
 						return (
-							<Link key={item.navigateName} href={item.navigateName}>
-								<div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
-									<div>
-										<i />
-										<img src={item.icon} />
-										<a>{item.title}</a>
-									</div>
-									{children.length > 0 ? this.renderLongMenu(children) : ''}
-								</div>
-							</Link>
+              <div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
+                <div onClick={() => Router.push(item.navigateName)}>
+                  <i />
+                  <img src={item.icon} />
+                  <a>{item.title}</a>
+                </div>
+                {children.length > 0 ? this.renderLongMenu(children) : ''}
+              </div>
 						)
             // console.log('children=======', children)
           })}
