@@ -29,8 +29,8 @@ import {
   stopScheduleByID,
   querySchedules
 } from './schedules'
-import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels } from './medicRecord'
-import { drugs, queryDrugList, drugCreate } from './drug'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient } from './medicRecord'
+import { drugs, drugCreate, queryDrugList } from './drug'
 import { examinations, examinationCreate, queryExaminationList } from './examination'
 import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
 import { materials, materialCreate, queryMaterialList } from './material'
@@ -41,6 +41,9 @@ import { examinationOrgans, queryExaminationOrganList } from './examination_orga
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
 import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
 import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
+import { materialPatients, MaterialPatientCreate, MaterialPatientGet } from './material_patient'
+import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './other_patient'
+import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
 
 // keys
 export {
@@ -62,7 +65,10 @@ export {
   examinationOrgans,
   treatmentPatients,
   laboratoryPatients,
-  examinationPatients
+  examinationPatients,
+  materialPatients,
+  otherPatients,
+  prescriptionWesternPatients
 }
 
 // actions
@@ -104,6 +110,7 @@ export {
   createMedicalRecordAsModel,
   queryMedicalRecord,
   queryMedicalModels,
+  queryMedicalsByPatient,
   queryDrugList,
   drugCreate,
   examinationCreate,
@@ -123,5 +130,11 @@ export {
   LaboratoryPatientCreate,
   LaboratoryPatientGet,
   ExaminationPatientCreate,
-  ExaminationPatientGet
+  ExaminationPatientGet,
+  MaterialPatientCreate,
+  MaterialPatientGet,
+  OtherCostPatientCreate,
+  OtherCostPatientGet,
+  PrescriptionWesternPatientCreate,
+  PrescriptionWesternPatientGet
 }

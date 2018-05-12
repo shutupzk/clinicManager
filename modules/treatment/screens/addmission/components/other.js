@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
-import { queryOtherCostList } from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import { queryOtherCostList, OtherCostPatientCreate, OtherCostPatientGet } from '../../../../../ducks'
 
 // 其他收费
 class OtherScreen extends Component {
@@ -10,6 +10,12 @@ class OtherScreen extends Component {
     this.state = {
       othercosts: []
     }
+  }
+
+  async componentDidMount() {
+    const { OtherCostPatientGet, clinic_triage_patient_id } = this.props
+    const othercosts = await OtherCostPatientGet({ clinic_triage_patient_id })
+    this.setState({ othercosts })
   }
 
   queryOtherCostLists(keyword) {
@@ -70,6 +76,25 @@ class OtherScreen extends Component {
     this.setState({ othercosts: array })
   }
 
+  async submit() {
+    const { OtherCostPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
+    const { othercosts } = this.state
+    let items = []
+    for (let { clinic_other_cost_id, amount, illustration } of othercosts) {
+      items.push({
+        clinic_other_cost_id: clinic_other_cost_id + '',
+        amount: amount + '',
+        illustration: illustration + ''
+      })
+    }
+    let error = await OtherCostPatientCreate({ personnel_id, clinic_triage_patient_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
   render() {
     const { othercosts } = this.state
     const { medicalRecord } = this.props
@@ -85,7 +110,7 @@ class OtherScreen extends Component {
               <label>过敏史</label>
               <input readOnly type='text' value={medicalRecord.allergic_history} />
             </div>
-            <div style={{marginLeft: '40px'}}>
+            <div style={{ marginLeft: '40px' }}>
               <label>过敏反应</label>
               <input readOnly type='text' value={medicalRecord.allergic_reaction} />
             </div>
@@ -127,10 +152,10 @@ class OtherScreen extends Component {
                       <input readOnly value={othercosts[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
                     </div>
                     <div>
-                      <input value={othercosts[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                      <input value={othercosts[index].amount} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
                     </div>
                     <div>
-                      <input value={othercosts[index].instruction} type='text' onChange={e => this.setItemValue(e, index, 'instruction')} />
+                      <input value={othercosts[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -145,7 +170,9 @@ class OtherScreen extends Component {
           <div className='formListBottom'>
             <div className={'bottomCenter'}>
               <button className={'cancel'}>取消</button>
-              <button className={'save'}>保存</button>
+              <button className={'save'} onClick={() => this.submit()}>
+                保存
+              </button>
             </div>
             <div className={'bottomRight'}>
               <button>存为模板</button>
@@ -265,6 +292,7 @@ class OtherScreen extends Component {
             }
           `}
         </style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -272,10 +300,13 @@ class OtherScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    clinic_triage_patient_id: state.triagePatients.selectId,
+    personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     otherCostS: state.otherCostS.data,
-    medicalRecord: state.medicalRecords.data
+    medicalRecord: state.medicalRecords.data,
+    otherPatients: state.otherPatients.data
   }
 }
 
-export default connect(mapStateToProps, {queryOtherCostList})(OtherScreen)
+export default connect(mapStateToProps, { queryOtherCostList, OtherCostPatientCreate, OtherCostPatientGet })(OtherScreen)

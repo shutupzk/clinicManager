@@ -1,11 +1,14 @@
 import { request } from './request'
 const MEDICAL_RECORD_ADD = 'MEDICAL_RECORD_ADD'
 const MEDICAL_MODEL_ADD = 'MEDICAL_MODEL_ADD'
+const MEDICAL_HISTORY_ADD = 'MEDICAL_HISTORY_ADD'
 
 const initState = {
   data: {},
   models: [],
-  model_page: {}
+  model_page: {},
+  history_medicals: [],
+  history_page_info: {}
 }
 
 export function medicalRecords(state = initState, action = {}) {
@@ -14,6 +17,8 @@ export function medicalRecords(state = initState, action = {}) {
       return { ...state, data: action.data }
     case MEDICAL_MODEL_ADD:
       return { ...state, models: action.data, model_page: action.page }
+    case MEDICAL_HISTORY_ADD:
+      return { ...state, history_medicals: action.data, history_page_info: action.page }
     default:
       return state
   }
@@ -26,6 +31,23 @@ export const queryMedicalRecord = clinic_triage_patient_id => async dispatch => 
     dispatch({
       type: MEDICAL_RECORD_ADD,
       data: doc
+    })
+    return doc
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const queryMedicalsByPatient = ({ clinic_patient_id, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    const data = await request('/medicalRecord/listByPid', { clinic_patient_id, offset, limit })
+    const doc = data.data || {}
+    const page = data.page_info || { offset, limit, total: 0 }
+    dispatch({
+      type: MEDICAL_HISTORY_ADD,
+      data: doc,
+      page
     })
     return doc
   } catch (e) {

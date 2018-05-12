@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels } from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels, queryMedicalsByPatient } from '../../../../../ducks'
 // 病历
 class PrescriptionScreen extends Component {
   constructor(props) {
@@ -22,10 +22,12 @@ class PrescriptionScreen extends Component {
       remark: '',
       files: '',
       saveAsModel: false,
-      showModicalModels: false,
+      showMedicalModels: false,
+      showHistroyMedicals: false,
       name: '',
       is_common: true,
-      model_keyword: ''
+      model_keyword: '',
+      choseHistoryId: ''
     }
   }
 
@@ -254,9 +256,10 @@ class PrescriptionScreen extends Component {
     )
   }
 
+  // 展示病历模板
   showMedicalModels() {
     const { medicalModels, medicalModelPage } = this.props
-    if (!this.state.showModicalModels ) return null
+    if (!this.state.showMedicalModels) return null
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
@@ -275,7 +278,7 @@ class PrescriptionScreen extends Component {
                 查询
               </button>
             </div>
-            <span onClick={() => this.setState({ showModicalModels: false })}>x</span>
+            <span onClick={() => this.setState({ showMedicalModels: false })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
             <div style={{ margin: '20px 0 20px 0' }}>
@@ -290,12 +293,12 @@ class PrescriptionScreen extends Component {
               if (!item) return null
               const { model_name, is_common, created_time } = item
               return (
-                <div key={iKey} >
+                <div key={iKey}>
                   <ul>
                     <li>{model_name}</li>
                     <li>{is_common ? '通用模板' : '非通用模板'}</li>
                     <li>{moment(created_time).format('YYYY-MM-DD')}</li>
-                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.setState({ ...this.state, ...item, showModicalModels: false })}>
+                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.setState({ ...this.state, ...item, showMedicalModels: false })}>
                       复 制
                     </li>
                   </ul>
@@ -350,10 +353,206 @@ class PrescriptionScreen extends Component {
     )
   }
 
+  // 打开病历模板
   async setMedicalModesl() {
     const { queryMedicalModels } = this.props
     await queryMedicalModels({})
-    this.setState({ showModicalModels: true })
+    this.setState({ showMedicalModels: true })
+  }
+
+  // 展示历史处方
+  showHistroyMedicals() {
+    if (!this.state.showHistroyMedicals) return null
+    let triagePatient = {}
+    const { triagePatients, clinic_triage_patient_id, medicalHistoryPage, medicalHistory } = this.props
+    console.log('medicalHistory', medicalHistory)
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '900px', left: '324px', height: 'unset', minHeight: '683px' }}>
+          <div className='doctorList_top'>
+            <span>{triagePatient.patient_name}的历史病历</span>
+            <span onClick={() => this.setState({ showHistroyMedicals: false })}>x</span>
+          </div>
+          <div className={'meical_nodel_item'}>
+            <div style={{ margin: '20px 0 20px 0' }}>
+              <ul style={{ background: '#efeaea' }}>
+                <li>就诊时间</li>
+                <li>就诊类型</li>
+                <li>诊所名称</li>
+                <li>接诊医生</li>
+                <li>选择病历</li>
+              </ul>
+            </div>
+            {medicalHistory.map((item, iKey) => {
+              if (!item) return null
+              const { registion_time, visit_type, clinic_name, doctor_name } = item
+              let visit_type_map = { 1: '首诊', 2: '复诊', 3: '术后复诊' }
+              let visit_type_name = visit_type_map[visit_type] || ''
+              return (
+                <div key={iKey}>
+                  <ul>
+                    <li>{moment(registion_time).format('YYYY-MM-DD HH:mm:ss')}</li>
+                    <li>{visit_type_name}</li>
+                    <li>{clinic_name}</li>
+                    <li>{doctor_name}</li>
+                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}>
+                      {this.state.choseHistoryId === item.id ? '收 起' : '展 开'}
+                    </li>
+                  </ul>
+                  {this.showHistoryDetail(item)}
+                </div>
+              )
+            })}
+          </div>
+          <PageCard
+            style={{ width: '90%' }}
+            offset={medicalHistoryPage.offset}
+            limit={medicalHistoryPage.limit}
+            total={medicalHistoryPage.total}
+            onItemClick={({ offset, limit }) => {
+              this.props.queryMedicalsByPatient({ ...item, offset, limit })
+            }}
+          />
+        </div>
+        <style jsx global>{`
+          .meical_nodel_item {
+            width: 90%;
+            margin: 22px 5% 0 5%;
+            padding: 0;
+          }
+          .meical_nodel_item div {
+            width: 100%;
+            border: 1px solid #d8d8d8;
+            margin-top: 10px;
+          }
+
+          .meical_nodel_item ul {
+            display: flex;
+          }
+
+          .meical_nodel_item ul li {
+            margin:0;
+            border-right: 1px solid #d8d8d8;
+            float: left;
+            flex:3
+            height: 20px;
+            text-align: center;
+          }
+
+          .meical_nodel_item ul li:nth-child(5){
+            float: left;
+            flex:1
+            border-right: none
+            text-align: center;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // 展示历史处方详情
+  showHistoryDetail(item) {
+    const { choseHistoryId } = this.state
+    if (choseHistoryId !== item.id) return null
+
+    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, body_examination, immunizations, cure_suggestion, remark } = item
+    return (
+      <div className='medical_detail'>
+        <div className='medical_detail_item'>
+          <span>发病日期:</span>
+          <input readOnly type='text' value={morbidity_date} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>主诉：</span>
+          <input readOnly type='text' value={chief_complaint} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>现病史：</span>
+          <input readOnly type='text' value={history_of_present_illness} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>既往史：</span>
+          <input readOnly type='text' value={history_of_past_illness} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>家族史：</span>
+          <input readOnly type='text' value={family_medical_history} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>过敏史：</span>
+          <input readOnly type='text' value={allergic_history} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>疫苗接种史：</span>
+          <input readOnly type='text' value={immunizations} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>体格检查：</span>
+          <input readOnly type='text' value={body_examination} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>治疗意见：</span>
+          <input readOnly type='text' value={cure_suggestion} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>备注：</span>
+          <input readOnly type='text' value={remark} />
+        </div>
+        <div className='medical_detail_item' style={{ justifyContent: 'flex-end' }}>
+          <button
+            onClick={() => {
+              this.setState({ ...this.state, ...item, files: '', showHistroyMedicals: false })
+            }}
+          >
+            复 制
+          </button>
+        </div>
+        <style jsx>{`
+          .medical_detail {
+            height: unset;
+            border: none;
+            margin: 10px 0 20px 0;
+          }
+          .medical_detail_item {
+            height: 30px;
+            display: flex;
+            border: none;
+            border-bottom: 1px solid #dbdbdb;
+            align-items: center;
+          }
+          .medical_detail_item span {
+            text-align: center;
+            flex: 1;
+          }
+
+          .medical_detail_item input {
+            flex: 6;
+          }
+
+          .medical_detail_item button {
+            background: rgba(42, 205, 200, 1);
+            border-radius: 7px;
+            width: 70px;
+            margin-right: 10%;
+            color: white;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // 打开历史病历
+  async setHistroyMedicals() {
+    let triagePatient = {}
+    const { triagePatients, clinic_triage_patient_id, queryMedicalsByPatient } = this.props
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    await queryMedicalsByPatient({ ...triagePatient })
+    this.setState({ showHistroyMedicals: true })
   }
 
   cancel() {
@@ -388,7 +587,7 @@ class PrescriptionScreen extends Component {
             }}
           />
           <button onClick={() => this.setMedicalModesl()}>选择模板</button>
-          <button>复制病历</button>
+          <button onClick={() => this.setHistroyMedicals()}>复制病历</button>
         </div>
         <div className={'formList'}>
           <div className={'formListBox'} style={{}}>
@@ -550,6 +749,7 @@ class PrescriptionScreen extends Component {
         </div>
         {this.showSaveModel()}
         {this.showMedicalModels()}
+        {this.showHistroyMedicals()}
         <Confirm ref='myAlert' isAlert />
         <style jsx>{`
           .filterBox {
@@ -682,12 +882,15 @@ class PrescriptionScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    triagePatients: state.triagePatients.data,
     clinic_triage_patient_id: state.triagePatients.selectId,
     triage_personnel_id: state.user.data.id,
     medicalRecord: state.medicalRecords.data,
     medicalModels: state.medicalRecords.models,
-    medicalModelPage: state.medicalRecords.model_page
+    medicalModelPage: state.medicalRecords.model_page,
+    medicalHistory: state.medicalRecords.history_medicals,
+    medicalHistoryPage: state.medicalRecords.history_page_info
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels })(PrescriptionScreen)
+export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels, queryMedicalsByPatient })(PrescriptionScreen)
