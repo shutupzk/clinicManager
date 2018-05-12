@@ -30,7 +30,7 @@ import {
   querySchedules
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels } from './medicRecord'
-import { drugs, drugCreate } from './drug'
+import { drugs, queryDrugList, drugCreate } from './drug'
 import { examinations, examinationCreate, queryExaminationList } from './examination'
 import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
 import { materials, materialCreate, queryMaterialList } from './material'
@@ -104,6 +104,7 @@ export {
   createMedicalRecordAsModel,
   queryMedicalRecord,
   queryMedicalModels,
+  queryDrugList,
   drugCreate,
   examinationCreate,
   laboratoryCreate,

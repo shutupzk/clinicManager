@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Link from 'next/link'
+// import Link from 'next/link'
 import { theme } from '../../../components'
 import Router from 'next/router'
 
@@ -16,9 +16,9 @@ export default class Navigation extends Component {
         {children.map((item, index) => {
           let navigateName = item.navigateName
           return (
-            <Link key={item.navigateName} href={item.navigateName}>
-              <div className={'childItem ' + (navigateName === url ? 'sel' : '')}>{item.title}</div>
-            </Link>
+            // <Link key={item.navigateName} href={item.navigateName}>
+            // </Link>
+            <div onClick={() => Router.push(navigateName)} className={'childItem ' + (navigateName === url ? 'sel' : '')}>{item.title}</div>
           )
         })}
         <style jsx>{`
@@ -47,6 +47,7 @@ export default class Navigation extends Component {
             if (item.children) {
               children = item.children
             }
+            // console.log('item=======', item)
             return (
               <div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
                 <div onClick={() => Router.push(item.navigateName)}>
