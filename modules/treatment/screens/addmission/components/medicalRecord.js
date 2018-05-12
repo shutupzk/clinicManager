@@ -256,7 +256,7 @@ class PrescriptionScreen extends Component {
 
   showMedicalModels() {
     const { medicalModels, medicalModelPage } = this.props
-    if (!this.state.showModicalModels) return null
+    if (!this.state.showModicalModels ) return null
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
@@ -290,7 +290,7 @@ class PrescriptionScreen extends Component {
               if (!item) return null
               const { model_name, is_common, created_time } = item
               return (
-                <div key={iKey}>
+                <div key={iKey} >
                   <ul>
                     <li>{model_name}</li>
                     <li>{is_common ? '通用模板' : '非通用模板'}</li>
@@ -326,6 +326,10 @@ class PrescriptionScreen extends Component {
             margin-top: 10px;
           }
 
+          .meical_nodel_item ul {
+            display: flex;
+          }
+
           .meical_nodel_item ul li {
             margin:0;
             border-right: 1px solid #d8d8d8;
@@ -333,10 +337,6 @@ class PrescriptionScreen extends Component {
             flex:3
             height: 20px;
             text-align: center;
-          }
-
-          .meical_nodel_item ul {
-            display: flex;
           }
 
           .meical_nodel_item ul li:nth-child(4){
@@ -685,8 +685,8 @@ const mapStateToProps = state => {
     clinic_triage_patient_id: state.triagePatients.selectId,
     triage_personnel_id: state.user.data.id,
     medicalRecord: state.medicalRecords.data,
-    medicalModels: state.medicalRecords.models.data,
-    medicalModelPage: state.medicalRecords.models.page_info
+    medicalModels: state.medicalRecords.models,
+    medicalModelPage: state.medicalRecords.model_page
   }
 }
 
