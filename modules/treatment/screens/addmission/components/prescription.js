@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
-import { PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from '../../../../../ducks'
+import { queryDrugList, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from '../../../../../ducks'
 
 // 处方
 class MedicalRecordScreen extends Component {
@@ -19,8 +19,26 @@ class MedicalRecordScreen extends Component {
   getCNameOptions() {
     return [{ value: 1, label: '黄芪' }, { value: 2, label: '静脉输液' }]
   }
+
+  queryDrugList(keyword, type = 0) {
+    const { queryDrugList, clinic_id } = this.props
+    if (keyword) {
+      queryDrugList({ clinic_id, status: true, keyword, type }, true)
+    }
+  }
+
   getWNameOptions() {
-    return [{ value: 1, label: '5%葡萄糖注射液1111' }, { value: 2, label: '静脉输液' }]
+    const { drugs } = this.props
+    let array = []
+    for (let key in drugs) {
+      let { drug_stock_id, drug_name, specification } = drugs[key]
+      array.push({
+        value: drug_stock_id,
+        label: drug_name,
+        specification
+      })
+    }
+    return array
   }
   getUnitoptions() {
     return [{ value: 1, label: '次' }, { value: 2, label: '个' }, { value: 3, label: '颗' }]
@@ -143,18 +161,18 @@ class MedicalRecordScreen extends Component {
       <div className={'tableDIV'}>
         <ul>
           <li>
-            <div style={{ width: '120px' }}>药品名称</div>
-            <div style={{ width: '78px' }}>规格</div>
-            <div style={{ width: '90px' }}>库存</div>
-            <div style={{ width: '62px' }}>单次剂量</div>
-            <div style={{ width: '120px' }}>用法</div>
-            <div style={{ width: '120px' }}>用药频次</div>
-            <div style={{ width: '50px' }}>天数</div>
-            <div style={{ width: '50px' }}>总量</div>
-            <div style={{ width: '120px' }}>药房</div>
-            <div style={{ width: '113px' }}>用药说明</div>
+            <div style={{ flex: 3 }}>药品名称</div>
+            <div style={{ flex: 3 }}>规格</div>
+            <div style={{ flex: 2 }}>库存</div>
+            <div style={{ flex: 2 }}>单次剂量</div>
+            <div style={{ flex: 3 }}>用法</div>
+            <div style={{ flex: 3 }}>用药频次</div>
+            <div style={{ flex: 1 }}>天数</div>
+            <div style={{ flex: 2 }}>总量</div>
+            <div style={{ flex: 3 }}>药房</div>
+            <div style={{ flex: 3 }}>用药说明</div>
             <div
-              style={{ width: '50px' }}
+              style={{ flex: 2 }}
               className={'addItem'}
               onClick={() => {
                 this.addWestMedicinePres()
@@ -166,66 +184,70 @@ class MedicalRecordScreen extends Component {
           {wPrescItemArray.map((item, index) => {
             return (
               <li key={index}>
-                <div style={{ width: '120px' }}>
+                <div style={{ flex: 3 }}>
                   <div>
                     <Select
                       value={this.getSelectValue(wPrescItemArray[index].drug_id, this.getWNameOptions())}
-                      onChange={({ value }) => this.setWItemValue(value, index, 'drug_id', 2)}
-                      placeholder='搜索名称'
+                      onChange={({ value, specification }) => {
+                        this.setWItemValue(value, index, 'drug_stock_id', 2)
+                        this.setWItemValue(specification, index, 'specification', 2)
+                      }}
+                      placeholder='搜索'
                       height={38}
+                      onInputChange={keyword => this.queryDrugList(keyword, 0)}
                       options={this.getWNameOptions()}
                     />
                   </div>
                 </div>
-                <div style={{ width: '78px' }}>250ml:12.5g</div>
-                <div style={{ width: '90px' }}>1000034548瓶</div>
-                <div style={{ width: '62px' }}>
+                <div style={{ flex: 3 }}>{wPrescItemArray[index].specification}</div>
+                <div style={{ flex: 2 }}>50瓶</div>
+                <div style={{ flex: 2 }}>
                   <input value={wPrescItemArray[index].dose === undefined ? '' : wPrescItemArray[index].dose} type='number' onChange={e => this.setWItemValue(e, index, 'dose')} />
                 </div>
-                <div style={{ width: '120px' }}>
+                <div style={{ flex: 3 }}>
                   <div>
                     <Select
                       value={this.getSelectValue(wPrescItemArray[index].route_administration_id, this.getUsageOptions())}
                       onChange={({ value }) => this.setWItemValue(value, index, 'route_administration_id', 2)}
-                      placeholder='搜索用法'
+                      placeholder='搜索'
                       height={38}
                       options={this.getUsageOptions()}
                     />
                   </div>
                 </div>
-                <div style={{ width: '120px' }}>
+                <div style={{ flex: 3 }}>
                   <div>
                     <Select
                       value={this.getSelectValue(wPrescItemArray[index].frequency_id, this.getFrequencyOptions())}
                       onChange={({ value }) => this.setWItemValue(value, index, 'frequency_id', 2)}
-                      placeholder='搜索频次'
+                      placeholder='搜索'
                       height={38}
                       options={this.getFrequencyOptions()}
                     />
                   </div>
                 </div>
-                <div style={{ width: '50px' }}>
+                <div style={{ flex: 1 }}>
                   <input value={wPrescItemArray[index].days === undefined ? '' : wPrescItemArray[index].days} type='number' onChange={e => this.setWItemValue(e, index, 'days')} />
                 </div>
-                <div style={{ width: '50px' }}>
+                <div style={{ flex: 2 }}>
                   <input
                     value={wPrescItemArray[index].total_amount === undefined ? '' : wPrescItemArray[index].total_amount}
                     type='number'
                     onChange={e => this.setWItemValue(e, index, 'total_amount')}
                   />
                 </div>
-                <div style={{ width: '120px' }}>
+                <div style={{ flex: 3 }}>
                   <div>
                     <Select
                       value={this.getSelectValue(wPrescItemArray[index].pharmacy_id, this.getPharmacyOptions())}
                       onChange={({ value }) => this.setWItemValue(value, index, 'pharmacy_id', 2)}
-                      placeholder='搜索药房'
+                      placeholder='搜索'
                       height={38}
                       options={this.getPharmacyOptions()}
                     />
                   </div>
                 </div>
-                <div style={{ width: '113px' }}>
+                <div style={{ flex: 3 }}>
                   <input
                     value={wPrescItemArray[index].default_remark === undefined ? '' : wPrescItemArray[index].default_remark}
                     type='text'
@@ -233,7 +255,7 @@ class MedicalRecordScreen extends Component {
                   />
                 </div>
                 <div
-                  style={{ width: '50px' }}
+                  style={{ flex: 2 }}
                   className={'removeItem'}
                   onClick={() => {
                     this.removeWestMedicinePres(index)
@@ -451,7 +473,7 @@ class MedicalRecordScreen extends Component {
     const { selItem, cPrescItemArray } = this.state
     const { medicalRecord } = this.props
     return (
-      <div className='filterBox'>
+      <div className='filterBox' style={{ width: '1300px' }}>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '67px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '0 65px 0px 47px' }}>
             <div className='prescriptionLank'>
@@ -558,7 +580,7 @@ class MedicalRecordScreen extends Component {
         }
         .tableDIV {
           display: flex;
-          width: 987px;
+          width: 1188px;
           background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           flex-direction: column;
@@ -590,11 +612,14 @@ class MedicalRecordScreen extends Component {
           justify-content: center;
         }
         .tableDIV ul li > div > input {
-          width: 90%;
+          width: 100%;
           height: 30px;
           border-radius: 4px;
           outline-style: none;
           border: none;
+        }
+        .tableDIV ul li > div > div {
+          width: 90%;
         }
         .tableDIV ul li > div:nth-child(1) {
           flex: 3;
@@ -671,13 +696,15 @@ class MedicalRecordScreen extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state.drugs)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
     personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,
+    drugs: state.drugs.json_data,
     prescriptionWesternPatients: state.prescriptionWesternPatients.data
   }
 }
 
-export default connect(mapStateToProps, { PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet })(MedicalRecordScreen)
+export default connect(mapStateToProps, { queryDrugList, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet })(MedicalRecordScreen)
