@@ -28,7 +28,7 @@ export const queryRouteAdministrationList = ({ keyword, offset = 0, limit = 6 })
     const docs = data.data || []
     let json = {}
     for (let doc of docs) {
-      json[json.id] = doc
+      json[doc.id] = doc
     }
     dispatch({
       type: ROUTE_ADMINISTRATION_ADD,
