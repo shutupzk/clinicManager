@@ -365,7 +365,6 @@ class PrescriptionScreen extends Component {
     if (!this.state.showHistroyMedicals) return null
     let triagePatient = {}
     const { triagePatients, clinic_triage_patient_id, medicalHistoryPage, medicalHistory } = this.props
-    console.log('medicalHistory', medicalHistory)
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }

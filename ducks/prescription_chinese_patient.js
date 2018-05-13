@@ -53,8 +53,9 @@ export const PrescriptionChinesePatientGet = ({ clinic_triage_patient_id }) => a
       clinic_triage_patient_id
     })
     console.log('PrescriptionChinesePatientGet ======', data)
-    if (data.code !== '200') return {}
-    let docs = data.data || []
+    if (data.code !== '200' || !data.data) return {}
+    let info = data.data
+    let docs = info.items || []
     let json_data = {}
     let unitJson = {}
     let frequencyJson = {}
@@ -115,7 +116,7 @@ export const PrescriptionChinesePatientGet = ({ clinic_triage_patient_id }) => a
       type: PRESCRIPTION_CHINESE_PATIENT_ADD,
       data: docs
     })
-    return docs
+    return info
   } catch (e) {
     console.log(e)
     return []

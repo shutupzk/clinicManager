@@ -27,7 +27,8 @@ import {
   frequencies,
   routeAdministrationss,
   doseForms,
-  prescriptionChinesePatients
+  prescriptionChinesePatients,
+  charge
 } from '../ducks'
 import thunk from 'redux-thunk'
 
@@ -58,6 +59,7 @@ const appReducer = persistCombineReducers(persistConfig, {
   treatmentPatients,
   laboratoryPatients,
   examinationPatients,
+  charge,
   materialPatients,
   otherPatients,
   prescriptionWesternPatients,
