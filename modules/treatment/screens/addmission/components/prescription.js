@@ -1,7 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
-import { queryDrugList, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import {
+  queryDrugList,
+  PrescriptionWesternPatientCreate,
+  PrescriptionWesternPatientGet,
+  queryRouteAdministrationList,
+  queryFrequencyList,
+  queryDoseUnitList,
+  PrescriptionChinesePatientCreate,
+  PrescriptionChinesePatientGet
+} from '../../../../../ducks'
 
 // 处方
 class MedicalRecordScreen extends Component {
@@ -16,8 +25,52 @@ class MedicalRecordScreen extends Component {
     }
   }
 
+  async componentDidMount() {
+    const { PrescriptionWesternPatientGet, clinic_triage_patient_id } = this.props
+    let wPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+    wPrescItemArray = wPrescItemArray || []
+    let cPrescItemArray = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+
+    console.log('cPrescItemArray ========', cPrescItemArray)
+
+    this.setState({ wPrescItemArray })
+  }
+
   getCNameOptions() {
-    return [{ value: 1, label: '黄芪' }, { value: 2, label: '静脉输液' }]
+    const { drugs } = this.props
+    console.log('drugs ===========', drugs)
+    let array = []
+    for (let key in drugs) {
+      let {
+        drug_stock_id,
+        drug_name,
+        specification,
+        stock_amount,
+        packing_unit_name,
+        once_dose_unit_id,
+        once_dose_unit_name,
+        route_administration_id,
+        route_administration_name,
+        frequency_id,
+        frequency_name,
+        type
+      } = drugs[key]
+      if (type !== 1) continue
+      array.push({
+        value: drug_stock_id,
+        label: drug_name,
+        specification,
+        stock_amount,
+        packing_unit_name,
+        once_dose_unit_id,
+        once_dose_unit_name,
+        route_administration_id,
+        route_administration_name,
+        frequency_id,
+        frequency_name
+      })
+    }
+    return array
   }
 
   queryDrugList(keyword, type = 0) {
@@ -27,30 +80,85 @@ class MedicalRecordScreen extends Component {
     }
   }
 
+  queryDictionaries(keyword, fn) {
+    if (keyword) {
+      this.props[fn]({ keyword })
+    }
+  }
+
   getWNameOptions() {
     const { drugs } = this.props
     let array = []
     for (let key in drugs) {
-      let { drug_stock_id, drug_name, specification } = drugs[key]
+      let {
+        drug_stock_id,
+        drug_name,
+        specification,
+        stock_amount,
+        packing_unit_name,
+        once_dose_unit_id,
+        once_dose_unit_name,
+        route_administration_id,
+        route_administration_name,
+        frequency_id,
+        frequency_name,
+        type
+      } = drugs[key]
+      if (type !== 0) continue
       array.push({
         value: drug_stock_id,
         label: drug_name,
-        specification
+        specification,
+        stock_amount,
+        packing_unit_name,
+        once_dose_unit_id,
+        once_dose_unit_name,
+        route_administration_id,
+        route_administration_name,
+        frequency_id,
+        frequency_name
       })
     }
     return array
   }
   getUnitoptions() {
-    return [{ value: 1, label: '次' }, { value: 2, label: '个' }, { value: 3, label: '颗' }]
+    const { doseUnits } = this.props
+    let array = []
+    for (let key in doseUnits) {
+      const { id, name } = doseUnits[key]
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
   getUsageOptions() {
-    return [{ value: 1, label: '口服' }, { value: 2, label: '外敷' }]
+    const { routeAdministrationss } = this.props
+    let array = []
+    for (let key in routeAdministrationss) {
+      let { id, name } = routeAdministrationss[key]
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
   getPharmacyOptions() {
-    return [{ value: 1, label: '药房1' }, { value: 2, label: '药房1' }]
+    return [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
   }
   getFrequencyOptions() {
-    return [{ value: 1, label: '一次' }, { value: 2, label: '两次' }]
+    const { frequencies } = this.props
+    let array = []
+    for (let key in frequencies) {
+      const { id, name } = frequencies[key]
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
   getSelectValue(value, array) {
     for (let obj of array) {
@@ -72,6 +180,32 @@ class MedicalRecordScreen extends Component {
     cPrescItemArray[selIndex].data = array
     this.setState({ cPrescItemArray })
   }
+
+  // 设置中药药品总量信息
+  setCItemAmountValue(e, index) {
+    const { selIndex, cPrescItemArray } = this.state
+    let value = e.target.value
+    if (value) {
+      let array = cPrescItemArray[selIndex].data
+      let info = cPrescItemArray[selIndex].info
+      array[index].once_dose = value
+      if (info.amount) {
+        array[index].amount = value * info.amount
+      }
+      cPrescItemArray[selIndex].data = array
+      this.setState({ cPrescItemArray })
+    }
+  }
+
+  // 设置中药药品信息
+  setCItemValues(data, index) {
+    const { selIndex, cPrescItemArray } = this.state
+    let array = cPrescItemArray[selIndex].data
+    array[index] = { ...array[index], ...data }
+    cPrescItemArray[selIndex].data = array
+    this.setState({ cPrescItemArray })
+  }
+
   // 设置中药药品总信息
   setCInfoValue(e, key, type = 1) {
     const { selIndex, cPrescItemArray } = this.state
@@ -84,6 +218,26 @@ class MedicalRecordScreen extends Component {
     cPrescItemArray[selIndex].info = info
     this.setState({ cPrescItemArray })
   }
+
+  // 设置中药药品数量信息
+  setCInfoAmountValue(e) {
+    const { selIndex, cPrescItemArray } = this.state
+    let value = e.target.value
+    if (value) {
+      let info = cPrescItemArray[selIndex].info
+      let array = cPrescItemArray[selIndex].data
+      info.amount = value
+      for (let i = 0; i < array.length; i++) {
+        if (array[i].once_dose) {
+          array[i].amount = array[i].once_dose * value
+        }
+      }
+      cPrescItemArray[selIndex].info = info
+      cPrescItemArray[selIndex].data = array
+      this.setState({ cPrescItemArray })
+    }
+  }
+
   // 设置西药信息
   setWItemValue(e, index, key, type = 1) {
     const { wPrescItemArray } = this.state
@@ -93,6 +247,13 @@ class MedicalRecordScreen extends Component {
     }
     let array = [...wPrescItemArray] // [...treatments]
     array[index][key] = value
+    this.setState({ wPrescItemArray: array })
+  }
+  // 设置西药信息
+  setWItemValues(data, index) {
+    const { wPrescItemArray } = this.state
+    let array = [...wPrescItemArray] // [...treatments]
+    array[index] = { ...array[index], ...data }
     this.setState({ wPrescItemArray: array })
   }
   // 添加中药处方项
@@ -133,11 +294,11 @@ class MedicalRecordScreen extends Component {
     const { PrescriptionWesternPatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { wPrescItemArray } = this.state
     let items = []
-    for (let { drug_stock_id, once_dose, once_dose_unit_id, route_administration_id, frequency_id, amount, illustration, fetch_address, eff_day } of wPrescItemArray) {
+    for (let { drug_stock_id, once_dose, once_dose_unit_id, route_administration_id, frequency_id, amount, illustration, fetch_address, eff_day, select_once_dose_unit_id } of wPrescItemArray) {
       items.push({
         drug_stock_id: drug_stock_id + '',
         once_dose: once_dose + '',
-        once_dose_unit_id: once_dose_unit_id + '',
+        once_dose_unit_id: (once_dose_unit_id || select_once_dose_unit_id) + '',
         route_administration_id: route_administration_id + '',
         frequency_id: frequency_id + '',
         amount: amount + '',
@@ -161,36 +322,63 @@ class MedicalRecordScreen extends Component {
       <div className={'tableDIV'}>
         <ul>
           <li>
-            <div style={{ flex: 3 }}>药品名称</div>
+            <div style={{ flex: 4 }}>药品名称</div>
             <div style={{ flex: 3 }}>规格</div>
             <div style={{ flex: 2 }}>库存</div>
             <div style={{ flex: 2 }}>单次剂量</div>
+            <div style={{ flex: 3 }}>剂量单位</div>
             <div style={{ flex: 3 }}>用法</div>
             <div style={{ flex: 3 }}>用药频次</div>
             <div style={{ flex: 1 }}>天数</div>
             <div style={{ flex: 2 }}>总量</div>
-            <div style={{ flex: 3 }}>药房</div>
+            <div style={{ flex: 2 }}>包装单位</div>
+            <div style={{ flex: 3 }}>取药地点</div>
             <div style={{ flex: 3 }}>用药说明</div>
-            <div
-              style={{ flex: 2 }}
-              className={'addItem'}
-              onClick={() => {
-                this.addWestMedicinePres()
-              }}
-            >
-              新增
+            <div style={{ flex: 2 }}>
+              <div
+                style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}
+                onClick={() => {
+                  this.addWestMedicinePres()
+                }}
+              >
+                新增
+              </div>
             </div>
           </li>
           {wPrescItemArray.map((item, index) => {
+            let stock_amount = wPrescItemArray[index].stock_amount === undefined ? '' : wPrescItemArray[index].stock_amount
+            let packing_unit_name = wPrescItemArray[index].packing_unit_name || ''
             return (
               <li key={index}>
-                <div style={{ flex: 3 }}>
+                <div style={{ flex: 4 }}>
                   <div>
                     <Select
                       value={this.getSelectValue(wPrescItemArray[index].drug_stock_id, this.getWNameOptions())}
-                      onChange={({ value, specification }) => {
-                        this.setWItemValue(value, index, 'drug_stock_id', 2)
-                        this.setWItemValue(specification, index, 'specification', 2)
+                      onChange={({
+                        value,
+                        specification,
+                        stock_amount,
+                        once_dose_unit_id,
+                        packing_unit_name,
+                        once_dose_unit_name,
+                        route_administration_id,
+                        route_administration_name,
+                        frequency_id,
+                        frequency_name
+                      }) => {
+                        let data = {
+                          drug_stock_id: value,
+                          specification,
+                          stock_amount,
+                          packing_unit_name,
+                          once_dose_unit_id,
+                          once_dose_unit_name,
+                          route_administration_id,
+                          route_administration_name,
+                          frequency_id,
+                          frequency_name
+                        }
+                        this.setWItemValues(data, index)
                       }}
                       placeholder='搜索'
                       height={38}
@@ -200,9 +388,26 @@ class MedicalRecordScreen extends Component {
                   </div>
                 </div>
                 <div style={{ flex: 3 }}>{wPrescItemArray[index].specification}</div>
-                <div style={{ flex: 2 }}>50瓶</div>
+                <div style={{ flex: 2 }}>{stock_amount + ' ' + packing_unit_name}</div>
                 <div style={{ flex: 2 }}>
-                  <input value={wPrescItemArray[index].dose === undefined ? '' : wPrescItemArray[index].dose} type='number' onChange={e => this.setWItemValue(e, index, 'dose')} />
+                  <input value={wPrescItemArray[index].once_dose === undefined ? '' : wPrescItemArray[index].once_dose} type='number' onChange={e => this.setWItemValue(e, index, 'once_dose')} />
+                </div>
+                <div style={{ flex: 3 }}>
+                  {wPrescItemArray[index].once_dose_unit_id ? (
+                    wPrescItemArray[index].once_dose_unit_name
+                  ) : (
+                    <Select
+                      value={this.getSelectValue(wPrescItemArray[index].select_once_dose_unit_id, this.getUnitoptions())}
+                      onChange={({ value, label }) => {
+                        this.setWItemValue(value, index, 'select_once_dose_unit_id', 2)
+                        this.setWItemValue(label, index, 'select_once_dose_unit_name', 2)
+                      }}
+                      placeholder='搜索'
+                      height={38}
+                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryDoseUnitList')}
+                      options={this.getUnitoptions()}
+                    />
+                  )}
                 </div>
                 <div style={{ flex: 3 }}>
                   <div>
@@ -211,6 +416,7 @@ class MedicalRecordScreen extends Component {
                       onChange={({ value }) => this.setWItemValue(value, index, 'route_administration_id', 2)}
                       placeholder='搜索'
                       height={38}
+                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryRouteAdministrationList')}
                       options={this.getUsageOptions()}
                     />
                   </div>
@@ -222,25 +428,23 @@ class MedicalRecordScreen extends Component {
                       onChange={({ value }) => this.setWItemValue(value, index, 'frequency_id', 2)}
                       placeholder='搜索'
                       height={38}
+                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryFrequencyList')}
                       options={this.getFrequencyOptions()}
                     />
                   </div>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <input value={wPrescItemArray[index].days === undefined ? '' : wPrescItemArray[index].days} type='number' onChange={e => this.setWItemValue(e, index, 'days')} />
+                  <input value={wPrescItemArray[index].eff_day === undefined ? '' : wPrescItemArray[index].eff_day} type='number' onChange={e => this.setWItemValue(e, index, 'eff_day')} />
                 </div>
                 <div style={{ flex: 2 }}>
-                  <input
-                    value={wPrescItemArray[index].total_amount === undefined ? '' : wPrescItemArray[index].total_amount}
-                    type='number'
-                    onChange={e => this.setWItemValue(e, index, 'total_amount')}
-                  />
+                  <input value={wPrescItemArray[index].amount === undefined ? '' : wPrescItemArray[index].amount} type='number' onChange={e => this.setWItemValue(e, index, 'amount')} />
                 </div>
+                <div style={{ flex: 2 }}>{wPrescItemArray[index].packing_unit_name}</div>
                 <div style={{ flex: 3 }}>
                   <div>
                     <Select
-                      value={this.getSelectValue(wPrescItemArray[index].pharmacy_id, this.getPharmacyOptions())}
-                      onChange={({ value }) => this.setWItemValue(value, index, 'pharmacy_id', 2)}
+                      value={this.getSelectValue(wPrescItemArray[index].fetch_address, this.getPharmacyOptions())}
+                      onChange={({ value }) => this.setWItemValue(value, index, 'fetch_address', 2)}
                       placeholder='搜索'
                       height={38}
                       options={this.getPharmacyOptions()}
@@ -249,19 +453,20 @@ class MedicalRecordScreen extends Component {
                 </div>
                 <div style={{ flex: 3 }}>
                   <input
-                    value={wPrescItemArray[index].default_remark === undefined ? '' : wPrescItemArray[index].default_remark}
+                    value={wPrescItemArray[index].illustration === undefined ? '' : wPrescItemArray[index].illustration}
                     type='text'
-                    onChange={e => this.setWItemValue(e, index, 'default_remark')}
+                    onChange={e => this.setWItemValue(e, index, 'illustration')}
                   />
                 </div>
-                <div
-                  style={{ flex: 2 }}
-                  className={'removeItem'}
-                  onClick={() => {
-                    this.removeWestMedicinePres(index)
-                  }}
-                >
-                  删除
+                <div style={{ flex: 2 }}>
+                  <div
+                    style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                    onClick={() => {
+                      this.removeWestMedicinePres(index)
+                    }}
+                  >
+                    删除
+                  </div>
                 </div>
               </li>
             )
@@ -273,7 +478,7 @@ class MedicalRecordScreen extends Component {
             <button
               className={'save'}
               onClick={() => {
-                this.submit()
+                this.prescriptionWesternPatientCreate()
               }}
             >
               保存
@@ -301,6 +506,30 @@ class MedicalRecordScreen extends Component {
     array.splice(index, 1)
     cPrescItemArray[selIndex].data = array
     this.setState({ cPrescItemArray })
+  }
+
+  async prescriptionChinesePatientCreate () {
+    const { PrescriptionChinesePatientCreate, clinic_triage_patient_id, personnel_id } = this.props
+    const { selIndex, cPrescItemArray } = this.state
+    let info = cPrescItemArray[selIndex].info
+    let array = cPrescItemArray[selIndex].data
+    let items = []
+    for (let obj of array) {
+      const { drug_stock_id, once_dose, once_dose_unit_id, amount, special_illustration, select_once_dose_unit_id } = obj
+      items.push({
+        drug_stock_id: drug_stock_id + '',
+        once_dose: once_dose + '',
+        once_dose_unit_id: (once_dose_unit_id || select_once_dose_unit_id) + '',
+        amount: amount + '',
+        special_illustration: special_illustration + ''
+      })
+    }
+    let error = await PrescriptionChinesePatientCreate({ clinic_triage_patient_id, personnel_id, ...info })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      return this.refs.myAlert.alert('保存成功')
+    }
   }
   // 中药处方详情
   renderCPrescDetail() {
@@ -332,33 +561,67 @@ class MedicalRecordScreen extends Component {
               </div>
             </li>
             {array.map((item, index) => {
+              let stock_amount = array[index].stock_amount === undefined ? '' : array[index].stock_amount
+              let packing_unit_name = array[index].packing_unit_name || ''
               return (
                 <li key={index}>
                   <div>
                     <div>
                       <Select
-                        value={this.getSelectValue(array[index].drug_id, this.getCNameOptions())}
-                        onChange={e => this.setCItemValue(e.value, index, 'drug_id', 2)}
+                        value={this.getSelectValue(array[index].drug_stock_id, this.getCNameOptions())}
+                        onChange={({
+                          value,
+                          specification,
+                          stock_amount,
+                          once_dose_unit_id,
+                          packing_unit_name,
+                          once_dose_unit_name,
+                          route_administration_id,
+                          route_administration_name,
+                          frequency_id,
+                          frequency_name
+                        }) => {
+                          let data = {
+                            drug_stock_id: value,
+                            specification,
+                            stock_amount,
+                            packing_unit_name,
+                            once_dose_unit_id,
+                            once_dose_unit_name,
+                            route_administration_id,
+                            route_administration_name,
+                            frequency_id,
+                            frequency_name
+                          }
+                          this.setCItemValues(data, index)
+                        }}
                         placeholder='名称'
                         height={38}
                         options={this.getCNameOptions()}
+                        onInputChange={keyword => this.queryDrugList(keyword, 1)}
                       />
                     </div>
                   </div>
-                  <div>100000瓶</div>
+                  <div>{stock_amount + ' ' + packing_unit_name}</div>
                   <div>
-                    <input value={array[index].dose === undefined ? '' : array[index].dose} type='number' onChange={e => this.setCItemValue(e, index, 'dose')} />
+                    <input value={array[index].once_dose === undefined ? '' : array[index].once_dose} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
                   </div>
                   <div>
-                    <div>
+                    {array[index].once_dose_unit_id ? (
+                      array[index].once_dose_unit_name
+                    ) : (
                       <Select
-                        value={this.getSelectValue(array[index].unit_id, this.getUnitoptions())}
-                        onChange={({ value }) => this.setCItemValue(value, index, 'unit_id', 2)}
-                        placeholder='搜索单位'
+                        value={this.getSelectValue(array[index].select_once_dose_unit_id, this.getUnitoptions())}
+                        onChange={({ value, label }) => {
+                          this.setCItemValue(value, index, 'select_once_dose_unit_id', 2)
+                          this.setCItemValue(label, index, 'select_once_dose_unit_name', 2)
+                        }}
+                        placeholder='搜索'
                         height={38}
+                        onInputChange={keyword => this.queryDictionaries(keyword, 'queryDoseUnitList')}
                         options={this.getUnitoptions()}
                       />
-                    </div>
+                    )}
                   </div>
                   <div>
                     <input
@@ -367,9 +630,7 @@ class MedicalRecordScreen extends Component {
                       onChange={e => this.setCItemValue(e, index, 'special_requirements')}
                     />
                   </div>
-                  <div>
-                    <input value={array[index].total_amount === undefined ? '' : array[index].total_amount} type='number' onChange={e => this.setCItemValue(e, index, 'total_amount')} />
-                  </div>
+                  <div>{array[index].amount}</div>
                   <div
                     className={'removeItem'}
                     onClick={() => {
@@ -387,10 +648,8 @@ class MedicalRecordScreen extends Component {
           <ul>
             <li>
               <div>用法</div>
-              <div>每日剂量</div>
               <div>天数</div>
-              <div>单位</div>
-              <div>总剂量</div>
+              <div>总付数</div>
               <div>频次</div>
               <div>取药地点</div>
               <div>服药要求</div>
@@ -408,24 +667,16 @@ class MedicalRecordScreen extends Component {
                 </div>
               </div>
               <div>
-                <input value={info.once_dose === undefined ? '' : info.once_dose} type='number' onChange={e => this.setCInfoValue(e, 'once_dose')} />
+                <input value={info.eff_day === undefined ? '' : info.eff_day} type='number' onChange={e => this.setCInfoValue(e, 'eff_day')} />
               </div>
               <div>
-                <input value={info.days === undefined ? '' : info.days} type='number' onChange={e => this.setCInfoValue(e, 'days')} />
-              </div>
-              <div>
-                <div>
-                  <Select
-                    value={this.getSelectValue(info.unit_id, this.getUnitoptions())}
-                    onChange={({ value }) => this.setCInfoValue(value, 'unit_id', 2)}
-                    placeholder='搜索单位'
-                    height={38}
-                    options={this.getUnitoptions()}
-                  />
-                </div>
-              </div>
-              <div>
-                <input value={info.total_dose === undefined ? '' : info.total_dose} type='number' onChange={e => this.setCInfoValue(e, 'total_dose')} />
+                <input
+                  value={info.amount === undefined ? '' : info.amount}
+                  type='number'
+                  onChange={e => {
+                    this.setCInfoAmountValue(e)
+                  }}
+                />
               </div>
               <div>
                 <div>
@@ -439,10 +690,18 @@ class MedicalRecordScreen extends Component {
                 </div>
               </div>
               <div>
-                <input value={info.get_address === undefined ? '' : info.get_address} type='text' onChange={e => this.setCInfoValue(e, 'get_address')} />
+                <div>
+                  <Select
+                    value={this.getSelectValue(info.fetch_address, this.getPharmacyOptions())}
+                    onChange={({ value }) => this.setCInfoValue(value, 'fetch_address', 2)}
+                    placeholder='搜索'
+                    height={38}
+                    options={this.getPharmacyOptions()}
+                  />
+                </div>
               </div>
               <div>
-                <input value={info.default_remark === undefined ? '' : info.default_remark} type='text' onChange={e => this.setCInfoValue(e, 'default_remark')} />
+                <input value={info.medicine_illustration === undefined ? '' : info.medicine_illustration} type='text' onChange={e => this.setCInfoValue(e, 'medicine_illustration')} />
               </div>
             </li>
           </ul>
@@ -453,7 +712,7 @@ class MedicalRecordScreen extends Component {
             <button
               className={'save'}
               onClick={() => {
-                this.submit()
+                this.prescriptionChinesePatientCreate()
               }}
             >
               保存
@@ -473,7 +732,7 @@ class MedicalRecordScreen extends Component {
     const { selItem, cPrescItemArray } = this.state
     const { medicalRecord } = this.props
     return (
-      <div className='filterBox' style={{ width: '1300px' }}>
+      <div className='filterBox' style={{ width: '1500px' }}>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '67px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '0 65px 0px 47px' }}>
             <div className='prescriptionLank'>
@@ -530,6 +789,7 @@ class MedicalRecordScreen extends Component {
           {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
         </div>
         {this.getStyle()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -580,7 +840,7 @@ class MedicalRecordScreen extends Component {
         }
         .tableDIV {
           display: flex;
-          width: 1188px;
+          width: 1388px;
           background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           flex-direction: column;
@@ -625,7 +885,7 @@ class MedicalRecordScreen extends Component {
           flex: 3;
         }
         .formListBottom {
-          width: 1000px;
+          width: 1388px;
           margin: 30px auto;
         }
         .formListBottom .bottomCenter {
@@ -696,15 +956,26 @@ class MedicalRecordScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state.drugs)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
     personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,
     drugs: state.drugs.json_data,
-    prescriptionWesternPatients: state.prescriptionWesternPatients.data
+    prescriptionWesternPatients: state.prescriptionWesternPatients.data,
+    routeAdministrationss: state.routeAdministrationss.data,
+    frequencies: state.frequencies.data,
+    doseUnits: state.doseUnits.data
   }
 }
 
-export default connect(mapStateToProps, { queryDrugList, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet })(MedicalRecordScreen)
+export default connect(mapStateToProps, {
+  queryDrugList,
+  PrescriptionWesternPatientCreate,
+  PrescriptionWesternPatientGet,
+  queryRouteAdministrationList,
+  queryFrequencyList,
+  queryDoseUnitList,
+  PrescriptionChinesePatientCreate,
+  PrescriptionChinesePatientGet
+})(MedicalRecordScreen)

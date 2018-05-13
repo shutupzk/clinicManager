@@ -53,8 +53,8 @@ class RecptionScreen extends Component {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }
     return (
-      <div className={'contentBox'} style={{ width: pageType === 2 ? '1300px' : '1098px' }}>
-        <div className='filterBox' style={{ width: pageType === 2 ? '1300px' : '1098px' }}>
+      <div className={'contentBox'} style={{ width: pageType === 2 ? '1500px' : '1098px' }}>
+        <div className='filterBox' style={{ width: pageType === 2 ? '1500px' : '1098px' }}>
           <div>就诊人姓名：{triagePatient.patient_name}</div>
           <div>
             <a>性别：</a>
@@ -145,7 +145,7 @@ class RecptionScreen extends Component {
         <style jsx>
           {`
             .childTopBar {
-              width: ${pageType === 2 ? '1300px' : '1098px'};
+              width: ${pageType === 2 ? '1500px' : '1098px'};
               margin: 31px 0 0 66px;
               background: #ffffff;
             }

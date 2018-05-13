@@ -1,27 +1,43 @@
 import { request } from './request'
-const PRESCRIPTION_WEST_PATIENT_ADD = 'PRESCRIPTION_WEST_PATIENT_ADD'
+const PRESCRIPTION_CHINESE_PATIENT_ADD = 'PRESCRIPTION_CHINESE_PATIENT_ADD'
 
 const initState = {
   data: []
 }
 
-export function prescriptionWesternPatients(state = initState, action = {}) {
+export function prescriptionChinesePatients(state = initState, action = {}) {
   switch (action.type) {
-    case PRESCRIPTION_WEST_PATIENT_ADD:
+    case PRESCRIPTION_CHINESE_PATIENT_ADD:
       return { ...state, data: action.data }
     default:
       return state
   }
 }
 
-export const PrescriptionWesternPatientCreate = ({ clinic_triage_patient_id, personnel_id, items }) => async dispatch => {
+export const PrescriptionChinesePatientCreate = ({
+  clinic_triage_patient_id,
+  route_administration_id,
+  frequency_id,
+  amount,
+  medicine_illustration,
+  fetch_address,
+  eff_day,
+  personnel_id,
+  items
+}) => async dispatch => {
   try {
-    const data = await request('/triage/PrescriptionWesternPatientCreate', {
+    const data = await request('/triage/PrescriptionChinesePatientCreate', {
       clinic_triage_patient_id,
+      route_administration_id,
+      frequency_id,
+      amount,
+      medicine_illustration,
+      fetch_address,
+      eff_day,
       personnel_id,
       items: JSON.stringify(items)
     })
-    console.log(clinic_triage_patient_id, personnel_id, items)
+    console.log(clinic_triage_patient_id, route_administration_id, frequency_id, amount, medicine_illustration, fetch_address, eff_day, personnel_id, items)
     console.log('data ======', data)
     if (data.code !== '200') return data.msg
     return null
@@ -31,14 +47,13 @@ export const PrescriptionWesternPatientCreate = ({ clinic_triage_patient_id, per
   }
 }
 
-export const PrescriptionWesternPatientGet = ({ clinic_triage_patient_id }) => async dispatch => {
+export const PrescriptionChinesePatientGet = ({ clinic_triage_patient_id }) => async dispatch => {
   try {
-    const data = await request('/triage/PrescriptionWesternPatientGet', {
+    const data = await request('/triage/PrescriptionChinesePatientGet', {
       clinic_triage_patient_id
     })
-    console.log(clinic_triage_patient_id)
-    console.log('data ======', data)
-    if (data.code !== '200') return []
+    console.log('PrescriptionChinesePatientGet ======', data)
+    if (data.code !== '200') return {}
     let docs = data.data || []
     let json_data = {}
     let unitJson = {}
@@ -97,7 +112,7 @@ export const PrescriptionWesternPatientGet = ({ clinic_triage_patient_id }) => a
       })
     }
     dispatch({
-      type: PRESCRIPTION_WEST_PATIENT_ADD,
+      type: PRESCRIPTION_CHINESE_PATIENT_ADD,
       data: docs
     })
     return docs
