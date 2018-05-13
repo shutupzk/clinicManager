@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { queryChargeUnpayList, chargeUnpaySelect } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
-import { getAgeByBirthday } from '../../../../utils'
+import { getAgeByBirthday, formatMoney } from '../../../../utils'
 
 class TobeChargedScreen extends Component {
   constructor(props) {
@@ -74,7 +74,7 @@ class TobeChargedScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span style={{ cursor: 'unset' }}>￥{patient.charge_total / 100}</span>
+                    <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total)}</span>
                     <span
                       onClick={() => {
                         this.gotoChargeDetail(patient.clinic_triage_patient_id)
@@ -103,7 +103,7 @@ class TobeChargedScreen extends Component {
 
   // 收费详情
   gotoChargeDetail(selectId) {
-    this.props.chargeUnpaySelect({selectId})
+    this.props.chargeUnpaySelect({ selectId })
     Router.push('/treatment/charge/toll')
   }
   // 加载

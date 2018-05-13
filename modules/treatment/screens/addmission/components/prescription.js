@@ -26,14 +26,24 @@ class MedicalRecordScreen extends Component {
   }
 
   async componentDidMount() {
-    const { PrescriptionWesternPatientGet, clinic_triage_patient_id } = this.props
+    const { PrescriptionWesternPatientGet, PrescriptionChinesePatientGet, clinic_triage_patient_id } = this.props
     let wPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
     wPrescItemArray = wPrescItemArray || []
-    let cPrescItemArray = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+    let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+    let cPrescItemArray = []
+    for (let obj of array) {
+      let data = obj.items
+      let info = { ...obj }
+      delete info.items
+      cPrescItemArray.push({
+        info,
+        data
+      })
+    }
 
     console.log('cPrescItemArray ========', cPrescItemArray)
 
-    this.setState({ wPrescItemArray })
+    this.setState({ wPrescItemArray, cPrescItemArray })
   }
 
   getCNameOptions() {
@@ -524,7 +534,7 @@ class MedicalRecordScreen extends Component {
         special_illustration: special_illustration + ''
       })
     }
-    let error = await PrescriptionChinesePatientCreate({ clinic_triage_patient_id, personnel_id, ...info })
+    let error = await PrescriptionChinesePatientCreate({ clinic_triage_patient_id, personnel_id, ...info, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -625,9 +635,9 @@ class MedicalRecordScreen extends Component {
                   </div>
                   <div>
                     <input
-                      value={array[index].special_requirements === undefined ? '' : array[index].special_requirements}
+                      value={array[index].special_illustration === undefined ? '' : array[index].special_illustration}
                       type='text'
-                      onChange={e => this.setCItemValue(e, index, 'special_requirements')}
+                      onChange={e => this.setCItemValue(e, index, 'special_illustration')}
                     />
                   </div>
                   <div>{array[index].amount}</div>
@@ -748,7 +758,7 @@ class MedicalRecordScreen extends Component {
               </div>
               {cPrescItemArray.map((item, index) => {
                 return (
-                  <div className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{ position: 'relative' }}>
+                  <div key={index} className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{ position: 'relative' }}>
                     <div
                       className={'prescItem'}
                       onClick={() => {

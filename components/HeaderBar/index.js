@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import { TITLE, HOSPITAL_NAME, MAINFUNCTION } from '../../config'
+import { TITLE, MAINFUNCTION } from '../../config'
 import canlendarStyles from './Wrapper'
 // import Link from 'next/link'
 import { theme } from '../../components'
