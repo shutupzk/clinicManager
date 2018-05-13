@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { getAgeByBirthday, formatMoney } from '../../../../utils'
+import { getAgeByBirthday, formatMoney, createTradeNo } from '../../../../utils'
 import { queryUnPaidOrders } from '../../../../ducks'
-import { PageCard } from '../../../../components'
+import { PageCard, Confirm } from '../../../../components'
 
 class TollScreen extends Component {
   constructor(props) {
@@ -13,7 +13,11 @@ class TollScreen extends Component {
       pageType: 1
     }
   }
-  async submit() {}
+  async submit() {
+    this.refs.myAlert.confirm('确定缴费？', '', 'Success', async () => {
+      this.refs.myAlert.alert(`缴费成功！`)
+    })
+  }
   back() {
     Router.push('/treatment')
   }
@@ -137,24 +141,33 @@ class TollScreen extends Component {
   renderBill() {
     if (this.state.pageType !== 2) return ''
 
+    const { un_paid_orders_page, charge_unpay, charge_unpay_selectId, clinic_id } = this.props
+    let triagePatient = {}
+    for (let tp of charge_unpay) {
+      if (tp.clinic_triage_patient_id === charge_unpay_selectId) triagePatient = tp
+    }
+
+    const tradeNo = clinic_id + createTradeNo()
+    const orderTime = moment().format('YYYY-MM-DD HH:mm:ss')
+
     return (
       <div className={'detailBox'}>
         <div className={'detailBoxTop'}>
           <div className={'topLeft'}>
             <div>
-              <b>100</b>
+              <b>{formatMoney(un_paid_orders_page.charge_total)}</b>
               <a>元</a>
             </div>
             <div>应收金额</div>
           </div>
           <div className={'topRight'}>
-            <div>业务类型：挂号费</div>
-            <div>订单号：1234567890</div>
-            <div>下单日期：20180409 12:11:13</div>
-            <div>就诊日期：2018年4月10日</div>
-            <div>就诊人姓名：王俊凯</div>
-            <div>接诊医生：易烊千玺</div>
-            <div>接诊科室：全科门诊</div>
+            <div>业务类型：门诊缴费</div>
+            <div>订单号：{tradeNo}</div>
+            <div>下单日期：{orderTime}</div>
+            <div>就诊日期：{moment(triagePatient.visit_date).format('YYYY-MM-DD')}</div>
+            <div>就诊人姓名：{triagePatient.patient_name}</div>
+            <div>接诊医生：{triagePatient.doctor_name}</div>
+            <div>接诊科室：{triagePatient.department_name}</div>
           </div>
         </div>
         <div className={'detailBoxCenter'}>
@@ -236,10 +249,11 @@ class TollScreen extends Component {
               <button style={{ float: 'left' }} onClick={() => this.setState({ pageType: 1 })}>
                 返回筛查收费项目
               </button>
-              <button style={{ float: 'right' }}>确定收费</button>
+              <button style={{ float: 'right' }} onClick={() => this.submit()}>确定收费</button>
             </div>
           </div>
         </div>
+        <Confirm ref='myAlert' />
         <style jsx>{`
           .filterBox {
             margin: 20px 0 0 65px;
@@ -270,6 +284,7 @@ class TollScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    clinic_id: state.user.data.clinic_id,
     charge_unpay: state.charge.charge_unpay,
     charge_unpay_selectId: state.charge.charge_unpay_selectId,
     un_paid_orders: state.charge.un_paid_orders,

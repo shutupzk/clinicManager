@@ -88,3 +88,9 @@ export const formatMoney = money => {
   if (!money) return ''
   return (money / 100).toFixed(2)
 }
+
+export const createTradeNo = () => {
+  let sec = moment().format('YYYYMMDDHHmmsss')
+  let r2 = (Math.random() + '').substr(4, 3)
+  return sec + r2
+}
