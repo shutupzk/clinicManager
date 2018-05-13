@@ -29,15 +29,10 @@ class WMPrescriptionScreen extends Component {
     let { pageType } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddDrugScreen back2List={() => {
+      2: <AddDrugScreen drugType={0} back2List={() => {
         this.setState({pageType: 1})
         this.getDrugsList({offset: 0, limit: 10})
-      }} />,
-      3: <AddDrugScreen />,
-      4: <AddDrugScreen />,
-      5: <AddDrugScreen />,
-      6: <AddDrugScreen />,
-      7: <AddDrugScreen />
+      }} />
     }
     return map[pageType] || null
   }
