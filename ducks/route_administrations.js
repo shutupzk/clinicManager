@@ -2,7 +2,7 @@ import { request } from './request'
 const ROUTE_ADMINISTRATION_ADD = 'ROUTE_ADMINISTRATION_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   page_info: {},
   selectId: null
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select } from '../../../../../components'
-import { drugCreate, queryDrugList } from '../../../../../ducks'
+import { drugCreate, queryDrugList, queryDoseUnitList, queryDoseFormList } from '../../../../../ducks'
 
 // 病历
 class AddDrugScreen extends Component {
@@ -203,11 +203,22 @@ class AddDrugScreen extends Component {
   }
   // 剂型筛选
   getDoseFormOptions() {
-    return [
-      {value: 1, label: '剂型1'},
-      {value: 2, label: '剂型2'},
-      {value: 3, label: '剂型3'}
-    ]
+    // return [
+    //   {value: 1, label: '剂型1'},
+    //   {value: 2, label: '剂型2'},
+    //   {value: 3, label: '剂型3'}
+    // ]
+    const { doseForms } = this.props
+    let array = []
+    for (let key in doseForms) {
+      const { name, id } = doseForms[key]
+      console.log(doseForms[key])
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
   // 药品分类筛选
   getDrugClassOptions() {
@@ -265,6 +276,20 @@ class AddDrugScreen extends Component {
     }
     return null
   }
+  // 获取单位数据
+  getDoseUnitList(keyword) {
+    const { queryDoseUnitList } = this.props
+    if (keyword) {
+      queryDoseUnitList({ keyword })
+    }
+  }
+  // 获取剂型数据
+  getDoseFormList(keyword) {
+    const { queryDoseFormList } = this.props
+    if (keyword) {
+      queryDoseFormList({ keyword })
+    }
+  }
   // 药品基本信息
   renderBaseInfoBlank() {
     const {drugInfo} = this.state
@@ -315,7 +340,7 @@ class AddDrugScreen extends Component {
                   height={32}
                   options={this.getDoseFormOptions()}
                   value={this.getSelectValue(drugInfo.dose_form_id, this.getDoseFormOptions())}
-                  onInputChange={keyword => {}}
+                  onInputChange={keyword => { this.getDoseFormList(keyword) }}
                   onChange={({value}) => {
                     this.setItemValue(value, 'dose_form_id', 2)
                   }}
@@ -790,8 +815,15 @@ class AddDrugScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    doseUnits: state.doseUnits.data,
+    doseForms: state.doseForms.data
   }
 }
 
-export default connect(mapStateToProps, {drugCreate, queryDrugList})(AddDrugScreen)
+export default connect(mapStateToProps, {
+  drugCreate,
+  queryDrugList,
+  queryDoseUnitList,
+  queryDoseFormList
+})(AddDrugScreen)

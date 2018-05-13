@@ -2,7 +2,7 @@ import { request } from './request'
 const FREQUENCY_ADD = 'FREQUENCY_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   page_info: {},
   selectId: null
 }

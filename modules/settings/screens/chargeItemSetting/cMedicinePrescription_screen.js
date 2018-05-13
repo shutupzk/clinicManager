@@ -68,7 +68,7 @@ class CMedicinePrescriptionScreen extends Component {
   renderRightTable() {
     // const {keyword, status} = this.state
     return (
-      <div className={'contentCenterRight'}>
+      <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
             <input
@@ -195,7 +195,7 @@ class CMedicinePrescriptionScreen extends Component {
           <tbody>
             {drugs.map((item, index) => {
               return (
-                <tr>
+                <tr key={index}>
                   <td style={{flex: 2}}>{item.drug_name}</td>
                   <td>{item.specification}</td>
                   <td>{item.packing_unit_name}</td>

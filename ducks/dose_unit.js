@@ -2,7 +2,7 @@ import { request } from './request'
 const DOSE_UNIT_ADD = 'DOSE_UNIT_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   page_info: {},
   selectId: null
 }

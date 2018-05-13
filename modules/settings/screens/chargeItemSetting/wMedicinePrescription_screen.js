@@ -325,7 +325,7 @@ class WMPrescriptionScreen extends Component {
           <tbody>
             {drugs.map((item, index) => {
               return (
-                <tr>
+                <tr key={index}>
                   <td style={{flex: 2}}>{item.drug_name}</td>
                   <td>{item.specification}</td>
                   <td>{item.packing_unit_name}</td>
