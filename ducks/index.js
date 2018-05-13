@@ -41,7 +41,7 @@ import { examinationOrgans, queryExaminationOrganList } from './examination_orga
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
 import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
 import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
-import { charge, queryChargeUnpayList, chargeUnpaySelect } from './charge'
+import { charge, queryChargeUnpayList, chargeUnpaySelect, queryUnPaidOrders } from './charge'
 import { materialPatients, MaterialPatientCreate, MaterialPatientGet } from './material_patient'
 import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './other_patient'
 import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
@@ -49,6 +49,8 @@ import { frequencies, queryFrequencyList } from './frequencys'
 import { routeAdministrationss, queryRouteAdministrationList } from './route_administrations'
 import { doseForms, queryDoseFormList } from './dose_form'
 import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet } from './prescription_chinese_patient'
+import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
+import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
 
 // keys
 export {
@@ -78,7 +80,9 @@ export {
   frequencies,
   routeAdministrationss,
   doseForms,
-  prescriptionChinesePatients
+  prescriptionChinesePatients,
+  cuvetteColors,
+  laboratorySamples
 }
 
 // actions
@@ -143,6 +147,7 @@ export {
   ExaminationPatientGet,
   queryChargeUnpayList,
   chargeUnpaySelect,
+  queryUnPaidOrders,
   MaterialPatientCreate,
   MaterialPatientGet,
   OtherCostPatientCreate,
@@ -153,5 +158,7 @@ export {
   queryRouteAdministrationList,
   queryDoseFormList,
   PrescriptionChinesePatientCreate,
-  PrescriptionChinesePatientGet
+  PrescriptionChinesePatientGet,
+  queryCuvetteColorList,
+  queryLaboratorySampleList
 }

@@ -83,3 +83,7 @@ export const getAgeByBirthday = birthday => {
   }
   return `${years}岁`
 }
+
+export const formatMoney = money => {
+  return (money / 100).toFixed(2)
+}
