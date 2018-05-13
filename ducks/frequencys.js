@@ -1,5 +1,5 @@
 import { request } from './request'
-const DOSE_UNIT_ADD = 'DOSE_UNIT_ADD'
+const FREQUENCY_ADD = 'FREQUENCY_ADD'
 
 const initState = {
   data: {},
@@ -7,19 +7,19 @@ const initState = {
   selectId: null
 }
 
-export function doseUnits(state = initState, action = {}) {
+export function frequencies(state = initState, action = {}) {
   switch (action.type) {
-    case DOSE_UNIT_ADD:
+    case FREQUENCY_ADD:
       return { ...state, data: { ...state.data, ...action.data } }
     default:
       return state
   }
 }
 
-export const queryDoseUnitList = ({ keyword, offset = 0, limit = 6 }) => async dispatch => {
+export const queryFrequencyList = ({ keyword, offset = 0, limit = 6 }) => async dispatch => {
   try {
     console.log('limit====', limit)
-    const data = await request('/dictionaries/DoseUnitList', {
+    const data = await request('/dictionaries/FrequencyList', {
       keyword,
       offset,
       limit
@@ -31,7 +31,7 @@ export const queryDoseUnitList = ({ keyword, offset = 0, limit = 6 }) => async d
       json[doc.id] = doc
     }
     dispatch({
-      type: DOSE_UNIT_ADD,
+      type: FREQUENCY_ADD,
       data: json
     })
     return null

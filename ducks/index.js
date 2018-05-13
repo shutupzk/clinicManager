@@ -42,6 +42,12 @@ import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from '
 import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
 import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
 import { charge, queryChargeUnpayList, chargeUnpaySelect } from './charge'
+import { materialPatients, MaterialPatientCreate, MaterialPatientGet } from './material_patient'
+import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './other_patient'
+import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
+import { frequencies, queryFrequencyList } from './frequencys'
+import { routeAdministrationss, queryRouteAdministrationList } from './route_administrations'
+import { doseForms, queryDoseFormList } from './dose_form'
 
 // keys
 export {
@@ -64,7 +70,13 @@ export {
   treatmentPatients,
   laboratoryPatients,
   examinationPatients,
-  charge
+  charge,
+  materialPatients,
+  otherPatients,
+  prescriptionWesternPatients,
+  frequencies,
+  routeAdministrationss,
+  doseForms
 }
 
 // actions
@@ -128,5 +140,14 @@ export {
   ExaminationPatientCreate,
   ExaminationPatientGet,
   queryChargeUnpayList,
-  chargeUnpaySelect
+  chargeUnpaySelect,
+  MaterialPatientCreate,
+  MaterialPatientGet,
+  OtherCostPatientCreate,
+  OtherCostPatientGet,
+  PrescriptionWesternPatientCreate,
+  PrescriptionWesternPatientGet,
+  queryFrequencyList,
+  queryRouteAdministrationList,
+  queryDoseFormList
 }

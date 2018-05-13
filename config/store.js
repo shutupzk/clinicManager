@@ -21,6 +21,12 @@ import {
   treatmentPatients,
   laboratoryPatients,
   examinationPatients,
+  materialPatients,
+  otherPatients,
+  prescriptionWesternPatients,
+  frequencies,
+  routeAdministrationss,
+  doseForms,
   charge
 } from '../ducks'
 import thunk from 'redux-thunk'
@@ -52,7 +58,13 @@ const appReducer = persistCombineReducers(persistConfig, {
   treatmentPatients,
   laboratoryPatients,
   examinationPatients,
-  charge
+  charge,
+  materialPatients,
+  otherPatients,
+  prescriptionWesternPatients,
+  frequencies,
+  routeAdministrationss,
+  doseForms
 })
 
 const rootReducer = (state, action) => {

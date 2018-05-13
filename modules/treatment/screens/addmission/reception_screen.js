@@ -47,13 +47,14 @@ class RecptionScreen extends Component {
 
   render() {
     let { triagePatients, clinic_triage_patient_id } = this.props
+    const { pageType } = this.state
     let triagePatient = {}
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }
     return (
-      <div className={'contentBox'}>
-        <div className='filterBox'>
+      <div className={'contentBox'} style={{ width: pageType === 2 ? '1300px' : '1098px' }}>
+        <div className='filterBox' style={{ width: pageType === 2 ? '1300px' : '1098px' }}>
           <div>就诊人姓名：{triagePatient.patient_name}</div>
           <div>
             <a>性别：</a>
@@ -143,13 +144,13 @@ class RecptionScreen extends Component {
         <Confirm ref='myConfirm' />
         <style jsx>
           {`
-            .childTopBar{
-              width: 1098px;
+            .childTopBar {
+              width: ${pageType === 2 ? '1300px' : '1098px'};
               margin: 31px 0 0 66px;
               background: #ffffff;
             }
-            .childTopBar span{
-              margin:0;
+            .childTopBar span {
+              margin: 0;
             }
             .filterBox {
               margin: 20px 0 0 65px;
