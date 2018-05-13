@@ -20,7 +20,7 @@ export function drugs(state = initState, action = {}) {
   }
 }
 
-export const queryDrugList = (requetData) => async dispatch => {
+export const queryDrugList = (requetData, isJson) => async dispatch => {
   try {
     console.log('limit====', requetData)
     const data = await request('/drug/list', requetData)
