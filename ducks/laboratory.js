@@ -1,5 +1,6 @@
 import { request } from './request'
 const LABORATORY_PROJECT_ADD = 'LABORATORY_PROJECT_ADD'
+const LABORATORY_ARRAY_ADD = 'LABORATORY_ARRAY_ADD'
 
 const initState = {
   data: [],
@@ -11,17 +12,19 @@ export function laboratories(state = initState, action = {}) {
   switch (action.type) {
     case LABORATORY_PROJECT_ADD:
       return { ...state, data: action.data, page_info: action.page_info }
+    case LABORATORY_ARRAY_ADD:
+      return { ...state, data: action.data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const queryLaboratoryList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }) => async dispatch => {
+export const queryLaboratoryList = ({ clinic_id, name, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
     console.log('limit====', limit)
     const data = await request('/laboratory/list', {
       clinic_id,
-      keyword,
+      name,
       offset,
       limit,
       status
@@ -29,16 +32,23 @@ export const queryLaboratoryList = ({ clinic_id, keyword, status, offset = 0, li
     const docs = data.data || []
     const page_info = data.page_info || {}
     console.log('docs======', docs)
-    let json = {}
-    for (let doc of docs) {
-      json[doc.clinic_laboratory_id] = doc
-      // json[doc.name] = doc
+    if (arrayType) {
+      dispatch({
+        type: LABORATORY_ARRAY_ADD,
+        data: docs,
+        page_info
+      })
+    } else {
+      let json = {}
+      for (let doc of docs) {
+        json[doc.clinic_laboratory_id] = doc
+      }
+      dispatch({
+        type: LABORATORY_PROJECT_ADD,
+        data: json,
+        page_info
+      })
     }
-    dispatch({
-      type: LABORATORY_PROJECT_ADD,
-      data: json,
-      page_info
-    })
     return null
   } catch (e) {
     console.log(e)
@@ -46,65 +56,11 @@ export const queryLaboratoryList = ({ clinic_id, keyword, status, offset = 0, li
   }
 }
 
-export const laboratoryCreate = ({
-  clinic_id,
-  name,
-  en_name,
-  py_code,
-  idc_code,
-  unit_id,
-  time_report,
-  clinical_significance,
-  remark,
-  laboratory_sample_id,
-  cuvette_color_id,
-  merge_flag,
-  cost,
-  price,
-  status,
-  is_discount,
-  is_delivery
-}) => async dispatch => {
+export const laboratoryCreate = (requestData) => async dispatch => {
   try {
-    const data = await request('/laboratory/create', {
-      clinic_id,
-      name,
-      en_name,
-      py_code,
-      idc_code,
-      unit_id,
-      time_report,
-      clinical_significance,
-      remark,
-      laboratory_sample_id,
-      cuvette_color_id,
-      merge_flag,
-      cost,
-      price,
-      status,
-      is_discount,
-      is_delivery
-    })
+    const data = await request('/laboratory/create', requestData)
     console.log(
-      {
-        clinic_id,
-        name,
-        en_name,
-        py_code,
-        idc_code,
-        unit_id,
-        time_report,
-        clinical_significance,
-        remark,
-        laboratory_sample_id,
-        cuvette_color_id,
-        merge_flag,
-        cost,
-        price,
-        status,
-        is_discount,
-        is_delivery
-      },
+      requestData,
       data
     )
     if (data.code === '200') return null

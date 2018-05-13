@@ -24,7 +24,7 @@ export const queryFrequencyList = ({ keyword, offset = 0, limit = 6 }) => async 
       offset,
       limit
     })
-    console.log('data =====', data)
+    console.log('频次data =====', data)
     const docs = data.data || []
     let json = {}
     for (let doc of docs) {

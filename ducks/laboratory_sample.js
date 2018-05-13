@@ -1,5 +1,5 @@
 import { request } from './request'
-const DOSE_UNIT_ADD = 'DOSE_UNIT_ADD'
+const LABORATORY_SAMPLE_LIST = 'LABORATORY_SAMPLE_LIST'
 
 const initState = {
   data: {},
@@ -7,31 +7,31 @@ const initState = {
   selectId: null
 }
 
-export function doseUnits(state = initState, action = {}) {
+export function laboratorySamples(state = initState, action = {}) {
   switch (action.type) {
-    case DOSE_UNIT_ADD:
+    case LABORATORY_SAMPLE_LIST:
       return { ...state, data: { ...state.data, ...action.data } }
     default:
       return state
   }
 }
 
-export const queryDoseUnitList = ({ keyword, offset = 0, limit = 6 }) => async dispatch => {
+export const queryLaboratorySampleList = ({ keyword, offset = 0, limit = 6 }) => async dispatch => {
   try {
     console.log('limit====', limit)
-    const data = await request('/dictionaries/DoseUnitList', {
+    const data = await request('/dictionaries/LaboratorySampleList', {
       keyword,
       offset,
       limit
     })
-    console.log('单位data =====', data)
+    console.log('标本data =====', data)
     const docs = data.data || []
     let json = {}
     for (let doc of docs) {
       json[doc.id] = doc
     }
     dispatch({
-      type: DOSE_UNIT_ADD,
+      type: LABORATORY_SAMPLE_LIST,
       data: json
     })
     return null

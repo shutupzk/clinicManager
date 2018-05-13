@@ -329,15 +329,17 @@ class WMPrescriptionScreen extends Component {
                   <td style={{flex: 2}}>{item.drug_name}</td>
                   <td>{item.specification}</td>
                   <td>{item.packing_unit_name}</td>
-                  <td>{item.ret_price}</td>
+                  <td>{item.ret_price}元</td>
                   <td>{item.py_code}</td>
                   <td>{item.is_discount ? '是' : '否'}</td>
-                  <td>{item.default_remark}</td>
+                  <td title={item.default_remark}>{item.default_remark}</td>
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{flex: 1.5}} className={'operTd'}>
-                    <div>修改</div>
-                    <div className={'divideLine'}>|</div>
-                    <div>停用</div>
+                    <div>
+                      <div>修改</div>
+                      <div className={'divideLine'}>|</div>
+                      <div>停用</div>
+                    </div>
                   </td>
                 </tr>
               )
@@ -378,16 +380,26 @@ class WMPrescriptionScreen extends Component {
           .tableContent table tr td{
             border-left:1px solid #e8e8e8;
             height:40px; 
-            display: flex;
+            // display: flex;
             align-items: center;
             flex:1;
             justify-content: center;
+            line-height: 40px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
-          .operTd div{
+          .operTd>div{
+            margin:0 auto;
+            width: max-content;
+          }
+          .operTd>div>div{
             cursor:pointer;
             color:#2ACDC8;
+            float:left;
           }
-          .operTd div.divideLine{
+          .operTd>div>div.divideLine{
             cursor:default;
             color:#e8e8e8;
             margin:0 5px;
