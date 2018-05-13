@@ -33,6 +33,7 @@ class TollScreen extends Component {
 
     const { charge_unpay, charge_unpay_selectId, un_paid_orders, un_paid_orders_page, un_paid_orders_type } = this.props
     let triagePatient = {}
+
     for (let tp of charge_unpay) {
       if (tp.clinic_triage_patient_id === charge_unpay_selectId) triagePatient = tp
     }
@@ -94,7 +95,7 @@ class TollScreen extends Component {
                   <div>{formatMoney(item.price)}</div>
                   <div>{item.amount}</div>
                   <div>{formatMoney(item.total)}</div>
-                  <div>{formatMoney(item.discount) }</div>
+                  <div>{formatMoney(item.discount)}</div>
                   <div>{formatMoney(item.total - item.discount)}</div>
                   <div>{item.department_name}</div>
                   <div>{item.doctor_name}</div>

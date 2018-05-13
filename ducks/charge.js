@@ -8,8 +8,8 @@ const initState = {
   charge_unpay_selectId: '',
   charge_unpay_page: {},
   un_paid_orders: [],
-  un_paid_orders_page: [],
-  un_paid_orders_type: {}
+  un_paid_orders_page: {},
+  un_paid_orders_type: []
 }
 
 export function charge(state = initState, action = {}) {
@@ -67,7 +67,7 @@ export const queryUnPaidOrders = ({ clinic_triage_patient_id, offset = 0, limit 
     })
     const docs = data.data || []
     const page_info = data.page_info || { offset, limit, total: 0 }
-    const type_total = data.type_total || {}
+    const type_total = data.type_total || []
 
     dispatch({
       type: CHARGE_UNPAID_ADD,
