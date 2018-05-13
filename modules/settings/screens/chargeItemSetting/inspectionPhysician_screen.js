@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { queryLaboratoryList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddLaboratoryScreen from './components/addLaboratoryScreen'
-
+import RelatedItemsScreen from './components/relatedItemsScreen'
 class InspectionPhysicianScreen extends Component {
   constructor(props) {
     super(props)
@@ -15,7 +15,9 @@ class InspectionPhysicianScreen extends Component {
       pageType: 1,
       keyword: '',
       status: '',
-      type: 1
+      type: 1,
+      relateItem: {},
+      alertType: 0
     }
   }
 
@@ -46,7 +48,7 @@ class InspectionPhysicianScreen extends Component {
     if (status !== '' && status !== -1) {
       requestData.status = status
     }
-    console.log('requestData======', requestData)
+    // console.log('requestData======', requestData)
     queryLaboratoryList(requestData, true)
   }
   // 状态筛选
@@ -201,7 +203,11 @@ class InspectionPhysicianScreen extends Component {
                       <div className={'divideLine'}>|</div>
                       <div>停用</div>
                       <div className={'divideLine'}>|</div>
-                      <div>关联项目</div>
+                      <div
+                        onClick={() => {
+                          this.setState({relateItem: item, alertType: 1})
+                        }}
+                      >关联项目</div>
                     </div>
                   </td>
                 </tr>
@@ -271,6 +277,17 @@ class InspectionPhysicianScreen extends Component {
       </div>
     )
   }
+  // 关联项目
+  relatedItems() {
+    return (
+      <div className={'mask'}>
+        <RelatedItemsScreen
+          relateItem={this.state.relateItem}
+          closeMask={() => this.setState({alertType: 0})}
+        />
+      </div>
+    )
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -287,7 +304,7 @@ class InspectionPhysicianScreen extends Component {
     )
   }
   render() {
-    const {pageType} = this.state
+    const {pageType, alertType} = this.state
     return (
       <div className={'boxContent'}>
         <div className={'topTitle'}>
@@ -295,6 +312,7 @@ class InspectionPhysicianScreen extends Component {
           {pageType === 1 ? '' : <div className='back2List' onClick={() => this.setState({pageType: 1})}>{'<返回'}</div>}
         </div>
         {pageType === 1 ? this.renderList() : this.showView()}
+        {alertType === 1 ? this.relatedItems() : ''}
         <style jsx>{`
           .boxContent{
             // background:#909090;
