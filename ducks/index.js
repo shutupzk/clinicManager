@@ -41,6 +41,7 @@ import { examinationOrgans, queryExaminationOrganList } from './examination_orga
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
 import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
 import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
+import { charge, queryChargeUnpayList, chargeUnpaySelect } from './charge'
 
 // keys
 export {
@@ -62,7 +63,8 @@ export {
   examinationOrgans,
   treatmentPatients,
   laboratoryPatients,
-  examinationPatients
+  examinationPatients,
+  charge
 }
 
 // actions
@@ -124,5 +126,7 @@ export {
   LaboratoryPatientCreate,
   LaboratoryPatientGet,
   ExaminationPatientCreate,
-  ExaminationPatientGet
+  ExaminationPatientGet,
+  queryChargeUnpayList,
+  chargeUnpaySelect
 }
