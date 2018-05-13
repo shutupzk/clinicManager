@@ -27,7 +27,6 @@ export const queryDepartmentList = ({ clinic_id, keyword, offset = 0, limit = 6 
       offset,
       limit
     })
-    console.log('departments========', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     dispatch({
