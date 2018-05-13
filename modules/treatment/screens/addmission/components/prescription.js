@@ -187,7 +187,7 @@ class MedicalRecordScreen extends Component {
                 <div style={{ flex: 3 }}>
                   <div>
                     <Select
-                      value={this.getSelectValue(wPrescItemArray[index].drug_id, this.getWNameOptions())}
+                      value={this.getSelectValue(wPrescItemArray[index].drug_stock_id, this.getWNameOptions())}
                       onChange={({ value, specification }) => {
                         this.setWItemValue(value, index, 'drug_stock_id', 2)
                         this.setWItemValue(specification, index, 'specification', 2)

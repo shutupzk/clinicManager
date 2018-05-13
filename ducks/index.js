@@ -44,6 +44,8 @@ import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } 
 import { materialPatients, MaterialPatientCreate, MaterialPatientGet } from './material_patient'
 import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './other_patient'
 import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
+import { frequencies, queryFrequencyList } from './frequencys'
+import { routeAdministrationss, queryRouteAdministrationList } from './route_administrations'
 
 // keys
 export {
@@ -68,7 +70,9 @@ export {
   examinationPatients,
   materialPatients,
   otherPatients,
-  prescriptionWesternPatients
+  prescriptionWesternPatients,
+  frequencies,
+  routeAdministrationss
 }
 
 // actions
@@ -136,5 +140,7 @@ export {
   OtherCostPatientCreate,
   OtherCostPatientGet,
   PrescriptionWesternPatientCreate,
-  PrescriptionWesternPatientGet
+  PrescriptionWesternPatientGet,
+  queryFrequencyList,
+  queryRouteAdministrationList
 }

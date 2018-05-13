@@ -29,12 +29,32 @@ export const queryDrugList = (requetData, isJson) => async dispatch => {
     const page_info = data.page_info || {}
     if (isJson) {
       let json_data = {}
+      let unitJson = {}
+      let frequencyJson = {}
+      let routeJson = {}
       for (let doc of docs) {
+        const { packing_unit_id, packing_unit_name, once_dose_unit_id, once_dose_unit_name, route_administration_id, route_administration_name, frequency_id, frequency_name } = doc
         json_data[doc.drug_stock_id] = doc
+        unitJson[packing_unit_id] = { id: packing_unit_id, name, packing_unit_name }
+        unitJson[once_dose_unit_id] = { id: once_dose_unit_id, name, once_dose_unit_name }
+        frequencyJson[frequency_id] = { id: frequency_id, name: frequency_name }
+        routeJson[route_administration_id] = { id: route_administration_id, name: route_administration_name }
       }
       dispatch({
         type: DRUG_JSON_ADD,
         json_data
+      })
+      dispatch({
+        type: 'DOSE_UNIT_ADD',
+        data: unitJson
+      })
+      dispatch({
+        type: 'FREQUENCY_ADD',
+        data: frequencyJson
+      })
+      dispatch({
+        type: 'ROUTE_ADMINISTRATION_ADD',
+        data: frequencyJson
       })
     } else {
       dispatch({
