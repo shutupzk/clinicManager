@@ -49,7 +49,7 @@ export default class Navigation extends Component {
             }
             // console.log('item=======', item)
             return (
-              <div className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
+              <div key={itemKey} className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
                 <div onClick={() => Router.push(item.navigateName)}>
                   <i />
                   <img src={item.icon} />
