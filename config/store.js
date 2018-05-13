@@ -25,7 +25,8 @@ import {
   otherPatients,
   prescriptionWesternPatients,
   frequencies,
-  routeAdministrationss
+  routeAdministrationss,
+  doseForms
 } from '../ducks'
 import thunk from 'redux-thunk'
 
@@ -60,7 +61,8 @@ const appReducer = persistCombineReducers(persistConfig, {
   otherPatients,
   prescriptionWesternPatients,
   frequencies,
-  routeAdministrationss
+  routeAdministrationss,
+  doseForms
 })
 
 const rootReducer = (state, action) => {

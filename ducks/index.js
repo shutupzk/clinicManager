@@ -46,6 +46,7 @@ import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './ot
 import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
 import { frequencies, queryFrequencyList } from './frequencys'
 import { routeAdministrationss, queryRouteAdministrationList } from './route_administrations'
+import { doseForms, queryDoseFormList } from './dose_form'
 
 // keys
 export {
@@ -72,7 +73,8 @@ export {
   otherPatients,
   prescriptionWesternPatients,
   frequencies,
-  routeAdministrationss
+  routeAdministrationss,
+  doseForms
 }
 
 // actions
@@ -142,5 +144,6 @@ export {
   PrescriptionWesternPatientCreate,
   PrescriptionWesternPatientGet,
   queryFrequencyList,
-  queryRouteAdministrationList
+  queryRouteAdministrationList,
+  queryDoseFormList
 }
