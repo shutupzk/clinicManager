@@ -5,7 +5,7 @@ import { Select } from '../../../../../components'
 import { drugCreate, queryDrugList } from '../../../../../ducks'
 
 // 病历
-class AddDrugScreen extends Component {
+class AddCDrugScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -144,8 +144,6 @@ class AddDrugScreen extends Component {
         {this.renderBaseInfoBlank()}
         {this.renderFeeInfoBlank()}
         {this.renderUsageInfoBlank()}
-        {this.renderAlertSettingBlank()}
-        {this.renderOtherInfoBlank()}
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
@@ -165,7 +163,7 @@ class AddDrugScreen extends Component {
     drugInfo.type = this.props.drugType
     drugInfo.ret_price = drugInfo.ret_price * 100
     drugInfo.buy_price = drugInfo.buy_price * 100
-    drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
+    // drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
     let error = await drugCreate({drugInfo})
     if (error) {
       alert(error)
@@ -191,7 +189,7 @@ class AddDrugScreen extends Component {
   renderSearchBlank() {
     return (
       <div className={'commonBlank searchBlank'}>
-        <span>西/成药品信息</span>
+        <span>中药药品信息</span>
         <div>
           <input type='text' placeholder={'国药准字license_no'} />
           <input style={{marginLeft: '10px'}} type='text' placeholder={'药品条形码'} />
@@ -297,27 +295,27 @@ class AddDrugScreen extends Component {
               />
             </li>
             <li>
-              <label>生产厂家</label>
+              <label>英文名称</label>
               <input
                 type='text'
-                placeholder={'manu_factory'}
-                value={drugInfo.manu_factory}
+                placeholder={'english_name'}
+                value={drugInfo.english_name}
                 onChange={e => {
-                  this.setItemValue(e, 'manu_factory')
+                  this.setItemValue(e, 'english_name')
                 }}
               />
             </li>
             <li>
-              <label>剂型dosage</label>
+              <label>包装单位<b style={{color: 'red'}}>*</b>pack_unit</label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
-                  options={this.getDoseFormOptions()}
-                  value={this.getSelectValue(drugInfo.dose_form_id, this.getDoseFormOptions())}
+                  options={this.getPackingUnitOptions()}
+                  value={this.getSelectValue(drugInfo.packing_unit_id, this.getPackingUnitOptions())}
                   onInputChange={keyword => {}}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'dose_form_id', 2)
+                    this.setItemValue(value, 'packing_unit_id', 2)
                   }}
                 />
               </div>
@@ -345,16 +343,16 @@ class AddDrugScreen extends Component {
               />
             </li>
             <li>
-              <label>药品分类（class_code）</label>
+              <label>剂型dosage</label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
-                  options={this.getDrugClassOptions()}
-                  value={this.getSelectValue(drugInfo.drug_class_id, this.getDrugClassOptions())}
+                  options={this.getDoseFormOptions()}
+                  value={this.getSelectValue(drugInfo.dose_form_id, this.getDoseFormOptions())}
                   onInputChange={keyword => {}}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'drug_class_id', 2)
+                    this.setItemValue(value, 'dose_form_id', 2)
                   }}
                 />
               </div>
@@ -434,47 +432,6 @@ class AddDrugScreen extends Component {
                 />
               </div>
             </li>
-            <li>
-              <label>制剂数量</label>
-              <input
-                type='number'
-                placeholder={'dose_count'}
-                value={drugInfo.dose_count}
-                onChange={e => {
-                  this.setItemValue(e, 'dose_count')
-                }}
-              />
-            </li>
-            <li>
-              <label>制剂数量单位</label>
-              <div>
-                <Select
-                  placeholder={'请选择'}
-                  height={32}
-                  options={this.getDoseCountOptions()}
-                  value={this.getSelectValue(drugInfo.dose_count_unit_id, this.getDoseCountOptions())}
-                  onInputChange={keyword => {}}
-                  onChange={({value}) => {
-                    this.setItemValue(value, 'dose_count_unit_id', 2)
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>包装单位<b style={{color: 'red'}}>*</b>pack_unit</label>
-              <div>
-                <Select
-                  placeholder={'请选择'}
-                  height={32}
-                  options={this.getPackingUnitOptions()}
-                  value={this.getSelectValue(drugInfo.packing_unit_id, this.getPackingUnitOptions())}
-                  onInputChange={keyword => {}}
-                  onChange={({value}) => {
-                    this.setItemValue(value, 'packing_unit_id', 2)
-                  }}
-                />
-              </div>
-            </li>
           </ul>
         </div>
       </div>
@@ -543,48 +500,6 @@ class AddDrugScreen extends Component {
               </div>
             </li>
             <li>
-              <label>是否允许拆零<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <label>
-                  <input
-                    type='radio'
-                    name={'removeZero'}
-                    checked={drugInfo.is_bulk_sales}
-                    onChange={e => {
-                      this.setItemValue(true, 'is_bulk_sales', 2)
-                    }}
-                  />
-                  是
-                </label>
-                <label>
-                  <input
-                    type='radio'
-                    name={'removeZero'}
-                    checked={!drugInfo.is_bulk_sales}
-                    onChange={e => {
-                      this.setItemValue(false, 'is_bulk_sales', 2)
-                      this.setItemValue(0, 'bulk_sales_price', 2)
-                    }}
-                  />
-                  否
-                </label>
-              </div>
-            </li>
-            <li>
-              <label>拆零售价<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'bulk_sales_price'}
-                  value={drugInfo.is_bulk_sales ? drugInfo.bulk_sales_price : ''}
-                  readOnly={!drugInfo.is_bulk_sales}
-                  onChange={e => {
-                    this.setItemValue(e, 'bulk_sales_price')
-                  }}
-                />元
-              </div>
-            </li>
-            <li>
               <label>取药地点<b style={{color: 'red'}}>*</b></label>
               <div>
                 <label>
@@ -634,34 +549,32 @@ class AddDrugScreen extends Component {
     // console.log('drugInfo=======', drugInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
-        <span>默认用法用量</span>
+        <span>其他设置</span>
         <div>
           <ul>
             <li>
-              <label>单次剂量</label>
-              <input
-                type='number'
-                placeholder={'once_dose'}
-                value={drugInfo.once_dose}
-                onChange={e => {
-                  this.setItemValue(e, 'once_dose')
-                }}
-              />
+              <label>效期预警<b style={{color: 'red'}}>*</b></label>
+              <div>
+                <input
+                  type='number'
+                  placeholder={'eff_day'}
+                  value={drugInfo.eff_day}
+                  onChange={e => {
+                    this.setItemValue(e, 'eff_day')
+                  }}
+                />天
+              </div>
             </li>
             <li>
-              <label>剂量单位dosage_unit</label>
-              <div>
-                <Select
-                  placeholder={'请选择'}
-                  height={32}
-                  options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(drugInfo.once_dose_unit_id, this.getMiniUnitOptions())}
-                  onInputChange={keyword => {}}
-                  onChange={({value}) => {
-                    this.setItemValue(value, 'once_dose_unit_id', 2)
-                  }}
-                />
-              </div>
+              <label>库存预警数</label>
+              <input
+                type='number'
+                placeholder={'stock_warning'}
+                value={drugInfo.stock_warning}
+                onChange={e => {
+                  this.setItemValue(e, 'stock_warning')
+                }}
+              />
             </li>
             <li>
               <label>默认用法supply_code</label>
@@ -710,82 +623,6 @@ class AddDrugScreen extends Component {
       </div>
     )
   }
-  // 预警设置
-  renderAlertSettingBlank() {
-    const {drugInfo} = this.state
-    // console.log('drugInfo=======', drugInfo)
-    return (
-      <div className={'commonBlank baseInfoBlank'}>
-        <span>预警设置</span>
-        <div>
-          <ul>
-            <li>
-              <label>效期预警<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <input
-                  type='number'
-                  placeholder={'eff_day'}
-                  value={drugInfo.eff_day}
-                  onChange={e => {
-                    this.setItemValue(e, 'eff_day')
-                  }}
-                />天
-              </div>
-            </li>
-            <li>
-              <label>库存预警数</label>
-              <input
-                type='number'
-                placeholder={'stock_warning'}
-                value={drugInfo.stock_warning}
-                onChange={e => {
-                  this.setItemValue(e, 'stock_warning')
-                }}
-              />
-            </li>
-          </ul>
-        </div>
-        {this.style()}
-      </div>
-    )
-  }
-  // 其他信息
-  renderOtherInfoBlank() {
-    const {drugInfo} = this.state
-    // console.log('drugInfo=======', drugInfo)
-    return (
-      <div className={'commonBlank baseInfoBlank'}>
-        <span>其他信息</span>
-        <div>
-          <ul>
-            <li>
-              <label>英文名称</label>
-              <input
-                type='text'
-                placeholder={'english_name'}
-                value={drugInfo.english_name}
-                onChange={e => {
-                  this.setItemValue(e, 'english_name')
-                }}
-              />
-            </li>
-            <li>
-              <label>上药编码</label>
-              <input
-                type='text'
-                placeholder={'sy_code'}
-                value={drugInfo.sy_code}
-                onChange={e => {
-                  this.setItemValue(e, 'sy_code')
-                }}
-              />
-            </li>
-          </ul>
-        </div>
-        {this.style()}
-      </div>
-    )
-  }
 }
 
 const mapStateToProps = state => {
@@ -794,4 +631,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {drugCreate, queryDrugList})(AddDrugScreen)
+export default connect(mapStateToProps, {drugCreate, queryDrugList})(AddCDrugScreen)
