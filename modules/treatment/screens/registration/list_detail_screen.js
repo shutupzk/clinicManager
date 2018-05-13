@@ -4,20 +4,14 @@ import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
 // import { queryBaseApis, selectBaseApi, removeBaseApi } from '../../../ducks'
-import {
-  getPatientByCertNo,
-  queryDepartmentList,
-  addTriagePatientsList,
-  triagePatientsList,
-  getPatientByKeyword
-} from '../../../../ducks'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../config/provinces'
 import { PageCard } from '../../../../components'
 
 class ListDetailScreen extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       pageType: 1,
@@ -34,21 +28,21 @@ class ListDetailScreen extends Component {
       city: '请选择',
       county: '请选择',
       visit_date: moment()
-				.add(1, 'day')
-				.format('YYYYMMDD'),
+        .add(1, 'day')
+        .format('YYYYMMDD'),
       searchView: 0,
       candidatePatient: []
     }
   }
-  async submit () {}
-  back () {
+  async submit() {}
+  back() {
     Router.push('/treatment/registration')
   }
-  componentWillMount () {
-    const {clinic_triage_patient_id, triagePatients} = this.props
+  componentWillMount() {
+    const { clinic_triage_patient_id, triagePatients } = this.props
     for (let item of triagePatients) {
       if (item.clinic_triage_patient_id === clinic_triage_patient_id) {
-        this.setState({patientInfo: item})
+        this.setState({ patientInfo: item })
         break
       }
     }
@@ -57,7 +51,7 @@ class ListDetailScreen extends Component {
     this.quetryTriagePatientsList({ status_start: 10, status_end: 100 })
   }
   // 改变显示内容
-  changeContent ({ type }) {
+  changeContent({ type }) {
     this.setState({ pageType: type })
   }
   // 科室
@@ -149,7 +143,7 @@ class ListDetailScreen extends Component {
     )
   }
   // 基本信息
-  showBaseInfo () {
+  showBaseInfo() {
     if (this.state.pageType !== 1) return null
     let patient = this.state.patientInfo
     console.log('patient========', patient)
@@ -162,7 +156,7 @@ class ListDetailScreen extends Component {
           <ul>
             <li>
               <label htmlFor='patientName'>
-								就诊人名称：<b style={{ color: 'red' }}> *</b>
+                就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
               <input
                 type='text'
@@ -175,7 +169,7 @@ class ListDetailScreen extends Component {
                   this.queryPatients(value)
                 }}
                 onFocus={e => this.setState({ searchView: 0 })}
-							/>
+              />
               {searchView === 1 ? this.searchView() : ''}
             </li>
             <li style={{ width: '24%' }}>
@@ -189,7 +183,7 @@ class ListDetailScreen extends Component {
                   this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
                 }}
-							/>
+              />
             </li>
             <li style={{ width: '24%' }}>
               <label>门诊ID：</label>
@@ -202,11 +196,11 @@ class ListDetailScreen extends Component {
                   this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
                 }}
-							/>
+              />
             </li>
             <li style={{ width: '24%' }}>
               <label>
-								生日：<b style={{ color: 'red' }}> *</b>
+                生日：<b style={{ color: 'red' }}> *</b>
               </label>
               <input
                 type='date'
@@ -217,11 +211,11 @@ class ListDetailScreen extends Component {
                   newPatient.birthday = moment(e.target.value).format('YYYYMMDD')
                   this.setState({ patientInfo: newPatient })
                 }}
-							/>
+              />
             </li>
             <li style={{ width: '24%' }}>
               <label>
-								性别：<b style={{ color: 'red' }}> *</b>
+                性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
                 <input id='man' type='radio' name='sex' value={'1'} checked={patient.sex + '' === '1'} onChange={e => this.setPatientInfo(e, 'sex')} />
@@ -232,7 +226,7 @@ class ListDetailScreen extends Component {
             </li>
             <li>
               <label>
-								手机号码：<b style={{ color: 'red' }}> *</b>
+                手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
               <input type='text' value={patient.phone} onChange={e => this.setPatientInfo(e, 'phone')} />
             </li>
@@ -246,10 +240,10 @@ class ListDetailScreen extends Component {
                     newPatient.province = province.name
                     this.setState({ province: province.name, cities: province.city, patientInfo: newPatient })
                   }}
-								>
+                >
                   <option key={0} value={'省'}>
-										省
-									</option>
+                    省
+                  </option>
                   {provinces.map((province, index) => {
                     return (
                       <option key={index} value={JSON.stringify(province)} selected={patient.province === province.name}>
@@ -265,7 +259,7 @@ class ListDetailScreen extends Component {
                     newPatient.city = city.name
                     this.setState({ city: city.name, counties: city.area, patientInfo: newPatient })
                   }}
-								>
+                >
                   <option>市</option>
                   {cities.map((city, index) => {
                     return (
@@ -280,7 +274,7 @@ class ListDetailScreen extends Component {
                     this.setPatientInfo(item, 'district')
                     this.setState({ county: item.target.value })
                   }}
-								>
+                >
                   <option>区</option>
                   {counties.map((name, index) => {
                     return (
@@ -297,8 +291,8 @@ class ListDetailScreen extends Component {
               <label>接诊科室：</label>
               <select value={patient.department_id} onChange={e => this.setPatientInfo(e, 'department_id')}>
                 <option value={'0'} key={'0'}>
-									请选择
-								</option>
+                  请选择
+                </option>
                 {departments.map((item, index) => {
                   return (
                     <option value={item.id} key={item.id}>
@@ -310,7 +304,7 @@ class ListDetailScreen extends Component {
             </li>
             <li>
               <label>
-								就诊类型：<b style={{ color: 'red' }}> *</b>
+                就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
                 <input id='first' type='radio' name='type' value={1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
@@ -349,20 +343,20 @@ class ListDetailScreen extends Component {
           </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
             <button className='saveBtn' onClick={() => this.submit()}>
-							保存
-						</button>
+              保存
+            </button>
           </div>
         </div>
         <style jsx>{`
-					.formList {
-						margin: 20px 66px 33px 66px;
-					}
-				`}</style>
+          .formList {
+            margin: 20px 66px 33px 66px;
+          }
+        `}</style>
       </div>
     )
   }
   // 会员信息
-  showMemberInfo () {
+  showMemberInfo() {
     return (
       <div className={'detailBox'}>
         <div className={'blankBox'}>
@@ -405,15 +399,15 @@ class ListDetailScreen extends Component {
           </div>
         </div>
         <style jsx>{`
-					.detailBox {
+          .detailBox {
             float: left;
-					}
-				`}</style>
+          }
+        `}</style>
       </div>
     )
   }
   // 就诊信息
-  showVisitInfo () {
+  showVisitInfo() {
     return (
       <div className={'detailBox'}>
         <div className={'blankBox patientInfo'}>
@@ -449,59 +443,47 @@ class ListDetailScreen extends Component {
           </ul>
           <div className={'seeMore'}>查看更多</div>
         </div>
-        <div className={'blankBox'}>
-          sadas
-        </div>
+        <div className={'blankBox'}>sadas</div>
         <style jsx>{`
-					.detailBox {
+          .detailBox {
             float: left;
-					}
-				`}</style>
+          }
+        `}</style>
       </div>
     )
   }
   // 收费信息
-  showTollInfo () {
-    return (
-      <div className={'formList'}>
-        dasdas
-      </div>
-    )
+  showTollInfo() {
+    return <div className={'formList'}>dasdas</div>
   }
   // 积分信息
-  showIntgralInfo () {
-    return (
-      <div className={'formList'}>
-        dasdas
-      </div>
-    )
+  showIntgralInfo() {
+    return <div className={'formList'}>dasdas</div>
   }
-  render () {
+  render() {
     return (
       <div>
         <div className={'childTopBar'}>
           {/* <a style={{ float: 'left', lineHeight: '80px', marginLeft: '20px' }}>就诊人信息：</a> */}
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-						基本信息
-					</span>
+            基本信息
+          </span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-						会员信息
-					</span>
+            会员信息
+          </span>
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
-						就诊信息
-					</span>
+            就诊信息
+          </span>
           <span className={this.state.pageType === 4 ? 'sel' : ''} onClick={() => this.changeContent({ type: 4 })}>
-						收费信息
-					</span>
+            收费信息
+          </span>
           <span className={this.state.pageType === 5 ? 'sel' : ''} onClick={() => this.changeContent({ type: 5 })}>
-						积分信息
-					</span>
+            积分信息
+          </span>
           <span className={this.state.pageType === 6 ? 'sel' : ''} onClick={() => this.changeContent({ type: 6 })}>
-						登记预约
-					</span>
-          <span onClick={() => Router.push('/treatment/registration/list')}>
-						返回列表
-					</span>
+            登记预约
+          </span>
+          <span onClick={() => Router.push('/treatment/registration/list')}>返回列表</span>
         </div>
         {this.state.pageType === 1 ? this.showBaseInfo() : ''}
         {this.state.pageType === 2 ? this.showMemberInfo() : ''}

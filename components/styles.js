@@ -1266,7 +1266,6 @@ export function styles() {
 				}
 				//费用表格
 				.detailBox{
-					background:#909090;
 					display: flex;
 					flex-direction: column;
 					margin-top: 12px;
