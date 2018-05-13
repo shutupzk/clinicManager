@@ -4,7 +4,9 @@ import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
 import {
   laboratoryCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  queryLaboratorySampleList,
+  queryCuvetteColorList
 } from '../../../../../ducks'
 
 // 病历
@@ -12,7 +14,11 @@ class AddLaboratoryScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      laboratoryInfo: {}
+      laboratoryInfo: {
+        is_discount: false,
+        is_delivery: false,
+        status: false
+      }
     }
   }
 
@@ -196,9 +202,6 @@ class AddLaboratoryScreen extends Component {
     let {laboratoryInfo} = this.state
     const {clinic_id, laboratoryCreate} = this.props
     laboratoryInfo.clinic_id = clinic_id
-    // laboratoryInfo.ret_price = laboratoryInfo.ret_price * 100
-    // laboratoryInfo.buy_price = laboratoryInfo.buy_price * 100
-    // laboratoryInfo.bulk_sales_price = laboratoryInfo.bulk_sales_price * 100
     if (this.validateData(laboratoryInfo)) {
       let error = await laboratoryCreate(laboratoryInfo)
       if (error) {
@@ -222,6 +225,15 @@ class AddLaboratoryScreen extends Component {
     laboratoryInfo[key] = value
     this.setState({laboratoryInfo})
   }
+  // 设置选中显示
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
+      }
+    }
+    return null
+  }
   // 单位筛选
   getMiniUnitOptions() {
     const { doseUnits } = this.props
@@ -237,25 +249,52 @@ class AddLaboratoryScreen extends Component {
     return array
   }
   getLaboratorySampleIdOptions() {
-    return [{value: 1, label: '标本1'}, {value: 2, label: '标本2'}]
+    // return [{value: 1, label: '标本1'}, {value: 2, label: '标本2'}]
+    const { laboratorySamples } = this.props
+    let array = []
+    for (let key in laboratorySamples) {
+      const { name, id } = laboratorySamples[key]
+      // console.log(doseForms[key])
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
   getCuvetteColorIdOptions() {
-    return [{value: 1, label: '颜色1'}, {value: 2, label: '颜色2'}]
-  }
-  // 设置选中显示
-  getSelectValue(value, array) {
-    for (let obj of array) {
-      if (obj.value === value) {
-        return obj
-      }
+    // return [{value: 1, label: '颜色1'}, {value: 2, label: '颜色2'}]
+    const { cuvetteColors } = this.props
+    let array = []
+    for (let key in cuvetteColors) {
+      const { name, id } = cuvetteColors[key]
+      // console.log(doseForms[key])
+      array.push({
+        value: id,
+        label: name
+      })
     }
-    return null
+    return array
   }
+  // LaboratorySampleList
+// CuvetteColorList
   // 获取单位数据
   getDoseUnitList(keyword) {
     const { queryDoseUnitList } = this.props
     if (keyword) {
       queryDoseUnitList({ keyword })
+    }
+  }
+  getLaboratorySampleList(keyword) {
+    const { queryLaboratorySampleList } = this.props
+    if (keyword) {
+      queryLaboratorySampleList({ keyword })
+    }
+  }
+  getCuvetteColorList(keyword) {
+    const { queryCuvetteColorList } = this.props
+    if (keyword) {
+      queryCuvetteColorList({ keyword })
     }
   }
   // 药品基本信息
@@ -356,7 +395,7 @@ class AddLaboratoryScreen extends Component {
               />
             </li>
             <li>
-              <label>是否允许折扣</label>
+              <label>是否允许折扣<b style={{color: 'red'}}>*</b></label>
               <div>
                 <label>
                   <input
@@ -383,7 +422,7 @@ class AddLaboratoryScreen extends Component {
               </div>
             </li>
             <li>
-              <label>是否允许外送</label>
+              <label>是否允许外送<b style={{color: 'red'}}>*</b></label>
               <div>
                 <label>
                   <input
@@ -417,7 +456,7 @@ class AddLaboratoryScreen extends Component {
                   height={32}
                   options={this.getLaboratorySampleIdOptions()}
                   value={this.getSelectValue(laboratoryInfo.laboratory_sample_id, this.getLaboratorySampleIdOptions())}
-                  onInputChange={keyword => {}}
+                  onInputChange={keyword => { this.getLaboratorySampleList(keyword) }}
                   onChange={({value}) => {
                     this.setItemValue(value, 'laboratory_sample_id', 2)
                   }}
@@ -433,7 +472,7 @@ class AddLaboratoryScreen extends Component {
                   height={32}
                   options={this.getCuvetteColorIdOptions()}
                   value={this.getSelectValue(laboratoryInfo.cuvette_color_id, this.getCuvetteColorIdOptions())}
-                  onInputChange={keyword => {}}
+                  onInputChange={keyword => { this.getCuvetteColorList(keyword) }}
                   onChange={({value}) => {
                     this.setItemValue(value, 'cuvette_color_id', 2)
                   }}
@@ -523,13 +562,14 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     doseUnits: state.doseUnits.data,
-    doseForms: state.doseForms.data,
-    routeAdministrationss: state.routeAdministrationss.data,
-    frequencies: state.frequencies.data
+    laboratorySamples: state.laboratorySamples.data,
+    cuvetteColors: state.cuvetteColors.data
   }
 }
 
 export default connect(mapStateToProps, {
   laboratoryCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  queryLaboratorySampleList,
+  queryCuvetteColorList
 })(AddLaboratoryScreen)

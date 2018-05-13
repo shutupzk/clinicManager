@@ -49,6 +49,8 @@ import { frequencies, queryFrequencyList } from './frequencys'
 import { routeAdministrationss, queryRouteAdministrationList } from './route_administrations'
 import { doseForms, queryDoseFormList } from './dose_form'
 import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet } from './prescription_chinese_patient'
+import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
+import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
 
 // keys
 export {
@@ -78,7 +80,9 @@ export {
   frequencies,
   routeAdministrationss,
   doseForms,
-  prescriptionChinesePatients
+  prescriptionChinesePatients,
+  cuvetteColors,
+  laboratorySamples
 }
 
 // actions
@@ -153,5 +157,7 @@ export {
   queryRouteAdministrationList,
   queryDoseFormList,
   PrescriptionChinesePatientCreate,
-  PrescriptionChinesePatientGet
+  PrescriptionChinesePatientGet,
+  queryCuvetteColorList,
+  queryLaboratorySampleList
 }
