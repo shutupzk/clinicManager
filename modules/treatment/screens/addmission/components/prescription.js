@@ -21,7 +21,8 @@ class MedicalRecordScreen extends Component {
       cPrescItemArray: [],
       wPrescItemArray: [],
       selItem: 'wPresc',
-      selIndex: 0
+      selIndex: 0,
+      showSaveCmodel: false
     }
   }
 
@@ -366,6 +367,7 @@ class MedicalRecordScreen extends Component {
                       value={this.getSelectValue(wPrescItemArray[index].drug_stock_id, this.getWNameOptions())}
                       onChange={({
                         value,
+                        label,
                         specification,
                         stock_amount,
                         once_dose_unit_id,
@@ -378,6 +380,7 @@ class MedicalRecordScreen extends Component {
                       }) => {
                         let data = {
                           drug_stock_id: value,
+                          drug_name: label,
                           specification,
                           stock_amount,
                           packing_unit_name,
@@ -495,7 +498,7 @@ class MedicalRecordScreen extends Component {
             </button>
           </div>
           <div className={'bottomRight'}>
-            <button>存为模板</button>
+            <button onClick={() => this.setState({ showSaveCmodel: true })}>存为模板</button>
             <button>打印病历</button>
           </div>
         </div>
@@ -518,7 +521,7 @@ class MedicalRecordScreen extends Component {
     this.setState({ cPrescItemArray })
   }
 
-  async prescriptionChinesePatientCreate () {
+  async prescriptionChinesePatientCreate() {
     const { PrescriptionChinesePatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { selIndex, cPrescItemArray } = this.state
     let info = cPrescItemArray[selIndex].info
@@ -738,6 +741,89 @@ class MedicalRecordScreen extends Component {
     )
   }
 
+  renderSaveWModel() {
+    const { showSaveCmodel } = this.state
+    if (!showSaveCmodel) return
+    const { wPrescItemArray } = this.state
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>新增西/成药处方模板</span>
+            <span onClick={() => this.setState({ showSaveCmodel: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板名称</span>
+                <input style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板类型</span>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '30px', marginTop: '4px' }}>
+                  <input type='radio' name='type' style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }} />通用
+                  <input
+                    type='radio'
+                    name='type'
+                    style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9', marginLeft: '40px' }}
+                  />个人
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 4 }}>药品名称</div>
+                <div style={{ flex: 3 }}>规格</div>
+                <div style={{ flex: 2 }}>单次剂量</div>
+                <div style={{ flex: 3 }}>剂量单位</div>
+                <div style={{ flex: 3 }}>用法</div>
+                <div style={{ flex: 3 }}>用药频次</div>
+                <div style={{ flex: 1 }}>天数</div>
+                <div style={{ flex: 2 }}>总量</div>
+                <div style={{ flex: 3 }}>取药地点</div>
+                <div style={{ flex: 3 }}>用药说明</div>
+              </li>
+              {wPrescItemArray.map((item, index) => {
+                return (
+                  <li style={{ display: 'flex' }} key={index}>
+                    <div style={{ flex: 4 }}>{wPrescItemArray[index].drug_name}</div>
+                    <div style={{ flex: 3 }}>{wPrescItemArray[index].specification}</div>
+                    <div style={{ flex: 2 }}>{wPrescItemArray[index].once_dose}</div>
+                    <div style={{ flex: 3 }}>{wPrescItemArray[index].once_dose_unit_name}</div>
+                    <div style={{ flex: 3 }}>{wPrescItemArray[index].route_administration_name}</div>
+                    <div style={{ flex: 3 }}>{wPrescItemArray[index].frequency_name}</div>
+                    <div style={{ flex: 1 }}>{wPrescItemArray[index].eff_day}</div>
+                    <div style={{ flex: 2 }}>{wPrescItemArray[index].amount}</div>
+                    <div style={{ flex: 3 }}>{wPrescItemArray[index].fetch_address}</div>
+                    <div style={{ flex: 3 }}>{wPrescItemArray[index].illustration}</div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div className='formListBottom' style={{width: '100%'}}>
+            <div className={'bottomCenter'}>
+              <button className={'save'} >保存</button>
+              <button className={'cancel'}>取消</button>
+            </div>
+          </div>
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
+  getTriagePatient() {
+    const { triagePatients, clinic_triage_patient_id } = this.props
+    for (let triagePatient of triagePatients) {
+      if (triagePatient.clinic_triage_patient_id === clinic_triage_patient_id) {
+        return triagePatient
+      }
+    }
+    return {}
+  }
+
   render() {
     const { selItem, cPrescItemArray } = this.state
     const { medicalRecord } = this.props
@@ -798,6 +884,7 @@ class MedicalRecordScreen extends Component {
           </div>
           {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
         </div>
+        {this.renderSaveWModel()}
         {this.getStyle()}
         <Confirm ref='myAlert' />
       </div>
@@ -971,6 +1058,7 @@ const mapStateToProps = state => {
     personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,
+    triagePatients: state.triagePatients.data,
     drugs: state.drugs.json_data,
     prescriptionWesternPatients: state.prescriptionWesternPatients.data,
     routeAdministrationss: state.routeAdministrationss.data,
