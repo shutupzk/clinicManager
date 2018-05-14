@@ -1,7 +1,8 @@
 const express = require('express')
 const next = require('next')
+const config = require('./config')
 
-const port = parseInt(process.env.PORT, 10) || 9151
+const port = parseInt(process.env.PORT, 10) || config.PORT
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
