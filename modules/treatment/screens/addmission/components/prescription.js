@@ -806,7 +806,7 @@ class MedicalRecordScreen extends Component {
 
   getStyle() {
     return (
-      <style jsx>{`
+      <style jsx='true'>{`
         .prescriptionLank {
           flex: 1;
           display: flex;

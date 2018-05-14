@@ -50,6 +50,10 @@ export const ExaminationPatientGet = ({ clinic_triage_patient_id }) => async dis
       data: docs
     })
     dispatch({
+      type: 'EXAM_PROJECT_ADD',
+      data: json
+    })
+    dispatch({
       type: 'EXAMINATION_ORGAN_ADD',
       data: organJson
     })
