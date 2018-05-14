@@ -42,6 +42,14 @@ export const OtherCostPatientGet = ({ clinic_triage_patient_id }) => async dispa
       type: OTHER_PATIENT_ADD,
       data: docs
     })
+    let json = {}
+    for (let doc of docs) {
+      json[doc.clinic_other_cost_id] = doc
+    }
+    dispatch({
+      type: 'OTHER_COST_ADD',
+      data: json
+    })
     return docs
   } catch (e) {
     console.log(e)
