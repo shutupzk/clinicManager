@@ -28,6 +28,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = '/Users/kangcha/MyProject/clinicManager/components/Select/index.js';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -63,10 +65,16 @@ var MySelect = function (_Component) {
           });
         }
       };
-      return _react2.default.createElement(_reactSelect2.default, (0, _extends3.default)({ styles: customStyles }, this.props));
+      return _react2.default.createElement(_reactSelect2.default, (0, _extends3.default)({ styles: customStyles }, this.props, {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18
+        }
+      }));
     }
   }]);
   return MySelect;
 }(_react.Component);
 
 exports.default = MySelect;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudHMvU2VsZWN0L2luZGV4LmpzIl0sIm5hbWVzIjpbIk15U2VsZWN0IiwiaGVpZ2h0IiwicHJvcHMiLCJjdXN0b21TdHlsZXMiLCJjb250cm9sIiwiYmFzZSIsInN0YXRlIiwibWluSGVpZ2h0IiwiYm9yZGVyQ29sb3IiLCJpc0ZvY3VzZWQiLCJib3hTaGFkb3ciXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUE7Ozs7QUFDQTs7Ozs7Ozs7SUFFcUIsQTs7Ozs7Ozs7Ozs2QkFDVjtVQUFBLEFBQ0QsU0FBVyxLQURWLEFBQ2UsTUFEZixBQUNELEFBQ047O1VBQU07aUJBQ0ssaUJBQUEsQUFBQyxNQUFELEFBQU8sT0FBVSxBQUN4Qjs0Q0FBQSxBQUNLO29CQUNLLFVBRlYsQUFFb0IsQUFDbEI7dUJBSEYsQUFHYSxBQUNYO3lCQUFhLE1BQUEsQUFBTSxZQUFOLEFBQWtCLG9CQUpqQyxBQUlxRCxBQUNuRDt1QkFBVyxNQUFBLEFBQU0sK0NBTG5CLEFBS2tFLEFBRW5FO0FBTEc7QUFKTixBQUFxQixBQVdyQjtBQVhxQixBQUNuQjsyRkFVYSxRQUFSLEFBQWdCLGdCQUFrQixLQUFsQyxBQUF1Qzs7b0JBQXZDO3NCQUFQLEFBQU8sQUFDUjtBQURRO0FBQUEsUUFBQTs7Ozs7O2tCQWRVLEEiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiL1VzZXJzL2thbmdjaGEvTXlQcm9qZWN0L2NsaW5pY01hbmFnZXIifQ==

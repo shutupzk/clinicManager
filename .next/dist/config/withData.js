@@ -32,6 +32,9 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = '/Users/kangcha/MyProject/clinicManager/config/withData.js';
+// import initStore from './store'
+
 exports.default = function (Component) {
   var Auth = function (_React$Component) {
     (0, _inherits3.default)(Auth, _React$Component);
@@ -87,7 +90,19 @@ exports.default = function (Component) {
       key: 'render',
       value: function render() {
         // const { store, persistor } = initStore()
-        return _react2.default.createElement(_reactRedux.Provider, { store: _store.store }, _react2.default.createElement(_react3.PersistGate, { loading: null, persistor: _store.persistor }, _react2.default.createElement(Component, { url: this.props.url })));
+        return _react2.default.createElement(_reactRedux.Provider, { store: _store.store, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 26
+          }
+        }, _react2.default.createElement(_react3.PersistGate, { loading: null, persistor: _store.persistor, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 27
+          }
+        }, _react2.default.createElement(Component, { url: this.props.url, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 28
+          }
+        })));
       }
     }]);
     return Auth;
@@ -113,3 +128,4 @@ var _react3 = require('redux-persist/integration/react');
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbmZpZy93aXRoRGF0YS5qcyJdLCJuYW1lcyI6WyJDb21wb25lbnQiLCJBdXRoIiwicHJvcHMiLCJzdGF0ZSIsInRva2VuIiwidW5kZWZpbmVkIiwiZ2V0SXRlbSIsInNldFN0YXRlIiwidXJsIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUlBOztrQkFFZSxVQUFBLEFBQVMsV0FBVztNQUFBLEFBQzNCLG1DQUQyQjtrQ0FFL0I7O2tCQUFBLEFBQVksT0FBTzswQ0FBQTs7b0lBQUEsQUFDWCxBQUNOOztZQUFBLEFBQUssUUFBUSxFQUFFLE9BRkUsQUFFakIsQUFBYSxBQUFTO2FBQ3ZCO0FBTDhCOzs7V0FBQTt5QkFBQTsrR0FBQTtjQUFBO3dFQUFBO3NCQUFBOytDQUFBO3FCQUFBO2tDQUFBO2tDQUFBO3lCQVNULHNCQUFBLEFBQVksUUFUSCxBQVNULEFBQW9COztxQkFBbEM7QUFUdUIsbUNBVTNCOzt1QkFBQSxBQUFLLFNBQVMsRUFBRSxPQVZXLEFBVTNCLEFBQWM7a0NBVmE7QUFBQTs7cUJBQUE7a0NBQUE7a0RBQUE7O3FCQUFBO3FCQUFBO2tDQUFBOztBQUFBO2lDQUFBO0FBQUE7O3NDQUFBO2tDQUFBO0FBQUE7O2VBQUE7QUFBQTtBQUFBO1dBQUE7K0JBZ0J0QixBQUNQO0FBQ0E7K0JBQ0UsMEJBQUEsWUFBVSxjQUFWO3NCQUFBO3dCQUFBLEFBQ0U7QUFERjtTQUFBLGtCQUNFLHNCQUFBLGVBQWEsU0FBYixBQUFzQixNQUFNLGtCQUE1QjtzQkFBQTt3QkFBQSxBQUNFO0FBREY7eUNBQ0UsQUFBQyxhQUFVLEtBQUssS0FBQSxBQUFLLE1BQXJCLEFBQTJCO3NCQUEzQjt3QkFITixBQUNFLEFBQ0UsQUFDRSxBQUlQO0FBSk87O0FBckJ1QjtBQUFBO1dBQUE7SUFDZCxnQkFEYyxBQUNSLEFBMEJ6Qjs7U0FBQSxBQUFPLEFBQ1I7QTs7QUFsQ0Q7Ozs7QUFDQTs7OztBQUNBOztBQUNBOztBQUVBIiwiZmlsZSI6IndpdGhEYXRhLmpzIiwic291cmNlUm9vdCI6Ii9Vc2Vycy9rYW5nY2hhL015UHJvamVjdC9jbGluaWNNYW5hZ2VyIn0=

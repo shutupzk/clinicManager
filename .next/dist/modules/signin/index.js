@@ -14,3 +14,4 @@ function _interopRequireDefault(obj) {
 }
 
 exports.SigninScreen = _signin_screen2.default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm1vZHVsZXMvc2lnbmluL2luZGV4LmpzIl0sIm5hbWVzIjpbIlNpZ25pblNjcmVlbiJdLCJtYXBwaW5ncyI6Ijs7Ozs7OztBQUFBOzs7Ozs7OztRQUVTLEEiLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiL1VzZXJzL2thbmdjaGEvTXlQcm9qZWN0L2NsaW5pY01hbmFnZXIifQ==
