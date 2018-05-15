@@ -85,7 +85,7 @@ export const getAgeByBirthday = birthday => {
 }
 
 export const formatMoney = money => {
-  if (!money) return ''
+  if (money === undefined) return ''
   return (money / 100).toFixed(2)
 }
 

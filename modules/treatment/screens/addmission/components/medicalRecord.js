@@ -372,7 +372,7 @@ class PrescriptionScreen extends Component {
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', left: '324px', height: 'unset', minHeight: '683px' }}>
           <div className='doctorList_top'>
-            <span>{triagePatient.patient_name}的历史病历</span>
+            <span>{triagePatient.patient_name} 的历史病历</span>
             <span onClick={() => this.setState({ showHistroyMedicals: false })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
