@@ -28,6 +28,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = 'F:\\programs\\clinicManager\\components\\SearchInput\\index.js';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -59,10 +61,16 @@ var SearchInput = function (_Component) {
           });
         }
       };
-      return _react2.default.createElement(_reactSelect2.default, (0, _extends3.default)({ styles: customStyles }, this.props));
+      return _react2.default.createElement(_reactSelect2.default, (0, _extends3.default)({ styles: customStyles }, this.props, {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 15
+        }
+      }));
     }
   }]);
   return SearchInput;
 }(_react.Component);
 
 exports.default = SearchInput;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudHNcXFNlYXJjaElucHV0XFxpbmRleC5qcyJdLCJuYW1lcyI6WyJTZWFyY2hJbnB1dCIsImN1c3RvbVN0eWxlcyIsImNvbnRyb2wiLCJiYXNlIiwic3RhdGUiLCJib3JkZXJDb2xvciIsImlzRm9jdXNlZCIsImJveFNoYWRvdyIsInByb3BzIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBOzs7O0FBQ0E7Ozs7Ozs7O0ksQUFFcUI7Ozs7Ozs7Ozs7NkJBQ1YsQUFDUDtVQUFNO2lCQUNLLGlCQUFBLEFBQUMsTUFBRCxBQUFPLE9BQVUsQUFDeEI7NENBQUEsQUFDSzt5QkFDVSxNQUFBLEFBQU0sWUFBTixBQUFrQixvQkFGakMsQUFFcUQsQUFDbkQ7dUJBQVcsTUFBQSxBQUFNLCtDQUhuQixBQUdrRSxBQUVuRTtBQUhHO0FBSk4sQUFBcUIsQUFTckI7QUFUcUIsQUFDbkI7MkZBUWEsUUFBUixBQUFnQixnQkFBa0IsS0FBbEMsQUFBdUM7O29CQUF2QztzQkFBUCxBQUFPLEFBQ1I7QUFEUTtBQUFBLFFBQUE7Ozs7OztrQkFYVSxBIiwiZmlsZSI6ImluZGV4LmpzIiwic291cmNlUm9vdCI6IkY6L3Byb2dyYW1zL2NsaW5pY01hbmFnZXIifQ==

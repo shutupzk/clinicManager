@@ -24,6 +24,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = 'F:\\programs\\clinicManager\\components\\DraftCard\\index.js';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -73,13 +75,22 @@ var DraftCard = function (_Component) {
 
       var editorState = this.state.editorState;
 
-      return _react2.default.createElement('div', null, _react2.default.createElement(_reactDraftWysiwyg.Editor, {
+      return _react2.default.createElement('div', {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 25
+        }
+      }, _react2.default.createElement(_reactDraftWysiwyg.Editor, {
         editorState: editorState,
         wrapperClassName: 'demo-wrapper',
         editorClassName: 'demo-editor',
         onEditorStateChange: function onEditorStateChange(editorState) {
           _this2.setState({ editorState: editorState });
           _this2.props.onEditorStateChange((0, _draftjsToHtml2.default)((0, _draftJs.convertToRaw)(editorState.getCurrentContent())));
+        },
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 26
         }
       }), (0, _UI.UI)());
     }
@@ -88,3 +99,4 @@ var DraftCard = function (_Component) {
 }(_react.Component);
 
 exports.default = DraftCard;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudHNcXERyYWZ0Q2FyZFxcaW5kZXguanMiXSwibmFtZXMiOlsiRHJhZnRDYXJkIiwicHJvcHMiLCJodG1sIiwiZGVmYXVsdFZhbHVlIiwiY29udGVudEJsb2NrIiwicHJvY2VzcyIsImJyb3dzZXIiLCJjb250ZW50U3RhdGUiLCJjcmVhdGVGcm9tQmxvY2tBcnJheSIsImNvbnRlbnRCbG9ja3MiLCJlZGl0b3JTdGF0ZSIsImNyZWF0ZVdpdGhDb250ZW50Iiwic3RhdGUiLCJzZXRTdGF0ZSIsIm9uRWRpdG9yU3RhdGVDaGFuZ2UiLCJnZXRDdXJyZW50Q29udGVudCJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBOzs7O0FBQ0E7O0FBQ0E7O0FBQ0E7Ozs7QUFDQTs7OztBQUNBOzs7Ozs7SSxBQUVxQjtxQ0FDbkI7O3FCQUFBLEFBQWEsT0FBTzt3Q0FBQTs7NElBQUEsQUFDWixBQUNOOztRQUFNLE9BQU8sTUFBQSxBQUFNLGdCQUFuQixBQUFtQyxBQUNuQztRQUFNLGVBQWUsUUFBQSxBQUFRLFVBQVUsNkJBQWxCLEFBQWtCLEFBQVksUUFBbkQsQUFBMkQsQUFDM0Q7UUFBQSxBQUFJLGNBQWMsQUFDaEI7VUFBTSxlQUFlLHNCQUFBLEFBQWEscUJBQXFCLGFBQXZELEFBQXFCLEFBQStDLEFBQ3BFO1VBQU0sY0FBYyxxQkFBQSxBQUFZLGtCQUFoQyxBQUFvQixBQUE4QixBQUNsRDtZQUFBLEFBQUs7cUJBQUwsQUFBYSxBQUdkO0FBSGMsQUFDWDtBQVJjO1dBV25COzs7Ozs2QkFFUzttQkFBQTs7VUFBQSxBQUNBLGNBQWdCLEtBRGhCLEFBQ3FCLE1BRHJCLEFBQ0EsQUFDUjs7NkJBQ0UsY0FBQTs7b0JBQUE7c0JBQUEsQUFDRTtBQURGO0FBQUEsT0FBQTtxQkFDRSxBQUNlLEFBQ2I7MEJBRkYsQUFFbUIsQUFDakI7eUJBSEYsQUFHa0IsQUFDaEI7NkJBQXFCLDBDQUFlLEFBQ2xDO2lCQUFBLEFBQUssU0FBUyxFQUFFLGFBQWhCLEFBQWMsQUFDZDtpQkFBQSxBQUFLLE1BQUwsQUFBVyxvQkFBb0IsNkJBQVksMkJBQWEsWUFBeEQsQUFBK0IsQUFBWSxBQUFhLEFBQVksQUFDckU7QUFQSDs7b0JBQUE7c0JBREYsQUFDRSxBQWFDO0FBYkQ7QUFDRSxrQkFITixBQUNFLEFBaUJIOzs7Ozs7a0JBbENrQixBIiwiZmlsZSI6ImluZGV4LmpzIiwic291cmNlUm9vdCI6IkY6L3Byb2dyYW1zL2NsaW5pY01hbmFnZXIifQ==

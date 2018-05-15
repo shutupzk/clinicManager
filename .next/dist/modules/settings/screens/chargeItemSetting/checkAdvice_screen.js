@@ -24,6 +24,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = 'F:\\programs\\clinicManager\\modules\\settings\\screens\\chargeItemSetting\\checkAdvice_screen.js';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -57,7 +59,12 @@ var CheckAdviceScreen = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement('div', null, '\u5176\u4ED6\u8D39\u7528');
+      return _react2.default.createElement('div', {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 21
+        }
+      }, '\u5176\u4ED6\u8D39\u7528');
     }
   }]);
   return CheckAdviceScreen;
@@ -70,3 +77,4 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(CheckAdviceScreen);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm1vZHVsZXNcXHNldHRpbmdzXFxzY3JlZW5zXFxjaGFyZ2VJdGVtU2V0dGluZ1xcY2hlY2tBZHZpY2Vfc2NyZWVuLmpzIl0sIm5hbWVzIjpbIkNoZWNrQWR2aWNlU2NyZWVuIiwicHJvcHMiLCJzdGF0ZSIsIm1hcFN0YXRlVG9Qcm9wcyIsImNsaW5pY19pZCIsInVzZXIiLCJkYXRhIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQ0E7Ozs7QUFDQTs7Ozs7O0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0lBRU0sQTs2Q0FDSjs7NkJBQUEsQUFBWSxPQUFPO3dDQUFBOzs0SkFBQSxBQUNYLEFBQ047O1VBQUEsQUFBSyxRQUZZLEFBRWpCLEFBQWE7V0FFZDs7Ozs7d0NBRW1CLEFBQ25COzs7NkJBRVEsQUFDUDs2QkFDRSxjQUFBOztvQkFBQTtzQkFBQTtBQUFBO0FBQUEsT0FBQSxFQURGLEFBQ0UsQUFFSDs7Ozs7O0FBR0gsSUFBTSxrQkFBa0IsU0FBbEIsQUFBa0IsdUJBQVMsQUFDL0I7O2VBQ2EsTUFBQSxBQUFNLEtBQU4sQUFBVyxLQUR4QixBQUFPLEFBQ3NCLEFBRTlCO0FBSFEsQUFDTDtBQUZKOztrQkFNZSx5QkFBQSxBQUFRLGlCQUFSLEFBQXlCLElBQXpCLEFBQTZCLEEiLCJmaWxlIjoiY2hlY2tBZHZpY2Vfc2NyZWVuLmpzIiwic291cmNlUm9vdCI6IkY6L3Byb2dyYW1zL2NsaW5pY01hbmFnZXIifQ==

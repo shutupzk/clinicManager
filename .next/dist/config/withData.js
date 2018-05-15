@@ -32,6 +32,9 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = 'F:\\programs\\clinicManager\\config\\withData.js';
+// import initStore from './store'
+
 exports.default = function (Component) {
   var Auth = function (_React$Component) {
     (0, _inherits3.default)(Auth, _React$Component);
@@ -87,7 +90,19 @@ exports.default = function (Component) {
       key: 'render',
       value: function render() {
         // const { store, persistor } = initStore()
-        return _react2.default.createElement(_reactRedux.Provider, { store: _store.store }, _react2.default.createElement(_react3.PersistGate, { loading: null, persistor: _store.persistor }, _react2.default.createElement(Component, { url: this.props.url })));
+        return _react2.default.createElement(_reactRedux.Provider, { store: _store.store, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 26
+          }
+        }, _react2.default.createElement(_react3.PersistGate, { loading: null, persistor: _store.persistor, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 27
+          }
+        }, _react2.default.createElement(Component, { url: this.props.url, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 28
+          }
+        })));
       }
     }]);
     return Auth;
@@ -113,3 +128,4 @@ var _react3 = require('redux-persist/integration/react');
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbmZpZ1xcd2l0aERhdGEuanMiXSwibmFtZXMiOlsiQ29tcG9uZW50IiwiQXV0aCIsInByb3BzIiwic3RhdGUiLCJ0b2tlbiIsInVuZGVmaW5lZCIsImdldEl0ZW0iLCJzZXRTdGF0ZSIsInVybCJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFJQTs7a0JBRWUsVUFBQSxBQUFTLFdBQVc7TUFBQSxBQUMzQixtQ0FEMkI7a0NBRS9COztrQkFBQSxBQUFZLE9BQU87MENBQUE7O29JQUFBLEFBQ1gsQUFDTjs7WUFBQSxBQUFLLFFBQVEsRUFBRSxPQUZFLEFBRWpCLEFBQWEsQUFBUzthQUN2QjtBQUw4Qjs7O1dBQUE7eUJBQUE7K0dBQUE7Y0FBQTt3RUFBQTtzQkFBQTsrQ0FBQTtxQkFBQTtrQ0FBQTtrQ0FBQTt5QkFTVCxzQkFBQSxBQUFZLFFBVEgsQUFTVCxBQUFvQjs7cUJBQWxDO0FBVHVCLG1DQVUzQjs7dUJBQUEsQUFBSyxTQUFTLEVBQUUsT0FWVyxBQVUzQixBQUFjO2tDQVZhO0FBQUE7O3FCQUFBO2tDQUFBO2tEQUFBOztxQkFBQTtxQkFBQTtrQ0FBQTs7QUFBQTtpQ0FBQTtBQUFBOztzQ0FBQTtrQ0FBQTtBQUFBOztlQUFBO0FBQUE7QUFBQTtXQUFBOytCQWdCdEIsQUFDUDtBQUNBOytCQUNFLDBCQUFBLFlBQVUsY0FBVjtzQkFBQTt3QkFBQSxBQUNFO0FBREY7U0FBQSxrQkFDRSxzQkFBQSxlQUFhLFNBQWIsQUFBc0IsTUFBTSxrQkFBNUI7c0JBQUE7d0JBQUEsQUFDRTtBQURGO3lDQUNFLEFBQUMsYUFBVSxLQUFLLEtBQUEsQUFBSyxNQUFyQixBQUEyQjtzQkFBM0I7d0JBSE4sQUFDRSxBQUNFLEFBQ0UsQUFJUDtBQUpPOztBQXJCdUI7QUFBQTtXQUFBO0lBQ2QsZ0JBRGMsQUFDUixBQTBCekI7O1NBQUEsQUFBTyxBQUNSO0E7O0FBbENEOzs7O0FBQ0E7Ozs7QUFDQTs7QUFDQTs7QUFFQSIsImZpbGUiOiJ3aXRoRGF0YS5qcyIsInNvdXJjZVJvb3QiOiJGOi9wcm9ncmFtcy9jbGluaWNNYW5hZ2VyIn0=

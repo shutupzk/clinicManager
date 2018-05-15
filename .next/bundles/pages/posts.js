@@ -1,6 +1,0 @@
-
-          window.__NEXT_REGISTER_PAGE('/posts', function() {
-            var comp = module.exports=webpackJsonp([58],{709:function(e,t,u){e.exports=u(710)},710:function(e,t,u){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(t,"__esModule",{value:!0});var o=u(4),l=n(o),r=u(2),i=n(r),a=u(3),d=n(a),s=u(5),p=n(s),f=u(6),c=n(f),m=u(1),_=n(m),y=function(e){function t(){return(0,i.default)(this,t),(0,p.default)(this,(t.__proto__||(0,l.default)(t)).apply(this,arguments))}return(0,c.default)(t,e),(0,d.default)(t,[{key:"render",value:function(){return _.default.createElement("div",null,_.default.createElement("h1",null,"My blog post #",this.props.postId),_.default.createElement("p",null,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."))}}],[{key:"getInitialProps",value:function(e){return{postId:e.query.id}}}]),t}(m.Component);t.default=y}},[709]);
-            return { page: comp.default }
-          })
-        

@@ -24,6 +24,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _jsxFileName = 'F:\\programs\\clinicManager\\modules\\settings\\screens\\template\\checkTemplate_screen.js';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -57,7 +59,12 @@ var CheckTemplateScreen = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      return _react2.default.createElement('div', null, '\u5176\u4ED6\u8D39\u7528');
+      return _react2.default.createElement('div', {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 21
+        }
+      }, '\u5176\u4ED6\u8D39\u7528');
     }
   }]);
   return CheckTemplateScreen;
@@ -70,3 +77,4 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, {})(CheckTemplateScreen);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm1vZHVsZXNcXHNldHRpbmdzXFxzY3JlZW5zXFx0ZW1wbGF0ZVxcY2hlY2tUZW1wbGF0ZV9zY3JlZW4uanMiXSwibmFtZXMiOlsiQ2hlY2tUZW1wbGF0ZVNjcmVlbiIsInByb3BzIiwic3RhdGUiLCJtYXBTdGF0ZVRvUHJvcHMiLCJjbGluaWNfaWQiLCJ1c2VyIiwiZGF0YSJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUNBOzs7O0FBQ0E7Ozs7OztBQUNBO0FBQ0E7QUFDQTtBQUNBOztJQUVNLEE7K0NBQ0o7OytCQUFBLEFBQVksT0FBTzt3Q0FBQTs7Z0tBQUEsQUFDWCxBQUNOOztVQUFBLEFBQUssUUFGWSxBQUVqQixBQUFhO1dBRWQ7Ozs7O3dDQUVtQixBQUNuQjs7OzZCQUVRLEFBQ1A7NkJBQ0UsY0FBQTs7b0JBQUE7c0JBQUE7QUFBQTtBQUFBLE9BQUEsRUFERixBQUNFLEFBRUg7Ozs7OztBQUdILElBQU0sa0JBQWtCLFNBQWxCLEFBQWtCLHVCQUFTLEFBQy9COztlQUNhLE1BQUEsQUFBTSxLQUFOLEFBQVcsS0FEeEIsQUFBTyxBQUNzQixBQUU5QjtBQUhRLEFBQ0w7QUFGSjs7a0JBTWUseUJBQUEsQUFBUSxpQkFBUixBQUF5QixJQUF6QixBQUE2QixBIiwiZmlsZSI6ImNoZWNrVGVtcGxhdGVfc2NyZWVuLmpzIiwic291cmNlUm9vdCI6IkY6L3Byb2dyYW1zL2NsaW5pY01hbmFnZXIifQ==

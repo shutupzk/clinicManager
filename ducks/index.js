@@ -51,6 +51,7 @@ import { doseForms, queryDoseFormList } from './dose_form'
 import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet } from './prescription_chinese_patient'
 import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
 import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
+import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate } from './laboratory_item'
 
 // keys
 export {
@@ -82,7 +83,8 @@ export {
   doseForms,
   prescriptionChinesePatients,
   cuvetteColors,
-  laboratorySamples
+  laboratorySamples,
+  laboratoryItems
 }
 
 // actions
@@ -160,5 +162,7 @@ export {
   PrescriptionChinesePatientCreate,
   PrescriptionChinesePatientGet,
   queryCuvetteColorList,
-  queryLaboratorySampleList
+  queryLaboratorySampleList,
+  queryLaboratoryItemList,
+  laboratoryItemCreate
 }

@@ -19,3 +19,4 @@ function _interopRequireDefault(obj) {
 
 exports.BlankLayout = _blank_layout2.default;
 exports.Layout = _layout2.default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm1vZHVsZXNcXGNvbW1vblxcaW5kZXguanMiXSwibmFtZXMiOlsiQmxhbmtMYXlvdXQiLCJMYXlvdXQiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7QUFBQTs7OztBQUNBOzs7Ozs7OztRQUdFLEE7UUFDQSxBIiwiZmlsZSI6ImluZGV4LmpzIiwic291cmNlUm9vdCI6IkY6L3Byb2dyYW1zL2NsaW5pY01hbmFnZXIifQ==
