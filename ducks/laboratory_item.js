@@ -56,8 +56,11 @@ export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, l
   }
 }
 
-export const laboratoryItemCreate = (requestData) => async dispatch => {
+export const laboratoryItemCreate = ({requestData}) => async dispatch => {
   try {
+    console.log(
+      'requestData', requestData
+    )
     const data = await request('/laboratory/item/create', requestData)
     console.log(
       requestData,

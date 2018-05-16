@@ -15,7 +15,8 @@ class AddLaboratoryItemScreen extends Component {
       laboratoryItemInfo: {
         data_type: 2,
         status: false,
-        items: []
+        // items: [],
+        is_special: false
       },
       references: []
     }
@@ -225,7 +226,7 @@ class AddLaboratoryItemScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => this.submit()}>保存</button>
+            <button onClick={() => { this.submit() }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -238,15 +239,11 @@ class AddLaboratoryItemScreen extends Component {
       this.setState({nameFailed: true})
       // alert(1)
       return false
-    } else {
-      // this.setState({nameFailed: false})
     }
     if (!data.unit_id || data.unit_id === '') {
       this.setState({unit_idFailed: true})
       // alert(2)
       return false
-    } else {
-      // this.setState({unit_idFailed: false})
     }
     return true
   }
@@ -255,14 +252,18 @@ class AddLaboratoryItemScreen extends Component {
     let {laboratoryItemInfo} = this.state
     const {clinic_id, laboratoryItemCreate} = this.props
     laboratoryItemInfo.clinic_id = clinic_id
+    // let requestData = {...laboratoryItemInfo}
+    // requestData.items = JSON.stringify(requestData.items)
     // console.log('this.validateData(laboratoryItemInfo)=====', this.validateData(laboratoryItemInfo))
-    if (this.validateData(laboratoryItemInfo)) {
-      let error = await laboratoryItemCreate(laboratoryItemInfo)
-      if (error) {
-        alert(error)
-      } else {
-        this.props.back2List()
-      }
+    // if (this.validateData(laboratoryItemInfo)) {
+    // }
+    // alert(0)
+    let error = await laboratoryItemCreate({requestData: laboratoryItemInfo})
+    if (error) {
+      alert(error)
+      this.setState({laboratoryItemInfo})
+    } else {
+      this.props.back2List()
     }
   }
   // 保存并入库
@@ -346,7 +347,7 @@ class AddLaboratoryItemScreen extends Component {
   // 检验项目基本信息
   renderBaseInfoBlank() {
     const {laboratoryItemInfo} = this.state
-    console.log('laboratoryItemInfo=======', laboratoryItemInfo)
+    // console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
@@ -487,16 +488,16 @@ class AddLaboratoryItemScreen extends Component {
                   checked={laboratoryItemInfo.is_special}
                   onChange={e => {
                     // console.log('checkbox==========', e.target.checked)
-                    // this.setItemValue(e.target.checked, 'is_special', 2)
+                    this.setItemValue(e.target.checked, 'is_special', 2)
                     if (e.target.checked) {
-                      this.setItemValue('true', 'is_special', 2)
+                      // this.setItemValue('true', 'is_special', 2)
                       delete laboratoryItemInfo.reference_max
                       delete laboratoryItemInfo.reference_min
                       delete laboratoryItemInfo.reference_value
                       laboratoryItemInfo.items = []
                       this.setState({laboratoryItemInfo})
                     } else {
-                      this.setItemValue('false', 'is_special', 2)
+                      // this.setItemValue('false', 'is_special', 2)
                       delete laboratoryItemInfo.items
                     }
                   }}
@@ -577,7 +578,7 @@ class AddLaboratoryItemScreen extends Component {
   // 显示特殊参考值
   renderIsSpecial() {
     const { laboratoryItemInfo } = this.state
-    console.log('laboratoryItemInfo=======', laboratoryItemInfo)
+    // console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     let references = laboratoryItemInfo.items || []
     return (
       <div>

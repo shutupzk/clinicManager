@@ -68,7 +68,7 @@ class TestItemsScreen extends Component {
         <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
             <input
-              placeholder={'检验医嘱名称或条形码'}
+              placeholder={'检验项目名称'}
               onChange={e => {
                 this.setState({keyword: e.target.value})
               }}
@@ -93,12 +93,12 @@ class TestItemsScreen extends Component {
             >新建</button>
           </div>
         </div>
-        <div className={'rightTopFilter'}>
+        {/* <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
             <button onClick={() => {}}>批量设置折扣</button>
             <button onClick={() => {}}>批量设置有效期限</button>
           </div>
-        </div>
+        </div> */}
         <div className={'contentTable'}>
           {this.renderTable()}
         </div>
@@ -190,9 +190,9 @@ class TestItemsScreen extends Component {
               return (
                 <tr key={index}>
                   <td style={{flex: 2}}>{item.name}</td>
-                  <td>{item.en_name}</td>
+                  <td title={item.en_name}>{item.en_name}</td>
                   <td>{item.unit_name}</td>
-                  <td>{item.references[0].reference_max}</td>
+                  <td>{item.references[0].reference_max || item.references[0].reference_value}</td>
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{flex: 2.5}} className={'operTd'}>
                     <div>
@@ -299,7 +299,7 @@ class TestItemsScreen extends Component {
     return (
       <div className={'boxContent'}>
         <div className={'topTitle'}>
-          <span>检验医嘱</span>
+          <span>检验项目</span>
           {pageType === 1 ? '' : <div className='back2List' onClick={() => this.setState({pageType: 1})}>{'<返回'}</div>}
         </div>
         {pageType === 1 ? this.renderList() : this.showView()}
