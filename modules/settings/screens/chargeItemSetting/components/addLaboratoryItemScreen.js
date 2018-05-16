@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select } from '../../../../../components'
 import {
-  laboratoryCreate,
+  laboratoryItemCreate,
   queryDoseUnitList
 } from '../../../../../ducks'
 
@@ -14,7 +14,8 @@ class AddLaboratoryItemScreen extends Component {
     this.state = {
       laboratoryItemInfo: {
         data_type: 2,
-        status: false
+        status: false,
+        items: []
       },
       references: []
     }
@@ -238,45 +239,25 @@ class AddLaboratoryItemScreen extends Component {
       // alert(1)
       return false
     } else {
-      this.setState({nameFailed: false})
+      // this.setState({nameFailed: false})
     }
     if (!data.unit_id || data.unit_id === '') {
       this.setState({unit_idFailed: true})
       // alert(2)
       return false
     } else {
-      this.setState({unit_idFailed: false})
-    }
-    if (!data.price || data.price === '') {
-      this.setState({priceFailed: true})
-      // alert(4)
-      return false
-    } else {
-      this.setState({priceFailed: false})
-    }
-    if (!data.laboratory_sample_id || data.laboratory_sample_id === '') {
-      this.setState({laboratory_sample_idFailed: true})
-      // alert(6)
-      return false
-    } else {
-      this.setState({laboratory_sample_idFailed: false})
-    }
-    if (!data.cuvette_color_id || data.cuvette_color_id === '') {
-      this.setState({cuvette_color_idFailed: true})
-      // alert(7)
-      return false
-    } else {
-      this.setState({cuvette_color_idFailed: false})
+      // this.setState({unit_idFailed: false})
     }
     return true
   }
   // 保存
   async submit() {
     let {laboratoryItemInfo} = this.state
-    const {clinic_id, laboratoryCreate} = this.props
+    const {clinic_id, laboratoryItemCreate} = this.props
     laboratoryItemInfo.clinic_id = clinic_id
+    // console.log('this.validateData(laboratoryItemInfo)=====', this.validateData(laboratoryItemInfo))
     if (this.validateData(laboratoryItemInfo)) {
-      let error = await laboratoryCreate(laboratoryItemInfo)
+      let error = await laboratoryItemCreate(laboratoryItemInfo)
       if (error) {
         alert(error)
       } else {
@@ -299,29 +280,34 @@ class AddLaboratoryItemScreen extends Component {
     this.setState({laboratoryItemInfo})
   }
   setChildrenItemValue(e, index, key, type = 1) {
-    const { references } = this.state
+    const { laboratoryItemInfo } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
-    let array = [...references]
+    let array = laboratoryItemInfo.items // [...references]
     array[index][key] = value
-    this.setState({ references: array })
+    laboratoryItemInfo.items = array
+    this.setState({ laboratoryItemInfo })
   }
   addColumn() {
-    const { references } = this.state
-    this.setState({ references: [...references, {}] })
+    const { laboratoryItemInfo } = this.state
+    laboratoryItemInfo.items.push({})
+    this.setState({ laboratoryItemInfo })
+    // this.setState({ references: [...references, {}] })
   }
 
   removeColumn(index) {
-    const { references } = this.state
-    let array = [...references]
+    const { laboratoryItemInfo } = this.state
+    let array = laboratoryItemInfo.items // [...references]
     array.splice(index, 1)
-    this.setState({ references: array })
+    laboratoryItemInfo.items = array
+    this.setState({ laboratoryItemInfo })
   }
   // 设置选中显示
   getSelectValue(value, array) {
     for (let obj of array) {
+      // console.log('obj.value======', obj.value, value)
       if (obj.value === value) {
         return obj
       }
@@ -331,9 +317,9 @@ class AddLaboratoryItemScreen extends Component {
   // 性别筛选
   getSexOptions() {
     return [
-      {value: 1, label: '通用'},
-      {value: 2, label: '男'},
-      {value: 3, label: '女'}
+      {value: '通用', label: '通用'},
+      {value: '男', label: '男'},
+      {value: '女', label: '女'}
     ]
   }
   // 单位筛选
@@ -360,7 +346,7 @@ class AddLaboratoryItemScreen extends Component {
   // 检验项目基本信息
   renderBaseInfoBlank() {
     const {laboratoryItemInfo} = this.state
-    // console.log('laboratoryItemInfo=======', laboratoryItemInfo)
+    console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
@@ -428,6 +414,14 @@ class AddLaboratoryItemScreen extends Component {
                     checked={laboratoryItemInfo.data_type === 2}
                     onChange={e => {
                       this.setItemValue(2, 'data_type', 2)
+                      delete laboratoryItemInfo.reference_max
+                      delete laboratoryItemInfo.reference_min
+                      if (laboratoryItemInfo.items) {
+                        for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
+                          delete laboratoryItemInfo.items[i].reference_max
+                          delete laboratoryItemInfo.items[i].reference_min
+                        }
+                      }
                     }}
                   />
                   定量
@@ -439,13 +433,19 @@ class AddLaboratoryItemScreen extends Component {
                     checked={laboratoryItemInfo.data_type === 1}
                     onChange={e => {
                       this.setItemValue(1, 'data_type', 2)
+                      delete laboratoryItemInfo.reference_value
+                      if (laboratoryItemInfo.items) {
+                        for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
+                          delete laboratoryItemInfo.items[i].reference_value
+                        }
+                      }
                     }}
                   />
                   定性
                 </label>
               </div>
             </li>
-            <li>
+            {!laboratoryItemInfo.is_special ? <li>
               <label>参考值默认</label>
               {laboratoryItemInfo.data_type === 2 ? <div className={'douInput'}>
                 <input
@@ -478,7 +478,7 @@ class AddLaboratoryItemScreen extends Component {
                 />
               </div>
               }
-            </li>
+            </li> : ''}
             <li>
               <label>参考值是否特殊<b style={{color: 'red'}}>*</b></label>
               <div>
@@ -487,7 +487,18 @@ class AddLaboratoryItemScreen extends Component {
                   checked={laboratoryItemInfo.is_special}
                   onChange={e => {
                     // console.log('checkbox==========', e.target.checked)
-                    this.setItemValue(e.target.checked, 'is_special', 2)
+                    // this.setItemValue(e.target.checked, 'is_special', 2)
+                    if (e.target.checked) {
+                      this.setItemValue('true', 'is_special', 2)
+                      delete laboratoryItemInfo.reference_max
+                      delete laboratoryItemInfo.reference_min
+                      delete laboratoryItemInfo.reference_value
+                      laboratoryItemInfo.items = []
+                      this.setState({laboratoryItemInfo})
+                    } else {
+                      this.setItemValue('false', 'is_special', 2)
+                      delete laboratoryItemInfo.items
+                    }
                   }}
                 />
               </div>
@@ -565,7 +576,9 @@ class AddLaboratoryItemScreen extends Component {
   }
   // 显示特殊参考值
   renderIsSpecial() {
-    const {references, laboratoryItemInfo} = this.state
+    const { laboratoryItemInfo } = this.state
+    console.log('laboratoryItemInfo=======', laboratoryItemInfo)
+    let references = laboratoryItemInfo.items || []
     return (
       <div>
         <ul>
@@ -573,7 +586,7 @@ class AddLaboratoryItemScreen extends Component {
             <div>性别</div>
             <div>年龄</div>
             <div>参考值</div>
-            <div onClick={() => this.addColumn()}>增加</div>
+            <div onClick={() => this.addColumn()} style={{color: 'green', cursor: 'pointer'}}>增加</div>
           </li>
           {references.map((item, index) => {
             return (
@@ -583,11 +596,15 @@ class AddLaboratoryItemScreen extends Component {
                     <Select
                       placeholder={'性别'}
                       height={30}
-                      value={this.getSelectValue(item.reference_sex_id, this.getSexOptions())}
+                      value={this.getSelectValue(item.reference_sex, this.getSexOptions())}
                       options={this.getSexOptions()}
                       onChange={({value, label}) => {
                         this.setChildrenItemValue(label, index, 'reference_sex', 2)
-                        this.setChildrenItemValue(value, index, 'reference_sex_id', 2)
+                        // this.setChildrenItemValue(value, index, 'reference_sex_id', 2)
+                        if (value !== '女') {
+                          delete item.is_pregnancy
+                          this.setState({laboratoryItemInfo})
+                        }
                       }}
                     />
                   </div>
@@ -666,7 +683,7 @@ class AddLaboratoryItemScreen extends Component {
                   </div>
                   }
                 </div>
-                <div onClick={() => { this.removeColumn(index) }}>删除</div>
+                <div onClick={() => { this.removeColumn(index) }} style={{color: 'red', cursor: 'pointer'}}>删除</div>
               </li>
             )
           })}
@@ -684,6 +701,6 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  laboratoryCreate,
+  laboratoryItemCreate,
   queryDoseUnitList
 })(AddLaboratoryItemScreen)
