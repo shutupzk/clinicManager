@@ -38,14 +38,14 @@ class TobeChargedScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {charge_unpay.map((patient, index) => {
-              let statusColor = patient.charge_total >= 0 ? '#F24A01' : '#31B0B3'
+              let statusColor = patient.charge_total_fee >= 0 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.charge_total <= 0 ? '已收费' : '待收费'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.charge_total_fee <= 0 ? '已收费' : '待收费'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -74,7 +74,7 @@ class TobeChargedScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total)}</span>
+                    <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total_fee)}</span>
                     <span
                       onClick={() => {
                         this.gotoChargeDetail(patient.clinic_triage_patient_id)

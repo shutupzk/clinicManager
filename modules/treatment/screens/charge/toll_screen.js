@@ -43,7 +43,7 @@ class TollScreen extends Component {
     }
     const { birthday, patient_name, phone, visit_date, sex } = triagePatient
 
-    const { charge_total, discount_total, total, offset, limit } = un_paid_orders_page
+    const { charge_total, discount_total, charge_total_fee, total, offset, limit } = un_paid_orders_page
 
     let typeMap = {}
     for (let item of un_paid_orders_type) {
@@ -64,7 +64,7 @@ class TollScreen extends Component {
           <div>费用合计：{formatMoney(charge_total)}元</div>
           <div>折扣金额：{formatMoney(discount_total)}元</div>
           <div />
-          <div>应收费用：{formatMoney(charge_total - discount_total)}元</div>
+          <div>应收费用：{formatMoney(charge_total_fee)}元</div>
         </div>
         <div className={'toatalFeeBox'}>
           <h4>分类汇总明细费用</h4>
@@ -100,7 +100,7 @@ class TollScreen extends Component {
                   <div>{item.amount}</div>
                   <div>{formatMoney(item.total)}</div>
                   <div>{formatMoney(item.discount)}</div>
-                  <div>{formatMoney(item.total - item.discount)}</div>
+                  <div>{formatMoney(item.fee)}</div>
                   <div>{item.department_name}</div>
                   <div>{item.doctor_name}</div>
                 </li>
@@ -155,7 +155,7 @@ class TollScreen extends Component {
         <div className={'detailBoxTop'}>
           <div className={'topLeft'}>
             <div>
-              <b>{formatMoney(un_paid_orders_page.charge_total)}</b>
+              <b>{formatMoney(un_paid_orders_page.charge_total_fee)}</b>
               <a>元</a>
             </div>
             <div>应收金额</div>
