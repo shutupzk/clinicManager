@@ -79,23 +79,23 @@ export const PrescriptionWesternPatientGet = ({ clinic_triage_patient_id }) => a
       if (once_dose_unit_id) unitJson[once_dose_unit_id] = { id: once_dose_unit_id, name: once_dose_unit_name }
       if (frequency_id) frequencyJson[frequency_id] = { id: frequency_id, name: frequency_name }
       if (route_administration_id) routeJson[route_administration_id] = { id: route_administration_id, name: route_administration_name }
-      dispatch({
-        type: 'DRUG_JSON_ADD',
-        json_data
-      })
-      dispatch({
-        type: 'DOSE_UNIT_ADD',
-        data: unitJson
-      })
-      dispatch({
-        type: 'FREQUENCY_ADD',
-        data: frequencyJson
-      })
-      dispatch({
-        type: 'ROUTE_ADMINISTRATION_ADD',
-        data: routeJson
-      })
     }
+    dispatch({
+      type: 'DRUG_JSON_ADD',
+      json_data
+    })
+    dispatch({
+      type: 'DOSE_UNIT_ADD',
+      data: unitJson
+    })
+    dispatch({
+      type: 'FREQUENCY_ADD',
+      data: frequencyJson
+    })
+    dispatch({
+      type: 'ROUTE_ADMINISTRATION_ADD',
+      data: routeJson
+    })
     dispatch({
       type: PRESCRIPTION_WEST_PATIENT_ADD,
       data: docs
