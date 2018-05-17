@@ -1,68 +1,43 @@
 import { request } from './request'
-const PRESCRIPTION_CHINESE_PATIENT_ADD = 'PRESCRIPTION_CHINESE_PATIENT_ADD'
+const PRESCRIPTION_WEST_PATIENT_MODEL_ADD = 'PRESCRIPTION_WEST_PATIENT_MODEL_ADD'
 
 const initState = {
-  data: []
+  data: [],
+  page_info: {}
 }
 
-export function prescriptionChinesePatients(state = initState, action = {}) {
+export function prescriptionWesternPatientModels(state = initState, action = {}) {
   switch (action.type) {
-    case PRESCRIPTION_CHINESE_PATIENT_ADD:
-      return { ...state, data: action.data }
+    case PRESCRIPTION_WEST_PATIENT_MODEL_ADD:
+      return { ...state, data: action.data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const PrescriptionChinesePatientCreate = ({
-  id,
-  clinic_triage_patient_id,
-  route_administration_id,
-  frequency_id,
-  amount,
-  medicine_illustration,
-  fetch_address,
-  eff_day,
-  personnel_id,
-  items
-}) => async dispatch => {
+export const PrescriptionWesternPatientModelList = ({ keyword = '', is_common, operation_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
-    const data = await request('/triage/PrescriptionChinesePatientCreate', {
-      id,
-      clinic_triage_patient_id,
-      route_administration_id,
-      frequency_id,
-      amount,
-      medicine_illustration,
-      fetch_address,
-      eff_day,
-      personnel_id,
-      items: JSON.stringify(items)
+    const data = await request('/drug/PrescriptionWesternPatientModelList', {
+      keyword,
+      is_common,
+      operation_id,
+      offset,
+      limit
     })
-    console.log(clinic_triage_patient_id, route_administration_id, frequency_id, amount, medicine_illustration, fetch_address, eff_day, personnel_id, items)
+    console.log('PrescriptionWesternPatientModelList =====', keyword, is_common, operation_id, offset, limit)
     console.log('data ======', data)
-    if (data.code !== '200') return data.msg
-    return null
-  } catch (e) {
-    console.log(e)
-    return e.message
-  }
-}
+    if (data.code !== '200') return []
+    let docs = data.data || []
+    let page_info = data.page_info
 
-export const PrescriptionChinesePatientGet = ({ clinic_triage_patient_id }) => async dispatch => {
-  try {
-    const data = await request('/triage/PrescriptionChinesePatientGet', {
-      clinic_triage_patient_id
-    })
-    if (data.code !== '200' || !data.data) return []
-    let array = data.data || []
     let json_data = {}
     let unitJson = {}
     let frequencyJson = {}
     let routeJson = {}
-    for (let info of array) {
-      let docs = info.items || []
-      for (let doc of docs) {
+
+    for (let item of docs) {
+      let array = item.items || []
+      for (let doc of array) {
         const {
           drug_stock_id,
           drug_name,
@@ -116,12 +91,32 @@ export const PrescriptionChinesePatientGet = ({ clinic_triage_patient_id }) => a
       data: routeJson
     })
     dispatch({
-      type: PRESCRIPTION_CHINESE_PATIENT_ADD,
-      data: array
+      type: PRESCRIPTION_WEST_PATIENT_MODEL_ADD,
+      data: docs,
+      page_info
     })
-    return array
+
+    return null
   } catch (e) {
     console.log(e)
     return []
+  }
+}
+
+export const PrescriptionWesternPatientModelCreate = ({ model_name, is_common = false, operation_id, items }) => async dispatch => {
+  try {
+    const data = await request('/drug/PrescriptionWesternPatientModelCreate', {
+      model_name,
+      is_common,
+      operation_id,
+      items: JSON.stringify(items)
+    })
+    console.log('PrescriptionWesternPatientModelCreate =====', model_name, is_common, operation_id, items)
+    console.log('data ======', data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
   }
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, PageCard } from '../../../../../components'
+import moment from 'moment'
 import {
   queryDrugList,
   PrescriptionWesternPatientCreate,
@@ -9,7 +10,9 @@ import {
   queryFrequencyList,
   queryDoseUnitList,
   PrescriptionChinesePatientCreate,
-  PrescriptionChinesePatientGet
+  PrescriptionChinesePatientGet,
+  PrescriptionWesternPatientModelCreate,
+  PrescriptionWesternPatientModelList
 } from '../../../../../ducks'
 
 // 处方
@@ -22,7 +25,7 @@ class MedicalRecordScreen extends Component {
       wPrescItemArray: [],
       selItem: 'wPresc',
       selIndex: 0,
-      showSaveCmodel: false
+      showSaveWmodel: false
     }
   }
 
@@ -498,7 +501,7 @@ class MedicalRecordScreen extends Component {
             </button>
           </div>
           <div className={'bottomRight'}>
-            <button onClick={() => this.setState({ showSaveCmodel: true })}>存为模板</button>
+            <button onClick={() => this.setState({ showSaveWmodel: true })}>存为模板</button>
             <button>打印病历</button>
           </div>
         </div>
@@ -741,31 +744,79 @@ class MedicalRecordScreen extends Component {
     )
   }
 
+  async PrescriptionWesternPatientModelCreate() {
+    const { PrescriptionWesternPatientModelCreate, personnel_id } = this.props
+    const { wPrescItemArray, is_common, model_name } = this.state
+    let items = []
+    for (let { drug_stock_id, once_dose, once_dose_unit_id, route_administration_id, frequency_id, amount, illustration, fetch_address, eff_day, select_once_dose_unit_id } of wPrescItemArray) {
+      items.push({
+        drug_stock_id: drug_stock_id + '',
+        once_dose: once_dose + '',
+        once_dose_unit_id: (once_dose_unit_id || select_once_dose_unit_id) + '',
+        route_administration_id: route_administration_id + '',
+        frequency_id: frequency_id + '',
+        amount: amount + '',
+        illustration: illustration + '',
+        fetch_address: fetch_address + '',
+        eff_day: eff_day + ''
+      })
+    }
+    let error = await PrescriptionWesternPatientModelCreate({ model_name, is_common, operation_id: personnel_id, items })
+    if (error) {
+      this.refs.myAlert.alert('保存失败', error)
+    } else {
+      this.refs.myAlert.alert('保存成功')
+    }
+  }
+
   renderSaveWModel() {
-    const { showSaveCmodel } = this.state
-    if (!showSaveCmodel) return
+    const { showSaveWmodel } = this.state
+    if (!showSaveWmodel) return
     const { wPrescItemArray } = this.state
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
           <div className='doctorList_top'>
             <span>新增西/成药处方模板</span>
-            <span onClick={() => this.setState({ showSaveCmodel: false })}>x</span>
+            <span onClick={() => this.setState({ showSaveWmodel: false })}>x</span>
           </div>
           <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <span>模板名称</span>
-                <input style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }} />
+                <input
+                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                  value={this.state.model_name}
+                  onChange={e => {
+                    let model_name = e.target.value
+                    this.setState({ model_name })
+                  }}
+                />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <span>模板类型</span>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '30px', marginTop: '4px' }}>
-                  <input type='radio' name='type' style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }} />通用
+                  <input
+                    type='radio'
+                    value={!false}
+                    name='type'
+                    checked={this.state.is_common}
+                    style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }}
+                    onChange={e => {
+                      let is_common = e.target.value
+                      this.setState({ is_common })
+                    }}
+                  />通用
                   <input
                     type='radio'
                     name='type'
+                    value={false}
+                    checked={this.state.is_common}
                     style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9', marginLeft: '40px' }}
+                    onChange={e => {
+                      let is_common = e.target.value
+                      this.setState({ is_common })
+                    }}
                   />个人
                 </div>
               </div>
@@ -802,12 +853,88 @@ class MedicalRecordScreen extends Component {
               })}
             </ul>
           </div>
-          <div className='formListBottom' style={{width: '100%'}}>
+          <div className='formListBottom' style={{ width: '100%' }}>
             <div className={'bottomCenter'}>
-              <button className={'save'} >保存</button>
+              <button className={'save'} onClick={() => this.PrescriptionWesternPatientModelCreate()}>
+                保存
+              </button>
               <button className={'cancel'}>取消</button>
             </div>
           </div>
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
+  PrescriptionWesternPatientModelList({ offset, limit, keyword }) {
+    const { PrescriptionWesternPatientModelList } = this.props
+    PrescriptionWesternPatientModelList({ offset, limit, keyword })
+  }
+
+  renderWModelList() {
+    const { showWmodelList, wPrescItemArray } = this.state
+    if (!showWmodelList) return
+    const { prescriptionWesternPatientModels, wm_page_info } = this.props
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>西/成药处方模板</span>
+            <span onClick={() => this.setState({ showWmodelList: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板名称</span>
+                <input
+                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                  value={this.state.wmkeyword}
+                  onChange={e => {
+                    let wmkeyword = e.target.value
+                    this.setState({ wmkeyword })
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 3 }}>模板名称</div>
+                <div style={{ flex: 4 }}>项目名称</div>
+                <div style={{ flex: 2 }}>跟新时间</div>
+                <div style={{ flex: 1 }} />
+              </li>
+              {prescriptionWesternPatientModels.map((item, index) => {
+                const { model_name, items, created_time } = item
+                let drugNames = ''
+                for (let obj of items) {
+                  drugNames += obj.drug_name + ','
+                }
+                return (
+                  <li style={{ display: 'flex' }} key={index}>
+                    <div style={{ flex: 3 }}>{model_name}</div>
+                    <div style={{ flex: 4 }}>{drugNames}</div>
+                    <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
+                    <div style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }} onClick={() => {
+                      let newArray = [...wPrescItemArray, ...items]
+                      this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                    }}>选择</div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <PageCard
+            style={{ margin: '0 50px 0 50px', width: '1000px', background: 'rgba(244, 247, 248, 1)' }}
+            offset={wm_page_info.offset}
+            limit={wm_page_info.limit}
+            total={wm_page_info.total}
+            onItemClick={({ offset, limit }) => {
+              const keyword = this.state.wmkeyword
+              this.PrescriptionWesternPatientModelList({ offset, limit, keyword })
+            }}
+          />
         </div>
         {this.getStyle()}
       </div>
@@ -868,7 +995,17 @@ class MedicalRecordScreen extends Component {
               </button>
             </div>
             <div style={{ height: '67px', width: '280px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '40px' }}>
-              <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '17px' }}>选择模板</button>
+              <button
+                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '17px' }}
+                onClick={() => {
+                  if (selItem === 'wPresc') {
+                    this.PrescriptionWesternPatientModelList({})
+                    this.setState({ showWmodelList: true })
+                  }
+                }}
+              >
+                选择模板
+              </button>
               <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>复制处方</button>
             </div>
           </div>
@@ -885,6 +1022,7 @@ class MedicalRecordScreen extends Component {
           {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
         </div>
         {this.renderSaveWModel()}
+        {this.renderWModelList()}
         {this.getStyle()}
         <Confirm ref='myAlert' />
       </div>
@@ -1063,7 +1201,9 @@ const mapStateToProps = state => {
     prescriptionWesternPatients: state.prescriptionWesternPatients.data,
     routeAdministrationss: state.routeAdministrationss.data,
     frequencies: state.frequencies.data,
-    doseUnits: state.doseUnits.data
+    doseUnits: state.doseUnits.data,
+    prescriptionWesternPatientModels: state.prescriptionWesternPatientModels.data,
+    wm_page_info: state.prescriptionWesternPatientModels.page_info
   }
 }
 
@@ -1075,5 +1215,7 @@ export default connect(mapStateToProps, {
   queryFrequencyList,
   queryDoseUnitList,
   PrescriptionChinesePatientCreate,
-  PrescriptionChinesePatientGet
+  PrescriptionChinesePatientGet,
+  PrescriptionWesternPatientModelCreate,
+  PrescriptionWesternPatientModelList
 })(MedicalRecordScreen)
