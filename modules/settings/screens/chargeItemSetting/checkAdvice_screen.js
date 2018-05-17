@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 // import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from '../../../../ducks'
 import { queryExaminationList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
-// import Addexaminationscreen from './components/addexaminationscreen'
+import AddExaminationScreen from './components/addExaminationScreen'
 // import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
 class CheckAdviceScreen extends Component {
@@ -30,10 +30,10 @@ class CheckAdviceScreen extends Component {
     let { pageType } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      // 2: <Addexaminationscreen drugType={1} back2List={() => {
-      //   this.setState({pageType: 1})
-      //   this.getDataList({offset: 0, limit: 10})
-      // }} />
+      2: <AddExaminationScreen drugType={1} back2List={() => {
+        this.setState({pageType: 1})
+        this.getDataList({offset: 0, limit: 10})
+      }} />
     }
     return map[pageType] || null
   }
@@ -43,7 +43,7 @@ class CheckAdviceScreen extends Component {
     const {status, keyword} = this.state
     let requestData = {
       clinic_id,
-      name: keyword,
+      keyword: keyword,
       offset,
       limit
     }

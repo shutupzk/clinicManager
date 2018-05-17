@@ -19,16 +19,10 @@ export function examinations(state = initState, action = {}) {
   }
 }
 
-export const queryExaminationList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
+export const queryExaminationList = (requestData, arrayType) => async dispatch => {
   try {
-    console.log('limit====', limit)
-    const data = await request('/examination/list', {
-      clinic_id,
-      keyword,
-      offset,
-      limit,
-      status
-    })
+    console.log('limit====', requestData)
+    const data = await request('/examination/list', requestData)
     const docs = data.data || []
     const page_info = data.page_info || {}
     if (arrayType) {
@@ -62,7 +56,7 @@ export const queryExaminationList = ({ clinic_id, keyword, status, offset = 0, l
   }
 }
 
-export const examinationCreate = ({ clinic_id, name, en_name, py_code, idc_code, unit_id, organ, remark, price, cost, status, is_discount }) => async dispatch => {
+export const examinationCreate = ({ clinic_id, name, en_name, py_code, idc_code, unit_name, organ, remark, price, cost, status, is_discount }) => async dispatch => {
   try {
     const data = await request('/examination/create', {
       clinic_id,
@@ -70,7 +64,7 @@ export const examinationCreate = ({ clinic_id, name, en_name, py_code, idc_code,
       en_name,
       py_code,
       idc_code,
-      unit_id,
+      unit_name,
       organ,
       remark,
       price,
@@ -85,7 +79,7 @@ export const examinationCreate = ({ clinic_id, name, en_name, py_code, idc_code,
         en_name,
         py_code,
         idc_code,
-        unit_id,
+        unit_name,
         organ,
         remark,
         price,

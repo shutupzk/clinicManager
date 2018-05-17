@@ -1,5 +1,6 @@
 import { request } from './request'
 const TREATMENT_PROJECT_ADD = 'TREATMENT_PROJECT_ADD'
+const TREATMENT_ARRAY_ADD = 'TREATMENT_ARRAY_ADD'
 
 const initState = {
   data: [],
@@ -10,13 +11,15 @@ const initState = {
 export function treatments(state = initState, action = {}) {
   switch (action.type) {
     case TREATMENT_PROJECT_ADD:
-      return { ...state, data: { ...state.data, ...action.data } }
+      return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
+    case TREATMENT_ARRAY_ADD:
+      return { ...state, data: action.data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }) => async dispatch => {
+export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
     console.log('limit====', limit)
     const data = await request('/treatment/list', {
@@ -27,23 +30,30 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
       status
     })
     const docs = data.data || []
-    let json = {}
-    let unitJson = {}
-    for (let doc of docs) {
-      json[doc.clinic_treatment_id] = doc
-      const { unit_id, unit_name } = doc
-      unitJson[doc.unit_id] = { id: unit_id, name: unit_name }
+    const page_info = data.page_info || {}
+    if (arrayType) {
+      dispatch({
+        type: TREATMENT_ARRAY_ADD,
+        data: docs,
+        page_info
+      })
+    } else {
+      let json = {}
+      let unitJson = {}
+      for (let doc of docs) {
+        json[doc.clinic_treatment_id] = doc
+        const { unit_id, unit_name } = doc
+        unitJson[doc.unit_id] = { id: unit_id, name: unit_name }
+      }
+      dispatch({
+        type: TREATMENT_PROJECT_ADD,
+        data: json
+      })
+      dispatch({
+        type: 'DOSE_UNIT_ADD',
+        data: unitJson
+      })
     }
-    dispatch({
-      type: TREATMENT_PROJECT_ADD,
-      data: json
-    })
-
-    dispatch({
-      type: 'DOSE_UNIT_ADD',
-      data: unitJson
-    })
-
     // array.push({
     //   value: clinic_treatment_id,
     //   label: name,
@@ -58,7 +68,7 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
   }
 }
 
-export const treatmentCreate = ({ clinic_id, name, en_name, py_code, idc_code, unit_id, remark, price, cost, status, is_discount }) => async dispatch => {
+export const treatmentCreate = ({ clinic_id, name, en_name, py_code, idc_code, unit_name, remark, price, cost, status, is_discount }) => async dispatch => {
   try {
     const data = await request('/treatment/create', {
       clinic_id,
@@ -66,7 +76,7 @@ export const treatmentCreate = ({ clinic_id, name, en_name, py_code, idc_code, u
       en_name,
       py_code,
       idc_code,
-      unit_id,
+      unit_name,
       remark,
       price,
       cost,
@@ -80,7 +90,7 @@ export const treatmentCreate = ({ clinic_id, name, en_name, py_code, idc_code, u
         en_name,
         py_code,
         idc_code,
-        unit_id,
+        unit_name,
         remark,
         price,
         cost,
