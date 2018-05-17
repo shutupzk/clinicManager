@@ -53,6 +53,7 @@ import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
 import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
 import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate } from './laboratory_item'
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
+import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 
 // keys
 export {
@@ -85,7 +86,8 @@ export {
   prescriptionChinesePatients,
   cuvetteColors,
   laboratorySamples,
-  laboratoryItems
+  laboratoryItems,
+  prescriptionChinesePatientModels
 }
 
 // actions
@@ -168,5 +170,7 @@ export {
   laboratoryItemCreate,
   prescriptionWesternPatientModels,
   PrescriptionWesternPatientModelList,
-  PrescriptionWesternPatientModelCreate
+  PrescriptionWesternPatientModelCreate,
+  PrescriptionChinesePatientModelCreate,
+  PrescriptionChinesePatientModelList
 }

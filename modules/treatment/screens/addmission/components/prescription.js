@@ -12,8 +12,12 @@ import {
   PrescriptionChinesePatientCreate,
   PrescriptionChinesePatientGet,
   PrescriptionWesternPatientModelCreate,
-  PrescriptionWesternPatientModelList
+  PrescriptionWesternPatientModelList,
+  PrescriptionChinesePatientModelCreate,
+  PrescriptionChinesePatientModelList
 } from '../../../../../ducks'
+
+const places = [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
 
 // 处方
 class MedicalRecordScreen extends Component {
@@ -160,8 +164,18 @@ class MedicalRecordScreen extends Component {
     return array
   }
   getPharmacyOptions() {
-    return [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
+    return places
   }
+
+  getPharmacyName(key) {
+    for (let obj of places) {
+      if (obj.value === key) {
+        return obj.label
+      }
+    }
+    return ''
+  }
+
   getFrequencyOptions() {
     const { frequencies } = this.props
     let array = []
@@ -595,10 +609,12 @@ class MedicalRecordScreen extends Component {
                           route_administration_id,
                           route_administration_name,
                           frequency_id,
-                          frequency_name
+                          frequency_name,
+                          label
                         }) => {
                           let data = {
                             drug_stock_id: value,
+                            drug_name: label,
                             specification,
                             stock_amount,
                             packing_unit_name,
@@ -675,7 +691,10 @@ class MedicalRecordScreen extends Component {
                 <div>
                   <Select
                     value={this.getSelectValue(info.route_administration_id, this.getUsageOptions())}
-                    onChange={({ value }) => this.setCInfoValue(value, 'route_administration_id', 2)}
+                    onChange={({ value, label }) => {
+                      this.setCInfoValue(value, 'route_administration_id', 2)
+                      this.setCInfoValue(label, 'route_administration_name', 2)
+                    }}
                     placeholder='搜索用法'
                     height={38}
                     options={this.getUsageOptions()}
@@ -698,7 +717,10 @@ class MedicalRecordScreen extends Component {
                 <div>
                   <Select
                     value={this.getSelectValue(info.frequency_id, this.getFrequencyOptions())}
-                    onChange={({ value }) => this.setCInfoValue(value, 'frequency_id', 2)}
+                    onChange={({ value, label }) => {
+                      this.setCInfoValue(value, 'frequency_id', 2)
+                      this.setCInfoValue(label, 'frequency_name', 2)
+                    }}
                     placeholder='搜索频次'
                     height={38}
                     options={this.getFrequencyOptions()}
@@ -735,7 +757,13 @@ class MedicalRecordScreen extends Component {
             </button>
           </div>
           <div className={'bottomRight'}>
-            <button>存为模板</button>
+            <button
+              onClick={() => {
+                this.setState({ showSaveCmodel: true })
+              }}
+            >
+              存为模板
+            </button>
             <button>打印病历</button>
           </div>
         </div>
@@ -838,16 +866,16 @@ class MedicalRecordScreen extends Component {
               {wPrescItemArray.map((item, index) => {
                 return (
                   <li style={{ display: 'flex' }} key={index}>
-                    <div style={{ flex: 4 }}>{wPrescItemArray[index].drug_name}</div>
-                    <div style={{ flex: 3 }}>{wPrescItemArray[index].specification}</div>
-                    <div style={{ flex: 2 }}>{wPrescItemArray[index].once_dose}</div>
-                    <div style={{ flex: 3 }}>{wPrescItemArray[index].once_dose_unit_name}</div>
-                    <div style={{ flex: 3 }}>{wPrescItemArray[index].route_administration_name}</div>
-                    <div style={{ flex: 3 }}>{wPrescItemArray[index].frequency_name}</div>
-                    <div style={{ flex: 1 }}>{wPrescItemArray[index].eff_day}</div>
-                    <div style={{ flex: 2 }}>{wPrescItemArray[index].amount}</div>
-                    <div style={{ flex: 3 }}>{wPrescItemArray[index].fetch_address}</div>
-                    <div style={{ flex: 3 }}>{wPrescItemArray[index].illustration}</div>
+                    <div style={{ flex: 4 }}>{item.drug_name}</div>
+                    <div style={{ flex: 3 }}>{item.specification}</div>
+                    <div style={{ flex: 2 }}>{item.once_dose}</div>
+                    <div style={{ flex: 3 }}>{item.once_dose_unit_name}</div>
+                    <div style={{ flex: 3 }}>{item.route_administration_name}</div>
+                    <div style={{ flex: 3 }}>{item.frequency_name}</div>
+                    <div style={{ flex: 1 }}>{item.eff_day}</div>
+                    <div style={{ flex: 2 }}>{item.amount}</div>
+                    <div style={{ flex: 3 }}>{this.getPharmacyName(item.fetch_address)}</div>
+                    <div style={{ flex: 3 }}>{item.illustration}</div>
                   </li>
                 )
               })}
@@ -916,10 +944,15 @@ class MedicalRecordScreen extends Component {
                     <div style={{ flex: 3 }}>{model_name}</div>
                     <div style={{ flex: 4 }}>{drugNames}</div>
                     <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-                    <div style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }} onClick={() => {
-                      let newArray = [...wPrescItemArray, ...items]
-                      this.setState({ wPrescItemArray: newArray, showWmodelList: false })
-                    }}>选择</div>
+                    <div
+                      style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                      onClick={() => {
+                        let newArray = [...wPrescItemArray, ...items]
+                        this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                      }}
+                    >
+                      选择
+                    </div>
                   </li>
                 )
               })}
@@ -935,6 +968,144 @@ class MedicalRecordScreen extends Component {
               this.PrescriptionWesternPatientModelList({ offset, limit, keyword })
             }}
           />
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
+  async PrescriptionChinesePatientModelCreate() {
+    const { PrescriptionChinesePatientModelCreate, personnel_id } = this.props
+    const { selIndex, cPrescItemArray, is_common, model_name } = this.state
+    let info = cPrescItemArray[selIndex].info
+    let array = cPrescItemArray[selIndex].data
+    let items = []
+    for (let obj of array) {
+      const { drug_stock_id, once_dose, once_dose_unit_id, amount, special_illustration, select_once_dose_unit_id } = obj
+      items.push({
+        drug_stock_id: drug_stock_id + '',
+        once_dose: once_dose + '',
+        once_dose_unit_id: (once_dose_unit_id || select_once_dose_unit_id) + '',
+        amount: amount + '',
+        special_illustration: special_illustration + ''
+      })
+    }
+    let error = await PrescriptionChinesePatientModelCreate({ operation_id: personnel_id, is_common, model_name, ...info, items })
+    if (error) {
+      this.refs.myAlert.alert('保存失败', error)
+    } else {
+      this.refs.myAlert.alert('保存成功')
+    }
+  }
+
+  renderSaveCModel() {
+    const { showSaveCmodel } = this.state
+    if (!showSaveCmodel) return
+    const { cPrescItemArray, selIndex } = this.state
+    let array = []
+    let info = {}
+    if (cPrescItemArray[selIndex] !== undefined) {
+      array = cPrescItemArray[selIndex].data
+      info = cPrescItemArray[selIndex].info
+    }
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px', paddingBottom: '20px' }}>
+          <div className='doctorList_top'>
+            <span>中药处方模板</span>
+            <span onClick={() => this.setState({ showSaveCmodel: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板名称</span>
+                <input
+                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                  value={this.state.model_name}
+                  onChange={e => {
+                    let model_name = e.target.value
+                    this.setState({ model_name })
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板类型</span>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '30px', marginTop: '4px' }}>
+                  <input
+                    type='radio'
+                    value={!false}
+                    name='type'
+                    checked={this.state.is_common}
+                    style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }}
+                    onChange={e => {
+                      let is_common = e.target.value
+                      this.setState({ is_common })
+                    }}
+                  />通用
+                  <input
+                    type='radio'
+                    name='type'
+                    value={false}
+                    checked={this.state.is_common}
+                    style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9', marginLeft: '40px' }}
+                    onChange={e => {
+                      let is_common = e.target.value
+                      this.setState({ is_common })
+                    }}
+                  />个人
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 4 }}>药品名称</div>
+                <div style={{ flex: 2 }}>单次剂量</div>
+                <div style={{ flex: 3 }}>剂量单位</div>
+                <div style={{ flex: 3 }}>特殊要求</div>
+                <div style={{ flex: 2 }}>总量</div>
+              </li>
+              {array.map((item, index) => {
+                return (
+                  <li style={{ display: 'flex' }} key={index}>
+                    <div style={{ flex: 4 }}>{item.drug_name}</div>
+                    <div style={{ flex: 4 }}>{item.once_dose}</div>
+                    <div style={{ flex: 4 }}>{item.once_dose_unit_name}</div>
+                    <div style={{ flex: 4 }}>{item.special_illustration}</div>
+                    <div style={{ flex: 4 }}>{item.amount}</div>
+                  </li>
+                )
+              })}
+            </ul>
+            <ul>
+              <li>
+                <div>用法</div>
+                <div>天数</div>
+                <div>总付数</div>
+                <div>频次</div>
+                <div>取药地点</div>
+                <div>服药要求</div>
+              </li>
+              <li>
+                <div style={{ flex: 4 }}>{info.route_administration_name}</div>
+                <div style={{ flex: 4 }}>{info.eff_day}</div>
+                <div style={{ flex: 4 }}>{info.amount}</div>
+                <div style={{ flex: 4 }}>{info.frequency_name}</div>
+                <div style={{ flex: 4 }}>{this.getPharmacyName(info.fetch_address)}</div>
+                <div style={{ flex: 4 }}>{info.medicine_illustration}</div>
+              </li>
+            </ul>
+          </div>
+          <div className='formListBottom' style={{ width: '100%' }}>
+            <div className={'bottomCenter'}>
+              <button className={'save'} onClick={() => this.PrescriptionChinesePatientModelCreate()}>
+                保存
+              </button>
+              <button className={'cancel'} onClick={() => this.setState({ showSaveCmodel: false })}>
+                取消
+              </button>
+            </div>
+          </div>
         </div>
         {this.getStyle()}
       </div>
@@ -1023,6 +1194,7 @@ class MedicalRecordScreen extends Component {
         </div>
         {this.renderSaveWModel()}
         {this.renderWModelList()}
+        {this.renderSaveCModel()}
         {this.getStyle()}
         <Confirm ref='myAlert' />
       </div>
@@ -1203,7 +1375,9 @@ const mapStateToProps = state => {
     frequencies: state.frequencies.data,
     doseUnits: state.doseUnits.data,
     prescriptionWesternPatientModels: state.prescriptionWesternPatientModels.data,
-    wm_page_info: state.prescriptionWesternPatientModels.page_info
+    wm_page_info: state.prescriptionWesternPatientModels.page_info,
+    prescriptionChinesePatientModels: state.prescriptionChinesePatientModels.data,
+    cm_page_info: state.prescriptionChinesePatientModels.page_info
   }
 }
 
@@ -1217,5 +1391,7 @@ export default connect(mapStateToProps, {
   PrescriptionChinesePatientCreate,
   PrescriptionChinesePatientGet,
   PrescriptionWesternPatientModelCreate,
-  PrescriptionWesternPatientModelList
+  PrescriptionWesternPatientModelList,
+  PrescriptionChinesePatientModelCreate,
+  PrescriptionChinesePatientModelList
 })(MedicalRecordScreen)
