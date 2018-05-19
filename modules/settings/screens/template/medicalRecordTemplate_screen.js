@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryOtherCostList } from '../../../../ducks'
+import { queryMedicalModels } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddOtherFeeScreen from './components/addOtherFeeScreen'
 
@@ -37,7 +37,7 @@ class MedicalRecordTemplateScreen extends Component {
   }
   // 获取药品列表
   getDataList({ offset = 0, limit = 10 }) {
-    const {clinic_id, queryOtherCostList} = this.props
+    const {clinic_id, queryMedicalModels} = this.props
     const {is_common, keyword} = this.state
     let requestData = {
       clinic_id,
@@ -49,7 +49,7 @@ class MedicalRecordTemplateScreen extends Component {
       requestData.is_common = is_common
     }
     // console.log('requestData======', requestData)
-    queryOtherCostList(requestData, true)
+    queryMedicalModels(requestData, true)
   }
   // 状态筛选
   getStatusOptions() {
@@ -65,7 +65,6 @@ class MedicalRecordTemplateScreen extends Component {
   }
   // 获取创建人数据
   getOperationList() {
-    
   }
   // 加载右侧表格
   renderRightTable() {
@@ -80,7 +79,7 @@ class MedicalRecordTemplateScreen extends Component {
                 this.setState({keyword: e.target.value})
               }}
             />
-            <div style={{width: '100px', marginLeft: '10px'}}>
+            {/* <div style={{width: '100px', marginLeft: '10px'}}>
               <Select
                 placeholder={'创建人'}
                 height={32}
@@ -89,7 +88,7 @@ class MedicalRecordTemplateScreen extends Component {
                   this.setState({operation_id: value})
                 }}
               />
-            </div>
+            </div> */}
             <div style={{width: '120px', marginLeft: '10px'}}>
               <Select
                 placeholder={'模板类型'}
@@ -347,5 +346,5 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  queryOtherCostList
+  queryMedicalModels
 })(MedicalRecordTemplateScreen)
