@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels, queryMedicalsByPatient } from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient } from '../../../../../ducks'
 // 病历
 class PrescriptionScreen extends Component {
   constructor(props) {
@@ -258,7 +258,7 @@ class PrescriptionScreen extends Component {
 
   // 展示病历模板
   showMedicalModels() {
-    const { medicalModels, medicalModelPage } = this.props
+    const { medicalModels, medicalModelPage, operation_id } = this.props
     if (!this.state.showMedicalModels) return null
     return (
       <div className='mask'>
@@ -274,7 +274,7 @@ class PrescriptionScreen extends Component {
                   this.setState({ model_keyword: e.target.value })
                 }}
               />
-              <button style={{ float: 'none' }} onClick={() => this.props.queryMedicalModels({ keyword: this.state.model_keyword })}>
+              <button style={{ float: 'none' }} onClick={() => this.props.queryMedicalModelsByDoctor({ keyword: this.state.model_keyword, operation_id })}>
                 查询
               </button>
             </div>
@@ -312,7 +312,7 @@ class PrescriptionScreen extends Component {
             limit={medicalModelPage.limit}
             total={medicalModelPage.total}
             onItemClick={({ offset, limit }) => {
-              this.props.queryMedicalModels({ keyword: this.state.model_keyword, offset, limit })
+              this.props.queryMedicalModelsByDoctor({ keyword: this.state.model_keyword, offset, limit, operation_id })
             }}
           />
         </div>
@@ -355,8 +355,9 @@ class PrescriptionScreen extends Component {
 
   // 打开病历模板
   async setMedicalModesl() {
-    const { queryMedicalModels } = this.props
-    await queryMedicalModels({})
+    let {operation_id} = this.props
+    const { queryMedicalModelsByDoctor } = this.props
+    await queryMedicalModelsByDoctor({operation_id})
     this.setState({ showMedicalModels: true })
   }
 
@@ -881,6 +882,7 @@ class PrescriptionScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    operation_id: state.user.data.id,
     triagePatients: state.triagePatients.data,
     clinic_triage_patient_id: state.triagePatients.selectId,
     triage_personnel_id: state.user.data.id,
@@ -892,4 +894,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModels, queryMedicalsByPatient })(PrescriptionScreen)
+export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient })(PrescriptionScreen)
