@@ -48,15 +48,11 @@ class MedicalRecordScreen extends Component {
         data
       })
     }
-
-    console.log('cPrescItemArray ========', cPrescItemArray)
-
     this.setState({ wPrescItemArray, cPrescItemArray })
   }
 
   getCNameOptions() {
     const { drugs } = this.props
-    console.log('drugs ===========', drugs)
     let array = []
     for (let key in drugs) {
       let {
@@ -189,6 +185,7 @@ class MedicalRecordScreen extends Component {
     return array
   }
   getSelectValue(value, array) {
+    console.log('value =======', value, array)
     for (let obj of array) {
       if (obj.value === value) {
         return obj
@@ -582,23 +579,23 @@ class MedicalRecordScreen extends Component {
               <div>特殊要求</div>
               <div>总量</div>
               <div
-                className={'addItem'}
                 onClick={() => {
                   this.addCPresc()
                 }}
+                style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}
               >
                 新增
               </div>
             </li>
             {array.map((item, index) => {
-              let stock_amount = array[index].stock_amount === undefined ? '' : array[index].stock_amount
-              let packing_unit_name = array[index].packing_unit_name || ''
+              let stock_amount = item.stock_amount === undefined ? '' : item.stock_amount
+              let packing_unit_name = item.packing_unit_name || ''
               return (
                 <li key={index}>
                   <div>
                     <div>
                       <Select
-                        value={this.getSelectValue(array[index].drug_stock_id, this.getCNameOptions())}
+                        value={this.getSelectValue(item.drug_stock_id, this.getCNameOptions())}
                         onChange={({
                           value,
                           specification,
@@ -636,14 +633,14 @@ class MedicalRecordScreen extends Component {
                   </div>
                   <div>{stock_amount + ' ' + packing_unit_name}</div>
                   <div>
-                    <input value={array[index].once_dose === undefined ? '' : array[index].once_dose} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
+                    <input value={item.once_dose === undefined ? '' : item.once_dose} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
                   </div>
                   <div>
-                    {array[index].once_dose_unit_id ? (
-                      array[index].once_dose_unit_name
+                    {item.once_dose_unit_id ? (
+                      item.once_dose_unit_name
                     ) : (
                       <Select
-                        value={this.getSelectValue(array[index].select_once_dose_unit_id, this.getUnitoptions())}
+                        value={this.getSelectValue(item.select_once_dose_unit_id, this.getUnitoptions())}
                         onChange={({ value, label }) => {
                           this.setCItemValue(value, index, 'select_once_dose_unit_id', 2)
                           this.setCItemValue(label, index, 'select_once_dose_unit_name', 2)
@@ -656,15 +653,11 @@ class MedicalRecordScreen extends Component {
                     )}
                   </div>
                   <div>
-                    <input
-                      value={array[index].special_illustration === undefined ? '' : array[index].special_illustration}
-                      type='text'
-                      onChange={e => this.setCItemValue(e, index, 'special_illustration')}
-                    />
+                    <input value={item.special_illustration === undefined ? '' : item.special_illustration} type='text' onChange={e => this.setCItemValue(e, index, 'special_illustration')} />
                   </div>
-                  <div>{array[index].amount}</div>
+                  <div>{item.amount}</div>
                   <div
-                    className={'removeItem'}
+                    style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => {
                       this.removecPresc(index)
                     }}
@@ -940,9 +933,9 @@ class MedicalRecordScreen extends Component {
                   drugNames += obj.drug_name + ','
                 }
                 return (
-                  <li style={{ display: 'flex' }} key={index}>
+                  <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
                     <div style={{ flex: 3 }}>{model_name}</div>
-                    <div style={{ flex: 4 }}>{drugNames}</div>
+                    <div style={{ flex: 4, lineHeight: 20, textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{drugNames}</div>
                     <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
@@ -1112,6 +1105,93 @@ class MedicalRecordScreen extends Component {
     )
   }
 
+  PrescriptionChinesePatientModelList(offset, limit, keyword) {
+    const { PrescriptionChinesePatientModelList } = this.props
+    PrescriptionChinesePatientModelList({ offset, limit, keyword })
+  }
+
+  renderCModelList() {
+    const { showCmodelList, selIndex, cPrescItemArray } = this.state
+    if (!showCmodelList) return
+    const { prescriptionChinesePatientModels, cm_page_info } = this.props
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>中药处方模板</span>
+            <span onClick={() => this.setState({ showCmodelList: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板名称</span>
+                <input
+                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                  value={this.state.wmkeyword}
+                  onChange={e => {
+                    let cmkeyword = e.target.value
+                    this.setState({ cmkeyword })
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 3 }}>模板名称</div>
+                <div style={{ flex: 4 }}>项目名称</div>
+                <div style={{ flex: 2 }}>跟新时间</div>
+                <div style={{ flex: 1 }} />
+              </li>
+              {prescriptionChinesePatientModels.map((item, index) => {
+                const { model_name, items, created_time } = item
+                let drugNames = ''
+                for (let obj of items) {
+                  drugNames += obj.drug_name + ','
+                }
+                return (
+                  <li style={{ display: 'flex' }} key={index}>
+                    <div style={{ flex: 3 }}>{model_name}</div>
+                    <div style={{ flex: 4, textAlign: 'left' }}>{drugNames}</div>
+                    <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
+                    <div
+                      style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                      onClick={() => {
+                        let info = { ...item }
+                        delete info.items
+                        let array = item.items || []
+                        console.log('array ==========', array)
+                        let newObj = { ...cPrescItemArray[selIndex] }
+                        newObj.info = { ...newObj.info, ...info }
+                        newObj.data = [...newObj.data, ...array]
+                        let newArray = [...cPrescItemArray]
+                        newArray[selIndex] = newObj
+                        this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                      }}
+                    >
+                      选择
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <PageCard
+            style={{ margin: '0 50px 0 50px', width: '1000px', background: 'rgba(244, 247, 248, 1)' }}
+            offset={cm_page_info.offset}
+            limit={cm_page_info.limit}
+            total={cm_page_info.total}
+            onItemClick={({ offset, limit }) => {
+              const keyword = this.state.cmkeyword
+              this.PrescriptionWesternPatientModelList({ offset, limit, keyword })
+            }}
+          />
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
   getTriagePatient() {
     const { triagePatients, clinic_triage_patient_id } = this.props
     for (let triagePatient of triagePatients) {
@@ -1172,6 +1252,9 @@ class MedicalRecordScreen extends Component {
                   if (selItem === 'wPresc') {
                     this.PrescriptionWesternPatientModelList({})
                     this.setState({ showWmodelList: true })
+                  } else {
+                    this.PrescriptionChinesePatientModelList({})
+                    this.setState({ showCmodelList: true })
                   }
                 }}
               >
@@ -1195,6 +1278,7 @@ class MedicalRecordScreen extends Component {
         {this.renderSaveWModel()}
         {this.renderWModelList()}
         {this.renderSaveCModel()}
+        {this.renderCModelList()}
         {this.getStyle()}
         <Confirm ref='myAlert' />
       </div>
