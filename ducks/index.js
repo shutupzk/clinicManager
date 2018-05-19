@@ -55,6 +55,7 @@ import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate } from '
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
+import {diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate} from './diagnosisTreatment'
 
 // keys
 export {
@@ -89,7 +90,8 @@ export {
   laboratorySamples,
   laboratoryItems,
   prescriptionChinesePatientModels,
-  receiveRecords
+  receiveRecords,
+  diagnosisTreatments
 }
 
 // actions
@@ -175,5 +177,7 @@ export {
   PrescriptionWesternPatientModelCreate,
   PrescriptionChinesePatientModelCreate,
   PrescriptionChinesePatientModelList,
-  queryReceiveRecords
+  queryReceiveRecords,
+  queryDiagnosisTreatmentList,
+  diagnosisTreatmentCreate
 }

@@ -1,8 +1,9 @@
 import { request } from './request'
 const OTHER_COST_ADD = 'OTHER_COST_ADD'
+const OTHER_COST_ARRAY = 'OTHER_COST_ARRAY'
 
 const initState = {
-  data: {},
+  data: [],
   page_info: {},
   selectId: null
 }
@@ -11,12 +12,14 @@ export function otherCostS(state = initState, action = {}) {
   switch (action.type) {
     case OTHER_COST_ADD:
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
+    case OTHER_COST_ARRAY:
+      return { ...state, data: action.data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }) => async dispatch => {
+export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
     console.log('limit====', limit)
     const data = await request('/otherCost/list', {
@@ -29,16 +32,24 @@ export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, lim
     console.log('otherCost=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
-    let json = {}
-    for (let doc of docs) {
-      json[doc.clinic_other_cost_id] = doc
-      // json[doc.name] = doc
+    if (arrayType) {
+      dispatch({
+        type: OTHER_COST_ARRAY,
+        data: docs,
+        page_info
+      })
+    } else {
+      let json = {}
+      for (let doc of docs) {
+        json[doc.clinic_other_cost_id] = doc
+        // json[doc.name] = doc
+      }
+      dispatch({
+        type: OTHER_COST_ADD,
+        data: json,
+        page_info
+      })
     }
-    dispatch({
-      type: OTHER_COST_ADD,
-      data: json,
-      page_info
-    })
     return null
   } catch (e) {
     console.log(e)
@@ -46,33 +57,11 @@ export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, lim
   }
 }
 
-export const otherCostsCreate = ({ clinic_id, name, en_name, py_code, unit_id, remark, price, cost, status, is_discount }) => async dispatch => {
+export const otherCostsCreate = (requestData) => async dispatch => {
   try {
-    const data = await request('/otherCost/create', {
-      clinic_id,
-      name,
-      en_name,
-      py_code,
-      unit_id,
-      remark,
-      price,
-      cost,
-      status,
-      is_discount
-    })
+    const data = await request('/otherCost/create', requestData)
     console.log(
-      {
-        clinic_id,
-        name,
-        en_name,
-        py_code,
-        unit_id,
-        remark,
-        price,
-        cost,
-        status,
-        is_discount
-      },
+      requestData,
       data
     )
     if (data.code === '200') return null

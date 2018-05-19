@@ -1,6 +1,6 @@
 import { request } from './request'
-const MATERIAL_PROJECT_ADD = 'MATERIAL_PROJECT_ADD'
-const MATERIAL_ARRAY_ADD = 'MATERIAL_ARRAY_ADD'
+const DIAGNOSIS_TREATMENT_ADD = 'DIAGNOSIS_TREATMENT_ADD'
+const DIAGNOSIS_TREATMENT_ARRAY = 'DIAGNOSIS_TREATMENT_ARRAY'
 
 const initState = {
   data: [],
@@ -8,42 +8,44 @@ const initState = {
   selectId: null
 }
 
-export function materials(state = initState, action = {}) {
+export function diagnosisTreatments(state = initState, action = {}) {
   switch (action.type) {
-    case MATERIAL_PROJECT_ADD:
-      return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
-    case MATERIAL_ARRAY_ADD:
+    case DIAGNOSIS_TREATMENT_ADD:
+      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
+    case DIAGNOSIS_TREATMENT_ARRAY:
       return { ...state, data: action.data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
+export const queryDiagnosisTreatmentList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
     console.log('limit====', limit)
-    const data = await request('/material/list', {
+    const data = await request('/diagnosisTreatment/list', {
       clinic_id,
       keyword,
       offset,
       limit,
       status
     })
+    console.log('otherCost=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     if (arrayType) {
       dispatch({
-        type: MATERIAL_ARRAY_ADD,
+        type: DIAGNOSIS_TREATMENT_ARRAY,
         data: docs,
         page_info
       })
     } else {
       let json = {}
       for (let doc of docs) {
-        json[doc.material_stock_id] = doc
+        json[doc.clinic_other_cost_id] = doc
+        // json[doc.name] = doc
       }
       dispatch({
-        type: MATERIAL_PROJECT_ADD,
+        type: DIAGNOSIS_TREATMENT_ADD,
         data: json,
         page_info
       })
@@ -55,12 +57,9 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
   }
 }
 
-export const materialCreate = (requestData) => async dispatch => {
+export const diagnosisTreatmentCreate = (requestData) => async dispatch => {
   try {
-    console.log(
-      requestData
-    )
-    const data = await request('/material/create', requestData)
+    const data = await request('/diagnosisTreatment/create', requestData)
     console.log(
       requestData,
       data

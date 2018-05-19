@@ -99,6 +99,7 @@ class DoctorListScreen extends Component {
                     <div>
                       <label>
                         <input
+                          readOnly
                           type='radio'
                           checked={doctor.is_appointment}
                         />
@@ -106,6 +107,7 @@ class DoctorListScreen extends Component {
                       </label>
                       <label>
                         <input
+                          readOnly
                           type='radio'
                           checked={!doctor.is_appointment}
                         />
@@ -121,34 +123,6 @@ class DoctorListScreen extends Component {
                     </div>
                   </div>
                 </li>
-                // <li key={index}>
-                //   <div className={'itemTop'}>
-                //     <span>{doctor.name}</span>
-                //   </div>
-                //   <div className={'itemCenter'}>
-                //     <span>
-                //       <a>{showText}编号：</a>
-                //       <a>{doctor.code}</a>
-                //     </span>
-                //     <span>
-                //       <a>所属科室：</a>
-                //       <a>{doctor.department_name}</a>
-                //     </span>
-                //     <span>
-                //       <a>所属诊所：</a>
-                //       <a>{doctor.clinic_name}</a>
-                //     </span>
-                //     <span>
-                //       <a>可否挂号：</a>
-                //       <a>{doctor.is_appointment === true ? '可以' : '不可以'}</a>
-                //     </span>
-                //   </div>
-                //   <div className={'itemBottom'}>
-                //     <span onClick={() => this.showCompleteHealthFile()}>查看</span>
-                //     <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>编辑</span>
-                //     <span onClick={() => this.showCompleteHealthFile()}>删除</span>
-                //   </div>
-                // </li>
               )
             })}
           </ul>

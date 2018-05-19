@@ -80,6 +80,7 @@ class DepartmentListScreen extends Component {
                     <div>
                       <label>
                         <input
+                          readOnly
                           type='radio'
                           checked={depart.is_appointment}
                         />
@@ -87,6 +88,7 @@ class DepartmentListScreen extends Component {
                       </label>
                       <label>
                         <input
+                          readOnly
                           type='radio'
                           checked={!depart.is_appointment}
                         />
