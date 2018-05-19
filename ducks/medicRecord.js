@@ -56,8 +56,8 @@ export const queryMedicalsByPatient = ({ clinic_patient_id, offset = 0, limit = 
   }
 }
 
-export const queryMedicalModels = ({ keyword, offset = 0, limit = 10, is_common }) => async dispatch => {
-  const data = await request('/medicalRecord/model/list', { keyword, offset, limit })
+export const queryMedicalModels = ({ keyword, offset = 0, limit = 10, is_common, operation_id }) => async dispatch => {
+  const data = await request('/medicalRecord/model/list', { keyword, offset, limit, is_common, operation_id })
   const doc = data.data || []
   const page = data.page_info || { offset, limit, total: 0 }
   dispatch({
