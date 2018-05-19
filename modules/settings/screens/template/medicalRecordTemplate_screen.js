@@ -2,7 +2,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryMedicalModels } from '../../../../ducks'
+import {
+  queryMedicalModels,
+  queryDoctorList
+} from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddOtherFeeScreen from './components/addOtherFeeScreen'
 
@@ -65,6 +68,13 @@ class MedicalRecordTemplateScreen extends Component {
   }
   // 获取创建人数据
   getOperationList() {
+    const {clinic_id, queryDoctorList} = this.props
+    let requestData = {
+      clinic_id,
+      offset: 0,
+      limit: 1000
+    }
+    queryDoctorList(requestData)
   }
   // 加载右侧表格
   renderRightTable() {
@@ -79,7 +89,7 @@ class MedicalRecordTemplateScreen extends Component {
                 this.setState({keyword: e.target.value})
               }}
             />
-            {/* <div style={{width: '100px', marginLeft: '10px'}}>
+            <div style={{width: '100px', marginLeft: '10px'}}>
               <Select
                 placeholder={'创建人'}
                 height={32}
@@ -88,7 +98,7 @@ class MedicalRecordTemplateScreen extends Component {
                   this.setState({operation_id: value})
                 }}
               />
-            </div> */}
+            </div>
             <div style={{width: '120px', marginLeft: '10px'}}>
               <Select
                 placeholder={'模板类型'}
@@ -341,10 +351,12 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     otherCostS: state.otherCostS.data,
-    pageInfo: state.otherCostS.page_info
+    pageInfo: state.otherCostS.page_info,
+    doctors: state.doctors.data
   }
 }
 
 export default connect(mapStateToProps, {
-  queryMedicalModels
+  queryMedicalModels,
+  queryDoctorList
 })(MedicalRecordTemplateScreen)
