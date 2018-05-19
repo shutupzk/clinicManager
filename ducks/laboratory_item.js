@@ -1,6 +1,6 @@
 import { request } from './request'
-const LABORATORY_PROJECT_ADD = 'LABORATORY_PROJECT_ADD'
-const LABORATORY_ARRAY_ADD = 'LABORATORY_ARRAY_ADD'
+const LABORATORY_ITEM_ADD = 'LABORATORY_ITEM_ADD'
+const LABORATORY_ITEM_ARRAY_ADD = 'LABORATORY_ITEM_ARRAY_ADD'
 
 const initState = {
   data: [],
@@ -8,21 +8,21 @@ const initState = {
   selectId: null
 }
 
-export function laboratories(state = initState, action = {}) {
+export function laboratoryItems(state = initState, action = {}) {
   switch (action.type) {
-    case LABORATORY_PROJECT_ADD:
+    case LABORATORY_ITEM_ADD:
       return { ...state, data: action.data, page_info: action.page_info }
-    case LABORATORY_ARRAY_ADD:
+    case LABORATORY_ITEM_ARRAY_ADD:
       return { ...state, data: action.data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const queryLaboratoryList = ({ clinic_id, name, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
+export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
-    console.log('limit====', limit, arrayType)
-    const data = await request('/laboratory/list', {
+    console.log('limit====', limit)
+    const data = await request('/laboratory/item/list', {
       clinic_id,
       name,
       offset,
@@ -34,7 +34,7 @@ export const queryLaboratoryList = ({ clinic_id, name, status, offset = 0, limit
     console.log('docs======', docs)
     if (arrayType) {
       dispatch({
-        type: LABORATORY_ARRAY_ADD,
+        type: LABORATORY_ITEM_ADD,
         data: docs,
         page_info
       })
@@ -44,7 +44,7 @@ export const queryLaboratoryList = ({ clinic_id, name, status, offset = 0, limit
         json[doc.clinic_laboratory_id] = doc
       }
       dispatch({
-        type: LABORATORY_PROJECT_ADD,
+        type: LABORATORY_ITEM_ARRAY_ADD,
         data: json,
         page_info
       })
@@ -56,9 +56,12 @@ export const queryLaboratoryList = ({ clinic_id, name, status, offset = 0, limit
   }
 }
 
-export const laboratoryCreate = (requestData) => async dispatch => {
+export const laboratoryItemCreate = ({requestData}) => async dispatch => {
   try {
-    const data = await request('/laboratory/create', requestData)
+    console.log(
+      'requestData', requestData
+    )
+    const data = await request('/laboratory/item/create', requestData)
     console.log(
       requestData,
       data

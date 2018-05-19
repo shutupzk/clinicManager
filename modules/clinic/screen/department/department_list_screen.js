@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
 import { queryDepartmentList, departmentCreate } from '../../../../ducks'
-import moment from 'moment'
+// import moment from 'moment'
 import { PageCard } from '../../../../components'
 
 class DepartmentListScreen extends Component {
@@ -25,7 +25,7 @@ class DepartmentListScreen extends Component {
     this.queryDepartmentList({})
   }
 
-  queryDepartmentList({ keyword, offset = 0, limit = 6 }) {
+  queryDepartmentList({ keyword, offset = 0, limit = 10 }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, offset, limit })
   }
@@ -36,7 +36,7 @@ class DepartmentListScreen extends Component {
 
   showDoctor() {
     if (this.state.pageType !== 1) return null
-    let { departments, page_info } = this.props
+    let { departments, page_info, clinic_name } = this.props
     return (
       <div className={'newList'}>
         <div className={'filterBox'}>
@@ -61,35 +61,40 @@ class DepartmentListScreen extends Component {
         </div>
         <div className={'listContent'}>
           <ul>
+            <li>
+              <div>序号</div>
+              <div>科室编码</div>
+              <div>科室名称</div>
+              <div>所属诊所</div>
+              <div>是否开放预约/挂号</div>
+              <div>操作</div>
+            </li>
             {departments.map((depart, index) => {
               return (
                 <li key={index}>
-                  <div className={'itemTop'}>
-                    <span>{depart.name}</span>
+                  <div>{index + 1}</div>
+                  <div>{depart.code}</div>
+                  <div>{depart.name}</div>
+                  <div>{clinic_name}</div>
+                  <div>
+                    <div>
+                      <label>
+                        <input
+                          type='radio'
+                          checked={depart.is_appointment}
+                        />
+                        是
+                      </label>
+                      <label>
+                        <input
+                          type='radio'
+                          checked={!depart.is_appointment}
+                        />
+                        否
+                      </label>
+                    </div>
                   </div>
-                  <div className={'itemCenter'}>
-                    <span>
-                      <a>科室编号：</a>
-                      <a>{depart.code}</a>
-                    </span>
-                    <span>
-                      <a>可否挂号：</a>
-                      <a>{depart.is_appointment === true ? '可以' : '不可以'}</a>
-                    </span>
-                    <span>
-                      <a>创建时间：</a>
-                      <a>{moment(depart.created_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                    <span>
-                      <a>更新时间：</a>
-                      <a>{moment(depart.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                  </div>
-                  <div className={'itemBottom'}>
-                    <span onClick={() => this.showCompleteHealthFile()}>查看</span>
-                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>编辑</span>
-                    <span onClick={() => this.showCompleteHealthFile()}>删除</span>
-                  </div>
+                  <div>删除</div>
                 </li>
               )
             })}
@@ -237,107 +242,46 @@ class DepartmentListScreen extends Component {
           }
           .listContent {
             float: left;
-            width: 1120px;
+            width: 1100px;
             margin-left: 66px;
             // background: #909090;
           }
           .listContent ul {
             float: left;
             margin: 10px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            width:100%;
+            border-top: 1px solid #d8d8d8;
           }
           .listContent ul li {
-            width: 360px;
-            height: 270px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 7px;
-            margin: 10px 10px 0 0;
-            float: left;
-            display: flex;
-            flex-direction: column;
-          }
-          .itemTop {
-            border-bottom: 2px solid #f4f7f8;
-            margin: 10px 14px 0 14px;
-            height: 37px;
             display: flex;
             flex-direction: row;
-            align-items: center;
-          }
-          .itemTop span:nth-child(1) {
-            width: auto;
-            height: 19px;
-            font-size: 16px;
-            font-family: MicrosoftYaHei;
-            color: rgba(51, 51, 51, 1);
-            margin-left: 12px;
-          }
-          .itemTop span:nth-child(2) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(3) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(4) {
-            width: 60px;
-            height: 20px;
-            border-radius: 10px;
-            float: right;
-            text-align: center;
-          }
-          .itemCenter {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 332px;
-            margin: 10px auto 0 auto;
-            justify-content: center;
-          }
-          .itemCenter span {
-            display: flex;
-            flex-direction: row;
-            height: 35px;
-            line-height: 26px;
-            margin: 0px 0px 0 12px;
-          }
-          .itemCenter span a:nth-child(1) {
-            width: 75px;
-            color: #666666;
-            font-size: 14px;
-          }
-          .itemCenter span a:nth-child(2) {
-            color: #333333;
-            font-size: 14px;
-          }
-          .itemBottom {
             width: 100%;
-            height: 39px;
-            border-top: 2px solid #42b7ba;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
+            height: 40px;
+            margin: 0;
+            border-radius: 0;
             align-items: center;
+            justify-content: center;
+            border-right: 1px solid #d8d8d8;
+            border-bottom: 1px solid #d8d8d8;
           }
-          .itemBottom span {
+          .listContent ul li:nth-child(1) {
+            background: rgba(250,250,250,1);
+            box-shadow: 1px 1px 0px 0px rgba(232,232,232,1);
+          }
+          .listContent ul li>div {
             flex: 1;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            height: 39px;
-            line-height: 39px;
+            height: 40px;
+            border-left: 1px solid #d8d8d8;
+            line-height: 40px;
             text-align: center;
-            cursor:pointer;
           }
-          .itemBottom span:nth-child(1) {
-            border-right: 2px solid #31b0b3;
+          .listContent ul li>div>div{
+            display: flex;
           }
-          .itemBottom span:nth-child(2) {
-            border-right: 2px solid #31b0b3;
+          .listContent ul li>div>div>label{
+            flex: 1;
           }
         `}</style>
       </div>
@@ -500,7 +444,8 @@ const mapStateToProps = state => {
     departments: state.departments.data,
     page_info: state.departments.page_info,
     clinic_id: state.user.data.clinic_id,
-    clinic_code: '00000001'
+    clinic_code: '00000001',
+    clinic_name: state.user.data.clinic_name
   }
 }
 

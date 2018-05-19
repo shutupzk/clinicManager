@@ -237,6 +237,8 @@ class RegistrationAddScreen extends Component {
                 onChange={e => {
                   let newPatient = patient
                   newPatient.birthday = e.target.value.substring(6, 14)
+                  newPatient.sex = (e.target.value.substring(16, 17) % 2) === 0 ? '0' : '1'
+                  // console.log('newPatient.sex=====', newPatient.sex)
                   this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
                 }}
@@ -259,6 +261,21 @@ class RegistrationAddScreen extends Component {
             </li>
             <li style={{ width: '24%' }}>
               <label>
+                年龄：<b style={{ color: 'red' }}> *</b>
+              </label>
+              <input
+                type='text'
+                style={{ width: '120px' }}
+                value={moment().diff(patient.birthday, 'years') + '岁' || ''}
+                onChange={e => {
+                  let newPatient = patient
+                  newPatient.age = e.target.value
+                  this.setState({ patientInfo: newPatient })
+                }}
+              />
+            </li>
+            <li style={{ width: '24%' }}>
+              <label>
                 性别：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
@@ -268,7 +285,7 @@ class RegistrationAddScreen extends Component {
                 <label htmlFor='woman'>女</label>
               </div>
             </li>
-            <li>
+            <li style={{ width: '24%' }}>
               <label>
                 手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
@@ -355,9 +372,9 @@ class RegistrationAddScreen extends Component {
                 <label htmlFor='operate'>术后复诊</label>
               </div>
             </li>
-            <li style={{ width: '100%', cursor: 'pointer' }}>更多：完善健康档案（收起、展开）</li>
+            {/* <li style={{ width: '100%', cursor: 'pointer' }}>更多：完善健康档案（收起、展开）</li> */}
             <li>
-              <label>会员卡号：</label>
+              <label>会员等级：</label>
               <input type='text' onChange={e => this.setPatientInfo(e, 'member_card_number')} />
             </li>
             <li>

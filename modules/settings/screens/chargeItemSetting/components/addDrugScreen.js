@@ -181,12 +181,12 @@ class AddDrugScreen extends Component {
     } else {
       this.setState({dose_form_idFailed: false})
     }
-    if (!data.drug_class_id || data.drug_class_id === '') {
-      this.setState({drug_class_idFailed: true})
+    if (!data.drug_type_id || data.drug_type_id === '') {
+      this.setState({drug_type_idFailed: true})
       // alert(3)
       return false
     } else {
-      this.setState({drug_class_idFailed: false})
+      this.setState({drug_type_idFailed: false})
     }
     if (!data.mini_unit_id || data.mini_unit_id === '') {
       this.setState({mini_unit_idFailed: true})
@@ -511,14 +511,14 @@ class AddDrugScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getDrugClassOptions()}
-                  value={this.getSelectValue(drugInfo.drug_class_id, this.getDrugClassOptions())}
+                  value={this.getSelectValue(drugInfo.drug_type_id, this.getDrugClassOptions())}
                   onInputChange={keyword => {}}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'drug_class_id', 2)
+                    this.setItemValue(value, 'drug_type_id', 2)
                   }}
                 />
               </div>
-              {this.state.drug_class_idFailed || drugInfo.drug_class_id === '' || !drugInfo.drug_class_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.drug_type_idFailed || drugInfo.drug_type_id === '' || !drugInfo.drug_type_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>拼音码</label>

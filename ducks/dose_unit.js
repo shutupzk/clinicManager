@@ -24,7 +24,7 @@ export const queryDoseUnitList = ({ keyword, offset = 0, limit = 6 }) => async d
       offset,
       limit
     })
-    console.log('单位data =====', data)
+    // console.log('单位data =====', data)
     const docs = data.data || []
     let json = {}
     for (let doc of docs) {

@@ -23,7 +23,7 @@ class DoctorListScreen extends Component {
     this.queryDoctorList({ personnel_type: 2 })
   }
 
-  queryDoctorList({ personnel_type, keyword, offset = 0, limit = 6 }) {
+  queryDoctorList({ personnel_type, keyword, offset = 0, limit = 10 }) {
     const { queryDoctorList, clinic_id } = this.props
     queryDoctorList({ clinic_id, personnel_type, keyword, offset, limit })
   }
@@ -78,36 +78,77 @@ class DoctorListScreen extends Component {
         </div>
         <div className={'listContent'}>
           <ul>
+            <li>
+              <div>序号</div>
+              <div>医生编码</div>
+              <div>医生名称</div>
+              <div>所属科室</div>
+              <div>所属诊所</div>
+              <div>是否开放预约/挂号</div>
+              <div>操作</div>
+            </li>
             {doctors.map((doctor, index) => {
               return (
                 <li key={index}>
-                  <div className={'itemTop'}>
-                    <span>{doctor.name}</span>
+                  <div>{index + 1}</div>
+                  <div>{doctor.code}</div>
+                  <div>{doctor.name}</div>
+                  <div>{doctor.department_name}</div>
+                  <div>{doctor.clinic_name}</div>
+                  <div>
+                    <div>
+                      <label>
+                        <input
+                          type='radio'
+                          checked={doctor.is_appointment}
+                        />
+                        是
+                      </label>
+                      <label>
+                        <input
+                          type='radio'
+                          checked={!doctor.is_appointment}
+                        />
+                        否
+                      </label>
+                    </div>
                   </div>
-                  <div className={'itemCenter'}>
-                    <span>
-                      <a>{showText}编号：</a>
-                      <a>{doctor.code}</a>
-                    </span>
-                    <span>
-                      <a>所属科室：</a>
-                      <a>{doctor.department_name}</a>
-                    </span>
-                    <span>
-                      <a>所属诊所：</a>
-                      <a>{doctor.clinic_name}</a>
-                    </span>
-                    <span>
-                      <a>可否挂号：</a>
-                      <a>{doctor.is_appointment === true ? '可以' : '不可以'}</a>
-                    </span>
-                  </div>
-                  <div className={'itemBottom'}>
-                    <span onClick={() => this.showCompleteHealthFile()}>查看</span>
-                    <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>编辑</span>
-                    <span onClick={() => this.showCompleteHealthFile()}>删除</span>
+                  <div>
+                    <div>
+                      <span>编辑</span>
+                      |
+                      <span>删除</span>
+                    </div>
                   </div>
                 </li>
+                // <li key={index}>
+                //   <div className={'itemTop'}>
+                //     <span>{doctor.name}</span>
+                //   </div>
+                //   <div className={'itemCenter'}>
+                //     <span>
+                //       <a>{showText}编号：</a>
+                //       <a>{doctor.code}</a>
+                //     </span>
+                //     <span>
+                //       <a>所属科室：</a>
+                //       <a>{doctor.department_name}</a>
+                //     </span>
+                //     <span>
+                //       <a>所属诊所：</a>
+                //       <a>{doctor.clinic_name}</a>
+                //     </span>
+                //     <span>
+                //       <a>可否挂号：</a>
+                //       <a>{doctor.is_appointment === true ? '可以' : '不可以'}</a>
+                //     </span>
+                //   </div>
+                //   <div className={'itemBottom'}>
+                //     <span onClick={() => this.showCompleteHealthFile()}>查看</span>
+                //     <span onClick={() => this.showChooseDoctor(patient.clinic_triage_patient_id)}>编辑</span>
+                //     <span onClick={() => this.showCompleteHealthFile()}>删除</span>
+                //   </div>
+                // </li>
               )
             })}
           </ul>
@@ -246,108 +287,52 @@ class DoctorListScreen extends Component {
           }
           .listContent {
             float: left;
-            // width: 100%;
-            width: 1120px;
-            // background: #909090;
+            width: 1100px;
             margin-left: 66px;
+            // background: #909090;
           }
           .listContent ul {
             float: left;
-            margin: 10px 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            width:100%;
+            border-top: 1px solid #d8d8d8;
           }
           .listContent ul li {
-            width: 360px;
-            height: 270px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 7px;
-            margin: 10px 10px 0 0;
-            float: left;
-            display: flex;
-            flex-direction: column;
-          }
-          .itemTop {
-            border-bottom: 2px solid #f4f7f8;
-            margin: 10px 14px 0 14px;
-            height: 37px;
             display: flex;
             flex-direction: row;
-            align-items: center;
-          }
-          .itemTop span:nth-child(1) {
-            width: auto;
-            height: 19px;
-            font-size: 16px;
-            font-family: MicrosoftYaHei;
-            color: rgba(51, 51, 51, 1);
-            margin-left: 12px;
-          }
-          .itemTop span:nth-child(2) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(3) {
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            margin: 2px 0 0 12px;
-          }
-          .itemTop span:nth-child(4) {
-            width: 60px;
-            height: 20px;
-            border-radius: 10px;
-            float: right;
-            text-align: center;
-          }
-          .itemCenter {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 332px;
-            margin: 10px auto 0 auto;
-            justify-content: center;
-          }
-          .itemCenter span {
-            display: flex;
-            flex-direction: row;
-            height: 35px;
-            line-height: 26px;
-            margin: 0px 0px 0 12px;
-          }
-          .itemCenter span a:nth-child(1) {
-            width: 75px;
-            color: #666666;
-            font-size: 14px;
-          }
-          .itemCenter span a:nth-child(2) {
-            color: #333333;
-            font-size: 14px;
-          }
-          .itemBottom {
             width: 100%;
-            height: 39px;
-            border-top: 2px solid #42b7ba;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
+            height: 40px;
+            margin: 0;
+            border-radius: 0;
             align-items: center;
+            justify-content: center;
+            border-right: 1px solid #d8d8d8;
+            border-bottom: 1px solid #d8d8d8;
           }
-          .itemBottom span {
+          .listContent ul li:nth-child(1) {
+            background: rgba(250,250,250,1);
+            box-shadow: 1px 1px 0px 0px rgba(232,232,232,1);
+          }
+          .listContent ul li>div {
             flex: 1;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            height: 39px;
-            line-height: 39px;
+            height: 40px;
+            border-left: 1px solid #d8d8d8;
+            line-height: 40px;
             text-align: center;
+          }
+          .listContent ul li>div>div{
+            display: flex;
+            // width:max-content;
+          }
+          .listContent ul li>div>div>label{
+            flex: 1;
+          }
+          .listContent ul li>div>div>span{
+            flex: 1;
             cursor: pointer;
-          }
-          .itemBottom span:nth-child(1) {
-            border-right: 2px solid #31b0b3;
-          }
-          .itemBottom span:nth-child(2) {
-            border-right: 2px solid #31b0b3;
+            color: #2ACDC8;
           }
         `}</style>
       </div>
