@@ -42,7 +42,7 @@ export const queryMedicalRecord = clinic_triage_patient_id => async dispatch => 
 export const queryMedicalsByPatient = ({ clinic_patient_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
     const data = await request('/medicalRecord/listByPid', { clinic_patient_id, offset, limit })
-    const doc = data.data || {}
+    const doc = data.data || []
     const page = data.page_info || { offset, limit, total: 0 }
     dispatch({
       type: MEDICAL_HISTORY_ADD,
