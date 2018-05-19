@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
 import { queryDepartmentList, departmentCreate } from '../../../../ducks'
-import moment from 'moment'
+// import moment from 'moment'
 import { PageCard } from '../../../../components'
 
 class DepartmentListScreen extends Component {
@@ -25,7 +25,7 @@ class DepartmentListScreen extends Component {
     this.queryDepartmentList({})
   }
 
-  queryDepartmentList({ keyword, offset = 0, limit = 6 }) {
+  queryDepartmentList({ keyword, offset = 0, limit = 10 }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, offset, limit })
   }
@@ -72,7 +72,7 @@ class DepartmentListScreen extends Component {
             {departments.map((depart, index) => {
               return (
                 <li key={index}>
-                  <div>{depart.id}</div>
+                  <div>{index + 1}</div>
                   <div>{depart.code}</div>
                   <div>{depart.name}</div>
                   <div>{clinic_name}</div>
@@ -242,23 +242,46 @@ class DepartmentListScreen extends Component {
           }
           .listContent {
             float: left;
-            width: 1120px;
+            width: 1100px;
             margin-left: 66px;
-            background: #909090;
+            // background: #909090;
           }
           .listContent ul {
             float: left;
             margin: 10px 0 0 0;
-          }
-          .listContent ul li {
-            width: 360px;
-            height: 270px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 7px;
-            margin: 10px 10px 0 0;
-            float: left;
             display: flex;
             flex-direction: column;
+            width:100%;
+            border-top: 1px solid #d8d8d8;
+          }
+          .listContent ul li {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 40px;
+            margin: 0;
+            border-radius: 0;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #d8d8d8;
+            border-bottom: 1px solid #d8d8d8;
+          }
+          .listContent ul li:nth-child(1) {
+            background: rgba(250,250,250,1);
+            box-shadow: 1px 1px 0px 0px rgba(232,232,232,1);
+          }
+          .listContent ul li>div {
+            flex: 1;
+            height: 40px;
+            border-left: 1px solid #d8d8d8;
+            line-height: 40px;
+            text-align: center;
+          }
+          .listContent ul li>div>div{
+            display: flex;
+          }
+          .listContent ul li>div>div>label{
+            flex: 1;
           }
         `}</style>
       </div>
