@@ -14,11 +14,12 @@ export default class Confirm extends Component {
     }
   }
 
-  alert(title, content, confirmFun) {
+  alert(title, content, confirmFun, type) {
     this.setState({
       title,
       content,
       showConfirm: true,
+      type,
       confirmFun,
       isAlert: true
     })
