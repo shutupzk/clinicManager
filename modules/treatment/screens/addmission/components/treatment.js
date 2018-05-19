@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, Confirm } from '../../../../../components'
-import { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet } from '../../../../../ducks'
+import { Select, Confirm, PageCard } from '../../../../../components'
+import moment from 'moment'
+import { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet, TreatmentPatientModelCreate, TreatmentPatientModelList } from '../../../../../ducks'
 
 // 病历
 class TreatmentScreen extends Component {
@@ -111,6 +112,26 @@ class TreatmentScreen extends Component {
     }
   }
 
+  async TreatmentPatientModelCreate () {
+    const { TreatmentPatientModelCreate, personnel_id } = this.props
+    const { treatments, model_name, is_common } = this.state
+    let items = []
+    for (let { clinic_treatment_id, times, illustration } of treatments) {
+      items.push({
+        clinic_treatment_id: clinic_treatment_id + '',
+        times: times + '',
+        illustration: illustration + ''
+      })
+    }
+    let error = await TreatmentPatientModelCreate({ model_name, is_common, operation_id: personnel_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      this.setState({ showSaveModel: false })
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
   renderSaveModel() {
     const { showSaveModel } = this.state
     if (!showSaveModel) return
@@ -181,7 +202,7 @@ class TreatmentScreen extends Component {
           </div>
           <div className='formListBottom' style={{ width: '100%' }}>
             <div className={'bottomCenter'}>
-              <button className={'save'} onClick={() => this.PrescriptionWesternPatientModelCreate()}>
+              <button className={'save'} onClick={() => this.TreatmentPatientModelCreate()}>
                 保存
               </button>
               <button className={'cancel'}>取消</button>
@@ -193,6 +214,105 @@ class TreatmentScreen extends Component {
     )
   }
 
+  TreatmentPatientModelList ({ keyword, offset, limit }) {
+    const { TreatmentPatientModelList } = this.props
+    TreatmentPatientModelList({ keyword, offset, limit })
+  }
+
+  renderModelList() {
+    const { showModelList, treatments } = this.state
+    if (!showModelList) return
+    const { treatmentPatientModels, page_info } = this.props
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>西/成药处方模板</span>
+            <span onClick={() => this.setState({ showModelList: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板名称</span>
+                <div style={{ display: 'flex', marginTop: '4px', alignItems: 'center' }}>
+                  <input
+                    style={{ background: 'rgba(255,255,255,1)', width: '80%', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                    value={this.state.keyword}
+                    onChange={e => {
+                      let keyword = e.target.value
+                      this.setState({ keyword })
+                    }}
+                  />
+                  <div
+                    style={{
+                      height: '30px',
+                      borderRadius: '4px',
+                      color: '#FFFFFF',
+                      width: '100px',
+                      background: '#2ACDC8',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      lineHeight: '30px',
+                      marginLeft: '10px'
+                    }}
+                    onClick={() => {
+                      const keyword = this.state.keyword
+                      this.TreatmentPatientModelList({ keyword })
+                    }}
+                  >
+                    搜索
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 3 }}>模板名称</div>
+                <div style={{ flex: 4 }}>项目名称</div>
+                <div style={{ flex: 2 }}>跟新时间</div>
+                <div style={{ flex: 1 }} />
+              </li>
+              {treatmentPatientModels.map((item, index) => {
+                const { model_name, items, created_time } = item
+                let names = ''
+                for (let obj of items) {
+                  names += obj.treatment_name + ','
+                }
+                return (
+                  <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
+                    <div style={{ flex: 3 }}>{model_name}</div>
+                    <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{names}</div>
+                    <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
+                    <div
+                      style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                      onClick={() => {
+                        let newArray = [...treatments, ...items]
+                        this.setState({ treatments: newArray, showModelList: false })
+                      }}
+                    >
+                      选择
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <PageCard
+            style={{ margin: '0 50px 0 50px', width: '1000px', background: 'rgba(244, 247, 248, 1)' }}
+            offset={page_info.offset}
+            limit={page_info.limit}
+            total={page_info.total}
+            onItemClick={({ offset, limit }) => {
+              const keyword = this.state.keyword
+              this.TreatmentPatientModelList({ offset, limit, keyword })
+            }}
+          />
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
   getStyle() {
     return (
       <style jsx>
@@ -317,7 +437,10 @@ class TreatmentScreen extends Component {
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>选择模板</button>
+            <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }} onClick={() => {
+              this.TreatmentPatientModelList({})
+              this.setState({ showModelList: true })
+            }}>选择模板</button>
           </div>
           <div className={'alergyBlank'}>
             <div>
@@ -397,6 +520,7 @@ class TreatmentScreen extends Component {
         </div>
         {this.getStyle()}
         {this.renderSaveModel()}
+        {this.renderModelList()}
         <Confirm ref='myAlert' />
       </div>
     )
@@ -411,8 +535,10 @@ const mapStateToProps = state => {
     doseUnits: state.doseUnits.data,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,
-    treatmentPatients: state.treatmentPatients.data
+    treatmentPatients: state.treatmentPatients.data,
+    treatmentPatientModels: state.treatmentPatientModels.data,
+    page_info: state.treatmentPatientModels.page_info
   }
 }
 
-export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet })(TreatmentScreen)
+export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet, TreatmentPatientModelCreate, TreatmentPatientModelList })(TreatmentScreen)
