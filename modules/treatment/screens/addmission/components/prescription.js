@@ -14,10 +14,16 @@ import {
   PrescriptionWesternPatientModelCreate,
   PrescriptionWesternPatientModelList,
   PrescriptionChinesePatientModelCreate,
-  PrescriptionChinesePatientModelList
+  PrescriptionChinesePatientModelList,
+  queryReceiveRecords
 } from '../../../../../ducks'
 
 const places = [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
+const visitType = {
+  '1': '初诊',
+  '2': '复诊',
+  '3': '术后诊'
+}
 
 // 处方
 class MedicalRecordScreen extends Component {
@@ -185,7 +191,6 @@ class MedicalRecordScreen extends Component {
     return array
   }
   getSelectValue(value, array) {
-    console.log('value =======', value, array)
     for (let obj of array) {
       if (obj.value === value) {
         return obj
@@ -551,7 +556,7 @@ class MedicalRecordScreen extends Component {
         special_illustration: special_illustration + ''
       })
     }
-    let error = await PrescriptionChinesePatientCreate({ clinic_triage_patient_id, personnel_id, ...info, items })
+    let error = await PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -908,14 +913,35 @@ class MedicalRecordScreen extends Component {
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <span>模板名称</span>
-                <input
-                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
-                  value={this.state.wmkeyword}
-                  onChange={e => {
-                    let wmkeyword = e.target.value
-                    this.setState({ wmkeyword })
-                  }}
-                />
+                <div style={{ display: 'flex', marginTop: '4px', alignItems: 'center' }}>
+                  <input
+                    style={{ background: 'rgba(255,255,255,1)', width: '80%', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                    value={this.state.wmkeyword}
+                    onChange={e => {
+                      let wmkeyword = e.target.value
+                      this.setState({ wmkeyword })
+                    }}
+                  />
+                  <div
+                    style={{
+                      height: '30px',
+                      borderRadius: '4px',
+                      color: '#FFFFFF',
+                      width: '100px',
+                      background: '#2ACDC8',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      lineHeight: '30px',
+                      marginLeft: '10px'
+                    }}
+                    onClick={() => {
+                      const keyword = this.state.wmkeyword
+                      this.PrescriptionWesternPatientModelList({ keyword })
+                    }}
+                  >
+                    搜索
+                  </div>
+                </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
             </div>
@@ -1105,7 +1131,7 @@ class MedicalRecordScreen extends Component {
     )
   }
 
-  PrescriptionChinesePatientModelList(offset, limit, keyword) {
+  PrescriptionChinesePatientModelList({ offset, limit, keyword }) {
     const { PrescriptionChinesePatientModelList } = this.props
     PrescriptionChinesePatientModelList({ offset, limit, keyword })
   }
@@ -1125,14 +1151,35 @@ class MedicalRecordScreen extends Component {
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <span>模板名称</span>
-                <input
-                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
-                  value={this.state.wmkeyword}
-                  onChange={e => {
-                    let cmkeyword = e.target.value
-                    this.setState({ cmkeyword })
-                  }}
-                />
+                <div style={{ display: 'flex', marginTop: '4px', alignItems: 'center' }}>
+                  <input
+                    style={{ background: 'rgba(255,255,255,1)', width: '80%', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                    value={this.state.wmkeyword}
+                    onChange={e => {
+                      let cmkeyword = e.target.value
+                      this.setState({ cmkeyword })
+                    }}
+                  />
+                  <div
+                    style={{
+                      height: '30px',
+                      borderRadius: '4px',
+                      color: '#FFFFFF',
+                      width: '100px',
+                      background: '#2ACDC8',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      lineHeight: '30px',
+                      marginLeft: '10px'
+                    }}
+                    onClick={() => {
+                      const keyword = this.state.cmkeyword
+                      this.PrescriptionChinesePatientModelList({ keyword })
+                    }}
+                  >
+                    搜索
+                  </div>
+                </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
             </div>
@@ -1160,7 +1207,6 @@ class MedicalRecordScreen extends Component {
                         let info = { ...item }
                         delete info.items
                         let array = item.items || []
-                        console.log('array ==========', array)
                         let newObj = { ...cPrescItemArray[selIndex] }
                         newObj.info = { ...newObj.info, ...info }
                         newObj.data = [...newObj.data, ...array]
@@ -1183,7 +1229,128 @@ class MedicalRecordScreen extends Component {
             total={cm_page_info.total}
             onItemClick={({ offset, limit }) => {
               const keyword = this.state.cmkeyword
-              this.PrescriptionWesternPatientModelList({ offset, limit, keyword })
+              this.PrescriptionChinesePatientModelList({ offset, limit, keyword })
+            }}
+          />
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
+  queryReceiveRecords({ offset, limit, keyword }) {
+    const { queryReceiveRecords } = this.props
+    const triagePatient = this.getTriagePatient()
+    const { clinic_patient_id } = triagePatient
+    if (clinic_patient_id) {
+      queryReceiveRecords({ clinic_patient_id, offset, limit, keyword })
+    }
+  }
+
+  renderHistoryList() {
+    const { showHistory, wPrescItemArray, cPrescItemArray } = this.state
+    if (!showHistory) return
+    const { receiveRecords, rr_page_info, PrescriptionWesternPatientGet, PrescriptionChinesePatientGet } = this.props
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>历史处方</span>
+            <span onClick={() => this.setState({ showHistory: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>诊断名称</span>
+                <div style={{ display: 'flex', marginTop: '4px', alignItems: 'center' }}>
+                  <input
+                    style={{ background: 'rgba(255,255,255,1)', width: '80%', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                    value={this.state.wmkeyword}
+                    onChange={e => {
+                      let zkkeyword = e.target.value
+                      this.setState({ zkkeyword })
+                    }}
+                  />
+                  <div
+                    style={{
+                      height: '30px',
+                      borderRadius: '4px',
+                      color: '#FFFFFF',
+                      width: '100px',
+                      background: '#2ACDC8',
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      lineHeight: '30px',
+                      marginLeft: '10px'
+                    }}
+                    onClick={() => {
+                      const keyword = this.state.zkkeyword
+                      this.queryReceiveRecords({ keyword })
+                    }}
+                  >
+                    搜索
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 3 }}>接诊时间</div>
+                <div style={{ flex: 2 }}>接诊类型</div>
+                <div style={{ flex: 2 }}>接诊科室</div>
+                <div style={{ flex: 2 }}>接诊医生</div>
+                <div style={{ flex: 4 }}>诊断结果</div>
+                <div style={{ flex: 2 }}>是否有西药</div>
+                <div style={{ flex: 2 }}>是否有中药</div>
+                <div style={{ flex: 2 }} />
+              </li>
+              {receiveRecords.map((item, index) => {
+                const { clinic_triage_patient_id, created_time, visit_type, department_name, doctor_name, pcp_count, pwp_count, diagnosis } = item
+                return (
+                  <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
+                    <div style={{ flex: 3 }}>{moment(created_time).format('YYYY-MM-DD HH:mm')}</div>
+                    <div style={{ flex: 2 }}>{visitType[visit_type]}</div>
+                    <div style={{ flex: 2 }}>{department_name}</div>
+                    <div style={{ flex: 2 }}>{doctor_name}</div>
+                    <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{diagnosis}</div>
+                    <div style={{ flex: 2 }}>{pwp_count > 0 ? '有' : '无'}</div>
+                    <div style={{ flex: 2 }}>{pcp_count > 0 ? '有' : '无'}</div>
+                    <div
+                      style={{ flex: 2, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                      onClick={async () => {
+                        let qwPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+                        qwPrescItemArray = qwPrescItemArray || []
+                        let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+                        let qcPrescItemArray = []
+                        for (let obj of array) {
+                          let data = obj.items
+                          let info = { ...obj }
+                          delete info.items
+                          delete info.id
+                          qcPrescItemArray.push({
+                            info,
+                            data
+                          })
+                        }
+                        this.setState({ wPrescItemArray: [...wPrescItemArray, ...qwPrescItemArray], cPrescItemArray: [...cPrescItemArray, ...qcPrescItemArray], showHistory: false })
+                      }}
+                    >
+                      选择
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <PageCard
+            style={{ margin: '0 50px 0 50px', width: '1000px', background: 'rgba(244, 247, 248, 1)' }}
+            offset={rr_page_info.offset}
+            limit={rr_page_info.limit}
+            total={rr_page_info.total}
+            onItemClick={({ offset, limit }) => {
+              const keyword = this.state.zkkeyword
+              this.queryReceiveRecords({ offset, limit, keyword })
             }}
           />
         </div>
@@ -1260,7 +1427,15 @@ class MedicalRecordScreen extends Component {
               >
                 选择模板
               </button>
-              <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>复制处方</button>
+              <button
+                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
+                onClick={() => {
+                  this.queryReceiveRecords({})
+                  this.setState({ showHistory: true })
+                }}
+              >
+                复制处方
+              </button>
             </div>
           </div>
           <div className={'alergyBlank'}>
@@ -1279,6 +1454,7 @@ class MedicalRecordScreen extends Component {
         {this.renderWModelList()}
         {this.renderSaveCModel()}
         {this.renderCModelList()}
+        {this.renderHistoryList()}
         {this.getStyle()}
         <Confirm ref='myAlert' />
       </div>
@@ -1461,7 +1637,9 @@ const mapStateToProps = state => {
     prescriptionWesternPatientModels: state.prescriptionWesternPatientModels.data,
     wm_page_info: state.prescriptionWesternPatientModels.page_info,
     prescriptionChinesePatientModels: state.prescriptionChinesePatientModels.data,
-    cm_page_info: state.prescriptionChinesePatientModels.page_info
+    cm_page_info: state.prescriptionChinesePatientModels.page_info,
+    receiveRecords: state.receiveRecords.data,
+    rr_page_info: state.receiveRecords.page_info
   }
 }
 
@@ -1477,5 +1655,6 @@ export default connect(mapStateToProps, {
   PrescriptionWesternPatientModelCreate,
   PrescriptionWesternPatientModelList,
   PrescriptionChinesePatientModelCreate,
-  PrescriptionChinesePatientModelList
+  PrescriptionChinesePatientModelList,
+  queryReceiveRecords
 })(MedicalRecordScreen)
