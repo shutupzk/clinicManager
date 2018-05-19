@@ -68,6 +68,18 @@ export const queryMedicalModels = ({ keyword, offset = 0, limit = 10, is_common,
   return doc
 }
 
+export const queryMedicalModelsByDoctor = ({ keyword, offset = 0, limit = 10, is_common, operation_id }) => async dispatch => {
+  const data = await request('/medicalRecord/model/listByOperation', { keyword, offset, limit, is_common, operation_id })
+  const doc = data.data || []
+  const page = data.page_info || { offset, limit, total: 0 }
+  dispatch({
+    type: MEDICAL_MODEL_ADD,
+    data: doc,
+    page
+  })
+  return doc
+}
+
 export const createMedicalRecord = ({
   clinic_triage_patient_id,
   operation_id,
