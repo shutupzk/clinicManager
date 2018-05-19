@@ -582,7 +582,7 @@ class MedicalRecordScreen extends Component {
                 onClick={() => {
                   this.addCPresc()
                 }}
-                style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}
+                style={{ width: '80px', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}
               >
                 新增
               </div>
@@ -657,7 +657,7 @@ class MedicalRecordScreen extends Component {
                   </div>
                   <div>{item.amount}</div>
                   <div
-                    style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                    style={{ width: '80px', color: 'red', cursor: 'pointer', textAlign: 'center' }}
                     onClick={() => {
                       this.removecPresc(index)
                     }}
@@ -935,7 +935,7 @@ class MedicalRecordScreen extends Component {
                 return (
                   <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
                     <div style={{ flex: 3 }}>{model_name}</div>
-                    <div style={{ flex: 4, lineHeight: 20, textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{drugNames}</div>
+                    <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{drugNames}</div>
                     <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
@@ -1152,7 +1152,7 @@ class MedicalRecordScreen extends Component {
                 return (
                   <li style={{ display: 'flex' }} key={index}>
                     <div style={{ flex: 3 }}>{model_name}</div>
-                    <div style={{ flex: 4, textAlign: 'left' }}>{drugNames}</div>
+                    <div style={{ flex: 4, textAlign: 'left', justifyContent: 'start', lineHeight: '20px' }}>{drugNames}</div>
                     <div style={{ flex: 2 }}>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
