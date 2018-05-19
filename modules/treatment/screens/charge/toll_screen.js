@@ -10,10 +10,40 @@ class TollScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1
+      pageType: 1,
+      yb_check: false, // 医保
+      gz_check: false, // 挂账
+      jf_check: false, // 积分
+      djq_check: false, // 抵金券
+      pay_method: 4, // 支付方式,默认现金
+      selectType: 0,
+      discount: '', //  折扣
+      derate: '', // 减免金额
+      bonus_points_money: '', // 抵金券
+      on_credit_money: '', // 挂账
+      medical_money: '', // 医保金额
+      voucher_money: '', // 抵金券
+      charge_money: ''  // 收费金额
     }
   }
   async submit() {
+    const { un_paid_orders_page } = this.props
+    let { selectType, discount, derate, bonus_points_money, on_credit_money, medical_money, voucher_money, charge_money } = this.state
+    let derate_money = selectType === 2 && derate ? derate * 100 : 0
+    let discount_money = selectType === 1 && discount ? Math.ceil(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
+    let bonus_points_money_int = bonus_points_money * 100
+    let on_credit_money_int = on_credit_money * 100
+    let medical_money_int = medical_money * 100
+    let voucher_money_int = voucher_money * 100
+    let charge_money_int = charge_money ? charge_money * 100 : 0
+    let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
+
+    if (charge_money_int < should_money) {
+      return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
+    }
+
+    console.log(un_paid_orders_page.charge_total_fee, derate_money, discount_money, bonus_points_money_int, on_credit_money_int, medical_money_int, voucher_money_int, should_money, charge_money_int)
+
     this.refs.myAlert.confirm('确定缴费？', '', 'Success', async () => {
       this.refs.myAlert.alert(`缴费成功！`)
     })
@@ -137,6 +167,80 @@ class TollScreen extends Component {
       </div>
     )
   }
+  // 选择是折扣 还是 减免
+  selectType(value) {
+    let type = this.state.selectType
+    if (type !== value) {
+      let set = { selectType: value }
+      if (value === 1) set.derate = ''
+      else set.discount = ''
+      this.setState({ ...set })
+    } else {
+      this.setState({ selectType: 0, discount: '', derate: '' })
+    }
+  }
+
+  //  设置折扣金额
+  setDiscount(discountRate) {
+    let value = discountRate.replace(/[^0-9]+/, '')
+    if (value === '') return this.setState({ discount: '' })
+    value *= 1
+    if (value <= 0 || value >= 100) return null
+    this.setState({ discount: value })
+  }
+
+  // 格式化金额
+  limitMoney(money) {
+    let value = ''
+    value = money.replace(/[^\d.]/g, '')
+    value = value.replace(/^\./g, '')
+    value = value
+      .replace('.', '$#$')
+      .replace(/\./g, '')
+      .replace('$#$', '.')
+    let valus = value.split('.')
+    if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
+    return value
+  }
+
+  // 设置选择
+  setCheck(type) {
+    let { yb_check, gz_check, jf_check, djq_check } = this.state
+    switch (type) {
+      case 1: {
+        let set = { yb_check: !yb_check }
+        if (yb_check) set.medical_money = ''
+        this.setState(set)
+        break
+      }
+      case 2: {
+        let set = { gz_check: !gz_check }
+        if (gz_check) set.on_credit_money = ''
+        this.setState(set)
+        break
+      }
+      case 3: {
+        let set = { jf_check: !jf_check }
+        if (jf_check) set.bonus_points_money = ''
+        this.setState(set)
+        break
+      }
+      case 4: {
+        let set = { djq_check: !djq_check }
+        if (djq_check) set.voucher_money = ''
+        this.setState(set)
+        break
+      }
+      default:
+        return null
+    }
+  }
+
+  //  设置减免金额
+  setDerate(derate) {
+    if (derate === '0.00') return null
+    this.setState({ derate: this.limitMoney(derate) })
+  }
   // 结账
   renderBill() {
     if (this.state.pageType !== 2) return ''
@@ -149,6 +253,16 @@ class TollScreen extends Component {
 
     const tradeNo = clinic_id + createTradeNo()
     const orderTime = moment().format('YYYY-MM-DD HH:mm:ss')
+
+    let { selectType, discount, derate, bonus_points_money, on_credit_money, medical_money, voucher_money } = this.state
+    let derate_money = selectType === 2 && derate ? derate * 100 : 0
+    let discount_money = selectType === 1 && discount ? Math.ceil(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
+    let bonus_points_money_int = bonus_points_money * 100
+    let on_credit_money_int = on_credit_money * 100
+    let medical_money_int = medical_money * 100
+    let voucher_money_int = voucher_money * 100
+
+    let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
 
     return (
       <div className={'detailBox'}>
@@ -174,82 +288,112 @@ class TollScreen extends Component {
           <ul>
             <li>
               <label>
-                <input type='radio' />
+                <input type='radio' name='radio' checked={this.state.selectType === 1} onClick={() => this.selectType(1)} />
                 是否有折扣
               </label>
               <div>
-                <input type='text' />%
+                <input type='text' disabled={this.state.selectType !== 1} value={this.state.discount} onChange={e => this.setDiscount(e.target.value)} />%
               </div>
             </li>
             <li>
               <label>
-                <input type='radio' />
+                <input type='radio' name='radio' checked={this.state.selectType === 2} onClick={() => this.selectType(2)} />
                 是否有减免
               </label>
               <div>
-                <input type='text' />元
+                <input type='text' disabled={this.state.selectType !== 2} value={this.state.derate} onChange={e => this.setDerate(e.target.value)} />元
               </div>
             </li>
             <li>
               <label>
-                <input type='checkbox' />
+                <input type='checkbox' checked={this.state.yb_check} onClick={() => this.setCheck(1)} />
                 医保支付
               </label>
               <div>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={this.state.medical_money}
+                  disabled={!this.state.yb_check}
+                  onChange={e => {
+                    this.setState({ medical_money: this.limitMoney(e.target.value) })
+                  }}
+                />元
               </div>
             </li>
             <li>
               <label>
-                <input type='checkbox' />
+                <input type='checkbox' checked={this.state.gz_check} onClick={() => this.setCheck(2)} />
                 挂账金额
               </label>
               <div>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={this.state.on_credit_money}
+                  disabled={!this.state.gz_check}
+                  onChange={e => {
+                    this.setState({ on_credit_money: this.limitMoney(e.target.value) })
+                  }}
+                />元
               </div>
             </li>
             <li>
               <label>
-                <input type='checkbox' />
+                <input type='checkbox' checked={this.state.jf_check} onClick={() => this.setCheck(3)} />
                 积分
               </label>
               <div>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={this.state.bonus_points_money}
+                  disabled={!this.state.jf_check}
+                  onChange={e => {
+                    this.setState({ bonus_points_money: this.limitMoney(e.target.value) })
+                  }}
+                />元
               </div>
             </li>
             <li>
               <label>
-                <input type='checkbox' />
+                <input type='checkbox' checked={this.state.djq_check} onClick={() => this.setCheck(4)} />
                 抵金券
               </label>
               <div>
-                <input type='text' />
+                <input
+                  type='text'
+                  value={this.state.voucher_money}
+                  disabled={!this.state.djq_check}
+                  onChange={e => {
+                    this.setState({ voucher_money: this.limitMoney(e.target.value) })
+                  }}
+                />元
               </div>
             </li>
           </ul>
           <div className={'checkoutPay'}>
-            <span>还需支付80元</span>
+            <span>还需支付 {formatMoney(should_money)} 元</span>
             <div className={'payType'}>
-              <button>支付宝</button>
-              <button>微信</button>
-              <button>银行卡</button>
-              <button>现金</button>
+              <button className={this.state.pay_method === 1 ? 'sel' : ''} onClick={() => this.setState({pay_method: 1})}>支付宝</button>
+              <button className={this.state.pay_method === 2 ? 'sel' : ''} onClick={() => this.setState({pay_method: 2})}>微信</button>
+              <button className={this.state.pay_method === 3 ? 'sel' : ''} onClick={() => this.setState({pay_method: 3})}>银行卡</button>
+              <button className={this.state.pay_method === 4 ? 'sel' : ''} onClick={() => this.setState({pay_method: 4})}>现金</button>
             </div>
             <div className={'receipt'}>
               <div>
                 <label>实际收款</label>
-                <input type='text' />
+                <input type='text' value={this.state.charge_money} onChange={e => this.setState({charge_money: this.limitMoney(e.target.value)})} />
               </div>
               <div>
                 <label>找零</label>
-                <input type='text' />
+                <input type='text' disabled value={this.state.charge_money ? formatMoney(this.state.charge_money * 100 - should_money) : ''} />
               </div>
             </div>
             <div className={'bottomBtn'}>
               <button style={{ float: 'left' }} onClick={() => this.setState({ pageType: 1 })}>
                 返回筛查收费项目
               </button>
-              <button style={{ float: 'right' }} onClick={() => this.submit()}>确定收费</button>
+              <button style={{ float: 'right' }} onClick={() => this.submit()}>
+                确定收费
+              </button>
             </div>
           </div>
         </div>
