@@ -30,7 +30,6 @@ class TreatmentScreen extends Component {
     let array = []
     for (let key in treatments) {
       const { clinic_treatment_id, name, unit_id, unit_name } = treatments[key]
-      console.log(treatments[key])
       array.push({
         value: clinic_treatment_id,
         label: name,
@@ -112,6 +111,205 @@ class TreatmentScreen extends Component {
     }
   }
 
+  renderSaveModel() {
+    const { showSaveModel } = this.state
+    if (!showSaveModel) return
+    const { treatments } = this.state
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>新增治疗模板</span>
+            <span onClick={() => this.setState({ showSaveModel: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', background: 'rgba(244, 247, 248, 1)', height: '80px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板名称</span>
+                <input
+                  style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                  value={this.state.model_name}
+                  onChange={e => {
+                    let model_name = e.target.value
+                    this.setState({ model_name })
+                  }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <span>模板类型</span>
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '30px', marginTop: '4px' }}>
+                  <input
+                    type='radio'
+                    name='type'
+                    checked={this.state.is_common === true}
+                    style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }}
+                    onChange={e => {
+                      this.setState({ is_common: e.target.checked })
+                    }}
+                  />通用
+                  <input
+                    type='radio'
+                    name='type'
+                    checked={this.state.is_common === false}
+                    style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9', marginLeft: '40px' }}
+                    onChange={e => {
+                      this.setState({ is_common: !e.target.checked })
+                    }}
+                  />个人
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+            </div>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 4 }}>名称</div>
+                <div style={{ flex: 3 }}>单位</div>
+                <div style={{ flex: 2 }}>次数</div>
+                <div style={{ flex: 3 }}>说明</div>
+              </li>
+              {treatments.map((item, index) => {
+                return (
+                  <li style={{ display: 'flex' }} key={index}>
+                    <div style={{ flex: 4 }}>{item.name}</div>
+                    <div style={{ flex: 3 }}>{item.unit_name}</div>
+                    <div style={{ flex: 2 }}>{item.times}</div>
+                    <div style={{ flex: 3 }}>{item.illustration}</div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div className='formListBottom' style={{ width: '100%' }}>
+            <div className={'bottomCenter'}>
+              <button className={'save'} onClick={() => this.PrescriptionWesternPatientModelCreate()}>
+                保存
+              </button>
+              <button className={'cancel'}>取消</button>
+            </div>
+          </div>
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
+  getStyle() {
+    return (
+      <style jsx>
+        {`
+          .tableDIV {
+            display: flex;
+            width: 987px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin: 0 65px 65px 47px;
+          }
+          .tableDIV ul {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9e9e9;
+            border-bottom: none;
+          }
+          .tableDIV ul li {
+            display: flex;
+            height: 50px;
+            border-bottom: 1px solid #e9e9e9;
+            line-height: 40px;
+            text-align: center;
+          }
+          .tableDIV ul li:nth-child(1) {
+            background: rgba(247, 247, 247, 1);
+          }
+          .tableDIV ul li > div {
+            flex: 2;
+            border-left: 1px #e9e9e9 dashed;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+          }
+          .tableDIV ul li > div > input {
+            width: 90%;
+            height: 30px;
+            border-radius: 4px;
+            outline-style: none;
+            border: none;
+          }
+          .tableDIV ul li > div:nth-child(1) {
+            flex: 3;
+          }
+          .formListBottom {
+            width: 1000px;
+            margin: 30px auto;
+          }
+          .formListBottom .bottomCenter {
+            margin: 0 auto;
+            display: block;
+            width: 150px;
+          }
+          .formListBottom .bottomCenter button.cancel {
+            width: 70px;
+            height: 26px;
+            background: rgba(167, 167, 167, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: left;
+            cursor: pointer;
+          }
+          .formListBottom .bottomCenter button.save {
+            width: 70px;
+            height: 26px;
+            background: rgba(49, 176, 179, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: right;
+            cursor: pointer;
+          }
+          .formListBottom .bottomRight {
+            float: right;
+            margin-top: -23px;
+          }
+          .formListBottom .bottomRight button {
+            width: 70px;
+            height: 26px;
+            border-radius: 15px;
+            border: 1px solid #2acdc8;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: rgba(49, 176, 179, 1);
+            background: transparent;
+            margin-right: 10px;
+            cursor: pointer;
+          }
+          .alergyBlank {
+            display: flex;
+            flex-direction: row;
+            margin: 0 65px 20px 47px;
+          }
+          .alergyBlank div {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+          .alergyBlank div label {
+            width: 98%;
+          }
+          .alergyBlank div input {
+            width: 100%;
+            height: 30px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            border: 1px solid #d8d8d8;
+            margin-top: 15px;
+          }
+        `}
+      </style>
+    )
+  }
+
   render() {
     const { treatments } = this.state
     const { medicalRecord } = this.props
@@ -146,7 +344,6 @@ class TreatmentScreen extends Component {
               </li>
               {treatments.map((item, index) => {
                 let nameOptions = this.getNameOptions(treatments[index])
-                // let unitoptions = this.getUnitoptions(treatments[index])
                 return (
                   <li key={index}>
                     <div>
@@ -193,123 +390,13 @@ class TreatmentScreen extends Component {
               </button>
             </div>
             <div className={'bottomRight'}>
-              <button>存为模板</button>
+              <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button>
               <button style={{ width: '80px' }}>打印治疗单</button>
             </div>
           </div>
         </div>
-        <style jsx>
-          {`
-            .tableDIV {
-              display: flex;
-              width: 987px;
-              background: rgba(255, 255, 255, 1);
-              border-radius: 4px;
-              margin: 0 65px 65px 47px;
-            }
-            .tableDIV ul {
-              width: 100%;
-              display: flex;
-              flex-direction: column;
-              border: 1px solid #e9e9e9;
-              border-bottom: none;
-            }
-            .tableDIV ul li {
-              display: flex;
-              height: 50px;
-              border-bottom: 1px solid #e9e9e9;
-              line-height: 40px;
-              text-align: center;
-            }
-            .tableDIV ul li:nth-child(1) {
-              background: rgba(247, 247, 247, 1);
-            }
-            .tableDIV ul li > div {
-              flex: 2;
-              border-left: 1px #e9e9e9 dashed;
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: center;
-            }
-            .tableDIV ul li > div > input {
-              width: 90%;
-              height: 30px;
-              border-radius: 4px;
-              outline-style: none;
-              border: none;
-            }
-            .tableDIV ul li > div:nth-child(1) {
-              flex: 3;
-            }
-            .formListBottom {
-              width: 1000px;
-              margin: 30px auto;
-            }
-            .formListBottom .bottomCenter {
-              margin: 0 auto;
-              display: block;
-              width: 150px;
-            }
-            .formListBottom .bottomCenter button.cancel {
-              width: 70px;
-              height: 26px;
-              background: rgba(167, 167, 167, 1);
-              color: rgba(255, 255, 255, 1);
-              border-radius: 15px;
-              border: none;
-              float: left;
-              cursor: pointer;
-            }
-            .formListBottom .bottomCenter button.save {
-              width: 70px;
-              height: 26px;
-              background: rgba(49, 176, 179, 1);
-              color: rgba(255, 255, 255, 1);
-              border-radius: 15px;
-              border: none;
-              float: right;
-              cursor: pointer;
-            }
-            .formListBottom .bottomRight {
-              float: right;
-              margin-top: -23px;
-            }
-            .formListBottom .bottomRight button {
-              width: 70px;
-              height: 26px;
-              border-radius: 15px;
-              border: 1px solid #2acdc8;
-              font-size: 12px;
-              font-family: MicrosoftYaHei;
-              color: rgba(49, 176, 179, 1);
-              background: transparent;
-              margin-right: 10px;
-              cursor: pointer;
-            }
-            .alergyBlank {
-              display: flex;
-              flex-direction: row;
-              margin: 0 65px 20px 47px;
-            }
-            .alergyBlank div {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-            }
-            .alergyBlank div label {
-              width: 98%;
-            }
-            .alergyBlank div input {
-              width: 100%;
-              height: 30px;
-              background: rgba(245, 248, 249, 1);
-              border-radius: 4px;
-              border: 1px solid #d8d8d8;
-              margin-top: 15px;
-            }
-          `}
-        </style>
+        {this.getStyle()}
+        {this.renderSaveModel()}
         <Confirm ref='myAlert' />
       </div>
     )
