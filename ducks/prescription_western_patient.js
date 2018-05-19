@@ -37,7 +37,7 @@ export const PrescriptionWesternPatientGet = ({ clinic_triage_patient_id }) => a
       clinic_triage_patient_id
     })
     console.log(clinic_triage_patient_id)
-    console.log('data ======', data)
+    console.log('PrescriptionWesternPatientGet ======', data)
     if (data.code !== '200') return []
     let docs = data.data || []
     let json_data = {}
