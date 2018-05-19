@@ -54,6 +54,7 @@ import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sampl
 import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate } from './laboratory_item'
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
+import { receiveRecords, queryReceiveRecords } from './receive_records'
 
 // keys
 export {
@@ -87,7 +88,8 @@ export {
   cuvetteColors,
   laboratorySamples,
   laboratoryItems,
-  prescriptionChinesePatientModels
+  prescriptionChinesePatientModels,
+  receiveRecords
 }
 
 // actions
@@ -172,5 +174,6 @@ export {
   PrescriptionWesternPatientModelList,
   PrescriptionWesternPatientModelCreate,
   PrescriptionChinesePatientModelCreate,
-  PrescriptionChinesePatientModelList
+  PrescriptionChinesePatientModelList,
+  queryReceiveRecords
 }
