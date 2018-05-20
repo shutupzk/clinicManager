@@ -573,7 +573,7 @@ class DoctorListScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    doctors: state.doctors.data,
+    doctors: state.doctors.array_data,
     page_info: state.doctors.page_info,
     departments: state.departments.data,
     clinic_id: state.user.data.clinic_id,

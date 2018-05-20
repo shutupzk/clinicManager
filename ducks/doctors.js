@@ -5,6 +5,7 @@ const DOCTOR_SELECT = 'DOCTOR_SELECT'
 
 const initState = {
   data: [],
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -12,7 +13,7 @@ const initState = {
 export function doctors(state = initState, action = {}) {
   switch (action.type) {
     case DOCTOR_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, array_data: action.array_data, page_info: action.page_info }
     case DOCTOR_JSON:
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case DOCTOR_SELECT:
@@ -57,7 +58,7 @@ export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0
     } else {
       dispatch({
         type: DOCTOR_ADD,
-        data: docs,
+        array_data: docs,
         page_info
       })
     }

@@ -4,6 +4,7 @@ const LABORATORY_ARRAY_ADD = 'LABORATORY_ARRAY_ADD'
 
 const initState = {
   data: [],
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -13,7 +14,7 @@ export function laboratories(state = initState, action = {}) {
     case LABORATORY_PROJECT_ADD:
       return { ...state, data: action.data, page_info: action.page_info }
     case LABORATORY_ARRAY_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
       return state
   }
@@ -35,7 +36,7 @@ export const queryLaboratoryList = ({ clinic_id, keyword = '', status, offset = 
     if (arrayType) {
       dispatch({
         type: LABORATORY_ARRAY_ADD,
-        data: docs,
+        array_data: docs,
         page_info
       })
     } else {

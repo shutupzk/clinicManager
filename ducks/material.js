@@ -4,6 +4,7 @@ const MATERIAL_ARRAY_ADD = 'MATERIAL_ARRAY_ADD'
 
 const initState = {
   data: [],
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -13,7 +14,7 @@ export function materials(state = initState, action = {}) {
     case MATERIAL_PROJECT_ADD:
       return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
     case MATERIAL_ARRAY_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
       return state
   }
@@ -34,7 +35,7 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
     if (arrayType) {
       dispatch({
         type: MATERIAL_ARRAY_ADD,
-        data: docs,
+        array_data: docs,
         page_info
       })
     } else {
