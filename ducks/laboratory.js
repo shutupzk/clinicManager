@@ -19,12 +19,12 @@ export function laboratories(state = initState, action = {}) {
   }
 }
 
-export const queryLaboratoryList = ({ clinic_id, name, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
+export const queryLaboratoryList = ({ clinic_id, keyword = '', status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
     console.log('limit====', limit, arrayType)
     const data = await request('/laboratory/list', {
       clinic_id,
-      name,
+      keyword,
       offset,
       limit,
       status

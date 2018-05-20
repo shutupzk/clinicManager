@@ -58,6 +58,7 @@ import { receiveRecords, queryReceiveRecords } from './receive_records'
 import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate } from './diagnosisTreatment'
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
+import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
 
 // keys
 export {
@@ -95,7 +96,8 @@ export {
   receiveRecords,
   diagnosisTreatments,
   treatmentPatientModels,
-  examinationModels
+  examinationModels,
+  laboratoryPatientModels
 }
 
 // actions
@@ -188,5 +190,7 @@ export {
   TreatmentPatientModelList,
   TreatmentPatientModelCreate,
   examinationModelList,
-  examinationModelCreate
+  examinationModelCreate,
+  LaboratoryPatientModelCreate,
+  LaboratoryPersonalPatientModelList
 }

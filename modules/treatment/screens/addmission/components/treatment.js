@@ -28,12 +28,13 @@ class TreatmentScreen extends Component {
 
   getNameOptions(data) {
     const { treatments } = this.props
+    console.log('===treatments =====', treatments)
     let array = []
     for (let key in treatments) {
-      const { clinic_treatment_id, name, unit_id, unit_name } = treatments[key]
+      const { clinic_treatment_id, treatment_name, unit_id, unit_name } = treatments[key]
       array.push({
         value: clinic_treatment_id,
-        label: name,
+        label: treatment_name,
         unit_id,
         unit_name
       })
@@ -191,7 +192,7 @@ class TreatmentScreen extends Component {
               {treatments.map((item, index) => {
                 return (
                   <li style={{ display: 'flex' }} key={index}>
-                    <div style={{ flex: 4 }}>{item.name}</div>
+                    <div style={{ flex: 4 }}>{item.treatment_name}</div>
                     <div style={{ flex: 3 }}>{item.unit_name}</div>
                     <div style={{ flex: 2 }}>{item.times}</div>
                     <div style={{ flex: 3 }}>{item.illustration}</div>
@@ -475,7 +476,7 @@ class TreatmentScreen extends Component {
                           value={this.getSelectValue(treatments[index].clinic_treatment_id, nameOptions)}
                           onChange={({ value, unit_id, label, unit_name }) => {
                             this.setItemValue(value, index, 'clinic_treatment_id', 2)
-                            this.setItemValue(label, index, 'name', 2)
+                            this.setItemValue(label, index, 'treatment_name', 2)
                             this.setItemValue(unit_id, index, 'unit_id', 2)
                             this.setItemValue(unit_name, index, 'unit_name', 2)
                           }}
