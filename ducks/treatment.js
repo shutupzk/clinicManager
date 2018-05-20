@@ -21,7 +21,6 @@ export function treatments(state = initState, action = {}) {
 
 export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
-    console.log('limit====', limit)
     const data = await request('/treatment/list', {
       clinic_id,
       keyword,
@@ -31,6 +30,7 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
     })
     const docs = data.data || []
     const page_info = data.page_info || {}
+    console.log('queryTreatmentList====', docs)
     if (arrayType) {
       dispatch({
         type: TREATMENT_ARRAY_ADD,
@@ -39,19 +39,12 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
       })
     } else {
       let json = {}
-      let unitJson = {}
       for (let doc of docs) {
         json[doc.clinic_treatment_id] = doc
-        const { unit_id, unit_name } = doc
-        unitJson[doc.unit_id] = { id: unit_id, name: unit_name }
       }
       dispatch({
         type: TREATMENT_PROJECT_ADD,
         data: json
-      })
-      dispatch({
-        type: 'DOSE_UNIT_ADD',
-        data: unitJson
       })
     }
     // array.push({
