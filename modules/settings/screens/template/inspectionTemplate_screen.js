@@ -336,7 +336,7 @@ class InspectionTemplateScreen extends Component {
     return (
       <div className={'boxContent'}>
         <div className={'topTitle'}>
-          <span>病历模板</span>
+          <span>检验模板</span>
           {pageType === 1 ? '' : <div className='back2List' onClick={() => this.setState({pageType: 1})}>{'<返回'}</div>}
         </div>
         {pageType === 1 ? this.renderList() : this.showView()}

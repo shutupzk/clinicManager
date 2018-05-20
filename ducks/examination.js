@@ -23,6 +23,7 @@ export const queryExaminationList = (requestData, arrayType) => async dispatch =
   try {
     console.log('limit====', requestData)
     const data = await request('/examination/list', requestData)
+    console.log('data=====', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     if (arrayType) {
