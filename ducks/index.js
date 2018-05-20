@@ -29,7 +29,7 @@ import {
   stopScheduleByID,
   querySchedules
 } from './schedules'
-import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient } from './medicRecord'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
 import { drugs, drugCreate, queryDrugList } from './drug'
 import { examinations, examinationCreate, queryExaminationList } from './examination'
 import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
@@ -55,7 +55,8 @@ import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate } from '
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
-import {diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate} from './diagnosisTreatment'
+import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate } from './diagnosisTreatment'
+import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 
 // keys
 export {
@@ -91,7 +92,8 @@ export {
   laboratoryItems,
   prescriptionChinesePatientModels,
   receiveRecords,
-  diagnosisTreatments
+  diagnosisTreatments,
+  treatmentPatientModels
 }
 
 // actions
@@ -133,6 +135,7 @@ export {
   createMedicalRecordAsModel,
   queryMedicalRecord,
   queryMedicalModels,
+  queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
   queryDrugList,
   drugCreate,
@@ -179,5 +182,7 @@ export {
   PrescriptionChinesePatientModelList,
   queryReceiveRecords,
   queryDiagnosisTreatmentList,
-  diagnosisTreatmentCreate
+  diagnosisTreatmentCreate,
+  TreatmentPatientModelList,
+  TreatmentPatientModelCreate
 }

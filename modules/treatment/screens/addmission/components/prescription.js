@@ -824,24 +824,20 @@ class MedicalRecordScreen extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '30px', marginTop: '4px' }}>
                   <input
                     type='radio'
-                    value={!false}
                     name='type'
-                    checked={this.state.is_common}
+                    checked={this.state.is_common === true}
                     style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }}
                     onChange={e => {
-                      let is_common = e.target.value
-                      this.setState({ is_common })
+                      this.setState({ is_common: e.target.checked })
                     }}
                   />通用
                   <input
                     type='radio'
                     name='type'
-                    value={false}
-                    checked={this.state.is_common}
+                    checked={this.state.is_common === false}
                     style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9', marginLeft: '40px' }}
                     onChange={e => {
-                      let is_common = e.target.value
-                      this.setState({ is_common })
+                      this.setState({ is_common: !e.target.checked })
                     }}
                   />个人
                 </div>
@@ -1052,24 +1048,20 @@ class MedicalRecordScreen extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '30px', marginTop: '4px' }}>
                   <input
                     type='radio'
-                    value={!false}
                     name='type'
-                    checked={this.state.is_common}
+                    checked={this.state.is_common === true}
                     style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9' }}
                     onChange={e => {
-                      let is_common = e.target.value
-                      this.setState({ is_common })
+                      this.setState({ is_common: e.target.checked })
                     }}
                   />通用
                   <input
                     type='radio'
                     name='type'
-                    value={false}
-                    checked={this.state.is_common}
+                    checked={this.state.is_common === false}
                     style={{ background: 'rgba(255,255,255,1)', width: '18px', height: '18px', borderRadius: '4px', border: '1px solid #108EE9', marginLeft: '40px' }}
                     onChange={e => {
-                      let is_common = e.target.value
-                      this.setState({ is_common })
+                      this.setState({ is_common: !e.target.checked })
                     }}
                   />个人
                 </div>
