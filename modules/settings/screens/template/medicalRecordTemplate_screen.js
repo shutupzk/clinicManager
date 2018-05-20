@@ -7,7 +7,8 @@ import {
   queryDoctorList
 } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
-import AddOtherFeeScreen from './components/addOtherFeeScreen'
+import AddMedicalRecordModelScreen from './components/addMedicalRecordModelScreen'
+import moment from 'moment'
 
 class MedicalRecordTemplateScreen extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class MedicalRecordTemplateScreen extends Component {
       pageType: 1,
       keyword: '',
       is_common: '',
+      operation_id: '',
       type: 1,
       relateItem: {},
       alertType: 0
@@ -31,7 +33,7 @@ class MedicalRecordTemplateScreen extends Component {
     let { pageType } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddOtherFeeScreen drugType={1} back2List={() => {
+      2: <AddMedicalRecordModelScreen drugType={1} back2List={() => {
         this.setState({pageType: 1})
         this.getDataList({offset: 0, limit: 10})
       }} />
@@ -41,7 +43,7 @@ class MedicalRecordTemplateScreen extends Component {
   // 获取药品列表
   getDataList({ offset = 0, limit = 10 }) {
     const {clinic_id, queryMedicalModels} = this.props
-    const {is_common, keyword} = this.state
+    const {is_common, keyword, operation_id} = this.state
     let requestData = {
       clinic_id,
       keyword: keyword,
@@ -50,6 +52,9 @@ class MedicalRecordTemplateScreen extends Component {
     }
     if (is_common !== '' && is_common !== -1) {
       requestData.is_common = is_common
+    }
+    if (operation_id !== '' && operation_id !== -1) {
+      requestData.operation_id = operation_id
     }
     // console.log('requestData======', requestData)
     queryMedicalModels(requestData, true)
@@ -64,21 +69,44 @@ class MedicalRecordTemplateScreen extends Component {
   }
   // 创建人筛选
   getOperationOptions() {
-
+    const { doctors } = this.props
+    let array = []
+    for (let key in doctors) {
+      const { name, id } = doctors[key]
+      // console.log(doseForms[key])
+      array.push({
+        value: id,
+        label: name
+      })
+    }
+    return array
   }
   // 获取创建人数据
-  getOperationList() {
+  getOperationList(keyword) {
     const {clinic_id, queryDoctorList} = this.props
     let requestData = {
       clinic_id,
       offset: 0,
-      limit: 1000
+      limit: 1000,
+      // personnel_type: 2,
+      keyword
     }
-    queryDoctorList(requestData)
+    if (keyword) {
+      queryDoctorList(requestData, true)
+    }
+  }
+  // 设置选中显示
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
+      }
+    }
+    return null
   }
   // 加载右侧表格
   renderRightTable() {
-    // const {keyword, status} = this.state
+    const {operation_id} = this.state
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'rightTopFilter'}>
@@ -89,11 +117,13 @@ class MedicalRecordTemplateScreen extends Component {
                 this.setState({keyword: e.target.value})
               }}
             />
-            <div style={{width: '100px', marginLeft: '10px'}}>
+            <div style={{width: '150px', marginLeft: '10px'}}>
               <Select
-                placeholder={'创建人'}
+                placeholder={'请输入创建人'}
                 height={32}
-                options={this.getStatusOptions()}
+                options={this.getOperationOptions()}
+                value={this.getSelectValue(operation_id, this.getOperationOptions())}
+                onInputChange={keyword => { this.getOperationList(keyword) }}
                 onChange={({value}) => {
                   this.setState({operation_id: value})
                 }}
@@ -190,34 +220,28 @@ class MedicalRecordTemplateScreen extends Component {
   }
   // 加载表格
   renderTable() {
-    const { otherCostS, pageInfo } = this.props
-    console.log('otherCostS=====', otherCostS)
+    const { medicalRecordModels, pageInfo } = this.props
+    console.log('medicalRecordModels=====', medicalRecordModels)
     return (
       <div className={'tableContent'}>
         <table>
           <thead>
             <tr>
-              <td style={{flex: 2}}>其他费用名称</td>
-              <td>单位</td>
-              <td>零售价</td>
-              <td>成本价</td>
-              <td style={{flex: 2}}>是否允许折扣</td>
-              <td style={{flex: 2}}>备注</td>
-              <td>状态</td>
+              <td style={{flex: 2}}>模板名称</td>
+              <td>模板类型</td>
+              <td style={{flex: 2}}>创建时间</td>
+              <td>创建人员</td>
               <td style={{flex: 2}}>操作</td>
             </tr>
           </thead>
           <tbody>
-            {otherCostS.map((item, index) => {
+            {medicalRecordModels.map((item, index) => {
               return (
                 <tr key={index}>
-                  <td style={{flex: 2}}>{item.name}</td>
-                  <td>{item.unit_name}</td>
-                  <td>{item.price}</td>
-                  <td>{item.cost}</td>
-                  <td style={{flex: 2}}>{item.is_discount ? '是' : '否'}</td>
-                  <td style={{flex: 2}} title={item.remark}>{item.remark}</td>
-                  <td>{item.status ? '正常' : '停用'}</td>
+                  <td style={{flex: 2}}>{item.model_name}</td>
+                  <td>{item.is_common ? '通用' : '个人'}</td>
+                  <td style={{flex: 2}}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
+                  <td>{item.operation_name}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>
                       <div>修改</div>
@@ -350,8 +374,8 @@ class MedicalRecordTemplateScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    otherCostS: state.otherCostS.data,
-    pageInfo: state.otherCostS.page_info,
+    medicalRecordModels: state.medicalRecords.models,
+    pageInfo: state.medicalRecords.model_page,
     doctors: state.doctors.data
   }
 }

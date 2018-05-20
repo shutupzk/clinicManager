@@ -1,5 +1,6 @@
 import { request } from './request'
 const DOCTOR_ADD = 'DOCTOR_ADD'
+const DOCTOR_JSON = 'DOCTOR_JSON'
 const DOCTOR_SELECT = 'DOCTOR_SELECT'
 
 const initState = {
@@ -12,6 +13,8 @@ export function doctors(state = initState, action = {}) {
   switch (action.type) {
     case DOCTOR_ADD:
       return { ...state, data: action.data, page_info: action.page_info }
+    case DOCTOR_JSON:
+      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case DOCTOR_SELECT:
       return { ...state, selectId: action.selectId }
     default:
@@ -19,7 +22,7 @@ export function doctors(state = initState, action = {}) {
   }
 }
 
-export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0, limit = 6, department_id }) => async dispatch => {
+export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0, limit = 6, department_id }, jsonType) => async dispatch => {
   try {
     console.log('limit====', limit)
     const data = await request('/personnel/list', {
@@ -30,14 +33,34 @@ export const queryDoctorList = ({ clinic_id, personnel_type, keyword, offset = 0
       limit,
       department_id
     })
-    console.log('personnel ======', data)
+    console.log('personnel ======', {
+      clinic_id,
+      personnel_type,
+      keyword,
+      offset,
+      limit,
+      department_id
+    }, data)
     const docs = data.data || []
     const page_info = data.page_info || {}
-    dispatch({
-      type: DOCTOR_ADD,
-      data: docs,
-      page_info
-    })
+    if (jsonType) {
+      let json = {}
+      for (let doc of docs) {
+        json[doc.id] = doc
+        // json[doc.name] = doc
+      }
+      dispatch({
+        type: DOCTOR_JSON,
+        data: json,
+        page_info
+      })
+    } else {
+      dispatch({
+        type: DOCTOR_ADD,
+        data: docs,
+        page_info
+      })
+    }
     return null
   } catch (e) {
     console.log(e)
