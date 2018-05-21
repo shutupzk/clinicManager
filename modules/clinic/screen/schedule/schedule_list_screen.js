@@ -221,8 +221,32 @@ class ScheduleListScreen extends Component {
                           {array.map(({ daySchedule }, index) => (
                             <td key={index}>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>{daySchedule.am.doctor_visit_schedule_id ? '上午' : '休息'}</span>
-                                <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>{daySchedule.pm.doctor_visit_schedule_id ? '下午' : '休息'}</span>
+                                <span
+                                  style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>
+                                  <label>
+                                    <input
+                                      type='checkbox'
+                                      checked={daySchedule.am.doctor_visit_schedule_id}
+                                      onChange={e => {
+
+                                      }}
+                                    />
+                                    {daySchedule.am.doctor_visit_schedule_id ? '上午' : '上午'}
+                                  </label>
+                                </span>
+                                <span
+                                  style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>
+                                  <label>
+                                    <input
+                                      type='checkbox'
+                                      checked={daySchedule.pm.doctor_visit_schedule_id}
+                                      onChange={e => {
+                                        
+                                      }}
+                                    />
+                                    {daySchedule.pm.doctor_visit_schedule_id ? '下午' : '下午'}
+                                  </label>
+                                </span>
                               </div>
                             </td>
                           ))}
@@ -358,7 +382,7 @@ const mapStateToProps = state => {
     canOverride: state.schedules.canOverride,
     needOpen: state.schedules.needOpen,
     departments: state.departments.data,
-    doctors: state.doctors.data
+    doctors: state.doctors.array_data
   }
 }
 
