@@ -28,7 +28,7 @@ import {
   deleteOneUnOpenScheduleByID,
   stopScheduleByID,
   querySchedules,
-  CreateOneSchedule
+  RemoveScheduleByID
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
 import { drugs, drugCreate, queryDrugList } from './drug'
@@ -194,5 +194,5 @@ export {
   examinationModelCreate,
   LaboratoryPatientModelCreate,
   LaboratoryPersonalPatientModelList,
-  CreateOneSchedule
+  RemoveScheduleByID
 }
