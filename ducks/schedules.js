@@ -193,3 +193,17 @@ export const stopScheduleByID = ({ doctor_visit_schedule_id }) => async dispatch
     return e.message
   }
 }
+
+export const CreateOneSchedule = ({ department_id, personnel_id, visit_date, am_pm }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/CreateOneSchedule', {
+      department_id, personnel_id, visit_date, am_pm
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
