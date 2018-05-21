@@ -25,7 +25,7 @@ class DoctorListScreen extends Component {
 
   queryDoctorList({ personnel_type, keyword, offset = 0, limit = 10 }) {
     const { queryDoctorList, clinic_id } = this.props
-    queryDoctorList({ clinic_id, personnel_type, keyword, offset, limit }, true)
+    queryDoctorList({ clinic_id, personnel_type, keyword, offset, limit })
   }
 
   getDepartmentList() {
@@ -55,6 +55,7 @@ class DoctorListScreen extends Component {
       defaultValue = employeeKeyword
     }
     let { doctors } = this.props
+    console.log('doctors====', doctors)
     return (
       <div>
         <div className={'filterBox'}>

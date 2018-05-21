@@ -174,12 +174,12 @@ class AddDrugScreen extends Component {
     } else {
       this.setState({nameFailed: false})
     }
-    if (!data.dose_form_id || data.dose_form_id === '') {
-      this.setState({dose_form_idFailed: true})
+    if (!data.dose_form_name || data.dose_form_name === '') {
+      this.setState({dose_form_nameFailed: true})
       // alert(2)
       return false
     } else {
-      this.setState({dose_form_idFailed: false})
+      this.setState({dose_form_nameFailed: false})
     }
     if (!data.drug_type_id || data.drug_type_id === '') {
       this.setState({drug_type_idFailed: true})
@@ -188,26 +188,26 @@ class AddDrugScreen extends Component {
     } else {
       this.setState({drug_type_idFailed: false})
     }
-    if (!data.mini_unit_id || data.mini_unit_id === '') {
-      this.setState({mini_unit_idFailed: true})
+    if (!data.mini_unit_name || data.mini_unit_name === '') {
+      this.setState({mini_unit_nameFailed: true})
       // alert(4)
       return false
     } else {
-      this.setState({mini_unit_idFailed: false})
+      this.setState({mini_unit_nameFailed: false})
     }
-    if (!data.dose_count_unit_id || data.dose_count_unit_id === '') {
-      this.setState({dose_count_unit_idFailed: true})
+    if (!data.dose_count_unit_name || data.dose_count_unit_name === '') {
+      this.setState({dose_count_unit_nameFailed: true})
       // alert(5)
       return false
     } else {
-      this.setState({dose_count_unit_idFailed: false})
+      this.setState({dose_count_unit_nameFailed: false})
     }
-    if (!data.packing_unit_id || data.packing_unit_id === '') {
-      this.setState({packing_unit_idFailed: true})
+    if (!data.packing_unit_name || data.packing_unit_name === '') {
+      this.setState({packing_unit_nameFailed: true})
       // alert(6)
       return false
     } else {
-      this.setState({packing_unit_idFailed: false})
+      this.setState({packing_unit_nameFailed: false})
     }
     if (!data.ret_price || data.ret_price === '') {
       this.setState({ret_priceFailed: true})
@@ -237,26 +237,26 @@ class AddDrugScreen extends Component {
     } else {
       this.setState({barcodeFailed: false})
     }
-    if (!data.once_dose_unit_id || data.once_dose_unit_id === '') {
-      this.setState({once_dose_unit_idFailed: true})
+    if (!data.once_dose_unit_name || data.once_dose_unit_name === '') {
+      this.setState({once_dose_unit_nameFailed: true})
       // alert(11)
       return false
     } else {
-      this.setState({once_dose_unit_idFailed: false})
+      this.setState({once_dose_unit_nameFailed: false})
     }
-    if (!data.route_administration_id || data.route_administration_id === '') {
-      this.setState({route_administration_idFailed: true})
+    if (!data.route_administration_name || data.route_administration_name === '') {
+      this.setState({route_administration_nameFailed: true})
       // alert(12)
       return false
     } else {
-      this.setState({route_administration_idFailed: false})
+      this.setState({route_administration_nameFailed: false})
     }
-    if (!data.frequency_id || data.frequency_id === '') {
-      this.setState({frequency_idFailed: true})
+    if (!data.frequency_name || data.frequency_name === '') {
+      this.setState({frequency_nameFailed: true})
       // alert(13)
       return false
     } else {
-      this.setState({frequency_idFailed: false})
+      this.setState({frequency_nameFailed: false})
     }
     if (!data.eff_day || data.eff_day === '') {
       this.setState({eff_dayFailed: true})
