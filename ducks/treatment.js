@@ -4,6 +4,7 @@ const TREATMENT_ARRAY_ADD = 'TREATMENT_ARRAY_ADD'
 
 const initState = {
   data: [],
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -13,7 +14,7 @@ export function treatments(state = initState, action = {}) {
     case TREATMENT_PROJECT_ADD:
       return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
     case TREATMENT_ARRAY_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
       return state
   }
@@ -34,7 +35,7 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
     if (arrayType) {
       dispatch({
         type: TREATMENT_ARRAY_ADD,
-        data: docs,
+        array_data: docs,
         page_info
       })
     } else {
@@ -44,7 +45,8 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
       }
       dispatch({
         type: TREATMENT_PROJECT_ADD,
-        data: json
+        data: json,
+        page_info
       })
     }
     // array.push({

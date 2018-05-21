@@ -9,16 +9,16 @@ import {
 import { Select } from '../../../../../components'
 
 // 病历
-class AddTreatmentPatientModelscreen extends Component {
+class AddPrescriptionWesternPatientModelscreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       modelInfo: {
         is_common: false,
         status: false,
-        items: [{}]
+        items: []
       },
-      items: [{}]
+      items: []
     }
   }
 
@@ -550,4 +550,4 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   queryTreatmentList,
   TreatmentPatientModelCreate
-})(AddTreatmentPatientModelscreen)
+})(AddPrescriptionWesternPatientModelscreen)

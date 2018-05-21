@@ -166,6 +166,7 @@ class TreatmentDoctorScreen extends Component {
   renderTable() {
     const { treatments, pageInfo } = this.props
     console.log('treatments=====', treatments)
+    let array = treatments
     return (
       <div className={'tableContent'}>
         <table>
@@ -182,7 +183,7 @@ class TreatmentDoctorScreen extends Component {
             </tr>
           </thead>
           <tbody>
-            {treatments.map((item, index) => {
+            {array.map((item, index) => {
               return (
                 <tr key={index}>
                   <td style={{flex: 2}}>{item.name}</td>
@@ -325,7 +326,7 @@ const mapStateToProps = state => {
   console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
-    treatments: state.treatments.data,
+    treatments: state.treatments.array_data,
     pageInfo: state.treatments.page_info
   }
 }

@@ -4,6 +4,7 @@ const OTHER_COST_ARRAY = 'OTHER_COST_ARRAY'
 
 const initState = {
   data: [],
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -13,7 +14,7 @@ export function otherCostS(state = initState, action = {}) {
     case OTHER_COST_ADD:
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case OTHER_COST_ARRAY:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
       return state
   }
@@ -35,7 +36,7 @@ export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, lim
     if (arrayType) {
       dispatch({
         type: OTHER_COST_ARRAY,
-        data: docs,
+        array_data: docs,
         page_info
       })
     } else {

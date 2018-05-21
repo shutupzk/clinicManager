@@ -327,7 +327,7 @@ class MeterialCostsScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    materials: state.materials.data,
+    materials: state.materials.array_data,
     pageInfo: state.materials.page_info
   }
 }

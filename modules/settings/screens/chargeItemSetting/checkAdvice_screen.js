@@ -331,7 +331,7 @@ class CheckAdviceScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    examinations: state.examinations.data,
+    examinations: state.examinations.array_data,
     pageInfo: state.examinations.page_info
   }
 }
