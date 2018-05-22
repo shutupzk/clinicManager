@@ -4,6 +4,9 @@ import { Select } from '../../../../../components'
 // import Router from 'next/router'
 // import { Select } from '../../../../../components'
 // import {} from '../../../../../ducks'
+import {
+  queryLaboratoryItemList
+} from '../../../../../ducks'
 
 // 病历
 class RelatedItemsScreen extends Component {
@@ -117,9 +120,29 @@ class RelatedItemsScreen extends Component {
     array.splice(index, 1)
     this.setState({ relateItemList: array })
   }
+  queryLaboratoryItemList(name) {
+    const {queryLaboratoryItemList, clinic_id} = this.props
+    queryLaboratoryItemList({name, clinic_id})
+  }
+  // 检验项目筛选
+  getLaboratoryItemOptions() {
+    const { laboratoryItems } = this.props
+    console.log('laboratoryItems=====', laboratoryItems)
+    let array = []
+    for (let key in laboratoryItems) {
+      const { name, clinic_laboratory_item_id } = laboratoryItems[key]
+      // console.log(doseForms[key])
+      array.push({
+        value: clinic_laboratory_item_id,
+        label: name
+      })
+    }
+    return array
+  }
   render() {
     const {relateItem} = this.props
     const {relateItemList} = this.state
+    console.log('relateItem===', relateItem)
     return (
       <div className={'doctorList'}>
         <div className={'doctorList_top'}>
@@ -128,7 +151,7 @@ class RelatedItemsScreen extends Component {
           <span onClick={() => { this.props.closeMask() }}>×</span>
         </div>
         <div className={'formContent'}>
-          <span>{relateItem.name}</span>
+          <span>{relateItem.laboratory_name}</span>
           <ul>
             <li>
               <div>排序号</div>
@@ -154,9 +177,9 @@ class RelatedItemsScreen extends Component {
                       <Select
                         placeholder={'请选择'}
                         height={32}
-                        options={[{value: 1, label: '1'}]}
+                        options={this.getLaboratoryItemOptions()}
                         onChange={() => {}}
-                        onInputChange={keyword => {}}
+                        onInputChange={keyword => { this.queryLaboratoryItemList(keyword) }}
                       />
                     </div>
                   </div>
@@ -184,9 +207,11 @@ class RelatedItemsScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    laboratoryItems: state.laboratoryItems.data
   }
 }
 
 export default connect(mapStateToProps, {
+  queryLaboratoryItemList
 })(RelatedItemsScreen)

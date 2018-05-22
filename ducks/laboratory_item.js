@@ -12,7 +12,7 @@ const initState = {
 export function laboratoryItems(state = initState, action = {}) {
   switch (action.type) {
     case LABORATORY_ITEM_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, data: {...state, ...action.data}, page_info: action.page_info }
     case LABORATORY_ITEM_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
@@ -42,7 +42,7 @@ export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, l
     } else {
       let json = {}
       for (let doc of docs) {
-        json[doc.clinic_laboratory_id] = doc
+        json[doc.clinic_laboratory_item_id] = doc
       }
       dispatch({
         type: LABORATORY_ITEM_ADD,
