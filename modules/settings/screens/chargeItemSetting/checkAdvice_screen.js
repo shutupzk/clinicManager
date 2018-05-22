@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { queryExaminationList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddExaminationScreen from './components/addExaminationScreen'
+import { formatMoney } from '../../../../utils'
 // import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
 class CheckAdviceScreen extends Component {
@@ -194,7 +195,7 @@ class CheckAdviceScreen extends Component {
                 <tr key={index}>
                   <td style={{flex: 2}}>{item.name}</td>
                   <td>{item.unit_name}</td>
-                  <td>{item.price}</td>
+                  <td>{formatMoney(item.price)}</td>
                   <td>{item.py_code}</td>
                   <td style={{flex: 2}}>{item.is_discount ? '是' : '否'}</td>
                   <td>{item.remark}</td>

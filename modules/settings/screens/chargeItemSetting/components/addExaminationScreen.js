@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { examinationCreate, queryDoseUnitList, queryExaminationOrganList, queryExams } from '../../../../../ducks'
+import { limitMoney } from '../../../../../utils'
 
 // 病历
 class AddExaminationScreen extends Component {
@@ -437,7 +438,8 @@ class AddExaminationScreen extends Component {
                   placeholder={'price'}
                   value={examinationInfo.price}
                   onChange={e => {
-                    this.setItemValue(e, 'price')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'price', 2)
                   }}
                 />
               </div>
@@ -451,7 +453,8 @@ class AddExaminationScreen extends Component {
                   placeholder={'cost'}
                   value={examinationInfo.cost}
                   onChange={e => {
-                    this.setItemValue(e, 'cost')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'cost', 2)
                   }}
                 />
               </div>
