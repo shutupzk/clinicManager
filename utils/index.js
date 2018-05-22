@@ -84,7 +84,7 @@ export const getAgeByBirthday = birthday => {
   return `${years}岁`
 }
 
-// 格式化钱 元->分
+// 格式化钱 分->元
 export const formatMoney = money => {
   if (money === undefined) return ''
   return (money / 100).toFixed(2)
