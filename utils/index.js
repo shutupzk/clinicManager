@@ -89,6 +89,20 @@ export const formatMoney = money => {
   return (money / 100).toFixed(2)
 }
 
+// 限制只能输入金额
+export const limitMoney = (money) => {
+  let value = ''
+  value = money.replace(/[^\d.]/g, '')
+  value = value.replace(/^\./g, '')
+  value = value
+    .replace('.', '$#$')
+    .replace(/\./g, '')
+    .replace('$#$', '.')
+  let valus = value.split('.')
+  if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
+  return value
+}
+
 export const createTradeNo = () => {
   let sec = moment().format('YYYYMMDDHHmmsss')
   let r2 = (Math.random() + '').substr(4, 3)

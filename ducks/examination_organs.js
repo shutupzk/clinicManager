@@ -3,7 +3,8 @@ const EXAMINATION_ORGAN_ADD = 'EXAMINATION_ORGAN_ADD'
 const EXAMINATION_ORGAN_ARRAY_ADD = 'EXAMINATION_ORGAN_ARRAY_ADD'
 
 const initState = {
-  data: [],
+  data: {},
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -13,7 +14,7 @@ export function examinationOrgans(state = initState, action = {}) {
     case EXAMINATION_ORGAN_ADD:
       return { ...state, data: {...state.data, ...action.data} }
     case EXAMINATION_ORGAN_ARRAY_ADD:
-      return { ...state, data: action.data }
+      return { ...state, array_data: action.array_data }
     default:
       return state
   }
@@ -32,7 +33,7 @@ export const queryExaminationOrganList = ({ keyword, offset = 0, limit = 6 }, ar
     if (arrayType) {
       dispatch({
         type: EXAMINATION_ORGAN_ARRAY_ADD,
-        data: docs
+        array_data: docs
       })
     } else {
       let json = {}

@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { getAgeByBirthday, formatMoney, createTradeNo } from '../../../../utils'
-import { queryUnPaidOrders } from '../../../../ducks'
+import { getAgeByBirthday, formatMoney, createTradeNo, limitMoney } from '../../../../utils'
+import { queryUnPaidOrders, createPayment } from '../../../../ducks'
 import { PageCard, Confirm } from '../../../../components'
 
 class TollScreen extends Component {
@@ -23,29 +23,46 @@ class TollScreen extends Component {
       on_credit_money: '', // 挂账
       medical_money: '', // 医保金额
       voucher_money: '', // 抵金券
-      charge_money: ''  // 收费金额
+      charge_money: '' // 收费金额
     }
   }
   async submit() {
-    const { un_paid_orders_page } = this.props
+    const { un_paid_orders_page, un_paid_orders_ids, charge_unpay_selectId, createPayment, operation_id } = this.props
+    const { pay_method } = this.state
     let { selectType, discount, derate, bonus_points_money, on_credit_money, medical_money, voucher_money, charge_money } = this.state
-    let derate_money = selectType === 2 && derate ? derate * 100 : 0
-    let discount_money = selectType === 1 && discount ? Math.ceil(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
-    let bonus_points_money_int = bonus_points_money * 100
-    let on_credit_money_int = on_credit_money * 100
-    let medical_money_int = medical_money * 100
-    let voucher_money_int = voucher_money * 100
-    let charge_money_int = charge_money ? charge_money * 100 : 0
+    let derate_money = selectType === 2 && derate ? Math.round(derate * 100) : 0
+    let discount_money = selectType === 1 && discount ? Math.round(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
+    let bonus_points_money_int = Math.round(bonus_points_money * 100)
+    let on_credit_money_int = Math.round(on_credit_money * 100)
+    let medical_money_int = Math.round(medical_money * 100)
+    let voucher_money_int = Math.round(voucher_money * 100)
+    let charge_money_int = charge_money ? Math.round(charge_money * 100) : 0
     let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
-
+    console.log(charge_money_int, should_money)
     if (charge_money_int < should_money) {
       return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
     }
 
-    console.log(un_paid_orders_page.charge_total_fee, derate_money, discount_money, bonus_points_money_int, on_credit_money_int, medical_money_int, voucher_money_int, should_money, charge_money_int)
-
     this.refs.myAlert.confirm('确定缴费？', '', 'Success', async () => {
-      this.refs.myAlert.alert(`缴费成功！`)
+      let res = await createPayment({
+        discount_money: discount_money,
+        derate_money: derate_money,
+        medical_money: medical_money_int,
+        on_credit_money: on_credit_money_int,
+        voucher_money: voucher_money_int,
+        bonus_points_money: bonus_points_money_int,
+        clinic_triage_patient_id: charge_unpay_selectId,
+        orders_ids: un_paid_orders_ids,
+        operation_id,
+        pay_method_code: pay_method,
+        balance_money: should_money
+      })
+      if (res && res.code === '200') {
+        this.refs.myAlert.alert(`提交成功！`, '创建缴费单成功！')
+      } else {
+        let msg = (res && res.msg) || '未知错误'
+        this.refs.myAlert.alert(`提交失败！`, msg, null, 'Warning')
+      }
     })
   }
   back() {
@@ -67,7 +84,6 @@ class TollScreen extends Component {
 
     const { charge_unpay, charge_unpay_selectId, un_paid_orders, un_paid_orders_page, un_paid_orders_type } = this.props
     let triagePatient = {}
-
     for (let tp of charge_unpay) {
       if (tp.clinic_triage_patient_id === charge_unpay_selectId) triagePatient = tp
     }
@@ -189,20 +205,6 @@ class TollScreen extends Component {
     this.setState({ discount: value })
   }
 
-  // 格式化金额
-  limitMoney(money) {
-    let value = ''
-    value = money.replace(/[^\d.]/g, '')
-    value = value.replace(/^\./g, '')
-    value = value
-      .replace('.', '$#$')
-      .replace(/\./g, '')
-      .replace('$#$', '.')
-    let valus = value.split('.')
-    if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
-    return value
-  }
-
   // 设置选择
   setCheck(type) {
     let { yb_check, gz_check, jf_check, djq_check } = this.state
@@ -239,7 +241,7 @@ class TollScreen extends Component {
   //  设置减免金额
   setDerate(derate) {
     if (derate === '0.00') return null
-    this.setState({ derate: this.limitMoney(derate) })
+    this.setState({ derate: limitMoney(derate) })
   }
   // 结账
   renderBill() {
@@ -255,12 +257,12 @@ class TollScreen extends Component {
     const orderTime = moment().format('YYYY-MM-DD HH:mm:ss')
 
     let { selectType, discount, derate, bonus_points_money, on_credit_money, medical_money, voucher_money } = this.state
-    let derate_money = selectType === 2 && derate ? derate * 100 : 0
-    let discount_money = selectType === 1 && discount ? Math.ceil(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
-    let bonus_points_money_int = bonus_points_money * 100
-    let on_credit_money_int = on_credit_money * 100
-    let medical_money_int = medical_money * 100
-    let voucher_money_int = voucher_money * 100
+    let derate_money = selectType === 2 && derate ? Math.round(derate * 100) : 0
+    let discount_money = selectType === 1 && discount ? Math.round(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
+    let bonus_points_money_int = Math.round(bonus_points_money * 100)
+    let on_credit_money_int = Math.round(on_credit_money * 100)
+    let medical_money_int = Math.round(medical_money * 100)
+    let voucher_money_int = Math.round(voucher_money * 100)
 
     let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
 
@@ -315,7 +317,7 @@ class TollScreen extends Component {
                   value={this.state.medical_money}
                   disabled={!this.state.yb_check}
                   onChange={e => {
-                    this.setState({ medical_money: this.limitMoney(e.target.value) })
+                    this.setState({ medical_money: limitMoney(e.target.value) })
                   }}
                 />元
               </div>
@@ -331,7 +333,7 @@ class TollScreen extends Component {
                   value={this.state.on_credit_money}
                   disabled={!this.state.gz_check}
                   onChange={e => {
-                    this.setState({ on_credit_money: this.limitMoney(e.target.value) })
+                    this.setState({ on_credit_money: limitMoney(e.target.value) })
                   }}
                 />元
               </div>
@@ -347,7 +349,7 @@ class TollScreen extends Component {
                   value={this.state.bonus_points_money}
                   disabled={!this.state.jf_check}
                   onChange={e => {
-                    this.setState({ bonus_points_money: this.limitMoney(e.target.value) })
+                    this.setState({ bonus_points_money: limitMoney(e.target.value) })
                   }}
                 />元
               </div>
@@ -363,7 +365,7 @@ class TollScreen extends Component {
                   value={this.state.voucher_money}
                   disabled={!this.state.djq_check}
                   onChange={e => {
-                    this.setState({ voucher_money: this.limitMoney(e.target.value) })
+                    this.setState({ voucher_money: limitMoney(e.target.value) })
                   }}
                 />元
               </div>
@@ -372,19 +374,27 @@ class TollScreen extends Component {
           <div className={'checkoutPay'}>
             <span>还需支付 {formatMoney(should_money)} 元</span>
             <div className={'payType'}>
-              <button className={this.state.pay_method === 1 ? 'sel' : ''} onClick={() => this.setState({pay_method: 1})}>支付宝</button>
-              <button className={this.state.pay_method === 2 ? 'sel' : ''} onClick={() => this.setState({pay_method: 2})}>微信</button>
-              <button className={this.state.pay_method === 3 ? 'sel' : ''} onClick={() => this.setState({pay_method: 3})}>银行卡</button>
-              <button className={this.state.pay_method === 4 ? 'sel' : ''} onClick={() => this.setState({pay_method: 4})}>现金</button>
+              <button className={this.state.pay_method === 1 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 1 })}>
+                支付宝
+              </button>
+              <button className={this.state.pay_method === 2 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 2 })}>
+                微信
+              </button>
+              <button className={this.state.pay_method === 3 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 3 })}>
+                银行卡
+              </button>
+              <button className={this.state.pay_method === 4 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 4 })}>
+                现金
+              </button>
             </div>
             <div className={'receipt'}>
               <div>
                 <label>实际收款</label>
-                <input type='text' value={this.state.charge_money} onChange={e => this.setState({charge_money: this.limitMoney(e.target.value)})} />
+                <input type='text' value={this.state.charge_money} onChange={e => this.setState({ charge_money: limitMoney(e.target.value) })} />
               </div>
               <div>
                 <label>找零</label>
-                <input type='text' disabled value={this.state.charge_money ? formatMoney(this.state.charge_money * 100 - should_money) : ''} />
+                <input type='text' disabled value={this.state.charge_money ? formatMoney(Math.round(this.state.charge_money * 100) - should_money) : ''} />
               </div>
             </div>
             <div className={'bottomBtn'}>
@@ -428,13 +438,15 @@ class TollScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    operation_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     charge_unpay: state.charge.charge_unpay,
     charge_unpay_selectId: state.charge.charge_unpay_selectId,
     un_paid_orders: state.charge.un_paid_orders,
     un_paid_orders_page: state.charge.un_paid_orders_page,
+    un_paid_orders_ids: state.charge.un_paid_orders_page.totalIds,
     un_paid_orders_type: state.charge.un_paid_orders_type
   }
 }
 
-export default connect(mapStateToProps, { queryUnPaidOrders })(TollScreen)
+export default connect(mapStateToProps, { queryUnPaidOrders, createPayment })(TollScreen)
