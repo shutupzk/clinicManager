@@ -16,6 +16,7 @@ class LaboratoryScreen extends Component {
   async componentDidMount() {
     const { LaboratoryPatientGet, clinic_triage_patient_id } = this.props
     const laboratories = await LaboratoryPatientGet({ clinic_triage_patient_id })
+    console.log('laboratories =====', laboratories)
     this.setState({ laboratories })
   }
 
@@ -513,7 +514,7 @@ class LaboratoryScreen extends Component {
               </button>
             </div>
             <div className={'bottomRight'}>
-              <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button>
+              {/* <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button> */}
               <button>打印申请单</button>
             </div>
           </div>
