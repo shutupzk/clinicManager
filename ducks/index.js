@@ -58,7 +58,7 @@ import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, 
 import { receiveRecords, queryReceiveRecords } from './receive_records'
 import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate } from './diagnosisTreatment'
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
-import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
+import { examinationModels, examinationModelList, examinationModelCreate, queryExams } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
 
 // keys
@@ -194,5 +194,6 @@ export {
   examinationModelCreate,
   LaboratoryPatientModelCreate,
   LaboratoryPersonalPatientModelList,
-  RemoveScheduleByID
+  RemoveScheduleByID,
+  queryExams
 }
