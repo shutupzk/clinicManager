@@ -64,6 +64,15 @@ export const queryExaminationList = (requestData, arrayType) => async dispatch =
 
 export const examinationCreate = ({ clinic_id, name, en_name, py_code, idc_code, unit_name, organ, remark, price, cost, status, is_discount }) => async dispatch => {
   try {
+    if (price) {
+      price = Math.round(price * 100)
+    }
+    if (cost) {
+      cost = Math.round(cost * 100)
+    }
+
+    console.log('price, cost', price, cost)
+
     const data = await request('/examination/create', {
       clinic_id,
       name,

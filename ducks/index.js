@@ -32,8 +32,8 @@ import {
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
 import { drugs, drugCreate, queryDrugList } from './drug'
-import { examinations, examinationCreate, queryExaminationList } from './examination'
-import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
+import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
+import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
 import { materials, materialCreate, queryMaterialList } from './material'
 import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
 import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
@@ -58,7 +58,7 @@ import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, 
 import { receiveRecords, queryReceiveRecords } from './receive_records'
 import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate } from './diagnosisTreatment'
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
-import { examinationModels, examinationModelList, examinationModelCreate, queryExams } from './examination_models'
+import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
 
 // keys
@@ -196,5 +196,6 @@ export {
   LaboratoryPatientModelCreate,
   LaboratoryPersonalPatientModelList,
   RemoveScheduleByID,
-  queryExams
+  queryExams,
+  queryLaboList
 }
