@@ -15,11 +15,23 @@ const initState = {
 export function charge(state = initState, action = {}) {
   switch (action.type) {
     case CHARGE_UNPAY_ADD:
-      return { ...state, charge_unpay: action.data, charge_unpay_page: action.page_info }
+      return {
+        ...state,
+        charge_unpay: action.data,
+        charge_unpay_page: action.page_info
+      }
     case CHARGE_UNPAY_SELECT:
-      return { ...state, charge_unpay_selectId: action.selectId }
+      return {
+        ...state,
+        charge_unpay_selectId: action.selectId
+      }
     case CHARGE_UNPAID_ADD:
-      return { ...state, un_paid_orders: action.data, un_paid_orders_page: action.page_info, un_paid_orders_type: action.type_total }
+      return {
+        ...state,
+        un_paid_orders: action.data,
+        un_paid_orders_page: action.page_info,
+        un_paid_orders_type: action.type_total
+      }
     default:
       return state
   }
@@ -37,7 +49,11 @@ export const queryChargeUnpayList = ({ start_date, end_date, clinic_id, keyword,
       limit
     })
     const docs = data.data || []
-    const page_info = data.page_info || { offset, limit, total: 0 }
+    const page_info = data.page_info || {
+      offset,
+      limit,
+      total: 0
+    }
     dispatch({
       type: CHARGE_UNPAY_ADD,
       data: docs,
@@ -66,7 +82,11 @@ export const queryUnPaidOrders = ({ clinic_triage_patient_id, offset = 0, limit 
       limit
     })
     const docs = data.data || []
-    const page_info = data.page_info || { offset, limit, total: 0 }
+    const page_info = data.page_info || {
+      offset,
+      limit,
+      total: 0
+    }
     const type_total = data.type_total || []
 
     dispatch({
@@ -75,6 +95,40 @@ export const queryUnPaidOrders = ({ clinic_triage_patient_id, offset = 0, limit 
       page_info,
       type_total
     })
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const createPayment = ({
+  discount_money = 0,
+  derate_money = 0,
+  medical_money = 0,
+  on_credit_money = 0,
+  voucher_money = 0,
+  bonus_points_money = 0,
+  clinic_triage_patient_id,
+  orders_ids,
+  operation_id,
+  pay_method_code,
+  balance_money
+}) => async dispatch => {
+  try {
+    const data = await request('/charge/payment/create', {
+      discount_money,
+      derate_money,
+      medical_money,
+      on_credit_money,
+      voucher_money,
+      bonus_points_money,
+      clinic_triage_patient_id,
+      orders_ids,
+      operation_id,
+      pay_method_code,
+      balance_money
+    })
+    return data
   } catch (e) {
     console.log(e)
     return null
