@@ -172,7 +172,9 @@ class CheckAdviceScreen extends Component {
   }
   // 加载表格
   renderTable() {
-    const { examinations, pageInfo } = this.props
+    let { examinations, pageInfo } = this.props
+    examinations = examinations || []
+    pageInfo = pageInfo || {}
     console.log('examinations=====', examinations)
     return (
       <div className={'tableContent'}>
