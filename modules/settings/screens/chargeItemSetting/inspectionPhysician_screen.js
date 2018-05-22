@@ -190,7 +190,7 @@ class InspectionPhysicianScreen extends Component {
             {laboratories.map((item, index) => {
               return (
                 <tr key={index}>
-                  <td style={{flex: 2}}>{item.name}</td>
+                  <td style={{flex: 2}} title={item.laboratory_name}>{item.laboratory_name}</td>
                   <td>{item.unit_name}</td>
                   <td>{item.price}元</td>
                   <td>{item.py_code}</td>

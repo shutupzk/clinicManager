@@ -1,11 +1,13 @@
 import { request } from './request'
 const LABORATORY_PROJECT_ADD = 'LABORATORY_PROJECT_ADD'
 const LABORATORY_ARRAY_ADD = 'LABORATORY_ARRAY_ADD'
+const LABO_ARRAY_ADD = 'LABO_ARRAY_ADD'
 
 const initState = {
   data: [],
   array_data: [],
   page_info: {},
+  labo_data: [],
   selectId: null
 }
 
@@ -15,6 +17,8 @@ export function laboratories(state = initState, action = {}) {
       return { ...state, data: action.data, page_info: action.page_info }
     case LABORATORY_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
+    case LABO_ARRAY_ADD:
+      return { ...state, labo_data: action.labo_data }
     default:
       return state
   }
@@ -56,9 +60,36 @@ export const queryLaboratoryList = ({ clinic_id, keyword = '', status, offset = 
     return e.message
   }
 }
+export const queryLaboList = ({ keyword = '', offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    console.log('limit====', limit)
+    const data = await request('/dictionaries/Laboratorys', {
+      keyword,
+      offset,
+      limit
+    })
+    const docs = data.data || []
+    // const page_info = data.page_info || {}
+    console.log('docs======', docs)
+    dispatch({
+      type: LABO_ARRAY_ADD,
+      labo_data: docs
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
 
 export const laboratoryCreate = (requestData) => async dispatch => {
   try {
+    if (requestData.price) {
+      requestData.price = Math.round(requestData.price * 100)
+    }
+    if (requestData.cost) {
+      requestData.cost = Math.round(requestData.cost * 100)
+    }
     const data = await request('/laboratory/create', requestData)
     console.log(
       requestData,

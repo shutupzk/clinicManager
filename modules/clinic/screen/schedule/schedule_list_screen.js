@@ -67,7 +67,7 @@ class ScheduleListScreen extends Component {
 
   queryDoctorList({ keyword, limit = 10, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
-    console.log('department_id ========', department_id)
+    // console.log('department_id ========', department_id)
     queryDoctorList({ clinic_id, keyword, limit: 1000, personnel_type: 2, department_id })
   }
 
