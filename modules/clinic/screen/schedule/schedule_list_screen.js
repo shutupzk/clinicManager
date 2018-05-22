@@ -8,7 +8,8 @@ import {
   copyScheduleByDate,
   openScheduleByDate,
   createOneSchedule,
-  RemoveScheduleByID
+  RemoveScheduleByID,
+  stopScheduleByID
 } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard, Select, Confirm } from '../../../../components'
@@ -67,7 +68,7 @@ class ScheduleListScreen extends Component {
   queryDoctorList({ keyword, limit = 10, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
     console.log('department_id ========', department_id)
-    queryDoctorList({ clinic_id, keyword, limit: 10, personnel_type: 2, department_id })
+    queryDoctorList({ clinic_id, keyword, limit: 1000, personnel_type: 2, department_id })
   }
 
   formatDoctorWeekScheduleData(days = []) {
@@ -85,11 +86,11 @@ class ScheduleListScreen extends Component {
             am: {},
             pm: {}
           }
-          for (let { doctor_visit_schedule_id, am_pm } of schedules) {
+          for (let { doctor_visit_schedule_id, am_pm, open_flag, stop_flag } of schedules) {
             if (am_pm === 'a') {
-              daySchedule.am = { doctor_visit_schedule_id }
+              daySchedule.am = { doctor_visit_schedule_id, open_flag, stop_flag }
             } else if (am_pm === 'p') {
-              daySchedule.pm = { doctor_visit_schedule_id }
+              daySchedule.pm = { doctor_visit_schedule_id, open_flag, stop_flag }
             }
           }
           array[i].daySchedule = daySchedule
@@ -157,12 +158,25 @@ class ScheduleListScreen extends Component {
     this.queryListData({})
   }
   // 删除一个排班
-  async RemoveScheduleByID({department_id, personnel_id, visit_date, am_pm}) {
+  async RemoveScheduleByID({doctor_visit_schedule_id}) {
     const {RemoveScheduleByID} = this.props
-    console.log('{department_id, personnel_id, visit_date, am_pm}', {department_id, personnel_id, visit_date, am_pm})
-    let error = await RemoveScheduleByID({department_id, personnel_id, visit_date, am_pm})
+    console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
+    let error = await RemoveScheduleByID({doctor_visit_schedule_id})
     if (error) alert(error)
     this.queryListData({})
+  }
+  // 停止一个排班
+  async stopScheduleByID({doctor_visit_schedule_id}) {
+    const {stopScheduleByID} = this.props
+    console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
+    this.refs.myConfirm.confirm('提示', '是否停诊该号源？', 'Warning', async () => {
+      let err = await stopScheduleByID({doctor_visit_schedule_id})
+      if (err) {
+        return this.refs.myAlert.alert('停诊号源失败', err)
+      }
+      this.refs.myAlert.alert('停诊号源成功')
+      this.queryListData({})
+    })
   }
 
   // 显示日历列表
@@ -239,7 +253,7 @@ class ScheduleListScreen extends Component {
                   <tbody>
                     {scheduleDoctors.map((item, index) => {
                       let array = this.formatDoctorWeekScheduleData(item.date || []) || []
-                      console.log('array====', array)
+                      // console.log('array====', scheduleDoctors, array)
                       return (
                         <tr style={{ height: '58px' }} key={index}>
                           <td>{item.personnel_name}</td>
@@ -248,57 +262,78 @@ class ScheduleListScreen extends Component {
                             <td key={index}>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span
-                                  style={{ flex: 1, color: daySchedule.am.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>
+                                  style={{
+                                    flex: 1,
+                                    color: daySchedule.am.doctor_visit_schedule_id && !daySchedule.am.stop_flag ? '#2ACDC8' : '#999999'
+                                  }}>
                                   <label>
                                     <input
+                                      readOnly={!!daySchedule.am.stop_flag}
                                       type='checkbox'
-                                      checked={daySchedule.am.doctor_visit_schedule_id}
+                                      checked={!!daySchedule.am.doctor_visit_schedule_id && !daySchedule.am.stop_flag}
                                       onChange={e => {
                                         if (e.target.checked) {
-                                          this.createOneSchedule({
-                                            department_id: item.department_id,
-                                            personnel_id: item.personnel_id,
-                                            visit_date: visit_date,
-                                            am_pm: 'a'
-                                          })
+                                          if (!daySchedule.pm.open_flag) {
+                                            this.createOneSchedule({
+                                              department_id: item.department_id,
+                                              personnel_id: item.personnel_id,
+                                              visit_date: visit_date,
+                                              am_pm: 'a'
+                                            })
+                                          } else {
+                                            this.refs.myAlert.alert('已开放号源不能再增加排班')
+                                          }
                                         } else {
-                                          this.RemoveScheduleByID({
-                                            department_id: item.department_id,
-                                            personnel_id: item.personnel_id,
-                                            visit_date: visit_date,
-                                            am_pm: 'a'
-                                          })
+                                          if (!daySchedule.am.open_flag) {
+                                            this.RemoveScheduleByID({
+                                              doctor_visit_schedule_id: daySchedule.am.doctor_visit_schedule_id
+                                            })
+                                          } else {
+                                            this.stopScheduleByID({
+                                              doctor_visit_schedule_id: daySchedule.am.doctor_visit_schedule_id
+                                            })
+                                          }
                                         }
                                       }}
                                     />
                                     {daySchedule.am.doctor_visit_schedule_id ? '上午' : '上午'}
+                                    {daySchedule.am.stop_flag ? <a style={{color: 'red', fontSize: '12px'}}> (已停诊)</a> : ''}
                                   </label>
                                 </span>
                                 <span
-                                  style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id ? '#2ACDC8' : '#999999' }}>
+                                  style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag ? '#2ACDC8' : '#999999' }}>
                                   <label>
                                     <input
+                                      readOnly={!!daySchedule.pm.stop_flag}
                                       type='checkbox'
-                                      checked={daySchedule.pm.doctor_visit_schedule_id}
+                                      checked={!!daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag}
                                       onChange={e => {
                                         if (e.target.checked) {
-                                          this.createOneSchedule({
-                                            department_id: item.department_id,
-                                            personnel_id: item.personnel_id,
-                                            visit_date: visit_date,
-                                            am_pm: 'p'
-                                          })
+                                          if (!daySchedule.pm.open_flag) {
+                                            this.createOneSchedule({
+                                              department_id: item.department_id,
+                                              personnel_id: item.personnel_id,
+                                              visit_date: visit_date,
+                                              am_pm: 'p'
+                                            })
+                                          } else {
+                                            this.refs.myAlert.alert('已开放号源不能再增加排班')
+                                          }
                                         } else {
-                                          this.RemoveScheduleByID({
-                                            department_id: item.department_id,
-                                            personnel_id: item.personnel_id,
-                                            visit_date: visit_date,
-                                            am_pm: 'p'
-                                          })
+                                          if (!daySchedule.pm.open_flag) {
+                                            this.RemoveScheduleByID({
+                                              doctor_visit_schedule_id: daySchedule.pm.doctor_visit_schedule_id
+                                            })
+                                          } else {
+                                            this.stopScheduleByID({
+                                              doctor_visit_schedule_id: daySchedule.pm.doctor_visit_schedule_id
+                                            })
+                                          }
                                         }
                                       }}
                                     />
                                     {daySchedule.pm.doctor_visit_schedule_id ? '下午' : '下午'}
+                                    {daySchedule.pm.stop_flag ? <a style={{color: 'red', fontSize: '12px'}}> (已停诊)</a> : ''}
                                   </label>
                                 </span>
                               </div>
@@ -447,5 +482,6 @@ export default connect(mapStateToProps, {
   copyScheduleByDate,
   openScheduleByDate,
   createOneSchedule,
-  RemoveScheduleByID
+  RemoveScheduleByID,
+  stopScheduleByID
 })(ScheduleListScreen)
