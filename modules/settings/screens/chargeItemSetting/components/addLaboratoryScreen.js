@@ -9,6 +9,7 @@ import {
   queryCuvetteColorList,
   queryLaboList
 } from '../../../../../ducks'
+import {limitMoney} from '../../../../../utils'
 
 // 病历
 class AddLaboratoryScreen extends Component {
@@ -369,18 +370,18 @@ class AddLaboratoryScreen extends Component {
       </div>
     )
   }
-  limitMoney(money) {
-    let value = ''
-    value = money.replace(/[^\d.]/g, '')
-    value = value.replace(/^\./g, '')
-    value = value
-      .replace('.', '$#$')
-      .replace(/\./g, '')
-      .replace('$#$', '.')
-    let valus = value.split('.')
-    if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
-    return value
-  }
+  // limitMoney(money) {
+  //   let value = ''
+  //   value = money.replace(/[^\d.]/g, '')
+  //   value = value.replace(/^\./g, '')
+  //   value = value
+  //     .replace('.', '$#$')
+  //     .replace(/\./g, '')
+  //     .replace('$#$', '.')
+  //   let valus = value.split('.')
+  //   if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
+  //   return value
+  // }
   // 药品基本信息
   renderBaseInfoBlank() {
     const {laboratoryInfo} = this.state
@@ -457,7 +458,7 @@ class AddLaboratoryScreen extends Component {
                   placeholder={'price'}
                   value={laboratoryInfo.price}
                   onChange={e => {
-                    let value = this.limitMoney(e.target.value)
+                    let value = limitMoney(e.target.value)
                     this.setItemValue(value, 'price', 2)
                   }}
                 />元
@@ -472,7 +473,7 @@ class AddLaboratoryScreen extends Component {
                   placeholder={'cost'}
                   value={laboratoryInfo.cost}
                   onChange={e => {
-                    let value = this.limitMoney(e.target.value)
+                    let value = limitMoney(e.target.value)
                     this.setItemValue(value, 'cost', 2)
                   }}
                 />元
