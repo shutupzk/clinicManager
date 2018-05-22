@@ -4,6 +4,7 @@ const DIAGNOSIS_TREATMENT_ARRAY = 'DIAGNOSIS_TREATMENT_ARRAY'
 
 const initState = {
   data: [],
+  array_data: [],
   page_info: {},
   selectId: null
 }
@@ -13,7 +14,7 @@ export function diagnosisTreatments(state = initState, action = {}) {
     case DIAGNOSIS_TREATMENT_ADD:
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case DIAGNOSIS_TREATMENT_ARRAY:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
       return state
   }
@@ -35,7 +36,7 @@ export const queryDiagnosisTreatmentList = ({ clinic_id, keyword, status, offset
     if (arrayType) {
       dispatch({
         type: DIAGNOSIS_TREATMENT_ARRAY,
-        data: docs,
+        array_data: docs,
         page_info
       })
     } else {

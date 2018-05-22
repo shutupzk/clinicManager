@@ -39,11 +39,9 @@ export const TreatmentPatientGet = ({ clinic_triage_patient_id }) => async dispa
     if (data.code !== '200') return []
     let docs = data.data || []
     let tJson = {}
-    let unitJson = {}
     for (let doc of docs) {
-      const { clinic_treatment_id, name, unit_id, unit_name } = doc
-      tJson[doc.clinic_treatment_id] = { clinic_treatment_id, name, unit_id, unit_name }
-      unitJson[doc.unit_id] = { id: unit_id, name: unit_name }
+      const { clinic_treatment_id, treatment_name, unit_name } = doc
+      tJson[doc.clinic_treatment_id] = { clinic_treatment_id, treatment_name, unit_name }
     }
     dispatch({
       type: TREATMENT_PATIENT_ADD,
@@ -52,11 +50,6 @@ export const TreatmentPatientGet = ({ clinic_triage_patient_id }) => async dispa
     dispatch({
       type: 'TREATMENT_PROJECT_ADD',
       data: tJson
-    })
-
-    dispatch({
-      type: 'DOSE_UNIT_ADD',
-      data: unitJson
     })
     return docs
   } catch (e) {

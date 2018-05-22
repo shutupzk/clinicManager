@@ -266,7 +266,7 @@ class RegistrationAddScreen extends Component {
               <input
                 type='text'
                 style={{ width: '120px' }}
-                value={moment().diff(patient.birthday, 'years') + '岁' || ''}
+                value={moment().diff(patient.birthday, 'years') === 0 ? '' : moment().diff(patient.birthday, 'years') + '岁' || ''}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.age = e.target.value

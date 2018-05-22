@@ -319,7 +319,7 @@ class MedicalTreatmentItemsScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    diagnosisTreatments: state.diagnosisTreatments.data,
+    diagnosisTreatments: state.diagnosisTreatments.array_data,
     pageInfo: state.diagnosisTreatments.page_info
   }
 }

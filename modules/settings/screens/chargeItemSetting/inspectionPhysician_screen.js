@@ -346,7 +346,7 @@ class InspectionPhysicianScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    laboratories: state.laboratories.data,
+    laboratories: state.laboratories.array_data,
     pageInfo: state.laboratories.page_info
   }
 }

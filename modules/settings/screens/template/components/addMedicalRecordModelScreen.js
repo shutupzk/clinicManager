@@ -1,20 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
+// import { Select } from '../../../../../components'
 import {
-  materialCreate,
-  queryDoseUnitList
 } from '../../../../../ducks'
 
 // 病历
-class AddMeterialScreen extends Component {
+class AddMedicalRecordModelScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      materialsInfo: {
-        status: false,
-        is_discount: false
+      modelInfo: {
+        is_common: false
       }
     }
   }
@@ -107,15 +104,23 @@ class AddMeterialScreen extends Component {
         }
         .commonBlank>div>ul>li{
           float:left;
-          width:19%;
+          width:100%;
           display: flex;
           flex-direction: column;
-          height:70px;
+          min-height:70px;
           margin-right:1%;
           margin-top:5px;
         }
         .commonBlank>div>ul>li>label{
           height:25px;
+        }
+        .commonBlank>div>ul>li>textarea{
+          background: rgba(245,248,249,1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 60px;
+          padding: 0;
+          resize: none;
         }
         .commonBlank>div>ul>li>div>input,
         .commonBlank>div>ul>li>input{
@@ -239,8 +244,8 @@ class AddMeterialScreen extends Component {
       // alert(1)
       return false
     }
-    if (!data.unit_id || data.unit_id === '') {
-      this.setState({unit_idFailed: true})
+    if (!data.unit_name || data.unit_name === '') {
+      this.setState({unit_nameFailed: true})
       // alert(2)
       return false
     }
@@ -253,17 +258,17 @@ class AddMeterialScreen extends Component {
   }
   // 保存
   async submit() {
-    let {materialsInfo} = this.state
-    const {clinic_id, materialCreate} = this.props
-    materialsInfo.clinic_id = clinic_id
-    // let requestData = {...materialsInfo}
+    let {modelInfo} = this.state
+    const {clinic_id, otherCostsCreate} = this.props
+    modelInfo.clinic_id = clinic_id
+    // let requestData = {...modelInfo}
     // requestData.items = JSON.stringify(requestData.items)
-    // console.log('this.validateData(materialsInfo)=====', this.validateData(materialsInfo))
-    if (this.validateData(materialsInfo)) {
-      let error = await materialCreate(materialsInfo)
+    // console.log('this.validateData(modelInfo)=====', this.validateData(modelInfo))
+    if (this.validateData(modelInfo)) {
+      let error = await otherCostsCreate(modelInfo)
       if (error) {
         alert(error)
-        this.setState({materialsInfo})
+        this.setState({modelInfo})
       } else {
         this.props.back2List()
       }
@@ -276,13 +281,13 @@ class AddMeterialScreen extends Component {
   }
   // 设置字段值
   setItemValue(e, key, type = 1) {
-    const {materialsInfo} = this.state
+    const {modelInfo} = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
-    materialsInfo[key] = value
-    this.setState({materialsInfo})
+    modelInfo[key] = value
+    this.setState({modelInfo})
   }
   // 设置选中显示
   getSelectValue(value, array, type) {
@@ -313,10 +318,10 @@ class AddMeterialScreen extends Component {
     const { doseUnits } = this.props
     let array = []
     for (let key in doseUnits) {
-      const { name, id } = doseUnits[key]
+      const { name } = doseUnits[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -329,233 +334,137 @@ class AddMeterialScreen extends Component {
       queryDoseUnitList({ keyword })
     }
   }
-  // 生产厂家筛选
-  getManuFactotyOptions() {
-    return [
-      {value: 1, label: '生产厂家1'},
-      {value: 2, label: '生产厂家2'},
-      {value: 3, label: '生产厂家3'}
-    ]
-  }
+
+  // 部位筛选
+  // getExaminationOrgansOptions() {
+  //   const { examinationOrgans } = this.props
+  //   let array = []
+  //   for (let key in examinationOrgans) {
+  //     const { name, id } = examinationOrgans[key]
+  //     // console.log(doseForms[key])
+  //     array.push({
+  //       value: id,
+  //       label: name
+  //     })
+  //   }
+  //   return array
+  // }
+  // // 获取部位数据
+  // getExaminationOrgansList(keyword) {
+  //   const { queryExaminationOrganList } = this.props
+  //   queryExaminationOrganList({ keyword }, true)
+  //   // if (keyword) {
+  //   //   queryExaminationOrganList({ keyword })
+  //   // }
+  // }
   // 检验项目基本信息
   renderBaseInfoBlank() {
-    const {materialsInfo} = this.state
-    // console.log('materialsInfo=======', materialsInfo)
+    const {modelInfo} = this.state
+    // console.log('modelInfo=======', modelInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
         <div>
           <ul>
-            <li>
-              <label>材料费用名称<b style={{color: 'red'}}>*</b></label>
+            <li style={{width: '48%'}}>
+              <label>模板名称<b style={{color: 'red'}}>*</b></label>
               <input
                 type='text'
-                placeholder={'name'}
-                value={materialsInfo.name}
+                placeholder={'model_name'}
+                value={modelInfo.model_name}
                 onChange={e => {
-                  this.setItemValue(e, 'name')
+                  this.setItemValue(e, 'model_name')
                 }}
               />
-              {this.state.nameFailed || materialsInfo.name === '' || !materialsInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.model_nameFailed || modelInfo.model_name === '' || !modelInfo.model_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+            </li>
+            <li style={{width: '48%'}}>
+              <label>模板类型</label>
+              <div>
+                <label>
+                  <input
+                    type='radio'
+                    name={'is_common'}
+                    checked={modelInfo.is_common}
+                    onChange={e => {
+                      this.setItemValue(true, 'is_common', 2)
+                    }}
+                  />
+                  通用
+                </label>
+                <label>
+                  <input
+                    type='radio'
+                    name={'is_common'}
+                    checked={!modelInfo.is_common}
+                    onChange={e => {
+                      this.setItemValue(false, 'is_common', 2)
+                    }}
+                  />
+                  个人
+                </label>
+              </div>
             </li>
             <li>
-              <label>英文名称</label>
-              <input
-                type='text'
-                placeholder={'en_name'}
-                value={materialsInfo.en_name}
+              <label>患者主诉<b style={{color: 'red'}}>*</b></label>
+              <textarea
+                placeholder={'chief_complaint'}
+                value={modelInfo.chief_complaint}
                 onChange={e => {
-                  this.setItemValue(e, 'en_name')
+                  this.setItemValue(e, 'chief_complaint')
+                }}
+              />
+              {this.state.chief_complaintFailed || modelInfo.chief_complaint === '' || !modelInfo.chief_complaint ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+            </li>
+            <li>
+              <label>现病史</label>
+              <textarea
+                placeholder={'history_of_present_illness'}
+                value={modelInfo.history_of_present_illness}
+                onChange={e => {
+                  this.setItemValue(e, 'history_of_present_illness')
                 }}
               />
             </li>
             <li>
-              <label>规格</label>
-              <input
-                type='text'
-                placeholder={'specification'}
-                value={materialsInfo.specification}
+              <label>既往史</label>
+              <textarea
+                placeholder={'history_of_past_illness'}
+                value={modelInfo.history_of_past_illness}
                 onChange={e => {
-                  this.setItemValue(e, 'specification')
+                  this.setItemValue(e, 'history_of_past_illness')
                 }}
               />
             </li>
             <li>
-              <label>单位<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <Select
-                  placeholder={'请选择'}
-                  height={32}
-                  options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(materialsInfo.unit_id, this.getMiniUnitOptions())}
-                  onInputChange={keyword => { this.getDoseUnitList(keyword) }}
-                  onChange={({value}) => {
-                    this.setItemValue(value, 'unit_id', 2)
-                  }}
-                />
-              </div>
-              {this.state.unit_idFailed || materialsInfo.unit_id === '' || !materialsInfo.unit_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              <label>个人史</label>
+              <textarea
+                placeholder={'family_medical_history'}
+                value={modelInfo.history_of_present_illness}
+                onChange={e => {
+                  this.setItemValue(e, 'history_of_present_illness')
+                }}
+              />
             </li>
             <li>
-              <label>零售价<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'price'}
-                  value={materialsInfo.price}
-                  onChange={e => {
-                    this.setItemValue(e, 'price')
-                  }}
-                />
-              </div>
-              {this.state.priceFailed || materialsInfo.price === '' || !materialsInfo.price ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              <label>家族史</label>
+              <textarea
+                placeholder={'history_of_present_illness'}
+                value={modelInfo.history_of_present_illness}
+                onChange={e => {
+                  this.setItemValue(e, 'history_of_present_illness')
+                }}
+              />
             </li>
             <li>
-              <label>成本价</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'cost'}
-                  value={materialsInfo.cost}
-                  onChange={e => {
-                    this.setItemValue(e, 'cost')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>拼音码</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'py_code'}
-                  value={materialsInfo.py_code}
-                  onChange={e => {
-                    this.setItemValue(e, 'py_code')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>备注</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'remark'}
-                  value={materialsInfo.remark}
-                  onChange={e => {
-                    this.setItemValue(e, 'remark')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>生产厂家</label>
-              <div>
-                <Select
-                  placeholder={'请选择'}
-                  height={32}
-                  options={this.getManuFactotyOptions()}
-                  value={this.getSelectValue(materialsInfo.manu_factory_id, this.getManuFactotyOptions())}
-                  onInputChange={keyword => {}}
-                  onChange={({value}) => {
-                    this.setItemValue(value, 'manu_factory_id', 2)
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>国际编码</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'idc_code'}
-                  value={materialsInfo.idc_code}
-                  onChange={e => {
-                    this.setItemValue(e, 'idc_code')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>是否允许折扣</label>
-              <div>
-                <label>
-                  <input
-                    type='radio'
-                    name={'is_discount'}
-                    checked={materialsInfo.is_discount}
-                    onChange={e => {
-                      this.setItemValue(true, 'is_discount', 2)
-                    }}
-                  />
-                  是
-                </label>
-                <label>
-                  <input
-                    type='radio'
-                    name={'is_discount'}
-                    checked={!materialsInfo.is_discount}
-                    onChange={e => {
-                      this.setItemValue(false, 'is_discount', 2)
-                    }}
-                  />
-                  否
-                </label>
-              </div>
-            </li>
-            <li>
-              <label>状态</label>
-              <div>
-                <label>
-                  <input
-                    type='radio'
-                    name={'status'}
-                    checked={materialsInfo.status}
-                    onChange={e => {
-                      this.setItemValue(true, 'status', 2)
-                    }}
-                  />
-                  正常
-                </label>
-                <label>
-                  <input
-                    type='radio'
-                    name={'status'}
-                    checked={!materialsInfo.status}
-                    onChange={e => {
-                      this.setItemValue(false, 'status', 2)
-                    }}
-                  />
-                  停用
-                </label>
-              </div>
-            </li>
-            <li>
-              <label>物资库存的预警数量</label>
-              <div>
-                <input
-                  type='number'
-                  placeholder={'stock_warning'}
-                  value={materialsInfo.stock_warning}
-                  onChange={e => {
-                    this.setItemValue(e, 'stock_warning')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>物资有效预警时间</label>
-              <div>
-                <input
-                  type='number'
-                  placeholder={'eff_day'}
-                  value={materialsInfo.eff_day}
-                  onChange={e => {
-                    this.setItemValue(e, 'eff_day')
-                  }}
-                />天
-              </div>
+              <label>治疗意见</label>
+              <textarea
+                placeholder={'history_of_present_illness'}
+                value={modelInfo.history_of_present_illness}
+                onChange={e => {
+                  this.setItemValue(e, 'history_of_present_illness')
+                }}
+              />
             </li>
           </ul>
         </div>
@@ -567,12 +476,9 @@ class AddMeterialScreen extends Component {
 const mapStateToProps = state => {
   console.log('state=====', state)
   return {
-    clinic_id: state.user.data.clinic_id,
-    doseUnits: state.doseUnits.data
+    clinic_id: state.user.data.clinic_id
   }
 }
 
 export default connect(mapStateToProps, {
-  materialCreate,
-  queryDoseUnitList
-})(AddMeterialScreen)
+})(AddMedicalRecordModelScreen)

@@ -27,7 +27,8 @@ import {
   createOneSchedule,
   deleteOneUnOpenScheduleByID,
   stopScheduleByID,
-  querySchedules
+  querySchedules,
+  RemoveScheduleByID
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
 import { drugs, drugCreate, queryDrugList } from './drug'
@@ -55,7 +56,10 @@ import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate } from '
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
-import {diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate} from './diagnosisTreatment'
+import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate } from './diagnosisTreatment'
+import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
+import { examinationModels, examinationModelList, examinationModelCreate, queryExams } from './examination_models'
+import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
 
 // keys
 export {
@@ -91,7 +95,10 @@ export {
   laboratoryItems,
   prescriptionChinesePatientModels,
   receiveRecords,
-  diagnosisTreatments
+  diagnosisTreatments,
+  treatmentPatientModels,
+  examinationModels,
+  laboratoryPatientModels
 }
 
 // actions
@@ -181,5 +188,13 @@ export {
   PrescriptionChinesePatientModelList,
   queryReceiveRecords,
   queryDiagnosisTreatmentList,
-  diagnosisTreatmentCreate
+  diagnosisTreatmentCreate,
+  TreatmentPatientModelList,
+  TreatmentPatientModelCreate,
+  examinationModelList,
+  examinationModelCreate,
+  LaboratoryPatientModelCreate,
+  LaboratoryPersonalPatientModelList,
+  RemoveScheduleByID,
+  queryExams
 }

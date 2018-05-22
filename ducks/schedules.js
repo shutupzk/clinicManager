@@ -165,6 +165,19 @@ export const createOneSchedule = ({ department_id, personnel_id, visit_date, am_
     return e.message
   }
 }
+export const RemoveScheduleByID = ({ doctor_visit_schedule_id }) => async dispatch => {
+  try {
+    const data = await request('/doctorVisitSchedule/RemoveScheduleByID', {
+      doctor_visit_schedule_id
+    })
+    console.log('data ========= ', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
 
 export const deleteOneUnOpenScheduleByID = ({ doctor_visit_schedule_id }) => async dispatch => {
   try {

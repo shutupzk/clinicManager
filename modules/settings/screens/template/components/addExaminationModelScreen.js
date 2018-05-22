@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
+// import { Select } from '../../../../../components'
 import {
-  treatmentCreate,
-  queryDoseUnitList
+  queryExaminationList
 } from '../../../../../ducks'
+import { Select } from '../../../../../components'
 
 // 病历
-class AddTreatmentScreen extends Component {
+class AddExaminationModelScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      treatmentInfo: {
+      modelInfo: {
+        is_common: false,
         status: false,
-        is_discount: false
+        items: []
       }
     }
   }
@@ -107,15 +108,23 @@ class AddTreatmentScreen extends Component {
         }
         .commonBlank>div>ul>li{
           float:left;
-          width:19%;
+          width:100%;
           display: flex;
           flex-direction: column;
-          height:70px;
+          min-height:70px;
           margin-right:1%;
           margin-top:5px;
         }
         .commonBlank>div>ul>li>label{
           height:25px;
+        }
+        .commonBlank>div>ul>li>textarea{
+          background: rgba(245,248,249,1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 60px;
+          padding: 0;
+          resize: none;
         }
         .commonBlank>div>ul>li>div>input,
         .commonBlank>div>ul>li>input{
@@ -173,10 +182,45 @@ class AddTreatmentScreen extends Component {
           border-right: 1px solid #d8d8d8;
           border-bottom: 1px solid #d8d8d8;
         }
+        .commonBlank>div>ul>li>ul>li:first-child,
         .commonBlank>div>ul>li.tableLi>div>ul>li:first-child{
           background: rgba(250,250,250,1);
           box-shadow: 1px 1px 0px 0px rgba(232,232,232,1);
         }
+        .commonBlank>div>ul>li>ul {
+          width: 100%;
+          // background: #eeeeee;
+          border-top: 1px solid #d8d8d8;
+        }
+        .commonBlank>div>ul>li>ul>li {
+          display: flex;
+          height:40px;
+          align-items: center;
+          justify-content: center;
+          border-right: 1px solid #d8d8d8;
+          border-bottom: 1px solid #d8d8d8;
+        }
+        .commonBlank>div>ul>li>ul>li>div {
+          flex: 1;
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          border-left: 1px solid #d8d8d8;
+          height:40px;
+        }
+        .commonBlank>div>ul>li>ul>li>div>div {
+          width:100%;
+        }
+        .commonBlank>div>ul>li>ul>li>div>input {
+          background:transparent;
+          border-radius: 4px ; 
+          border:1px solid #d9d9d9;
+          height: 36px;
+          padding:0;
+          // width:100%;
+          flex:1;
+        }
+
         .commonBlank>div>ul>li.tableLi>div>ul>li>div{
           flex:2;
           height: 40px;
@@ -234,36 +278,26 @@ class AddTreatmentScreen extends Component {
   }
   // 验证字段
   validateData(data) {
-    if (!data.name || data.name === '') {
-      this.setState({nameFailed: true})
+    if (!data.model_name || data.model_name === '') {
+      this.setState({model_nameFailed: true})
       // alert(1)
-      return false
-    }
-    if (!data.unit_name || data.unit_name === '') {
-      this.setState({unit_nameFailed: true})
-      // alert(2)
-      return false
-    }
-    if (!data.price || data.price === '') {
-      this.setState({priceFailed: true})
-      // alert(2)
       return false
     }
     return true
   }
   // 保存
   async submit() {
-    let {treatmentInfo} = this.state
-    const {clinic_id, treatmentCreate} = this.props
-    treatmentInfo.clinic_id = clinic_id
-    // let requestData = {...treatmentInfo}
+    let {modelInfo} = this.state
+    const {clinic_id, otherCostsCreate} = this.props
+    modelInfo.clinic_id = clinic_id
+    // let requestData = {...modelInfo}
     // requestData.items = JSON.stringify(requestData.items)
-    // console.log('this.validateData(treatmentInfo)=====', this.validateData(treatmentInfo))
-    if (this.validateData(treatmentInfo)) {
-      let error = await treatmentCreate(treatmentInfo)
+    // console.log('this.validateData(modelInfo)=====', this.validateData(modelInfo))
+    if (this.validateData(modelInfo)) {
+      let error = await otherCostsCreate(modelInfo)
       if (error) {
         alert(error)
-        this.setState({treatmentInfo})
+        this.setState({modelInfo})
       } else {
         this.props.back2List()
       }
@@ -276,231 +310,131 @@ class AddTreatmentScreen extends Component {
   }
   // 设置字段值
   setItemValue(e, key, type = 1) {
-    const {treatmentInfo} = this.state
+    const {modelInfo} = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
-    treatmentInfo[key] = value
-    this.setState({treatmentInfo})
+    modelInfo[key] = value
+    this.setState({modelInfo})
   }
   // 设置选中显示
   getSelectValue(value, array, type) {
     for (let obj of array) {
-      // console.log('obj.value======', obj.value, value)
-      if (type) {
-        if (obj.label === value) {
-          return obj
-        }
-      } else {
-        if (obj.value === value) {
-          return obj
-        }
+      if (obj.value === value) {
+        return obj
       }
     }
     return null
   }
-  // // 性别筛选
-  // getSexOptions() {
-  //   return [
-  //     {value: '通用', label: '通用'},
-  //     {value: '男', label: '男'},
-  //     {value: '女', label: '女'}
-  //   ]
-  // }
-  // 单位筛选
-  getMiniUnitOptions() {
-    const { doseUnits } = this.props
+
+  setItemChildValue(e, index, key, type = 1) {
+    const { modelInfo } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = modelInfo.items
+    array[index][key] = value
+    modelInfo.items = array
+    this.setState({ modelInfo })
+  }
+  addColumn() {
+    const { modelInfo } = this.state
+    modelInfo.items.push({})
+    this.setState({ modelInfo })
+  }
+
+  removeColumn(index) {
+    const { modelInfo } = this.state
+    let array = modelInfo.items
+    array.splice(index, 1)
+    modelInfo.items = array
+    this.setState({ modelInfo })
+  }
+  // 检查项目筛选
+  getExaminationOptions() {
+    const { examinations } = this.props
     let array = []
-    for (let key in doseUnits) {
-      const { name } = doseUnits[key]
+    for (let key in examinations) {
+      const { clinic_examination_id, name, organ } = examinations[key]
       // console.log(doseForms[key])
       array.push({
-        value: name,
-        label: name
+        value: clinic_examination_id,
+        label: name,
+        organ,
+        clinic_examination_id
       })
     }
     return array
   }
-  // 获取单位数据
-  getDoseUnitList(keyword) {
-    const { queryDoseUnitList } = this.props
+  // 获取检查项目数据
+  getExaminationList(keyword) {
+    const { queryExaminationList, clinic_id } = this.props
     if (keyword) {
-      queryDoseUnitList({ keyword })
+      let requestData = {
+        clinic_id,
+        keyword
+      }
+      queryExaminationList(requestData)
     }
   }
-
-  // 部位筛选
-  // getExaminationOrgansOptions() {
-  //   const { examinationOrgans } = this.props
-  //   let array = []
-  //   for (let key in examinationOrgans) {
-  //     const { name, id } = examinationOrgans[key]
-  //     // console.log(doseForms[key])
-  //     array.push({
-  //       value: id,
-  //       label: name
-  //     })
-  //   }
-  //   return array
-  // }
-  // // 获取部位数据
-  // getExaminationOrgansList(keyword) {
-  //   const { queryExaminationOrganList } = this.props
-  //   queryExaminationOrganList({ keyword }, true)
-  //   // if (keyword) {
-  //   //   queryExaminationOrganList({ keyword })
-  //   // }
-  // }
   // 检验项目基本信息
   renderBaseInfoBlank() {
-    const {treatmentInfo} = this.state
-    // console.log('treatmentInfo=======', treatmentInfo)
+    const {modelInfo} = this.state
+    console.log('modelInfo=======', modelInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
         <div>
           <ul>
-            <li>
-              <label>治疗医嘱名称<b style={{color: 'red'}}>*</b></label>
+            <li style={{width: '48%'}}>
+              <label>模板名称<b style={{color: 'red'}}>*</b></label>
               <input
                 type='text'
-                placeholder={'name'}
-                value={treatmentInfo.name}
+                placeholder={'model_name'}
+                value={modelInfo.model_name}
                 onChange={e => {
-                  this.setItemValue(e, 'name')
+                  this.setItemValue(e, 'model_name')
                 }}
               />
-              {this.state.nameFailed || treatmentInfo.name === '' || !treatmentInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.model_nameFailed || modelInfo.model_name === '' || !modelInfo.model_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
-            <li>
-              <label>英文名称</label>
-              <input
-                type='text'
-                placeholder={'en_name'}
-                value={treatmentInfo.en_name}
-                onChange={e => {
-                  this.setItemValue(e, 'en_name')
-                }}
-              />
-            </li>
-            <li>
-              <label>单位<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <Select
-                  placeholder={'请选择'}
-                  height={32}
-                  options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(treatmentInfo.unit_name, this.getMiniUnitOptions(), true)}
-                  onInputChange={keyword => { this.getDoseUnitList(keyword) }}
-                  onChange={({label}) => {
-                    this.setItemValue(label, 'unit_name', 2)
-                  }}
-                />
-              </div>
-              {this.state.unit_nameFailed || treatmentInfo.unit_name === '' || !treatmentInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
-            </li>
-            <li>
-              <label>零售价<b style={{color: 'red'}}>*</b></label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'price'}
-                  value={treatmentInfo.price}
-                  onChange={e => {
-                    this.setItemValue(e, 'price')
-                  }}
-                />
-              </div>
-              {this.state.priceFailed || treatmentInfo.price === '' || !treatmentInfo.price ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
-            </li>
-            <li>
-              <label>成本价</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'cost'}
-                  value={treatmentInfo.cost}
-                  onChange={e => {
-                    this.setItemValue(e, 'cost')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>拼音码</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'py_code'}
-                  value={treatmentInfo.py_code}
-                  onChange={e => {
-                    this.setItemValue(e, 'py_code')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>备注</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'remark'}
-                  value={treatmentInfo.remark}
-                  onChange={e => {
-                    this.setItemValue(e, 'remark')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>国际编码</label>
-              <div>
-                <input
-                  type='text'
-                  placeholder={'idc_code'}
-                  value={treatmentInfo.idc_code}
-                  onChange={e => {
-                    this.setItemValue(e, 'idc_code')
-                  }}
-                />
-              </div>
-            </li>
-            <li>
-              <label>是否允许折扣</label>
+            <li style={{width: '24%'}}>
+              <label>模板类型</label>
               <div>
                 <label>
                   <input
                     type='radio'
-                    name={'is_discount'}
-                    checked={treatmentInfo.is_discount}
+                    name={'is_common'}
+                    checked={modelInfo.is_common}
                     onChange={e => {
-                      this.setItemValue(true, 'is_discount', 2)
+                      this.setItemValue(true, 'is_common', 2)
                     }}
                   />
-                  是
+                  通用
                 </label>
                 <label>
                   <input
                     type='radio'
-                    name={'is_discount'}
-                    checked={!treatmentInfo.is_discount}
+                    name={'is_common'}
+                    checked={!modelInfo.is_common}
                     onChange={e => {
-                      this.setItemValue(false, 'is_discount', 2)
+                      this.setItemValue(false, 'is_common', 2)
                     }}
                   />
-                  否
+                  个人
                 </label>
               </div>
             </li>
-            <li>
+            <li style={{width: '24%'}}>
               <label>状态</label>
               <div>
                 <label>
                   <input
                     type='radio'
                     name={'status'}
-                    checked={treatmentInfo.status}
+                    checked={modelInfo.status}
                     onChange={e => {
                       this.setItemValue(true, 'status', 2)
                     }}
@@ -511,7 +445,7 @@ class AddTreatmentScreen extends Component {
                   <input
                     type='radio'
                     name={'status'}
-                    checked={!treatmentInfo.status}
+                    checked={!modelInfo.status}
                     onChange={e => {
                       this.setItemValue(false, 'status', 2)
                     }}
@@ -519,6 +453,48 @@ class AddTreatmentScreen extends Component {
                   停用
                 </label>
               </div>
+            </li>
+            <li>
+              <label>医嘱内容<b style={{color: 'red'}}>*</b></label>
+              <ul>
+                <li>
+                  <div>检查项目名称</div>
+                  <div>检查部位</div>
+                  <div onClick={() => this.addColumn()}>添加</div>
+                </li>
+                {modelInfo.items.map((item, index) => {
+                  return (
+                    <li>
+                      <div>
+                        <div>
+                          <Select
+                            placeholder='搜索检验项目'
+                            height={38}
+                            options={this.getExaminationOptions()}
+                            value={this.getSelectValue(modelInfo.items[index].clinic_examination_id, this.getExaminationOptions())}
+                            onChange={({ value, label, clinic_examination_id, organ }) => {
+                              this.setItemChildValue(value, index, 'clinic_examination_id', 2)
+                              this.setItemChildValue(organ, index, 'organ', 2)
+                              // this.setItemChildValue(unit_id, index, 'unit_id', 2)
+                              // this.setItemChildValue(unit_name, index, 'unit_name', 2)
+                            }}
+                            onInputChange={keyword => this.getExaminationList(keyword)}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <input
+                          placeholder={'请选择检查部位'}
+                          type='text'
+                          value={modelInfo.items[index].organ}
+                        />
+                        <button onClick={() => {}}>选择</button>
+                      </div>
+                      <div onClick={() => this.removeColumn(index)}>删除</div>
+                    </li>
+                  )
+                })}
+              </ul>
             </li>
           </ul>
         </div>
@@ -531,11 +507,10 @@ const mapStateToProps = state => {
   console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
-    doseUnits: state.doseUnits.data
+    examinations: state.examinations.data
   }
 }
 
 export default connect(mapStateToProps, {
-  treatmentCreate,
-  queryDoseUnitList
-})(AddTreatmentScreen)
+  queryExaminationList
+})(AddExaminationModelScreen)

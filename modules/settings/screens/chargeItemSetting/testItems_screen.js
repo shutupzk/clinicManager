@@ -337,7 +337,7 @@ class TestItemsScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    laboratoryItems: state.laboratoryItems.data,
+    laboratoryItems: state.laboratoryItems.array_data,
     pageInfo: state.laboratoryItems.page_info
   }
 }

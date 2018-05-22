@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { queryDoctorList, doctorCreate, queryDepartmentList } from '../../../../ducks'
 // import moment from 'moment'
-import { PageCard } from '../../../../components'
+import { PageCard, Select } from '../../../../components'
 
 class DoctorListScreen extends Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class DoctorListScreen extends Component {
 
   componentWillMount() {
     const { queryDepartmentList, clinic_id } = this.props
-    queryDepartmentList({ clinic_id })
+    queryDepartmentList({ clinic_id, limit: 1000 })
     this.queryDoctorList({ personnel_type: 2 })
   }
 
@@ -32,7 +32,12 @@ class DoctorListScreen extends Component {
     const { departments } = this.props
     let array = []
     for (let key in departments) {
-      array.push(departments[key])
+      const { name, id } = departments[key]
+      array.push({
+        value: id,
+        label: name
+      })
+      // array.push(departments[key])
     }
     return array
   }
@@ -50,6 +55,7 @@ class DoctorListScreen extends Component {
       defaultValue = employeeKeyword
     }
     let { doctors } = this.props
+    console.log('doctors====', doctors)
     return (
       <div>
         <div className={'filterBox'}>
@@ -326,16 +332,20 @@ class DoctorListScreen extends Component {
     this.setState({ showAddPersonnel: false })
   }
 
-  setDoctorInfo(e, key) {
+  setDoctorInfo(e, key, type = 1) {
     let newDoctor = this.state.doctorInfo
-    newDoctor[key] = e.target.value
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    newDoctor[key] = value
     this.setState({ doctorInfo: newDoctor })
   }
 
   showAddPersonnelDiv() {
     const { showAddPersonnel, personnel_type } = this.state
     if (!showAddPersonnel) return null
-    const departments = this.getDepartmentList()
+    // const departments = this.getDepartmentList()
     let keyName = personnel_type === 2 ? '医生' : '职员'
     return (
       <div className={'mask'}>
@@ -361,16 +371,17 @@ class DoctorListScreen extends Component {
               </li>
               <li>
                 <label>科室名称</label>
-                <select onChange={e => this.setDoctorInfo(e, 'department_id')}>
-                  <option>请选择</option>
-                  {departments.map(({ id, name }, index) => {
-                    return (
-                      <option key={index} value={id}>
-                        {name}
-                      </option>
-                    )
-                  })}
-                </select>
+                <div style={{flex: 6}}>
+                  <div>
+                    <Select
+                      placeholder={'请选择科室'}
+                      options={this.getDepartmentList()}
+                      onChange={({value, label}) => {
+                        this.setDoctorInfo(value, 'department_id', 2)
+                      }}
+                    />
+                  </div>
+                </div>
               </li>
               <li>
                 <label>{keyName}权重</label>
@@ -573,7 +584,7 @@ class DoctorListScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    doctors: state.doctors.data,
+    doctors: state.doctors.array_data,
     page_info: state.doctors.page_info,
     departments: state.departments.data,
     clinic_id: state.user.data.clinic_id,

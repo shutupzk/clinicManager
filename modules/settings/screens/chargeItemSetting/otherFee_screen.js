@@ -323,7 +323,7 @@ class OtherFeeScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    otherCostS: state.otherCostS.data,
+    otherCostS: state.otherCostS.array_data,
     pageInfo: state.otherCostS.page_info
   }
 }
