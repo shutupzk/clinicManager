@@ -6,6 +6,7 @@ import { queryLaboratoryList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddLaboratoryScreen from './components/addLaboratoryScreen'
 import RelatedItemsScreen from './components/relatedItemsScreen'
+import {formatMoney} from '../../../../utils'
 class InspectionPhysicianScreen extends Component {
   constructor(props) {
     super(props)
@@ -103,7 +104,8 @@ class InspectionPhysicianScreen extends Component {
         </div>
         <style jsx>{`
           .contentCenterRight{
-            width:822px;
+            // width:822px;
+            width: 100%;
             height:768px; 
             background:rgba(255,255,255,1);
             box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
@@ -192,8 +194,8 @@ class InspectionPhysicianScreen extends Component {
                 <tr key={index}>
                   <td style={{flex: 2}} title={item.laboratory_name}>{item.laboratory_name}</td>
                   <td>{item.unit_name}</td>
-                  <td>{item.price}元</td>
-                  <td>{item.py_code}</td>
+                  <td title={formatMoney(item.price) + '元'}>{formatMoney(item.price)}元</td>
+                  <td title={item.py_code}>{item.py_code}</td>
                   <td>{item.is_discount ? '是' : '否'}</td>
                   <td title={item.remark}>{item.remark}</td>
                   <td>{item.status ? '正常' : '停用'}</td>
@@ -219,7 +221,7 @@ class InspectionPhysicianScreen extends Component {
           offset={pageInfo.offset}
           limit={pageInfo.limit}
           total={pageInfo.total}
-          style={{margin: '20px 0', width: '758px'}}
+          style={{margin: '20px 0', width: '100%'}}
           onItemClick={({ offset, limit }) => {
             // const keyword = this.state.keyword
             this.getDataList({ offset, limit })
