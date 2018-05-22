@@ -84,9 +84,16 @@ export const getAgeByBirthday = birthday => {
   return `${years}岁`
 }
 
+// 格式化钱 分->元
 export const formatMoney = money => {
   if (money === undefined) return ''
   return (money / 100).toFixed(2)
+}
+
+// 格式化钱 分->元
+export const formatMoneyF2Y = money => {
+  if (money === undefined) return 0
+  return Math.round(money * 100)
 }
 
 // 限制只能输入金额
