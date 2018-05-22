@@ -6,8 +6,10 @@ import {
   laboratoryCreate,
   queryDoseUnitList,
   queryLaboratorySampleList,
-  queryCuvetteColorList
+  queryCuvetteColorList,
+  queryLaboList
 } from '../../../../../ducks'
+import {limitMoney} from '../../../../../utils'
 
 // 病历
 class AddLaboratoryScreen extends Component {
@@ -17,8 +19,11 @@ class AddLaboratoryScreen extends Component {
       laboratoryInfo: {
         is_discount: false,
         is_delivery: false,
-        status: false
-      }
+        status: false,
+        unit_name: '项'
+      },
+      searchView: 0,
+      toSearch: false
     }
   }
 
@@ -167,12 +172,12 @@ class AddLaboratoryScreen extends Component {
     } else {
       this.setState({nameFailed: false})
     }
-    if (!data.unit_id || data.unit_id === '') {
-      this.setState({unit_idFailed: true})
+    if (!data.unit_name || data.unit_name === '') {
+      this.setState({unit_nameFailed: true})
       // alert(2)
       return false
     } else {
-      this.setState({unit_idFailed: false})
+      this.setState({unit_nameFailed: false})
     }
     if (!data.price || data.price === '') {
       this.setState({priceFailed: true})
@@ -181,19 +186,19 @@ class AddLaboratoryScreen extends Component {
     } else {
       this.setState({priceFailed: false})
     }
-    if (!data.laboratory_sample_id || data.laboratory_sample_id === '') {
-      this.setState({laboratory_sample_idFailed: true})
+    if (!data.laboratory_sample || data.laboratory_sample === '') {
+      this.setState({laboratory_sampleFailed: true})
       // alert(6)
       return false
     } else {
-      this.setState({laboratory_sample_idFailed: false})
+      this.setState({laboratory_sampleFailed: false})
     }
-    if (!data.cuvette_color_id || data.cuvette_color_id === '') {
-      this.setState({cuvette_color_idFailed: true})
+    if (!data.cuvette_color_name || data.cuvette_color_name === '') {
+      this.setState({cuvette_color_nameFailed: true})
       // alert(7)
       return false
     } else {
-      this.setState({cuvette_color_idFailed: false})
+      this.setState({cuvette_color_nameFailed: false})
     }
     return true
   }
@@ -237,12 +242,13 @@ class AddLaboratoryScreen extends Component {
   // 单位筛选
   getMiniUnitOptions() {
     const { doseUnits } = this.props
+    // console.log('doseUnits=====', doseUnits)
     let array = []
     for (let key in doseUnits) {
-      const { name, id } = doseUnits[key]
+      const { name } = doseUnits[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -253,10 +259,10 @@ class AddLaboratoryScreen extends Component {
     const { laboratorySamples } = this.props
     let array = []
     for (let key in laboratorySamples) {
-      const { name, id } = laboratorySamples[key]
+      const { name } = laboratorySamples[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -267,10 +273,10 @@ class AddLaboratoryScreen extends Component {
     const { cuvetteColors } = this.props
     let array = []
     for (let key in cuvetteColors) {
-      const { name, id } = cuvetteColors[key]
+      const { name } = cuvetteColors[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -297,6 +303,85 @@ class AddLaboratoryScreen extends Component {
       queryCuvetteColorList({ keyword })
     }
   }
+  async queryLaboList(keyword) {
+    const { queryLaboList } = this.props
+    queryLaboList({ keyword })
+  }
+  searchView() {
+    const {labos} = this.props
+    console.log('labos=====', labos)
+    let {laboratoryInfo} = this.state
+    return (
+      <div
+        className={'researchView'}
+        onMouseOver={e => {
+          this.setState({ toSearch: false })
+        }}
+        onMouseLeave={e => {
+          this.setState({ toSearch: true })
+        }}
+      >
+        <span>请选择检验医嘱或继续新增</span>
+        <ul>
+          {labos.map((item, index) => {
+            return (
+              <li
+                key={index}
+                onClick={() => {
+                  laboratoryInfo.name = item.name
+                  laboratoryInfo.laboratory_sample = item.laboratory_sample
+                  laboratoryInfo.clinical_significance = item.clinical_significance
+                  laboratoryInfo.cuvette_color_name = item.cuvette_color_name
+                  laboratoryInfo.en_name = item.en_name
+                  laboratoryInfo.idc_code = item.idc_code
+                  laboratoryInfo.py_code = item.py_code
+                  laboratoryInfo.remark = item.remark
+                  laboratoryInfo.time_report = item.time_report
+                  laboratoryInfo.laboratory_id = item.id
+                  // laboratoryInfo.unit_name = item.unit_name
+                  this.setState({
+                    toSearch: false,
+                    searchView: 0,
+                    laboratoryInfo
+                  })
+                }}
+              >
+                <div className={'leftInfo'}>
+                  <div>
+                    {item.name}
+                  </div>
+                  {/* <div>{item.phone}</div> */}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+        <style jsx>{`
+          .researchView {
+            width: 100%;
+          }
+          .researchView li {
+            height: 30px;
+          }
+          .researchView li:hover {
+            background: #d8d8d8;
+          }
+        `}</style>
+      </div>
+    )
+  }
+  // limitMoney(money) {
+  //   let value = ''
+  //   value = money.replace(/[^\d.]/g, '')
+  //   value = value.replace(/^\./g, '')
+  //   value = value
+  //     .replace('.', '$#$')
+  //     .replace(/\./g, '')
+  //     .replace('$#$', '.')
+  //   let valus = value.split('.')
+  //   if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
+  //   return value
+  // }
   // 药品基本信息
   renderBaseInfoBlank() {
     const {laboratoryInfo} = this.state
@@ -306,7 +391,7 @@ class AddLaboratoryScreen extends Component {
         <span />
         <div>
           <ul>
-            <li>
+            <li style={{position: 'relative'}}>
               <label>通用名<b style={{color: 'red'}}>*</b></label>
               <input
                 type='text'
@@ -314,8 +399,19 @@ class AddLaboratoryScreen extends Component {
                 value={laboratoryInfo.name}
                 onChange={e => {
                   this.setItemValue(e, 'name')
+                  this.setState({ searchView: 1 })
+                  this.queryLaboList(e.target.value)
+                }}
+                onFocus={e => {
+                  this.setState({ toSearch: true, searchView: 1 })
+                }}
+                onBlur={e => {
+                  if (this.state.toSearch && this.state.searchView === 1) {
+                    this.setState({ searchView: 0 })
+                  }
                 }}
               />
+              {this.state.searchView === 1 ? this.searchView() : ''}
               {this.state.nameFailed || laboratoryInfo.name === '' || !laboratoryInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
@@ -330,20 +426,29 @@ class AddLaboratoryScreen extends Component {
               />
             </li>
             <li>
-              <label>单位<b style={{color: 'red'}}>*</b></label>
-              <div>
+              <label>单位</label>
+              <input
+                readOnly
+                type='text'
+                placeholder={'unit_name'}
+                value={laboratoryInfo.unit_name}
+                onChange={e => {
+                  this.setItemValue(e, 'unit_name')
+                }}
+              />
+              {/* <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(laboratoryInfo.unit_id, this.getMiniUnitOptions())}
+                  value={this.getSelectValue(laboratoryInfo.unit_name, this.getMiniUnitOptions())}
                   onInputChange={keyword => { this.getDoseUnitList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'unit_id', 2)
+                    this.setItemValue(value, 'unit_name', 2)
                   }}
                 />
-              </div>
-              {this.state.unit_idFailed || laboratoryInfo.unit_id === '' || !laboratoryInfo.unit_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              </div> */}
+              {/* {this.state.unit_nameFailed || laboratoryInfo.unit_name === '' || !laboratoryInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''} */}
             </li>
             <li>
               <label>零售价<b style={{color: 'red'}}>*</b></label>
@@ -353,7 +458,8 @@ class AddLaboratoryScreen extends Component {
                   placeholder={'price'}
                   value={laboratoryInfo.price}
                   onChange={e => {
-                    this.setItemValue(e, 'price')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'price', 2)
                   }}
                 />元
               </div>
@@ -367,7 +473,8 @@ class AddLaboratoryScreen extends Component {
                   placeholder={'cost'}
                   value={laboratoryInfo.cost}
                   onChange={e => {
-                    this.setItemValue(e, 'cost')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'cost', 2)
                   }}
                 />元
               </div>
@@ -455,14 +562,14 @@ class AddLaboratoryScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getLaboratorySampleIdOptions()}
-                  value={this.getSelectValue(laboratoryInfo.laboratory_sample_id, this.getLaboratorySampleIdOptions())}
+                  value={this.getSelectValue(laboratoryInfo.laboratory_sample, this.getLaboratorySampleIdOptions())}
                   onInputChange={keyword => { this.getLaboratorySampleList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'laboratory_sample_id', 2)
+                    this.setItemValue(value, 'laboratory_sample', 2)
                   }}
                 />
               </div>
-              {this.state.laboratory_sample_idFailed || laboratoryInfo.laboratory_sample_id === '' || !laboratoryInfo.laboratory_sample_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.laboratory_sampleFailed || laboratoryInfo.laboratory_sample === '' || !laboratoryInfo.laboratory_sample ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>试管颜色<b style={{color: 'red'}}>*</b></label>
@@ -471,14 +578,14 @@ class AddLaboratoryScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getCuvetteColorIdOptions()}
-                  value={this.getSelectValue(laboratoryInfo.cuvette_color_id, this.getCuvetteColorIdOptions())}
+                  value={this.getSelectValue(laboratoryInfo.cuvette_color_name, this.getCuvetteColorIdOptions())}
                   onInputChange={keyword => { this.getCuvetteColorList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'cuvette_color_id', 2)
+                    this.setItemValue(value, 'cuvette_color_name', 2)
                   }}
                 />
               </div>
-              {this.state.cuvette_color_idFailed || laboratoryInfo.cuvette_color_id === '' || !laboratoryInfo.cuvette_color_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.cuvette_color_nameFailed || laboratoryInfo.cuvette_color_name === '' || !laboratoryInfo.cuvette_color_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>合并标记</label>
@@ -563,7 +670,8 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     doseUnits: state.doseUnits.data,
     laboratorySamples: state.laboratorySamples.data,
-    cuvetteColors: state.cuvetteColors.data
+    cuvetteColors: state.cuvetteColors.data,
+    labos: state.laboratories.labo_data
   }
 }
 
@@ -571,5 +679,6 @@ export default connect(mapStateToProps, {
   laboratoryCreate,
   queryDoseUnitList,
   queryLaboratorySampleList,
-  queryCuvetteColorList
+  queryCuvetteColorList,
+  queryLaboList
 })(AddLaboratoryScreen)

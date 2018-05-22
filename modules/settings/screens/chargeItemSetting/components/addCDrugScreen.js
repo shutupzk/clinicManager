@@ -171,12 +171,12 @@ class AddCDrugScreen extends Component {
     } else {
       this.setState({nameFailed: false})
     }
-    if (!data.dose_form_id || data.dose_form_id === '') {
-      this.setState({dose_form_idFailed: true})
+    if (!data.dose_form_name || data.dose_form_name === '') {
+      this.setState({dose_form_nameFailed: true})
       // alert(2)
       return false
     } else {
-      this.setState({dose_form_idFailed: false})
+      this.setState({dose_form_nameFailed: false})
     }
     // if (!data.drug_class_id || data.drug_class_id === '') {
     //   this.setState({drug_class_idFailed: true})
@@ -185,12 +185,12 @@ class AddCDrugScreen extends Component {
     // } else {
     //   this.setState({drug_class_idFailed: false})
     // }
-    if (!data.mini_unit_id || data.mini_unit_id === '') {
-      this.setState({mini_unit_idFailed: true})
+    if (!data.mini_unit_name || data.mini_unit_name === '') {
+      this.setState({mini_unit_nameFailed: true})
       // alert(4)
       return false
     } else {
-      this.setState({mini_unit_idFailed: false})
+      this.setState({mini_unit_nameFailed: false})
     }
     // if (!data.dose_count_unit_id || data.dose_count_unit_id === '') {
     //   this.setState({dose_count_unit_idFailed: true})
@@ -199,12 +199,12 @@ class AddCDrugScreen extends Component {
     // } else {
     //   this.setState({dose_count_unit_idFailed: false})
     // }
-    if (!data.packing_unit_id || data.packing_unit_id === '') {
-      this.setState({packing_unit_idFailed: true})
+    if (!data.packing_unit_name || data.packing_unit_name === '') {
+      this.setState({packing_unit_nameFailed: true})
       // alert(6)
       return false
     } else {
-      this.setState({packing_unit_idFailed: false})
+      this.setState({packing_unit_nameFailed: false})
     }
     if (!data.ret_price || data.ret_price === '') {
       this.setState({ret_priceFailed: true})
@@ -241,19 +241,19 @@ class AddCDrugScreen extends Component {
     // } else {
     //   this.setState({once_dose_unit_idFailed: false})
     // }
-    if (!data.route_administration_id || data.route_administration_id === '') {
-      this.setState({route_administration_idFailed: true})
+    if (!data.route_administration_name || data.route_administration_name === '') {
+      this.setState({route_administration_nameFailed: true})
       // alert(12)
       return false
     } else {
-      this.setState({route_administration_idFailed: false})
+      this.setState({route_administration_nameFailed: false})
     }
-    if (!data.frequency_id || data.frequency_id === '') {
-      this.setState({frequency_idFailed: true})
+    if (!data.frequency_name || data.frequency_name === '') {
+      this.setState({frequency_nameFailed: true})
       // alert(13)
       return false
     } else {
-      this.setState({frequency_idFailed: false})
+      this.setState({frequency_nameFailed: false})
     }
     if (!data.eff_day || data.eff_day === '') {
       this.setState({eff_dayFailed: true})
@@ -315,10 +315,10 @@ class AddCDrugScreen extends Component {
     const { doseForms } = this.props
     let array = []
     for (let key in doseForms) {
-      const { name, id } = doseForms[key]
+      const { name } = doseForms[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -337,10 +337,10 @@ class AddCDrugScreen extends Component {
     const { doseUnits } = this.props
     let array = []
     for (let key in doseUnits) {
-      const { name, id } = doseUnits[key]
+      const { name } = doseUnits[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -351,10 +351,10 @@ class AddCDrugScreen extends Component {
     const { routeAdministrationss } = this.props
     let array = []
     for (let key in routeAdministrationss) {
-      const { name, id } = routeAdministrationss[key]
+      const { name } = routeAdministrationss[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -365,10 +365,10 @@ class AddCDrugScreen extends Component {
     const { frequencies } = this.props
     let array = []
     for (let key in frequencies) {
-      const { name, id } = frequencies[key]
+      const { name } = frequencies[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -424,7 +424,7 @@ class AddCDrugScreen extends Component {
               <label>通用名<b style={{color: 'red'}}>*</b></label>
               <input
                 type='text'
-                placeholder={'drugname'}
+                placeholder={'name'}
                 value={drugInfo.name}
                 onChange={e => {
                   this.setItemValue(e, 'name')
@@ -461,14 +461,14 @@ class AddCDrugScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(drugInfo.packing_unit_id, this.getMiniUnitOptions())}
+                  value={this.getSelectValue(drugInfo.packing_unit_name, this.getMiniUnitOptions())}
                   onInputChange={keyword => { this.getDoseUnitList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'packing_unit_id', 2)
+                    this.setItemValue(value, 'packing_unit_name', 2)
                   }}
                 />
               </div>
-              {this.state.packing_unit_idFailed || drugInfo.packing_unit_id === '' || !drugInfo.packing_unit_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.packing_unit_nameFailed || drugInfo.packing_unit_name === '' || !drugInfo.packing_unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>商品名</label>
@@ -499,14 +499,14 @@ class AddCDrugScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getDoseFormOptions()}
-                  value={this.getSelectValue(drugInfo.dose_form_id, this.getDoseFormOptions())}
+                  value={this.getSelectValue(drugInfo.dose_form_name, this.getDoseFormOptions())}
                   onInputChange={keyword => { this.getDoseFormList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'dose_form_id', 2)
+                    this.setItemValue(value, 'dose_form_name', 2)
                   }}
                 />
               </div>
-              {this.state.dose_form_idFailed || drugInfo.dose_form_id === '' || !drugInfo.dose_form_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.dose_form_nameFailed || drugInfo.dose_form_name === '' || !drugInfo.dose_form_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>拼音码</label>
@@ -576,14 +576,14 @@ class AddCDrugScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(drugInfo.mini_unit_id, this.getMiniUnitOptions())}
+                  value={this.getSelectValue(drugInfo.mini_unit_name, this.getMiniUnitOptions())}
                   onInputChange={keyword => { this.getDoseUnitList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'mini_unit_id', 2)
+                    this.setItemValue(value, 'mini_unit_name', 2)
                   }}
                 />
               </div>
-              {this.state.mini_unit_idFailed || drugInfo.mini_unit_id === '' || !drugInfo.mini_unit_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.mini_unit_nameFailed || drugInfo.mini_unit_name === '' || !drugInfo.mini_unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
           </ul>
         </div>
@@ -593,7 +593,7 @@ class AddCDrugScreen extends Component {
   // 费用信息
   renderFeeInfoBlank() {
     const {drugInfo} = this.state
-    console.log('drugInfo=======', drugInfo)
+    // console.log('drugInfo=======', drugInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span>费用信息</span>
@@ -738,14 +738,14 @@ class AddCDrugScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getRouteAdministrationOptions()}
-                  value={this.getSelectValue(drugInfo.route_administration_id, this.getRouteAdministrationOptions())}
+                  value={this.getSelectValue(drugInfo.route_administration_name, this.getRouteAdministrationOptions())}
                   onInputChange={keyword => { this.getRouteAdministrationList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'route_administration_id', 2)
+                    this.setItemValue(value, 'route_administration_name', 2)
                   }}
                 />
               </div>
-              {this.state.route_administration_idFailed || drugInfo.route_administration_id === '' || !drugInfo.route_administration_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.route_administration_nameFailed || drugInfo.route_administration_name === '' || !drugInfo.route_administration_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>默认频次<b style={{color: 'red'}}>*</b></label>
@@ -754,14 +754,14 @@ class AddCDrugScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getFrequencyOptions()}
-                  value={this.getSelectValue(drugInfo.frequency_id, this.getFrequencyOptions())}
+                  value={this.getSelectValue(drugInfo.frequency_name, this.getFrequencyOptions())}
                   onInputChange={keyword => { this.getFrequencyList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'frequency_id', 2)
+                    this.setItemValue(value, 'frequency_name', 2)
                   }}
                 />
               </div>
-              {this.state.frequency_idFailed || drugInfo.frequency_id === '' || !drugInfo.frequency_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.frequency_nameFailed || drugInfo.frequency_name === '' || !drugInfo.frequency_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>说明</label>

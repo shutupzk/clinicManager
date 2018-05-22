@@ -32,8 +32,8 @@ import {
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
 import { drugs, drugCreate, queryDrugList } from './drug'
+import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
-import { laboratories, laboratoryCreate, queryLaboratoryList } from './laboratory'
 import { materials, materialCreate, queryMaterialList } from './material'
 import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
 import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
@@ -196,5 +196,6 @@ export {
   LaboratoryPatientModelCreate,
   LaboratoryPersonalPatientModelList,
   RemoveScheduleByID,
-  queryExams
+  queryExams,
+  queryLaboList
 }
