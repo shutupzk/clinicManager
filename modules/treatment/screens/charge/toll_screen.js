@@ -38,7 +38,6 @@ class TollScreen extends Component {
     let voucher_money_int = Math.round(voucher_money * 100)
     let charge_money_int = charge_money ? Math.round(charge_money * 100) : 0
     let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
-    console.log(charge_money_int, should_money)
     if (charge_money_int < should_money) {
       return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
     }
@@ -59,6 +58,10 @@ class TollScreen extends Component {
       })
       if (res && res.code === '200') {
         this.refs.myAlert.alert(`提交成功！`, '创建缴费单成功！')
+      } else if (res && res.code === '300') {
+        this.refs.myAlert.alert(`提交成功！`, '支付方式为现金或缴费金额为0，直接缴费！', async () => {
+          Router.push('/treatment/charge')
+        })
       } else {
         let msg = (res && res.msg) || '未知错误'
         this.refs.myAlert.alert(`提交失败！`, msg, null, 'Warning')
