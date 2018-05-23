@@ -60,6 +60,12 @@ export const queryOtherCostList = ({ clinic_id, keyword, status, offset = 0, lim
 
 export const otherCostsCreate = (requestData) => async dispatch => {
   try {
+    if (requestData.price) {
+      requestData.price = Math.round(requestData.price * 100)
+    }
+    if (requestData.cost) {
+      requestData.cost = Math.round(requestData.cost * 100)
+    }
     const data = await request('/otherCost/create', requestData)
     console.log(
       requestData,

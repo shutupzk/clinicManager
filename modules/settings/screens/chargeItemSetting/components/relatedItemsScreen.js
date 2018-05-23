@@ -5,7 +5,9 @@ import { Select } from '../../../../../components'
 // import { Select } from '../../../../../components'
 // import {} from '../../../../../ducks'
 import {
-  queryLaboratoryItemList
+  queryLaboratoryItemList,
+  queryAssociationList,
+  LaboratoryAssociationCreate
 } from '../../../../../ducks'
 
 // 病历
@@ -13,11 +15,40 @@ class RelatedItemsScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      relateItemList: []
+      relateInfo: {
+        items: []
+      },
+      relateItems: []
     }
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
+    this.queryAssociationList()
+  }
+  // async componentDidMount() {
+  //   const {associations} = this.props
+  //   let {relateInfo, relateItems} = this.state
+  //   if (associations.length > 0) {
+  //     relateInfo.items = associations
+  //     relateItems = associations
+  //     this.setState({relateInfo, relateItems})
+  //   }
+  // }
+  queryAssociationList() {
+    const {relateItem, queryAssociationList} = this.props
+    queryAssociationList({clinic_laboratory_id: relateItem.clinic_laboratory_id}, true)
+  }
+  async submit() {
+    const {LaboratoryAssociationCreate, relateItem} = this.props
+    const {relateInfo} = this.state
+    relateInfo.clinic_laboratory_id = relateItem.clinic_laboratory_id
+    let err = await LaboratoryAssociationCreate(relateInfo)
+    if (err) {
+      alert(err)
+      // this.setState({relateInfo})
+    } else {
+      this.props.closeMask()
+    }
   }
   style() {
     return (
@@ -110,15 +141,20 @@ class RelatedItemsScreen extends Component {
   }
   // 添加行
   addColumn() {
-    const { relateItemList } = this.state
-    this.setState({ relateItemList: [...relateItemList, {}] })
+    const { relateInfo, relateItems } = this.state
+    relateInfo.items.push({})
+    relateItems.push({})
+    this.setState({ relateInfo, relateItems })
   }
   // 删除行
   removeColumn(index) {
-    const { relateItemList } = this.state
-    let array = [...relateItemList]
+    const { relateInfo, relateItems } = this.state
+    let array = relateInfo.items
     array.splice(index, 1)
-    this.setState({ relateItemList: array })
+    relateInfo.items = array
+    let array1 = relateItems
+    array1.splice(index, 1)
+    this.setState({ relateInfo, relateItems: array1 })
   }
   queryLaboratoryItemList(name) {
     const {queryLaboratoryItemList, clinic_id} = this.props
@@ -127,22 +163,71 @@ class RelatedItemsScreen extends Component {
   // 检验项目筛选
   getLaboratoryItemOptions() {
     const { laboratoryItems } = this.props
-    console.log('laboratoryItems=====', laboratoryItems)
+    // console.log('laboratoryItems=====', laboratoryItems)
     let array = []
     for (let key in laboratoryItems) {
-      const { name, clinic_laboratory_item_id } = laboratoryItems[key]
+      const { name, clinic_laboratory_item_id, default_result, en_name, unit_name } = laboratoryItems[key]
       // console.log(doseForms[key])
       array.push({
         value: clinic_laboratory_item_id,
-        label: name
+        label: name,
+        default_result,
+        en_name,
+        unit_name
       })
     }
     return array
   }
+  setChildrenItemValue(e, index, key, type = 1) {
+    let { relateInfo } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = relateInfo.items // [...references]
+    array[index][key] = value
+    relateInfo.items = array
+    this.setState({ relateInfo })
+  }
+  setChildrenItemValue1(e, index, key, type = 1) {
+    let { relateItems } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = relateItems // [...references]
+    array[index][key] = value
+    relateItems = array
+    this.setState({ relateItems })
+  }
+  // 设置选中显示
+  getSelectValue(value, array, type) {
+    for (let obj of array) {
+      // console.log('obj.value======', obj.value, value)
+      if (type) {
+        if (obj.label === value) {
+          return obj
+        }
+      } else {
+        if (obj.value === value) {
+          return obj
+        }
+      }
+    }
+    return null
+  }
   render() {
-    const {relateItem} = this.props
-    const {relateItemList} = this.state
-    console.log('relateItem===', relateItem)
+    const {relateItem, associations} = this.props
+    let {relateInfo, relateItems} = this.state
+    // if (associations.length > 0) {
+    //   relateInfo.items = associations
+    // }
+    // if (associations.length > 0) {
+    //   relateItems = associations
+    //   relateInfo.items = associations
+    //   // this.setState({relateInfo, relateItems})
+    // }
+    console.log('relateItem===', relateItem, relateInfo, relateItems)
     return (
       <div className={'doctorList'}>
         <div className={'doctorList_top'}>
@@ -158,18 +243,19 @@ class RelatedItemsScreen extends Component {
               <div style={{flex: 2}}>项目名称</div>
               <div>英文缩写</div>
               <div>单位</div>
-              <div>参考值</div>
+              {/* <div>参考值</div> */}
               <div>默认结果</div>
               <div onClick={() => { this.addColumn() }}>增加</div>
             </li>
-            {relateItemList.map((item, index) => {
+            {relateInfo.items.map((item, index) => {
               return (
-                <li>
+                <li key={index}>
                   <div>
                     <input
+                      readOnly
                       type='number'
                       placeholder={'序号可修改'}
-                      value={item.No}
+                      value={index + 1}
                     />
                   </div>
                   <div style={{flex: 2}}>
@@ -177,16 +263,32 @@ class RelatedItemsScreen extends Component {
                       <Select
                         placeholder={'请选择'}
                         height={32}
+                        value={this.getSelectValue(item.clinic_laboratory_item_id, this.getLaboratoryItemOptions())}
                         options={this.getLaboratoryItemOptions()}
-                        onChange={() => {}}
+                        onChange={({value, label, default_result, en_name, unit_name}) => {
+                          this.setChildrenItemValue(label, index, 'name', 2)
+                          this.setChildrenItemValue(value, index, 'clinic_laboratory_item_id', 2)
+                          this.setChildrenItemValue(default_result, index, 'default_result', 2)
+                          this.setChildrenItemValue1(en_name, index, 'en_name', 2)
+                          this.setChildrenItemValue1(unit_name, index, 'unit_name', 2)
+                        }}
                         onInputChange={keyword => { this.queryLaboratoryItemList(keyword) }}
                       />
                     </div>
                   </div>
-                  <div>英文缩写</div>
-                  <div>单位</div>
-                  <div>参考值</div>
-                  <div>默认结果</div>
+                  <div>{relateItems[index].en_name}</div>
+                  <div>{relateItems[index].unit_name}</div>
+                  {/* <div>参考值</div> */}
+                  <div>
+                    <input
+                      type='text'
+                      placeholder={'默认结果'}
+                      value={item.default_result}
+                      onChange={e => {
+                        this.setChildrenItemValue(e, index, 'default_result')
+                      }}
+                    />
+                  </div>
                   <div onClick={() => { this.removeColumn(index) }}>删除</div>
                 </li>
               )
@@ -196,7 +298,7 @@ class RelatedItemsScreen extends Component {
         <div className={'formBottom'}>
           <div>
             <button>取消</button>
-            <button>保存</button>
+            <button onClick={() => { this.submit() }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -206,12 +308,16 @@ class RelatedItemsScreen extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
-    laboratoryItems: state.laboratoryItems.data
+    laboratoryItems: state.laboratoryItems.data,
+    associations: state.associations.array_data
   }
 }
 
 export default connect(mapStateToProps, {
-  queryLaboratoryItemList
+  queryLaboratoryItemList,
+  queryAssociationList,
+  LaboratoryAssociationCreate
 })(RelatedItemsScreen)

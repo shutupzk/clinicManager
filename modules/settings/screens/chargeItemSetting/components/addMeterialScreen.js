@@ -6,6 +6,7 @@ import {
   materialCreate,
   queryDoseUnitList
 } from '../../../../../ducks'
+import {limitMoney} from '../../../../../utils'
 
 // 病历
 class AddMeterialScreen extends Component {
@@ -239,13 +240,13 @@ class AddMeterialScreen extends Component {
       // alert(1)
       return false
     }
-    if (!data.unit_id || data.unit_id === '') {
-      this.setState({unit_idFailed: true})
+    if (!data.unit_name || data.unit_name === '') {
+      this.setState({unit_nameFailed: true})
       // alert(2)
       return false
     }
-    if (!data.price || data.price === '') {
-      this.setState({priceFailed: true})
+    if (!data.ret_price || data.ret_price === '') {
+      this.setState({ret_priceFailed: true})
       // alert(2)
       return false
     }
@@ -313,10 +314,10 @@ class AddMeterialScreen extends Component {
     const { doseUnits } = this.props
     let array = []
     for (let key in doseUnits) {
-      const { name, id } = doseUnits[key]
+      const { name } = doseUnits[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -332,9 +333,9 @@ class AddMeterialScreen extends Component {
   // 生产厂家筛选
   getManuFactotyOptions() {
     return [
-      {value: 1, label: '生产厂家1'},
-      {value: 2, label: '生产厂家2'},
-      {value: 3, label: '生产厂家3'}
+      {value: '生产厂家1', label: '生产厂家1'},
+      {value: '生产厂家2', label: '生产厂家2'},
+      {value: '生产厂家3', label: '生产厂家3'}
     ]
   }
   // 检验项目基本信息
@@ -387,38 +388,40 @@ class AddMeterialScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(materialsInfo.unit_id, this.getMiniUnitOptions())}
+                  value={this.getSelectValue(materialsInfo.unit_name, this.getMiniUnitOptions())}
                   onInputChange={keyword => { this.getDoseUnitList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'unit_id', 2)
+                    this.setItemValue(value, 'unit_name', 2)
                   }}
                 />
               </div>
-              {this.state.unit_idFailed || materialsInfo.unit_id === '' || !materialsInfo.unit_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.unit_nameFailed || materialsInfo.unit_name === '' || !materialsInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>零售价<b style={{color: 'red'}}>*</b></label>
               <div>
                 <input
                   type='text'
-                  placeholder={'price'}
-                  value={materialsInfo.price}
+                  placeholder={'ret_price'}
+                  value={materialsInfo.ret_price}
                   onChange={e => {
-                    this.setItemValue(e, 'price')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'ret_price', 2)
                   }}
                 />
               </div>
-              {this.state.priceFailed || materialsInfo.price === '' || !materialsInfo.price ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.ret_priceFailed || materialsInfo.ret_price === '' || !materialsInfo.ret_price ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>成本价</label>
               <div>
                 <input
                   type='text'
-                  placeholder={'cost'}
-                  value={materialsInfo.cost}
+                  placeholder={'buy_price'}
+                  value={materialsInfo.buy_price}
                   onChange={e => {
-                    this.setItemValue(e, 'cost')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'buy_price', 2)
                   }}
                 />
               </div>
@@ -456,10 +459,10 @@ class AddMeterialScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getManuFactotyOptions()}
-                  value={this.getSelectValue(materialsInfo.manu_factory_id, this.getManuFactotyOptions())}
+                  value={this.getSelectValue(materialsInfo.manu_factory_name, this.getManuFactotyOptions())}
                   onInputChange={keyword => {}}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'manu_factory_id', 2)
+                    this.setItemValue(value, 'manu_factory_name', 2)
                   }}
                 />
               </div>

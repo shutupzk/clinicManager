@@ -6,7 +6,7 @@ import {
   otherCostsCreate,
   queryDoseUnitList
 } from '../../../../../ducks'
-
+import {limitMoney} from '../../../../../utils'
 // 病历
 class AddOtherFeeScreen extends Component {
   constructor(props) {
@@ -408,7 +408,8 @@ class AddOtherFeeScreen extends Component {
                   placeholder={'price'}
                   value={otherCostInfo.price}
                   onChange={e => {
-                    this.setItemValue(e, 'price')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'price', 2)
                   }}
                 />
               </div>
@@ -422,7 +423,8 @@ class AddOtherFeeScreen extends Component {
                   placeholder={'cost'}
                   value={otherCostInfo.cost}
                   onChange={e => {
-                    this.setItemValue(e, 'cost')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'cost', 2)
                   }}
                 />
               </div>

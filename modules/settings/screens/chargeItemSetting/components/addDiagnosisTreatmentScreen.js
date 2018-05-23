@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import {
   diagnosisTreatmentCreate
 } from '../../../../../ducks'
-
+import {limitMoney} from '../../../../../utils'
 // 病历
 class AddDiagnosisTreatmentScreen extends Component {
   constructor(props) {
@@ -331,7 +331,8 @@ class AddDiagnosisTreatmentScreen extends Component {
                   placeholder={'price'}
                   value={diagnosisTreatmentsInfo.price}
                   onChange={e => {
-                    this.setItemValue(e, 'price')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'price', 2)
                   }}
                 />
               </div>
@@ -345,7 +346,8 @@ class AddDiagnosisTreatmentScreen extends Component {
                   placeholder={'cost'}
                   value={diagnosisTreatmentsInfo.cost}
                   onChange={e => {
-                    this.setItemValue(e, 'cost')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'cost', 2)
                   }}
                 />
               </div>

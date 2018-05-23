@@ -58,6 +58,12 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
 
 export const materialCreate = (requestData) => async dispatch => {
   try {
+    if (requestData.ret_price) {
+      requestData.ret_price = Math.round(requestData.ret_price * 100)
+    }
+    if (requestData.buy_price) {
+      requestData.buy_price = Math.round(requestData.buy_price * 100)
+    }
     console.log(
       requestData
     )

@@ -240,8 +240,8 @@ class AddLaboratoryItemScreen extends Component {
       // alert(1)
       return false
     }
-    if (!data.unit_id || data.unit_id === '') {
-      this.setState({unit_idFailed: true})
+    if (!data.unit_name || data.unit_name === '') {
+      this.setState({unit_nameFailed: true})
       // alert(2)
       return false
     }
@@ -328,10 +328,10 @@ class AddLaboratoryItemScreen extends Component {
     const { doseUnits } = this.props
     let array = []
     for (let key in doseUnits) {
-      const { name, id } = doseUnits[key]
+      const { name } = doseUnits[key]
       // console.log(doseForms[key])
       array.push({
-        value: id,
+        value: name,
         label: name
       })
     }
@@ -383,14 +383,14 @@ class AddLaboratoryItemScreen extends Component {
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(laboratoryItemInfo.unit_id, this.getMiniUnitOptions())}
+                  value={this.getSelectValue(laboratoryItemInfo.unit_name, this.getMiniUnitOptions())}
                   onInputChange={keyword => { this.getDoseUnitList(keyword) }}
                   onChange={({value}) => {
-                    this.setItemValue(value, 'unit_id', 2)
+                    this.setItemValue(value, 'unit_name', 2)
                   }}
                 />
               </div>
-              {this.state.unit_idFailed || laboratoryItemInfo.unit_id === '' || !laboratoryItemInfo.unit_id ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.unit_nameFailed || laboratoryItemInfo.unit_name === '' || !laboratoryItemInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>仪器编码</label>
@@ -415,14 +415,14 @@ class AddLaboratoryItemScreen extends Component {
                     checked={laboratoryItemInfo.data_type === 2}
                     onChange={e => {
                       this.setItemValue(2, 'data_type', 2)
-                      delete laboratoryItemInfo.reference_max
-                      delete laboratoryItemInfo.reference_min
-                      if (laboratoryItemInfo.items) {
-                        for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
-                          delete laboratoryItemInfo.items[i].reference_max
-                          delete laboratoryItemInfo.items[i].reference_min
-                        }
-                      }
+                      // delete laboratoryItemInfo.reference_max
+                      // delete laboratoryItemInfo.reference_min
+                      // if (laboratoryItemInfo.items) {
+                      //   for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
+                      //     delete laboratoryItemInfo.items[i].reference_max
+                      //     delete laboratoryItemInfo.items[i].reference_min
+                      //   }
+                      // }
                     }}
                   />
                   定量
@@ -434,12 +434,12 @@ class AddLaboratoryItemScreen extends Component {
                     checked={laboratoryItemInfo.data_type === 1}
                     onChange={e => {
                       this.setItemValue(1, 'data_type', 2)
-                      delete laboratoryItemInfo.reference_value
-                      if (laboratoryItemInfo.items) {
-                        for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
-                          delete laboratoryItemInfo.items[i].reference_value
-                        }
-                      }
+                      // delete laboratoryItemInfo.reference_value
+                      // if (laboratoryItemInfo.items) {
+                      //   for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
+                      //     delete laboratoryItemInfo.items[i].reference_value
+                      //   }
+                      // }
                     }}
                   />
                   定性
@@ -448,10 +448,10 @@ class AddLaboratoryItemScreen extends Component {
             </li>
             {!laboratoryItemInfo.is_special ? <li>
               <label>参考值默认</label>
-              {laboratoryItemInfo.data_type === 2 ? <div className={'douInput'}>
+              <div className={'douInput'}>
                 <input
-                  type='number'
-                  min={0}
+                  type='text'
+                  // min={0}
                   placeholder={'最小值'}
                   value={laboratoryItemInfo.reference_min}
                   onChange={e => {
@@ -460,25 +460,15 @@ class AddLaboratoryItemScreen extends Component {
                 />
                 <span>—</span>
                 <input
-                  type='number'
-                  min={0}
+                  type='text'
+                  // min={0}
                   placeholder={'最大值'}
                   value={laboratoryItemInfo.reference_max}
                   onChange={e => {
                     this.setItemValue(e, 'reference_max')
                   }}
                 />
-              </div> : <div>
-                <input
-                  type='text'
-                  placeholder={'阴性或阳性'}
-                  value={laboratoryItemInfo.reference_value}
-                  onChange={e => {
-                    this.setItemValue(e, 'reference_value')
-                  }}
-                />
               </div>
-              }
             </li> : ''}
             <li>
               <label>参考值是否特殊<b style={{color: 'red'}}>*</b></label>
@@ -493,7 +483,7 @@ class AddLaboratoryItemScreen extends Component {
                       // this.setItemValue('true', 'is_special', 2)
                       delete laboratoryItemInfo.reference_max
                       delete laboratoryItemInfo.reference_min
-                      delete laboratoryItemInfo.reference_value
+                      // delete laboratoryItemInfo.reference_value
                       laboratoryItemInfo.items = []
                       this.setState({laboratoryItemInfo})
                     } else {
@@ -649,10 +639,10 @@ class AddLaboratoryItemScreen extends Component {
                   </div>
                 </div>
                 <div>
-                  {laboratoryItemInfo.data_type === 2 ? <div className={'douInput'}>
+                  <div className={'douInput'}>
                     <input
-                      type='number'
-                      min={0}
+                      type='text'
+                      // min={0}
                       placeholder={'最小值'}
                       value={item.reference_min}
                       onChange={e => {
@@ -663,7 +653,7 @@ class AddLaboratoryItemScreen extends Component {
                     <span>—</span>
                     <input
                       type='number'
-                      min={0}
+                      // min={0}
                       placeholder={'最大值'}
                       value={item.reference_max}
                       onChange={e => {
@@ -671,18 +661,7 @@ class AddLaboratoryItemScreen extends Component {
                         // this.setItemValue(e, 'reference_max')
                       }}
                     />
-                  </div> : <div>
-                    <input
-                      type='text'
-                      placeholder={'阴性或阳性'}
-                      value={item.reference_value}
-                      onChange={e => {
-                        this.setChildrenItemValue(e, index, 'reference_value')
-                        // this.setItemValue(e, 'reference_value')
-                      }}
-                    />
                   </div>
-                  }
                 </div>
                 <div onClick={() => { this.removeColumn(index) }} style={{color: 'red', cursor: 'pointer'}}>删除</div>
               </li>

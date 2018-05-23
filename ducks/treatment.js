@@ -65,6 +65,12 @@ export const queryTreatmentList = ({ clinic_id, keyword, status, offset = 0, lim
 
 export const treatmentCreate = ({ clinic_id, name, en_name, py_code, idc_code, unit_name, remark, price, cost, status, is_discount }) => async dispatch => {
   try {
+    if (price) {
+      price = Math.round(price * 100)
+    }
+    if (cost) {
+      cost = Math.round(cost * 100)
+    }
     const data = await request('/treatment/create', {
       clinic_id,
       name,

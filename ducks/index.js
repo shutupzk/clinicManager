@@ -60,6 +60,7 @@ import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCre
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
+import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 
 // keys
 export {
@@ -98,7 +99,8 @@ export {
   diagnosisTreatments,
   treatmentPatientModels,
   examinationModels,
-  laboratoryPatientModels
+  laboratoryPatientModels,
+  associations
 }
 
 // actions
@@ -197,5 +199,7 @@ export {
   LaboratoryPersonalPatientModelList,
   RemoveScheduleByID,
   queryExams,
-  queryLaboList
+  queryLaboList,
+  queryAssociationList,
+  LaboratoryAssociationCreate
 }

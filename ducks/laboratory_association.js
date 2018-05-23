@@ -1,6 +1,6 @@
 import { request } from './request'
-const LABORATORY_ITEM_ADD = 'LABORATORY_ITEM_ADD'
-const LABORATORY_ITEM_ARRAY_ADD = 'LABORATORY_ITEM_ARRAY_ADD'
+const ASSOCIATION_PROJECT_ADD = 'ASSOCIATION_PROJECT_ADD'
+const ASSOCIATION_ARRAY_ADD = 'ASSOCIATION_ARRAY_ADD'
 
 const initState = {
   data: [],
@@ -9,43 +9,39 @@ const initState = {
   selectId: null
 }
 
-export function laboratoryItems(state = initState, action = {}) {
+export function associations(state = initState, action = {}) {
   switch (action.type) {
-    case LABORATORY_ITEM_ADD:
-      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
-    case LABORATORY_ITEM_ARRAY_ADD:
+    case ASSOCIATION_PROJECT_ADD:
+      return { ...state, data: action.data, page_info: action.page_info }
+    case ASSOCIATION_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
       return state
   }
 }
 
-export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
+export const queryAssociationList = ({ clinic_laboratory_id }, arrayType) => async dispatch => {
   try {
-    console.log('limit====', limit)
-    const data = await request('/laboratory/item/list', {
-      clinic_id,
-      name,
-      offset,
-      limit,
-      status
+    console.log('limit====', arrayType, clinic_laboratory_id)
+    const data = await request('/laboratory/associationList', {
+      clinic_laboratory_id
     })
     const docs = data.data || []
     const page_info = data.page_info || {}
     console.log('docs======', docs)
     if (arrayType) {
       dispatch({
-        type: LABORATORY_ITEM_ARRAY_ADD,
+        type: ASSOCIATION_ARRAY_ADD,
         array_data: docs,
         page_info
       })
     } else {
       let json = {}
       for (let doc of docs) {
-        json[doc.clinic_laboratory_item_id] = doc
+        json[doc.clinic_laboratory_id] = doc
       }
       dispatch({
-        type: LABORATORY_ITEM_ADD,
+        type: ASSOCIATION_PROJECT_ADD,
         data: json,
         page_info
       })
@@ -56,14 +52,16 @@ export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, l
     return e.message
   }
 }
-
-export const laboratoryItemCreate = ({requestData}) => async dispatch => {
+export const LaboratoryAssociationCreate = (requestData) => async dispatch => {
   try {
     if (requestData.items) {
+      for (let i = 0; i < requestData.items.length; i++) {
+        requestData.items[i].clinic_laboratory_item_id = requestData.items[i].clinic_laboratory_item_id + ''
+      }
       requestData.items = JSON.stringify(requestData.items)
     }
     console.log('requestData', requestData)
-    const data = await request('/laboratory/item/create', requestData)
+    const data = await request('/laboratory/association', requestData)
     console.log(
       requestData,
       data

@@ -60,6 +60,12 @@ export const queryDiagnosisTreatmentList = ({ clinic_id, keyword, status, offset
 
 export const diagnosisTreatmentCreate = (requestData) => async dispatch => {
   try {
+    if (requestData.price) {
+      requestData.price = Math.round(requestData.price * 100)
+    }
+    if (requestData.cost) {
+      requestData.cost = Math.round(requestData.cost * 100)
+    }
     const data = await request('/diagnosisTreatment/create', requestData)
     console.log(
       requestData,

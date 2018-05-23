@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { queryMaterialList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddMeterialScreen from './components/addMeterialScreen'
+import {formatMoney} from '../../../../utils'
 
 class MeterialCostsScreen extends Component {
   constructor(props) {
@@ -97,7 +98,7 @@ class MeterialCostsScreen extends Component {
         </div>
         <style jsx>{`
           .contentCenterRight{
-            width:822px;
+            width:100%;
             height:768px; 
             background:rgba(255,255,255,1);
             box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
@@ -189,7 +190,7 @@ class MeterialCostsScreen extends Component {
                   <td style={{flex: 2}}>{item.name}</td>
                   <td>{item.specification}</td>
                   <td>{item.unit_name}</td>
-                  <td>{item.price}</td>
+                  <td title={formatMoney(item.ret_price) + '元'}>{formatMoney(item.ret_price)}元</td>
                   <td>{item.py_code}</td>
                   <td style={{flex: 2}}>{item.manu_factory_name}</td>
                   <td style={{flex: 2}}>{item.is_discount ? '是' : '否'}</td>
@@ -211,7 +212,7 @@ class MeterialCostsScreen extends Component {
           offset={pageInfo.offset}
           limit={pageInfo.limit}
           total={pageInfo.total}
-          style={{margin: '20px 0', width: '758px'}}
+          style={{margin: '20px 0', width: '100%'}}
           onItemClick={({ offset, limit }) => {
             // const keyword = this.state.keyword
             this.getDataList({ offset, limit })
