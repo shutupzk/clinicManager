@@ -38,6 +38,7 @@ class TriageRecordScreen extends Component {
       params.status_start = status_start
       params.status_end = status_end
     }
+    console.log('params ====', params)
     triagePatientsList(params)
   }
 
@@ -49,6 +50,7 @@ class TriageRecordScreen extends Component {
   // 显示分诊列表
   showTriageList() {
     const { triagePatients, patient_page_info } = this.props
+    console.log('triagePatients ======', triagePatients)
     return (
       <div>
         <div className={'filterBox'}>

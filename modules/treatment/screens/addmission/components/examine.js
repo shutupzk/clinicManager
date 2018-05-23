@@ -202,7 +202,7 @@ class ExamineScreen extends Component {
               </button>
             </div>
             <div className={'bottomRight'}>
-              <button>存为模板</button>
+              {/* <button>存为模板</button> */}
               <button>打印申请单</button>
             </div>
           </div>

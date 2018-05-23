@@ -99,12 +99,12 @@ const rootReducer = (state, action) => {
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 // export default () => {
-//   // let store = createStore(persistedReducer)
-
+//   const store = createStore(persistedReducer, {}, compose(applyMiddleware(...middleware)))
+//   const persistor = persistStore(store, null, () => store.getState())
 //   return { store, persistor }
 // }
+
 const store = createStore(persistedReducer, {}, compose(applyMiddleware(...middleware)))
-// let persistor = persistStore(store)
 const persistor = persistStore(store, null, () => store.getState())
 
 export { store, persistor }

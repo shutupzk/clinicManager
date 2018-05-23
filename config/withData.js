@@ -3,6 +3,7 @@ import localforage from 'localforage'
 import { Provider } from 'react-redux'
 import { store, persistor } from './store'
 // import initStore from './store'
+// const { store, persistor } = initStore()
 import { PersistGate } from 'redux-persist/integration/react'
 export default function(Component) {
   class Auth extends React.Component {

@@ -40,8 +40,8 @@ export const LaboratoryPatientGet = ({ clinic_triage_patient_id }) => async disp
     let docs = data.data || []
     let json = {}
     for (let doc of docs) {
-      const { clinic_laboratory_id, name } = doc
-      json[clinic_laboratory_id] = { clinic_laboratory_id, name }
+      const { clinic_laboratory_id, laboratory_name } = doc
+      json[clinic_laboratory_id] = { clinic_laboratory_id, laboratory_name }
     }
     dispatch({
       type: LABORATORY_PATIENT_ADD,
