@@ -305,7 +305,7 @@ class InspectionPhysicianScreen extends Component {
   // 关联项目
   relatedItems() {
     const { associations, relateItem } = this.state
-    const {laboratoryItems, queryLaboratoryItemList, LaboratoryAssociationCreate} = this.props
+    const {laboratoryItems, queryLaboratoryItemList, LaboratoryAssociationCreate, clinic_id} = this.props
     console.log(' =======!!!!!!!!! =======', associations)
     return (
       <div className={'mask'}>
@@ -313,6 +313,7 @@ class InspectionPhysicianScreen extends Component {
           ref='myAssociation'
           associations={associations}
           relateItem={relateItem}
+          clinic_id={clinic_id}
           laboratoryItems={laboratoryItems}
           queryLaboratoryItemList={queryLaboratoryItemList}
           LaboratoryAssociationCreate={LaboratoryAssociationCreate}
@@ -382,6 +383,7 @@ class InspectionPhysicianScreen extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log('state=======', state)
   return {
     clinic_id: state.user.data.clinic_id,
     laboratories: state.laboratories.array_data,

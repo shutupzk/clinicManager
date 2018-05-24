@@ -159,7 +159,7 @@ export default class RelatedItemsScreen extends Component {
   // 检验项目筛选
   getLaboratoryItemOptions() {
     const { laboratoryItems } = this.props
-    // console.log('laboratoryItems=====', laboratoryItems)
+    console.log('laboratoryItems=====', laboratoryItems)
     let array = []
     for (let key in laboratoryItems) {
       const { name, clinic_laboratory_item_id, default_result, en_name, unit_name } = laboratoryItems[key]

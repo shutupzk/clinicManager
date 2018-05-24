@@ -3,7 +3,7 @@ const ASSOCIATION_PROJECT_ADD = 'ASSOCIATION_PROJECT_ADD'
 const ASSOCIATION_ARRAY_ADD = 'ASSOCIATION_ARRAY_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   array_data: [],
   page_info: {},
   selectId: null
@@ -30,8 +30,9 @@ export const queryAssociationList = ({ clinic_laboratory_id }, arrayType) => asy
     const page_info = data.page_info || {}
     let association_json = {}
     for (let doc of docs) {
-      association_json[doc.clinic_laboratory_id] = doc
+      association_json[doc.clinic_laboratory_item_id] = doc
     }
+    console.log('association_json======', association_json)
     dispatch({
       type: 'LABORATORY_ITEM_ADD',
       data: association_json,
