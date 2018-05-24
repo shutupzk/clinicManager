@@ -218,7 +218,7 @@ class RelatedItemsScreen extends Component {
     //   relateItems = associations
     //   relateInfo.items = associations
     // }
-    console.log('relateItem===', relateItem, relateInfo, relateItems, associations)
+    console.log('render ==== associations===', relateItem, associations)
     return (
       <div className={'doctorList'}>
         <div className={'doctorList_top'}>
@@ -304,7 +304,7 @@ class RelatedItemsScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state=====', state)
+  // console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
     laboratoryItems: state.laboratoryItems.data
