@@ -26,8 +26,8 @@ class TobeChargedScreen extends Component {
     queryChargeUnpayList({ start_date, end_date, clinic_id, keyword, offset, limit })
   }
 
-  async componentDidMount() {
-    await this.getTobeChargeData({})
+  componentDidMount() {
+    this.getTobeChargeData({})
   }
 
   // 显示待收费
