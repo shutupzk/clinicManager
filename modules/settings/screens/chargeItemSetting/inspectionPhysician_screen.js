@@ -21,7 +21,8 @@ class InspectionPhysicianScreen extends Component {
       status: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      associations: []
     }
   }
 
@@ -172,9 +173,11 @@ class InspectionPhysicianScreen extends Component {
       </div>
     )
   }
-  queryAssociationList(clinic_laboratory_id) {
+  async queryAssociationList(clinic_laboratory_id) {
     const {queryAssociationList} = this.props
-    queryAssociationList({clinic_laboratory_id}, true)
+    const associations = await queryAssociationList({clinic_laboratory_id}, true)
+    console.log('associations ====', associations)
+    this.setState({ associations })
   }
   // 加载表格
   renderTable() {
@@ -289,7 +292,7 @@ class InspectionPhysicianScreen extends Component {
   }
   // 关联项目
   relatedItems() {
-    const {associations} = this.props
+    const {associations} = this.state
     return (
       <div className={'mask'}>
         <RelatedItemsScreen

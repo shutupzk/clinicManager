@@ -27,29 +27,30 @@ export const queryAssociationList = ({ clinic_laboratory_id }, arrayType) => asy
       clinic_laboratory_id
     })
     const docs = data.data || []
-    const page_info = data.page_info || {}
-    console.log('docs======', docs)
-    if (arrayType) {
-      dispatch({
-        type: ASSOCIATION_ARRAY_ADD,
-        array_data: docs,
-        page_info
-      })
-    } else {
-      let json = {}
-      for (let doc of docs) {
-        json[doc.clinic_laboratory_id] = doc
-      }
-      dispatch({
-        type: ASSOCIATION_PROJECT_ADD,
-        data: json,
-        page_info
-      })
-    }
-    return null
+    // const page_info = data.page_info || {}
+    // console.log('docs======', docs)
+    // if (arrayType) {
+    //   dispatch({
+    //     type: ASSOCIATION_ARRAY_ADD,
+    //     array_data: docs,
+    //     page_info
+    //   })
+    // } else {
+    //   let json = {}
+    //   for (let doc of docs) {
+    //     json[doc.clinic_laboratory_id] = doc
+    //   }
+    //   dispatch({
+    //     type: ASSOCIATION_PROJECT_ADD,
+    //     data: json,
+    //     page_info
+    //   })
+    // }
+    return docs
   } catch (e) {
     console.log(e)
-    return e.message
+    // return e.message
+    return []
   }
 }
 export const LaboratoryAssociationCreate = (requestData) => async dispatch => {
