@@ -69,11 +69,20 @@ export const queryLaboList = ({ keyword = '', offset = 0, limit = 10 }) => async
       limit
     })
     const docs = data.data || []
+    let sample_data = {}
     // const page_info = data.page_info || {}
     console.log('docs======', docs)
+    for (let doc of docs) {
+      const {laboratory_sample} = doc
+      if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
+    }
     dispatch({
       type: LABO_ARRAY_ADD,
       labo_data: docs
+    })
+    dispatch({
+      type: 'LABORATORY_SAMPLE_LIST',
+      data: sample_data
     })
     return null
   } catch (e) {

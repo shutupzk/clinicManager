@@ -15,7 +15,7 @@ class AddExaminationModelScreen extends Component {
       modelInfo: {
         is_common: false,
         status: false,
-        items: []
+        items: [{}]
       }
     }
   }
