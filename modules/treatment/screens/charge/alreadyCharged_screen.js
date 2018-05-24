@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryCreditTriageList } from '../../../../ducks'
+import { queryCreditTriageList, creditTriageSelect } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
@@ -28,6 +28,11 @@ class AlreadyChargedScreen extends Component {
 
   componentDidMount() {
     this.getData({})
+  }
+
+  gotoDetail(selectId) {
+    this.props.creditTriageSelect({ selectId })
+    Router.push('/treatment/charge/alreadyChargedDetail')
   }
 
   // 暂时挂账的分诊记录
@@ -77,7 +82,7 @@ class AlreadyChargedScreen extends Component {
                     <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total_fee)}</span>
                     <span
                       onClick={() => {
-                        // this.gotoChargeDetail(patient.clinic_triage_patient_id)
+                        this.gotoDetail(patient.clinic_triage_patient_id)
                       }}
                     >
                       查看
@@ -155,4 +160,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryCreditTriageList })(AlreadyChargedScreen)
+export default connect(mapStateToProps, { queryCreditTriageList, creditTriageSelect })(AlreadyChargedScreen)

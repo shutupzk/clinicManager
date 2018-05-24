@@ -60,7 +60,7 @@ import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCre
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
-import { onCredit, queryCreditTriageList } from './on_credit'
+import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 
 // keys
@@ -204,6 +204,8 @@ export {
   queryExams,
   queryLaboList,
   queryCreditTriageList,
+  creditTriageSelect,
+  queryCreditRecordList,
   queryAssociationList,
   LaboratoryAssociationCreate
 }
