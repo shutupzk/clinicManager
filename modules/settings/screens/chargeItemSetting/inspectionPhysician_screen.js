@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryLaboratoryList, queryAssociationList } from '../../../../ducks'
+import {
+  queryLaboratoryList,
+  queryAssociationList,
+  queryLaboratoryItemList,
+  LaboratoryAssociationCreate
+} from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddLaboratoryScreen from './components/addLaboratoryScreen'
 import RelatedItemsScreen from './components/relatedItemsScreen'
@@ -224,6 +229,7 @@ class InspectionPhysicianScreen extends Component {
                         onClick={async () => {
                           let associations = await this.queryAssociationList(item.clinic_laboratory_id)
                           this.setState({ relateItem: item, alertType: 1, associations })
+                          this.refs.myAssociation.renderItems(associations)
                         }}
                       >
                         关联项目
@@ -299,10 +305,18 @@ class InspectionPhysicianScreen extends Component {
   // 关联项目
   relatedItems() {
     const { associations, relateItem } = this.state
+    const {laboratoryItems, queryLaboratoryItemList, LaboratoryAssociationCreate} = this.props
     console.log(' =======!!!!!!!!! =======', associations)
     return (
       <div className={'mask'}>
-        <RelatedItemsScreen associations={associations} relateItem={relateItem} closeMask={() => this.setState({ alertType: 0 })} />
+        <RelatedItemsScreen
+          ref='myAssociation'
+          associations={associations}
+          relateItem={relateItem}
+          laboratoryItems={laboratoryItems}
+          queryLaboratoryItemList={queryLaboratoryItemList}
+          LaboratoryAssociationCreate={LaboratoryAssociationCreate}
+          closeMask={() => this.setState({ alertType: 0 })} />
       </div>
     )
   }
@@ -372,11 +386,14 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     laboratories: state.laboratories.array_data,
     pageInfo: state.laboratories.page_info,
-    associations: state.associations.array_data
+    // associations: state.associations.array_data,
+    laboratoryItems: state.laboratoryItems.data
   }
 }
 
 export default connect(mapStateToProps, {
   queryLaboratoryList,
-  queryAssociationList
+  queryAssociationList,
+  queryLaboratoryItemList,
+  LaboratoryAssociationCreate
 })(InspectionPhysicianScreen)

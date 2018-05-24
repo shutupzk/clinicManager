@@ -1,24 +1,24 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+// import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
 // import Router from 'next/router'
 // import { Select } from '../../../../../components'
 // import {} from '../../../../../ducks'
-import {
-  queryLaboratoryItemList,
-  // queryAssociationList,
-  LaboratoryAssociationCreate
-} from '../../../../../ducks'
+// import {
+//   // queryLaboratoryItemList,
+//   // queryAssociationList,
+//   // LaboratoryAssociationCreate
+// } from '../../../../../ducks'
 
 // 病历
-class RelatedItemsScreen extends Component {
+export default class RelatedItemsScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       relateInfo: {
-        items: this.props.associations
+        items: []
       },
-      relateItems: this.props.associations
+      relateItems: []
     }
   }
 
@@ -29,17 +29,24 @@ class RelatedItemsScreen extends Component {
   }
   async submit() {
     const {LaboratoryAssociationCreate, relateItem} = this.props
-    let {relateInfo, relateItems} = this.state
+    let {relateInfo} = this.state
     relateInfo.clinic_laboratory_id = relateItem.clinic_laboratory_id
-    let err = await LaboratoryAssociationCreate(relateInfo)
+    let requestData = {items: []}
+    requestData.clinic_laboratory_id = relateInfo.clinic_laboratory_id
+    for (let i = 0; i < relateInfo.items.length; i++) {
+      let items = {}
+      items.name = relateInfo.items[i].name
+      items.clinic_laboratory_item_id = relateInfo.items[i].clinic_laboratory_item_id
+      items.default_result = relateInfo.items[i].default_result
+      requestData.items.push(items)
+    }
+    let err = await LaboratoryAssociationCreate(requestData)
     if (err) {
       alert(err)
       // this.setState({relateInfo})
     } else {
+      alert('添加关联项目成功！')
       this.props.closeMask()
-      relateItems = []
-      relateInfo.items = []
-      this.setState({relateItems, relateInfo})
     }
   }
   style() {
@@ -133,20 +140,17 @@ class RelatedItemsScreen extends Component {
   }
   // 添加行
   addColumn() {
-    const { relateInfo, relateItems } = this.state
+    const { relateInfo } = this.state
     relateInfo.items.push({})
-    relateItems.push({})
-    this.setState({ relateInfo, relateItems })
+    this.setState({ relateInfo })
   }
   // 删除行
   removeColumn(index) {
-    const { relateInfo, relateItems } = this.state
+    const { relateInfo } = this.state
     let array = relateInfo.items
     array.splice(index, 1)
     relateInfo.items = array
-    let array1 = relateItems
-    array1.splice(index, 1)
-    this.setState({ relateInfo, relateItems: array1 })
+    this.setState({ relateInfo })
   }
   queryLaboratoryItemList(name) {
     const {queryLaboratoryItemList, clinic_id} = this.props
@@ -208,17 +212,18 @@ class RelatedItemsScreen extends Component {
     }
     return null
   }
+  renderItems(associations) {
+    const {relateInfo} = this.state
+    relateInfo.items = associations
+    this.setState({
+      relateItems: associations,
+      relateInfo
+    })
+  }
   render() {
-    const {relateItem, associations} = this.props
-    let {relateInfo, relateItems} = this.state
-    // if (associations.length > 0) {
-    //   relateInfo.items = associations
-    // }
-    // if (associations.length > 0) {
-    //   relateItems = associations
-    //   relateInfo.items = associations
-    // }
-    console.log('render ==== associations===', relateItem, associations)
+    const {relateItem} = this.props
+    let {relateInfo} = this.state
+    console.log('render ==== associations===', relateInfo)
     return (
       <div className={'doctorList'}>
         <div className={'doctorList_top'}>
@@ -226,9 +231,9 @@ class RelatedItemsScreen extends Component {
           <div />
           <span onClick={() => {
             this.props.closeMask()
-            relateItems = []
-            relateInfo.items = []
-            this.setState({relateItems, relateInfo})
+            // relateItems = []
+            // relateInfo.items = []
+            // this.setState({relateItems, relateInfo})
           }}>×</span>
         </div>
         <div className={'formContent'}>
@@ -265,15 +270,15 @@ class RelatedItemsScreen extends Component {
                           this.setChildrenItemValue(label, index, 'name', 2)
                           this.setChildrenItemValue(value, index, 'clinic_laboratory_item_id', 2)
                           this.setChildrenItemValue(default_result, index, 'default_result', 2)
-                          this.setChildrenItemValue1(en_name, index, 'en_name', 2)
-                          this.setChildrenItemValue1(unit_name, index, 'unit_name', 2)
+                          this.setChildrenItemValue(en_name, index, 'en_name', 2)
+                          this.setChildrenItemValue(unit_name, index, 'unit_name', 2)
                         }}
                         onInputChange={keyword => { this.queryLaboratoryItemList(keyword) }}
                       />
                     </div>
                   </div>
-                  <div>{relateItems[index].en_name}</div>
-                  <div>{relateItems[index].unit_name}</div>
+                  <div>{item.en_name}</div>
+                  <div>{item.unit_name}</div>
                   {/* <div>参考值</div> */}
                   <div>
                     <input
@@ -302,17 +307,3 @@ class RelatedItemsScreen extends Component {
     )
   }
 }
-
-const mapStateToProps = state => {
-  // console.log('state=====', state)
-  return {
-    clinic_id: state.user.data.clinic_id,
-    laboratoryItems: state.laboratoryItems.data
-  }
-}
-
-export default connect(mapStateToProps, {
-  queryLaboratoryItemList,
-  // queryAssociationList,
-  LaboratoryAssociationCreate
-})(RelatedItemsScreen)
