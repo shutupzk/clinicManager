@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 // import { Select } from '../../../../../components'
-import { queryLaboratoryList, LaboratoryPatientModelCreate, LaboratoryPatientModelList } from '../../../../../ducks'
+import { queryLaboratoryList, LaboratoryPatientModelCreate } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 
 // 病历
@@ -77,7 +77,7 @@ class AddLaboratoryModelScreen extends Component {
   }
 
   async LaboratoryPatientModelCreate() {
-    const { LaboratoryPatientModelCreate, personnel_id, LaboratoryPatientModelList, backToList } = this.props
+    const { LaboratoryPatientModelCreate, personnel_id, backToList } = this.props
     const { laboratories, model_name, is_common } = this.state
     let items = []
     for (let { clinic_laboratory_id, times, illustration } of laboratories) {
@@ -93,7 +93,6 @@ class AddLaboratoryModelScreen extends Component {
     } else {
       this.setState({ showSaveModel: false })
       this.refs.myAlert.alert('保存成功')
-      LaboratoryPatientModelList({})
       backToList()
     }
   }
