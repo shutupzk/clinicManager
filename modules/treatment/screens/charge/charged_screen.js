@@ -1,87 +1,51 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList } from '../../../../ducks'
+import { queryChargePaidList } from '../../../../ducks'
 import moment from 'moment'
-import { getAgeByBirthday } from '../../../../utils'
+import { PageCard } from '../../../../components'
+import { getAgeByBirthday, formatMoney } from '../../../../utils'
 
 class ChargedScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 2,
-      showType: 1,
-      nowWeekNum: 1,
-      OrderType: 1
+      start_date: moment()
+        .add(-7, 'd')
+        .format('YYYY-MM-DD'),
+      end_date: moment()
+        .add(1, 'd')
+        .format('YYYY-MM-DD'),
+      keyword: ''
     }
+  }
+
+  getChargeData({ offset, limit }) {
+    const { clinic_id, queryChargePaidList } = this.props
+    let { start_date, end_date, keyword } = this.state
+    queryChargePaidList({ start_date, end_date, clinic_id, keyword, offset, limit })
   }
 
   componentDidMount() {
-    const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
-  }
-	// 改变显示内容
-  changeContent({ type }) {
-    this.setState({ pageType: type })
+    this.getChargeData({})
   }
 
-  getTriagePatientListData(treat_status) {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (!patient.treat_status) continue
-      if (treat_status) {
-        if (!patient.reception_time) continue
-      } else {
-        if (patient.reception_time) continue
-      }
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return 1
-      return -1
-    })
-  }
-  getUnTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (patient.treat_status) continue
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
-      return 1
-    })
-  }
-
-	// 切换显示列表
-  changeShowType({ type }) {
-    this.setState({ showType: type })
-  }
-	// 显示待收费
-  showTobeCharged() {
-    const array = this.getUnTriagePatientListData(false)
+  // 显示已收费就诊记录
+  showCharged() {
+    const { data, data_page } = this.props
     return (
       <div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
-              // let updateTime = patient.complete_time || patient.reception_time || patient.register_time
-              let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
+            {data.map((patient, index) => {
+              let statusColor = '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已收费' : '待收费'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>已收费</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -97,18 +61,28 @@ class ChargedScreen extends Component {
                       <a>{patient.doctor_name}</a>
                     </span>
                     <span>
-                      <a>收费人员：</a>
+                      <a>登记人员：</a>
                       <a>{patient.register_personnel_name}</a>
                     </span>
                     <span>
-                      <a>收费时间：</a>
+                      <a>登记时间：</a>
                       <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
+                    <span>
+                      <a style={{ color: 'rgb(153, 153, 153)' }}>更新时间：</a>
+                      <a style={{ color: 'rgb(153, 153, 153)' }}>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>￥337.0</span>
-                    <span onClick={() => {}}>打印发票</span>
-                    <span onClick={() => {}}>退费</span>
+                    <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total_fee)}</span>
+                    <span style={{ cursor: 'unset' }}>打印发票</span>
+                    <span
+                      onClick={() => {
+                        // this.gotoChargeDetail(patient.clinic_triage_patient_id)
+                      }}
+                    >
+                      查看
+                    </span>
                   </div>
                 </li>
               )
@@ -116,6 +90,14 @@ class ChargedScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
+        <PageCard
+          offset={data_page.offset}
+          limit={data_page.limit}
+          total={data_page.total}
+          onItemClick={({ offset, limit }) => {
+            this.getChargeData({ offset, limit })
+          }}
+        />
       </div>
     )
   }
@@ -130,42 +112,52 @@ class ChargedScreen extends Component {
       <div>
         <div className={'childTopBar'}>
           <span onClick={() => Router.push('/treatment/charge')}>待收费</span>
-          <span className={'sel'}>
-						已收费
-					</span>
-          <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
-						已挂账
-					</span>
-          <span onClick={() => Router.push('/treatment/charge/refunded')}>
-						已退款
-					</span>
-          <span onClick={() => Router.push('/treatment/charge/orderManagement')}>
-						订单管理
-					</span>
+          <span className={'sel'}>已收费</span>
+          <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>已挂账</span>
+          <span onClick={() => Router.push('/treatment/charge/refunded')}>已退款</span>
+          <span onClick={() => Router.push('/treatment/charge/orderManagement')}>订单管理</span>
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='date' placeholder='选择日期' />
-            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-            <button>查询</button>
+            <input
+              type='date'
+              placeholder='开始日期'
+              value={this.state.start_date}
+              onChange={e => {
+                this.setState({ start_date: e.target.value })
+              }}
+            />
+            <input
+              type='date'
+              placeholder='结束日期'
+              value={this.state.end_date}
+              onChange={e => {
+                this.setState({ end_date: e.target.value })
+              }}
+            />
+            <input
+              type='text'
+              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+              onChange={e => {
+                this.setState({ keyword: e.target.value })
+              }}
+            />
+            <button onClick={() => this.getChargeData({})}>查询</button>
           </div>
         </div>
-        {this.showTobeCharged()}
+        {this.showCharged()}
       </div>
     )
   }
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
-    triage_personnel_id: state.user.data.id,
+    personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
-    triagePatients: state.triagePatients.data,
-    patient_page_info: state.triagePatients.page_info,
-    triageDoctors: state.triageDoctors.data,
-    doctor_page_info: state.triageDoctors.page_info
+    data: state.charge.charge_paid_triage,
+    data_page: state.charge.charge_paid_triage_page
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(ChargedScreen)
+export default connect(mapStateToProps, { queryChargePaidList })(ChargedScreen)

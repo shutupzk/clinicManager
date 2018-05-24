@@ -42,7 +42,7 @@ import { examinationOrgans, queryExaminationOrganList } from './examination_orga
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
 import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
 import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
-import { charge, queryChargeUnpayList, chargeUnpaySelect, queryUnPaidOrders, createPayment } from './charge'
+import { charge, queryChargeUnpayList, chargeUnpaySelect, queryUnPaidOrders, createPayment, queryChargePaidList } from './charge'
 import { materialPatients, MaterialPatientCreate, MaterialPatientGet } from './material_patient'
 import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './other_patient'
 import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
@@ -60,6 +60,7 @@ import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCre
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
+import { onCredit, queryCreditTriageList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 
 // keys
@@ -100,6 +101,7 @@ export {
   treatmentPatientModels,
   examinationModels,
   laboratoryPatientModels,
+  onCredit,
   associations
 }
 
@@ -168,6 +170,7 @@ export {
   chargeUnpaySelect,
   queryUnPaidOrders,
   createPayment,
+  queryChargePaidList,
   MaterialPatientCreate,
   MaterialPatientGet,
   OtherCostPatientCreate,
@@ -200,6 +203,7 @@ export {
   RemoveScheduleByID,
   queryExams,
   queryLaboList,
+  queryCreditTriageList,
   queryAssociationList,
   LaboratoryAssociationCreate
 }
