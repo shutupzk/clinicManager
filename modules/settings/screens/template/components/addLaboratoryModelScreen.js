@@ -548,6 +548,5 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   queryLaboratoryList,
-  LaboratoryPatientModelCreate,
-  LaboratoryPatientModelList
+  LaboratoryPatientModelCreate
 })(AddLaboratoryModelScreen)
