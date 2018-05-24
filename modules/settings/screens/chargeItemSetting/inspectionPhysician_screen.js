@@ -2,7 +2,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryLaboratoryList } from '../../../../ducks'
+import {
+  queryLaboratoryList,
+  queryAssociationList
+} from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddLaboratoryScreen from './components/addLaboratoryScreen'
 import RelatedItemsScreen from './components/relatedItemsScreen'
@@ -169,6 +172,10 @@ class InspectionPhysicianScreen extends Component {
       </div>
     )
   }
+  queryAssociationList(clinic_laboratory_id) {
+    const {queryAssociationList} = this.props
+    queryAssociationList({clinic_laboratory_id}, true)
+  }
   // 加载表格
   renderTable() {
     const { laboratories, pageInfo } = this.props
@@ -207,6 +214,7 @@ class InspectionPhysicianScreen extends Component {
                       <div className={'divideLine'}>|</div>
                       <div
                         onClick={() => {
+                          this.queryAssociationList(item.clinic_laboratory_id)
                           this.setState({relateItem: item, alertType: 1})
                         }}
                       >关联项目</div>
@@ -281,9 +289,11 @@ class InspectionPhysicianScreen extends Component {
   }
   // 关联项目
   relatedItems() {
+    const {associations} = this.props
     return (
       <div className={'mask'}>
         <RelatedItemsScreen
+          associations={associations}
           relateItem={this.state.relateItem}
           closeMask={() => this.setState({alertType: 0})}
         />
@@ -349,8 +359,12 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     laboratories: state.laboratories.array_data,
-    pageInfo: state.laboratories.page_info
+    pageInfo: state.laboratories.page_info,
+    associations: state.associations.array_data
   }
 }
 
-export default connect(mapStateToProps, {queryLaboratoryList})(InspectionPhysicianScreen)
+export default connect(mapStateToProps, {
+  queryLaboratoryList,
+  queryAssociationList
+})(InspectionPhysicianScreen)

@@ -6,7 +6,7 @@ import { Select } from '../../../../../components'
 // import {} from '../../../../../ducks'
 import {
   queryLaboratoryItemList,
-  queryAssociationList,
+  // queryAssociationList,
   LaboratoryAssociationCreate
 } from '../../../../../ducks'
 
@@ -16,31 +16,20 @@ class RelatedItemsScreen extends Component {
     super(props)
     this.state = {
       relateInfo: {
-        items: []
+        items: this.props.associations
       },
-      relateItems: []
+      relateItems: this.props.associations
     }
   }
 
   async componentWillMount() {
-    this.queryAssociationList()
+    // this.queryAssociationList()
   }
-  // async componentDidMount() {
-  //   const {associations} = this.props
-  //   let {relateInfo, relateItems} = this.state
-  //   if (associations.length > 0) {
-  //     relateInfo.items = associations
-  //     relateItems = associations
-  //     this.setState({relateInfo, relateItems})
-  //   }
-  // }
-  queryAssociationList() {
-    const {relateItem, queryAssociationList} = this.props
-    queryAssociationList({clinic_laboratory_id: relateItem.clinic_laboratory_id}, true)
+  async componentDidMount() {
   }
   async submit() {
     const {LaboratoryAssociationCreate, relateItem} = this.props
-    const {relateInfo} = this.state
+    let {relateInfo, relateItems} = this.state
     relateInfo.clinic_laboratory_id = relateItem.clinic_laboratory_id
     let err = await LaboratoryAssociationCreate(relateInfo)
     if (err) {
@@ -48,6 +37,9 @@ class RelatedItemsScreen extends Component {
       // this.setState({relateInfo})
     } else {
       this.props.closeMask()
+      relateItems = []
+      relateInfo.items = []
+      this.setState({relateItems, relateInfo})
     }
   }
   style() {
@@ -225,15 +217,19 @@ class RelatedItemsScreen extends Component {
     // if (associations.length > 0) {
     //   relateItems = associations
     //   relateInfo.items = associations
-    //   // this.setState({relateInfo, relateItems})
     // }
-    console.log('relateItem===', relateItem, relateInfo, relateItems)
+    console.log('relateItem===', relateItem, relateInfo, relateItems, associations)
     return (
       <div className={'doctorList'}>
         <div className={'doctorList_top'}>
           <span>关联项目</span>
           <div />
-          <span onClick={() => { this.props.closeMask() }}>×</span>
+          <span onClick={() => {
+            this.props.closeMask()
+            relateItems = []
+            relateInfo.items = []
+            this.setState({relateItems, relateInfo})
+          }}>×</span>
         </div>
         <div className={'formContent'}>
           <span>{relateItem.laboratory_name}</span>
@@ -311,13 +307,12 @@ const mapStateToProps = state => {
   console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
-    laboratoryItems: state.laboratoryItems.data,
-    associations: state.associations.array_data
+    laboratoryItems: state.laboratoryItems.data
   }
 }
 
 export default connect(mapStateToProps, {
   queryLaboratoryItemList,
-  queryAssociationList,
+  // queryAssociationList,
   LaboratoryAssociationCreate
 })(RelatedItemsScreen)
