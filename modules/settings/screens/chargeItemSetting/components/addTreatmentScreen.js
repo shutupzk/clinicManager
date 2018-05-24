@@ -6,6 +6,7 @@ import {
   treatmentCreate,
   queryDoseUnitList
 } from '../../../../../ducks'
+import {limitMoney} from '../../../../../utils'
 
 // 病历
 class AddTreatmentScreen extends Component {
@@ -408,7 +409,8 @@ class AddTreatmentScreen extends Component {
                   placeholder={'price'}
                   value={treatmentInfo.price}
                   onChange={e => {
-                    this.setItemValue(e, 'price')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'price', 2)
                   }}
                 />
               </div>
@@ -422,7 +424,8 @@ class AddTreatmentScreen extends Component {
                   placeholder={'cost'}
                   value={treatmentInfo.cost}
                   onChange={e => {
-                    this.setItemValue(e, 'cost')
+                    let value = limitMoney(e.target.value)
+                    this.setItemValue(value, 'cost', 2)
                   }}
                 />
               </div>

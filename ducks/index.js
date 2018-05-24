@@ -61,6 +61,7 @@ import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientMode
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from './laboratory_model'
 import { onCredit, queryCreditTriageList } from './on_credit'
+import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 
 // keys
 export {
@@ -100,7 +101,8 @@ export {
   treatmentPatientModels,
   examinationModels,
   laboratoryPatientModels,
-  onCredit
+  onCredit,
+  associations
 }
 
 // actions
@@ -201,5 +203,7 @@ export {
   RemoveScheduleByID,
   queryExams,
   queryLaboList,
-  queryCreditTriageList
+  queryCreditTriageList,
+  queryAssociationList,
+  LaboratoryAssociationCreate
 }

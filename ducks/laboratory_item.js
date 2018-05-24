@@ -12,7 +12,7 @@ const initState = {
 export function laboratoryItems(state = initState, action = {}) {
   switch (action.type) {
     case LABORATORY_ITEM_ADD:
-      return { ...state, data: {...state, ...action.data}, page_info: action.page_info }
+      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case LABORATORY_ITEM_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     default:
@@ -59,9 +59,10 @@ export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, l
 
 export const laboratoryItemCreate = ({requestData}) => async dispatch => {
   try {
-    console.log(
-      'requestData', requestData
-    )
+    if (requestData.items) {
+      requestData.items = JSON.stringify(requestData.items)
+    }
+    console.log('requestData', requestData)
     const data = await request('/laboratory/item/create', requestData)
     console.log(
       requestData,

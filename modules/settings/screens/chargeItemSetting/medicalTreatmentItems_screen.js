@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { queryDiagnosisTreatmentList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddDiagnosisTreatmentScreen from './components/addDiagnosisTreatmentScreen'
-
+import {formatMoney} from '../../../../utils'
 class MedicalTreatmentItemsScreen extends Component {
   constructor(props) {
     super(props)
@@ -97,7 +97,7 @@ class MedicalTreatmentItemsScreen extends Component {
         </div>
         <style jsx>{`
           .contentCenterRight{
-            width:822px;
+            width:100%;
             height:768px; 
             background:rgba(255,255,255,1);
             box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
@@ -183,8 +183,8 @@ class MedicalTreatmentItemsScreen extends Component {
               return (
                 <tr key={index}>
                   <td style={{flex: 2}}>{item.name}</td>
-                  <td>{item.price}</td>
-                  <td>{item.cost}</td>
+                  <td title={formatMoney(item.price) + '元'}>{formatMoney(item.price)}元</td>
+                  <td title={formatMoney(item.cost) + '元'}>{formatMoney(item.cost)}元</td>
                   <td style={{flex: 2}}>{item.is_discount ? '是' : '否'}</td>
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{flex: 2}} className={'operTd'}>
@@ -203,7 +203,7 @@ class MedicalTreatmentItemsScreen extends Component {
           offset={pageInfo.offset}
           limit={pageInfo.limit}
           total={pageInfo.total}
-          style={{margin: '20px 0', width: '758px'}}
+          style={{margin: '20px 0', width: '100%'}}
           onItemClick={({ offset, limit }) => {
             // const keyword = this.state.keyword
             this.getDataList({ offset, limit })
