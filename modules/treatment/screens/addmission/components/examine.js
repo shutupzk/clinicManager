@@ -27,7 +27,6 @@ class ExamineScreen extends Component {
 
   getNameOptions() {
     const { examinations } = this.props
-    console.log('examinations=====', examinations)
     let array = []
     for (let key in examinations) {
       const { clinic_examination_id, name, organ } = examinations[key]

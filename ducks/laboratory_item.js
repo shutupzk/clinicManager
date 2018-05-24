@@ -60,6 +60,11 @@ export const queryLaboratoryItemList = ({ clinic_id, name, status, offset = 0, l
 export const laboratoryItemCreate = ({requestData}) => async dispatch => {
   try {
     if (requestData.items) {
+      for (let i = 0; i < requestData.items.length; i++) {
+        if (requestData.items[i].is_pregnancy) {
+          requestData.items[i].is_pregnancy = requestData.items[i].is_pregnancy + ''
+        }
+      }
       requestData.items = JSON.stringify(requestData.items)
     }
     console.log('requestData', requestData)

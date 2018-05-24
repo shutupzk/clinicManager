@@ -49,10 +49,6 @@ class LaboratoryScreen extends Component {
     return null
   }
 
-  getUnitoptions() {
-    return [{ value: 1, label: '次' }, { value: 2, label: '个' }]
-  }
-
   addColumn() {
     const { laboratories } = this.state
     this.setState({ laboratories: [...laboratories, {}] })

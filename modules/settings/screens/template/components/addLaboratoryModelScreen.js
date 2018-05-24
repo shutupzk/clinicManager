@@ -1,26 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { queryExaminationList, examinationModelCreate, queryExaminationOrganList } from '../../../../../ducks'
+// import Router from 'next/router'
+// import { Select } from '../../../../../components'
+import { queryLaboratoryList, LaboratoryPatientModelCreate } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 
 // 病历
-class AddExaminationModelScreen extends Component {
+class AddLaboratoryModelScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showChooseOrgan: false,
       is_common: false,
       status: true,
-      examines: [],
-      selOrgans: []
+      laboratories: []
     }
   }
-
-  componentDidMount() {
-    const { queryExaminationOrganList } = this.props
-    queryExaminationOrganList({ limit: 1000 })
-  }
-
   // 验证字段
   validateData(data) {
     if (!data.model_name || data.model_name === '') {
@@ -30,22 +24,21 @@ class AddExaminationModelScreen extends Component {
     return true
   }
 
-  queryExaminationList(keyword) {
-    const { queryExaminationList, clinic_id } = this.props
+  queryLaboratoryList(keyword) {
+    const { queryLaboratoryList, clinic_id } = this.props
     if (keyword) {
-      queryExaminationList({ clinic_id, status: true, keyword })
+      queryLaboratoryList({ clinic_id, status: true, keyword })
     }
   }
 
-  getNameOptions() {
-    const { examinations } = this.props
+  getNameOptions(defaultOption) {
+    const { laboratories } = this.props
     let array = []
-    for (let key in examinations) {
-      const { clinic_examination_id, name, organ } = examinations[key]
+    for (let key in laboratories) {
+      const { clinic_laboratory_id, laboratory_name } = laboratories[key]
       array.push({
-        value: clinic_examination_id,
-        label: name,
-        organ
+        value: clinic_laboratory_id,
+        label: laboratory_name
       })
     }
     return array
@@ -61,41 +54,40 @@ class AddExaminationModelScreen extends Component {
   }
 
   addColumn() {
-    const { examines } = this.state
-    this.setState({ examines: [...examines, {}] })
+    const { laboratories } = this.state
+    this.setState({ laboratories: [...laboratories, {}] })
   }
 
   removeColumn(index) {
-    const { examines } = this.state
-    let array = [...examines]
+    const { laboratories } = this.state
+    let array = [...laboratories]
     array.splice(index, 1)
-    this.setState({ examines: array })
+    this.setState({ laboratories: array })
   }
 
   setItemValue(e, index, key, type = 1) {
-    const { examines } = this.state
+    const { laboratories } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
-    let array = [...examines]
+    let array = [...laboratories]
     array[index][key] = value
-    this.setState({ examines: array })
+    this.setState({ laboratories: array })
   }
 
-  async examinationModelCreate() {
-    const { examinationModelCreate, personnel_id, backToList } = this.props
-    const { examines, model_name, is_common } = this.state
+  async LaboratoryPatientModelCreate() {
+    const { LaboratoryPatientModelCreate, personnel_id, backToList } = this.props
+    const { laboratories, model_name, is_common } = this.state
     let items = []
-    for (let { clinic_examination_id, times, organ, illustration } of examines) {
+    for (let { clinic_laboratory_id, times, illustration } of laboratories) {
       items.push({
-        clinic_examination_id: clinic_examination_id + '',
+        clinic_laboratory_id: clinic_laboratory_id + '',
         times: times + '',
-        organ: organ + '',
         illustration: illustration + ''
       })
     }
-    let error = await examinationModelCreate({ model_name, is_common, operation_id: personnel_id, items })
+    let error = await LaboratoryPatientModelCreate({ model_name, is_common, operation_id: personnel_id, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -185,109 +177,8 @@ class AddExaminationModelScreen extends Component {
     )
   }
 
-  // 选择部位
-  chooseOrgan() {
-    const { showChooseOrgan, index } = this.state
-    if (!showChooseOrgan) return null
-    const { examinationOrgans } = this.props
-    const organs = examinationOrgans || []
-    let { selOrgans } = this.state
-    console.log('selOrgans====', selOrgans)
-    return (
-      <div className={'mask'}>
-        <div className={'doctorList'}>
-          <div className={'doctorList_top'}>
-            <span>检查部位</span>
-            <div />
-            <span onClick={() => this.setState({ showChooseOrgan: false })}>×</span>
-          </div>
-          <div className={'contentList'}>
-            <ul>
-              {organs.map(({ name }, index) => {
-                return (
-                  <li key={index}>
-                    <label>
-                      <input
-                        type='checkbox'
-                        checked={selOrgans.indexOf(name) > -1}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            selOrgans.push(name)
-                            this.setState({ selOrgans })
-                          } else {
-                            // let array = selOrgans
-                            for (let i = 0; i < selOrgans.length; i++) {
-                              if (selOrgans[i] === name) {
-                                selOrgans.splice(i, 1)
-                              }
-                            }
-                            this.setState({ selOrgans })
-                          }
-                        }}
-                      />
-                      {name}
-                    </label>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-          <div className={'buttonBtn'}>
-            <button onClick={() => this.setState({ showChooseOrgan: false })}>取消</button>
-            <button
-              onClick={() => {
-                let organ = ''
-                for (let i = 0; i < selOrgans.length; i++) {
-                  if (i < selOrgans.length - 1) {
-                    organ += selOrgans[i] + '，'
-                  } else {
-                    organ += selOrgans[i]
-                  }
-                }
-                this.setItemValue(organ, index, 'organ', 2)
-                this.setState({ showChooseOrgan: false })
-              }}
-            >
-              确定
-            </button>
-          </div>
-        </div>
-        <style jsx>{`
-          .contentList {
-            width: 100%;
-            height: 500px;
-            // background: #a0a0a0;
-            display: flex;
-          }
-          .contentList ul {
-            width: 90%;
-            margin: 10px auto;
-          }
-          .contentList ul li {
-            float: left;
-            width: 50%;
-            font-size: 16px;
-            // cursor: pointer;
-            margin: 10px 0 0 0;
-          }
-          .contentList ul li label {
-            cursor: pointer;
-          }
-          .contentList ul li input {
-          }
-          .buttonBtn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 10px auto;
-          }
-        `}</style>
-      </div>
-    )
-  }
-
   renderItems() {
-    const { examines } = this.state
+    const { laboratories } = this.state
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -295,7 +186,6 @@ class AddExaminationModelScreen extends Component {
             <li>
               <div>名称</div>
               <div>次数</div>
-              <div>部位</div>
               <div>说明</div>
               <div>
                 <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
@@ -303,41 +193,30 @@ class AddExaminationModelScreen extends Component {
                 </div>
               </div>
             </li>
-            {examines.map((item, index) => {
-              let nameOptions = this.getNameOptions(examines[index])
+            {laboratories.map((item, index) => {
+              let nameOptions = this.getNameOptions(laboratories[index])
               return (
                 <li key={index}>
                   <div>
                     <div style={{ width: '100%' }}>
                       <Select
-                        value={this.getSelectValue(examines[index].clinic_examination_id, nameOptions)}
-                        onChange={({ value, label, organ }) => {
-                          this.setItemValue(value, index, 'clinic_examination_id', 2)
+                        value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
+                        onChange={({ value, label }) => {
+                          this.setItemValue(value, index, 'clinic_laboratory_id', 2)
                           this.setItemValue(label, index, 'name', 2)
-                          if (organ) {
-                            console.log('organ ===', organ)
-                            this.setItemValue(organ, index, 'organ', 2)
-                            let selOrgans = organ.split(',')
-                            console.log('selOrgans ====', selOrgans)
-                            this.setState({ selOrgans })
-                          }
                         }}
                         placeholder='搜索名称'
                         height={38}
-                        onInputChange={keyword => this.queryExaminationList(keyword)}
+                        onInputChange={keyword => this.queryLaboratoryList(keyword)}
                         options={nameOptions}
                       />
                     </div>
                   </div>
                   <div>
-                    <input value={examines[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                    <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                   </div>
                   <div>
-                    <input value={examines[index].organ} type='text' readOnly />
-                    <button onClick={() => this.setState({ showChooseOrgan: true, index })}>选择</button>
-                  </div>
-                  <div>
-                    <input value={examines[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                    <input value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                   </div>
                   <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -367,7 +246,7 @@ class AddExaminationModelScreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.examinationModelCreate()
+                this.LaboratoryPatientModelCreate()
               }}
             >
               保存
@@ -375,7 +254,6 @@ class AddExaminationModelScreen extends Component {
           </div>
         </div>
         {this.style()}
-        {this.chooseOrgan()}
         <Confirm ref='myAlert' />
       </div>
     )
@@ -663,14 +541,12 @@ const mapStateToProps = state => {
   console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
-    examinations: state.examinations.data,
-    examinationOrgans: state.examinationOrgans.array_data,
+    laboratories: state.laboratories.data,
     personnel_id: state.user.data.id
   }
 }
 
 export default connect(mapStateToProps, {
-  queryExaminationList,
-  examinationModelCreate,
-  queryExaminationOrganList
-})(AddExaminationModelScreen)
+  queryLaboratoryList,
+  LaboratoryPatientModelCreate
+})(AddLaboratoryModelScreen)

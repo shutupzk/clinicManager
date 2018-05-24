@@ -219,7 +219,7 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
           border:1px solid #d9d9d9;
           height: 36px;
           padding:0;
-          // width:100%;
+          width:100%;
           flex:1;
         }
 
@@ -399,7 +399,7 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
   }
   // 检验项目基本信息
   renderBaseInfoBlank() {
-    const {modelInfo, items} = this.state
+    const {modelInfo} = this.state
     console.log('modelInfo=======', modelInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
@@ -476,15 +476,25 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
               <label>医嘱内容<b style={{color: 'red'}}>*</b></label>
               <ul>
                 <li>
-                  <div>名称</div>
+                  <div>组号</div>
+                  <div>药品名称</div>
+                  <div>(次)剂量</div>
+                  <div>(次)单位</div>
+                  <div>用法</div>
+                  <div>用药频次</div>
+                  <div>天数</div>
+                  <div>数量</div>
                   <div>单位</div>
-                  <div>次数</div>
                   <div>说明</div>
+                  <div>取药地点</div>
                   <div onClick={() => this.addColumn()}>添加</div>
                 </li>
                 {modelInfo.items.map((item, index) => {
                   return (
                     <li key={index}>
+                      <div>
+                        {index}
+                      </div>
                       <div>
                         <div>
                           <Select
@@ -502,13 +512,62 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
                       </div>
                       <div>
                         <input
-                          readOnly
-                          type='text'
-                          value={items[index].unit_name}
+                          placeholder='单次剂量'
+                          type='number'
+                          value={modelInfo.items[index].times}
+                          onChange={e => {
+                            this.setItemChildValue(e, index, 'times')
+                          }}
                         />
                       </div>
                       <div>
+                        <div>
+                          <Select
+                            placeholder='（次）单位'
+                            height={38}
+                            options={this.getTreatmentOptions()}
+                            value={this.getSelectValue(+modelInfo.items[index].clinic_treatment_id, this.getTreatmentOptions())}
+                            onChange={({ value, label, clinic_treatment_id, unit_name }) => {
+                              this.setItemChildValue(value + '', index, 'clinic_treatment_id', 2)
+                              this.setItemChildItemsValue(unit_name, index, 'unit_name', 2)
+                            }}
+                            onInputChange={keyword => this.getTreatmentList(keyword)}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div>
+                          <Select
+                            placeholder='用法'
+                            height={38}
+                            options={this.getTreatmentOptions()}
+                            value={this.getSelectValue(+modelInfo.items[index].clinic_treatment_id, this.getTreatmentOptions())}
+                            onChange={({ value, label, clinic_treatment_id, unit_name }) => {
+                              this.setItemChildValue(value + '', index, 'clinic_treatment_id', 2)
+                              this.setItemChildItemsValue(unit_name, index, 'unit_name', 2)
+                            }}
+                            onInputChange={keyword => this.getTreatmentList(keyword)}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div>
+                          <Select
+                            placeholder='用药频次'
+                            height={38}
+                            options={this.getTreatmentOptions()}
+                            value={this.getSelectValue(+modelInfo.items[index].clinic_treatment_id, this.getTreatmentOptions())}
+                            onChange={({ value, label, clinic_treatment_id, unit_name }) => {
+                              this.setItemChildValue(value + '', index, 'clinic_treatment_id', 2)
+                              this.setItemChildItemsValue(unit_name, index, 'unit_name', 2)
+                            }}
+                            onInputChange={keyword => this.getTreatmentList(keyword)}
+                          />
+                        </div>
+                      </div>
+                      <div>
                         <input
+                          placeholder='天数'
                           type='number'
                           value={modelInfo.items[index].times}
                           onChange={e => {
@@ -518,12 +577,53 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
                       </div>
                       <div>
                         <input
-                          type='text'
-                          value={modelInfo.items[index].illustration}
+                          placeholder='数量'
+                          type='number'
+                          value={modelInfo.items[index].times}
                           onChange={e => {
-                            this.setItemChildValue(e, index, 'illustration')
+                            this.setItemChildValue(e, index, 'times')
                           }}
                         />
+                      </div>
+                      <div>
+                        <div>
+                          <Select
+                            placeholder='单位'
+                            height={38}
+                            options={this.getTreatmentOptions()}
+                            value={this.getSelectValue(+modelInfo.items[index].clinic_treatment_id, this.getTreatmentOptions())}
+                            onChange={({ value, label, clinic_treatment_id, unit_name }) => {
+                              this.setItemChildValue(value + '', index, 'clinic_treatment_id', 2)
+                              this.setItemChildItemsValue(unit_name, index, 'unit_name', 2)
+                            }}
+                            onInputChange={keyword => this.getTreatmentList(keyword)}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <input
+                          placeholder='说明'
+                          type='text'
+                          value={modelInfo.items[index].times}
+                          onChange={e => {
+                            this.setItemChildValue(e, index, 'times')
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <div>
+                          <Select
+                            placeholder='取药地点'
+                            height={38}
+                            options={this.getTreatmentOptions()}
+                            value={this.getSelectValue(+modelInfo.items[index].clinic_treatment_id, this.getTreatmentOptions())}
+                            onChange={({ value, label, clinic_treatment_id, unit_name }) => {
+                              this.setItemChildValue(value + '', index, 'clinic_treatment_id', 2)
+                              this.setItemChildItemsValue(unit_name, index, 'unit_name', 2)
+                            }}
+                            onInputChange={keyword => this.getTreatmentList(keyword)}
+                          />
+                        </div>
                       </div>
                       <div onClick={() => this.removeColumn(index)}>删除</div>
                     </li>
