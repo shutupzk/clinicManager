@@ -3,10 +3,10 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { getAgeByBirthday, formatMoney, createTradeNo, limitMoney } from '../../../../utils'
-import { queryUnPaidOrders, createPayment } from '../../../../ducks'
+import { queryPaidOrders, createPayment } from '../../../../ducks'
 import { PageCard, Confirm } from '../../../../components'
 
-class TollScreen extends Component {
+class ChargedDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -73,8 +73,8 @@ class TollScreen extends Component {
   }
 
   componentDidMount() {
-    const { charge_unpay_selectId, queryUnPaidOrders } = this.props
-    queryUnPaidOrders({ clinic_triage_patient_id: charge_unpay_selectId })
+    const { charge_paid_triage_selectId, queryPaidOrders } = this.props
+    queryPaidOrders({ mz_paid_record_id: charge_paid_triage_selectId })
   }
 
   // 改变显示内容
@@ -85,19 +85,21 @@ class TollScreen extends Component {
   renderFeeDetails() {
     if (this.state.pageType !== 1) return ''
 
-    const { charge_unpay, charge_unpay_selectId, un_paid_orders, un_paid_orders_page, un_paid_orders_type } = this.props
+    const { charge_paid_triage, charge_paid_triage_selectId, paid_orders, paid_orders_page, paid_orders_type } = this.props
     let triagePatient = {}
-    for (let tp of charge_unpay) {
-      if (tp.clinic_triage_patient_id === charge_unpay_selectId) triagePatient = tp
+    for (let tp of charge_paid_triage) {
+      if (tp.mz_paid_record_id === charge_paid_triage_selectId) triagePatient = tp
     }
     const { birthday, patient_name, phone, visit_date, sex } = triagePatient
 
-    const { charge_total, discount_total, charge_total_fee, total, offset, limit } = un_paid_orders_page
+    const { charge_total, discount_total, charge_total_fee, total, offset, limit } = paid_orders_page
 
     let typeMap = {}
-    for (let item of un_paid_orders_type) {
+    for (let item of paid_orders_type) {
       typeMap[item.charge_project_type_id] = formatMoney(item.type_charge_total)
     }
+
+    let payMethodMap = { 1: '银行卡', 2: '支付宝', 3: '微信', 4: '现金' }
 
     return (
       <div className={'detailBox'}>
@@ -112,8 +114,25 @@ class TollScreen extends Component {
         <div className={'filterBox'}>
           <div>费用合计：{formatMoney(charge_total)}元</div>
           <div>折扣金额：{formatMoney(discount_total)}元</div>
-          <div />
           <div>应收费用：{formatMoney(charge_total_fee)}元</div>
+          <div>实收费用：{formatMoney(paid_orders_page.balance_money)}元</div>
+        </div>
+        <div className={'toatalFeeBox'}>
+          <h4>优惠费用汇总</h4>
+          <ul>
+            <li>折扣金额：{formatMoney(paid_orders_page.discount_money)}元</li>
+            <li>减免金额：{formatMoney(paid_orders_page.derate_money)}元</li>
+            <li>医保金额：{formatMoney(paid_orders_page.medical_money)}元</li>
+            <li>挂账金额：{formatMoney(paid_orders_page.on_credit_money)}元</li>
+            <li>积分抵扣：{formatMoney(paid_orders_page.bonus_points_money)}元</li>
+            <li>代金券：{formatMoney(paid_orders_page.voucher_money)}元</li>
+            <li />
+            <li />
+            <li>缴费时间：{moment(paid_orders_page.updated_time).format('YYYY-MM-DD HH:mm:ss')}</li>
+            <li>订单号：{paid_orders_page.out_trade_no}</li>
+            <li>支付方式：{payMethodMap[paid_orders_page.pay_method_code]}</li>
+            <li>第三方订单号：{paid_orders_page.trade_no}</li>
+          </ul>
         </div>
         <div className={'toatalFeeBox'}>
           <h4>分类汇总明细费用</h4>
@@ -140,7 +159,7 @@ class TollScreen extends Component {
               <div>开费科室</div>
               <div>开费医生</div>
             </li>
-            {un_paid_orders.map((item, iKey) => {
+            {paid_orders.map((item, iKey) => {
               return (
                 <li key={iKey}>
                   <div>{iKey + 1}</div>
@@ -167,7 +186,7 @@ class TollScreen extends Component {
         />
         <div className={'feeScheduleBottom'}>
           <button>打印</button>
-          <button onClick={() => this.setState({ pageType: 2 })}>结账</button>
+          <button>退费</button>
         </div>
         <style jsx>{`
           .filterBox {
@@ -186,66 +205,7 @@ class TollScreen extends Component {
       </div>
     )
   }
-  // 选择是折扣 还是 减免
-  selectType(value) {
-    let type = this.state.selectType
-    if (type !== value) {
-      let set = { selectType: value }
-      if (value === 1) set.derate = ''
-      else set.discount = ''
-      this.setState({ ...set })
-    } else {
-      this.setState({ selectType: 0, discount: '', derate: '' })
-    }
-  }
 
-  //  设置折扣金额
-  setDiscount(discountRate) {
-    let value = discountRate.replace(/[^0-9]+/, '')
-    if (value === '') return this.setState({ discount: '' })
-    value *= 1
-    if (value <= 0 || value >= 100) return null
-    this.setState({ discount: value })
-  }
-
-  // 设置选择
-  setCheck(type) {
-    let { yb_check, gz_check, jf_check, djq_check } = this.state
-    switch (type) {
-      case 1: {
-        let set = { yb_check: !yb_check }
-        if (yb_check) set.medical_money = ''
-        this.setState(set)
-        break
-      }
-      case 2: {
-        let set = { gz_check: !gz_check }
-        if (gz_check) set.on_credit_money = ''
-        this.setState(set)
-        break
-      }
-      case 3: {
-        let set = { jf_check: !jf_check }
-        if (jf_check) set.bonus_points_money = ''
-        this.setState(set)
-        break
-      }
-      case 4: {
-        let set = { djq_check: !djq_check }
-        if (djq_check) set.voucher_money = ''
-        this.setState(set)
-        break
-      }
-      default:
-        return null
-    }
-  }
-
-  //  设置减免金额
-  setDerate(derate) {
-    if (derate === '0.00') return null
-    this.setState({ derate: limitMoney(derate) })
-  }
   // 结账
   renderBill() {
     if (this.state.pageType !== 2) return ''
@@ -443,13 +403,12 @@ const mapStateToProps = state => {
   return {
     operation_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
-    charge_unpay: state.charge.charge_unpay,
-    charge_unpay_selectId: state.charge.charge_unpay_selectId,
-    un_paid_orders: state.charge.un_paid_orders,
-    un_paid_orders_page: state.charge.un_paid_orders_page,
-    un_paid_orders_ids: state.charge.un_paid_orders_page.totalIds,
-    un_paid_orders_type: state.charge.un_paid_orders_type
+    charge_paid_triage: state.charge.charge_paid_triage,
+    charge_paid_triage_selectId: state.charge.charge_paid_triage_selectId,
+    paid_orders: state.charge.paid_orders,
+    paid_orders_page: state.charge.paid_orders_page,
+    paid_orders_type: state.charge.paid_orders_type
   }
 }
 
-export default connect(mapStateToProps, { queryUnPaidOrders, createPayment })(TollScreen)
+export default connect(mapStateToProps, { queryPaidOrders, createPayment })(ChargedDetailScreen)
