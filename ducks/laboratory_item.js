@@ -1,6 +1,7 @@
 import { request } from './request'
 const LABORATORY_ITEM_ADD = 'LABORATORY_ITEM_ADD'
 const LABORATORY_ITEM_ARRAY_ADD = 'LABORATORY_ITEM_ARRAY_ADD'
+const LABO_ITEM_ARRAY_ADD = 'LABO_ITEM_ARRAY_ADD'
 
 const initState = {
   data: [],
@@ -15,6 +16,8 @@ export function laboratoryItems(state = initState, action = {}) {
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case LABORATORY_ITEM_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
+    case LABO_ITEM_ARRAY_ADD:
+      return { ...state, laboItem_data: action.laboItem_data }
     default:
       return state
   }
@@ -75,6 +78,36 @@ export const laboratoryItemCreate = ({requestData}) => async dispatch => {
     )
     if (data.code === '200') return null
     return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const queryLaboItemsList = ({ keyword = '', offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    console.log('limit====', limit)
+    const data = await request('/dictionaries/LaboratoryItems', {
+      keyword,
+      offset,
+      limit
+    })
+    const docs = data.data || []
+    // let sample_data = {}
+    // const page_info = data.page_info || {}
+    console.log('docs======', docs)
+    // for (let doc of docs) {
+    //   const {laboratory_sample} = doc
+    //   if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
+    // }
+    dispatch({
+      type: LABO_ITEM_ARRAY_ADD,
+      laboItem_data: docs
+    })
+    // dispatch({
+    //   type: 'LABORATORY_SAMPLE_LIST',
+    //   data: sample_data
+    // })
+    return null
   } catch (e) {
     console.log(e)
     return e.message

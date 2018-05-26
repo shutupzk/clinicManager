@@ -1,6 +1,7 @@
 import { request } from './request'
 const DRUG_PROJECT_ADD = 'DRUG_PROJECT_ADD'
 const DRUG_JSON_ADD = 'DRUG_JSON_ADD'
+const DIC_DRUG_ARRAY_ADD = 'DIC_DRUG_ARRAY_ADD'
 
 const initState = {
   data: [],
@@ -15,6 +16,8 @@ export function drugs(state = initState, action = {}) {
       return { ...state, data: action.data, page_info: action.page_info }
     case DRUG_JSON_ADD:
       return { ...state, json_data: { ...state.json_data, ...action.json_data } }
+    case DIC_DRUG_ARRAY_ADD:
+      return { ...state, drug_data: action.drug_data }
     default:
       return state
   }
@@ -76,6 +79,37 @@ export const drugCreate = ({ drugInfo }) => async dispatch => {
     console.log(drugInfo, data)
     if (data.code === '200') return null
     return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    console.log('limit====', limit)
+    const data = await request('/dictionaries/Drugs', {
+      keyword,
+      offset,
+      limit
+    })
+    const docs = data.data || []
+    // let sample_data = {}
+    // const page_info = data.page_info || {}
+    console.log('docs======', docs)
+    // for (let doc of docs) {
+    //   const {laboratory_sample} = doc
+    //   if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
+    // }
+    dispatch({
+      type: DIC_DRUG_ARRAY_ADD,
+      drug_data: docs
+    })
+    // dispatch({
+    //   type: 'LABORATORY_SAMPLE_LIST',
+    //   data: sample_data
+    // })
+    return null
   } catch (e) {
     console.log(e)
     return e.message
