@@ -31,7 +31,7 @@ import {
   RemoveScheduleByID
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
-import { drugs, drugCreate, queryDrugList, queryDicDrugsList } from './drug'
+import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
 import { materials, materialCreate, queryMaterialList } from './material'
@@ -146,8 +146,8 @@ export {
   queryMedicalModels,
   queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
-  queryDrugList,
-  drugCreate,
+  ClinicDrugCreate,
+  ClinicDrugList,
   examinationCreate,
   laboratoryCreate,
   materialCreate,

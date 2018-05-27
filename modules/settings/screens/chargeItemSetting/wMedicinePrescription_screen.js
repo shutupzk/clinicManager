@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryDrugList } from '../../../../ducks'
+import { ClinicDrugList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddDrugScreen from './components/addDrugScreen'
 // import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
@@ -38,7 +38,7 @@ class WMPrescriptionScreen extends Component {
   }
   // 获取药品列表
   getDrugsList({ offset = 0, limit = 10 }) {
-    const {clinic_id, queryDrugList} = this.props
+    const {clinic_id, ClinicDrugList} = this.props
     const {type, status, keyword, drug_class_id} = this.state
     // console.log('{type, status, keyword}======', {type, status, keyword})
     let requestData = {
@@ -55,7 +55,7 @@ class WMPrescriptionScreen extends Component {
       requestData.status = status
     }
     console.log('requestData======', requestData)
-    queryDrugList(requestData)
+    ClinicDrugList(requestData)
   }
   // 获取药品分类列表
   getDrugClassification() {
@@ -471,4 +471,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {queryDrugList})(WMPrescriptionScreen)
+export default connect(mapStateToProps, {ClinicDrugList})(WMPrescriptionScreen)

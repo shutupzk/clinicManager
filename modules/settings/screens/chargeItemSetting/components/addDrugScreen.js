@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
 import {
     drugCreate,
-    queryDrugList,
+    ClinicDrugList,
     queryDoseUnitList,
     queryDoseFormList,
     queryFrequencyList,
@@ -973,7 +973,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   drugCreate,
-  queryDrugList,
+  ClinicDrugList,
   queryDoseUnitList,
   queryDoseFormList,
   queryFrequencyList,

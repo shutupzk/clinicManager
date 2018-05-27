@@ -2,14 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select } from '../../../../../components'
-import {
-  drugCreate,
-  queryDrugList,
-  queryDoseUnitList,
-  queryDoseFormList,
-  queryFrequencyList,
-  queryRouteAdministrationList
-} from '../../../../../ducks'
+import { ClinicDrugCreate, ClinicDrugList, queryDoseUnitList, queryDoseFormList, queryFrequencyList, queryRouteAdministrationList, queryDicDrugsList } from '../../../../../ducks'
 
 // 病历
 class AddCDrugScreen extends Component {
@@ -17,23 +10,26 @@ class AddCDrugScreen extends Component {
     super(props)
     this.state = {
       drugInfo: {
-        fetch_address: 0
+        fetch_address: 0,
+        is_bulk_sales: false,
+        is_discount: false,
+        drug_type_code: '3',
+        status: true
       }
     }
   }
 
-  async componentDidMount() {
-  }
+  async componentDidMount() {}
+
   style() {
     return (
-      <style jsx>{`
-        .contentCenter{
-          // background:#a0a0a0;
+      <style jsx='true'>{`
+        .contentCenter {
           display: flex;
           flex-direction: column;
         }
-        .contentCenter button{
-          background: rgba(255,255,255,1);
+        .contentCenter button {
+          background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           height: 32px;
@@ -41,58 +37,55 @@ class AddCDrugScreen extends Component {
           margin-left: 10px;
           font-size: 14px;
           font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
+          color: rgba(0, 0, 0, 0.65);
           padding: 0 15px;
         }
-        .contentCenter button:hover{
-          background:rgba(42,205,200,1);
-          color:rgba(255,255,255,1);
-          border: 1px solid rgba(42,205,200,1);
+        .contentCenter button:hover {
+          background: rgba(42, 205, 200, 1);
+          color: rgba(255, 255, 255, 1);
+          border: 1px solid rgba(42, 205, 200, 1);
         }
-        .bottomBtn{
+        .bottomBtn {
           // background:#909090;
           width: 1098px;
-          margin:0 0 30px 0;
+          margin: 0 0 30px 0;
           display: flex;
-          align-items:center;
+          align-items: center;
         }
-        .bottomBtn>div{
-          margin:0 auto;
+        .bottomBtn > div {
+          margin: 0 auto;
         }
-        .bottomBtn button{
-          
-        }
-        .commonBlank{
-          background:rgba(255,255,255,1);
-          box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
-          border-radius: 4px ; 
-          margin-bottom:20px;
+        .commonBlank {
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+          margin-bottom: 20px;
           // width:1038px;
-          min-width:1038px;
+          min-width: 1038px;
           display: flex;
           flex-direction: column;
-          padding:5px 30px;
+          padding: 5px 30px;
         }
-        .commonBlank>span{
-          font-size:18px;
-          height:40px;
-          border-bottom:1px solid #d9d9d9;
+        .commonBlank > span {
+          font-size: 18px;
+          height: 40px;
+          border-bottom: 1px solid #d9d9d9;
           align-items: center;
           display: flex;
         }
-        .commonBlank>div{
+        .commonBlank > div {
           display: flex;
-          margin:10px 0;
+          margin: 10px 0;
         }
-        .commonBlank>div>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
+          padding: 0;
         }
-        .commonBlank>div>button{
-          background: rgba(255,255,255,1);
+        .commonBlank > div > button {
+          background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           height: 32px;
@@ -100,46 +93,45 @@ class AddCDrugScreen extends Component {
           margin-left: 10px;
           font-size: 14px;
           font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
+          color: rgba(0, 0, 0, 0.65);
           padding: 0 15px;
         }
-        .commonBlank>div>ul{
+        .commonBlank > div > ul {
           // background:#a0a0a0;
-          margin:0 auto;
-          width:100%;
+          margin: 0 auto;
+          width: 100%;
         }
-        .commonBlank>div>ul>li{
-          float:left;
-          width:19%;
+        .commonBlank > div > ul > li {
+          float: left;
+          width: 19%;
           display: flex;
           flex-direction: column;
-          height:70px;
-          margin-right:1%;
-          margin-top:5px;
+          height: 70px;
+          margin-right: 1%;
+          margin-top: 5px;
         }
-        .commonBlank>div>ul>li>label{
-          height:25px;
+        .commonBlank > div > ul > li > label {
+          height: 25px;
         }
-        .commonBlank>div>ul>li>div>input,
-        .commonBlank>div>ul>li>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > ul > li > div > input,
+        .commonBlank > div > ul > li > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
+          padding: 0;
         }
-        .commonBlank>div>ul>li>div{
-          
+        .commonBlank > div > ul > li > div {
         }
-        .commonBlank>div>ul>li>div>label{
-          margin-left:15px;
+        .commonBlank > div > ul > li > div > label {
+          margin-left: 15px;
           display: flex;
-          align-items:center;
-          float:left;
-          height:30px;
+          align-items: center;
+          float: left;
+          height: 30px;
         }
-        .commonBlank>div>ul>li>div>label:first-child{
-          margin-left:0;
+        .commonBlank > div > ul > li > div > label:first-child {
+          margin-left: 0;
         }
       `}</style>
     )
@@ -162,21 +154,22 @@ class AddCDrugScreen extends Component {
       </div>
     )
   }
+
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
-      this.setState({nameFailed: true})
+      this.setState({ nameFailed: true })
       // alert(1)
       return false
     } else {
-      this.setState({nameFailed: false})
+      this.setState({ nameFailed: false })
     }
     if (!data.dose_form_name || data.dose_form_name === '') {
-      this.setState({dose_form_nameFailed: true})
+      this.setState({ dose_form_nameFailed: true })
       // alert(2)
       return false
     } else {
-      this.setState({dose_form_nameFailed: false})
+      this.setState({ dose_form_nameFailed: false })
     }
     // if (!data.drug_class_id || data.drug_class_id === '') {
     //   this.setState({drug_class_idFailed: true})
@@ -185,12 +178,12 @@ class AddCDrugScreen extends Component {
     // } else {
     //   this.setState({drug_class_idFailed: false})
     // }
-    if (!data.mini_unit_name || data.mini_unit_name === '') {
-      this.setState({mini_unit_nameFailed: true})
+    if (!data.dose_count_unit_name || data.dose_count_unit_name === '') {
+      this.setState({ dose_count_unit_nameFaild: true })
       // alert(4)
       return false
     } else {
-      this.setState({mini_unit_nameFailed: false})
+      this.setState({ dose_count_unit_nameFaild: false })
     }
     // if (!data.dose_count_unit_id || data.dose_count_unit_id === '') {
     //   this.setState({dose_count_unit_idFailed: true})
@@ -200,18 +193,18 @@ class AddCDrugScreen extends Component {
     //   this.setState({dose_count_unit_idFailed: false})
     // }
     if (!data.packing_unit_name || data.packing_unit_name === '') {
-      this.setState({packing_unit_nameFailed: true})
+      this.setState({ packing_unit_nameFailed: true })
       // alert(6)
       return false
     } else {
-      this.setState({packing_unit_nameFailed: false})
+      this.setState({ packing_unit_nameFailed: false })
     }
     if (!data.ret_price || data.ret_price === '') {
-      this.setState({ret_priceFailed: true})
+      this.setState({ ret_priceFailed: true })
       // alert(7)
       return false
     } else {
-      this.setState({ret_priceFailed: false})
+      this.setState({ ret_priceFailed: false })
     }
     // if (!data.is_bulk_sales || data.is_bulk_sales === '') {
     //   this.setState({is_bulk_salesFailed: true})
@@ -228,11 +221,12 @@ class AddCDrugScreen extends Component {
     //   this.setState({bulk_sales_priceFailed: false})
     // }
     if (!data.barcode || data.barcode === '') {
-      this.setState({barcodeFailed: true})
+      console.log('barcode ====', data)
+      this.setState({ barcodeFailed: true })
       alert(10)
       return false
     } else {
-      this.setState({barcodeFailed: false})
+      this.setState({ barcodeFailed: false })
     }
     // if (!data.once_dose_unit_id || data.once_dose_unit_id === '') {
     //   this.setState({once_dose_unit_idFailed: true})
@@ -241,40 +235,40 @@ class AddCDrugScreen extends Component {
     // } else {
     //   this.setState({once_dose_unit_idFailed: false})
     // }
-    if (!data.route_administration_name || data.route_administration_name === '') {
-      this.setState({route_administration_nameFailed: true})
-      // alert(12)
-      return false
-    } else {
-      this.setState({route_administration_nameFailed: false})
-    }
-    if (!data.frequency_name || data.frequency_name === '') {
-      this.setState({frequency_nameFailed: true})
-      // alert(13)
-      return false
-    } else {
-      this.setState({frequency_nameFailed: false})
-    }
-    if (!data.eff_day || data.eff_day === '') {
-      this.setState({eff_dayFailed: true})
+    // if (!data.route_administration_name || data.route_administration_name === '') {
+    //   this.setState({ route_administration_nameFailed: true })
+    //   // alert(12)
+    //   return false
+    // } else {
+    //   this.setState({ route_administration_nameFailed: false })
+    // }
+    // if (!data.frequency_name || data.frequency_name === '') {
+    //   this.setState({ frequency_nameFailed: true })
+    //   // alert(13)
+    //   return false
+    // } else {
+    //   this.setState({ frequency_nameFailed: false })
+    // }
+    if (!data.day_warning || data.day_warning === '') {
+      this.setState({ eff_dayFailed: true })
       // alert(14)
       return false
     } else {
-      this.setState({eff_dayFailed: false})
+      this.setState({ eff_dayFailed: false })
     }
     return true
   }
   // 保存
   async submit() {
-    let {drugInfo} = this.state
-    const {clinic_id, drugCreate} = this.props
+    let { drugInfo } = this.state
+    const { clinic_id, ClinicDrugCreate } = this.props
     drugInfo.clinic_id = clinic_id
     drugInfo.type = this.props.drugType
-    // drugInfo.ret_price = drugInfo.ret_price * 100
-    // drugInfo.buy_price = drugInfo.buy_price * 100
-    // drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
+    if (drugInfo.ret_price) drugInfo.ret_price = drugInfo.ret_price * 100
+    if (drugInfo.buy_price) drugInfo.buy_price = drugInfo.buy_price * 100
+    if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
     if (this.validateData(drugInfo)) {
-      let error = await drugCreate({drugInfo})
+      let error = await ClinicDrugCreate(drugInfo)
       if (error) {
         alert(error)
       } else {
@@ -283,18 +277,16 @@ class AddCDrugScreen extends Component {
     }
   }
   // 保存并入库
-  saveInStock() {
-
-  }
+  saveInStock() {}
   // 设置字段值
   setItemValue(e, key, type = 1) {
-    const {drugInfo} = this.state
+    const { drugInfo } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
     drugInfo[key] = value
-    this.setState({drugInfo})
+    this.setState({ drugInfo })
   }
   // 顶部搜索栏
   renderSearchBlank() {
@@ -303,7 +295,7 @@ class AddCDrugScreen extends Component {
         <span>中药药品信息</span>
         <div>
           <input type='text' placeholder={'国药准字license_no'} />
-          <input style={{marginLeft: '10px'}} type='text' placeholder={'药品条形码'} />
+          <input style={{ marginLeft: '10px' }} type='text' placeholder={'药品条形码'} />
           <button>查询</button>
         </div>
         {this.style()}
@@ -326,14 +318,10 @@ class AddCDrugScreen extends Component {
   }
   // 药品分类筛选
   getDrugClassOptions() {
-    return [
-      {value: 1, label: '分类1'},
-      {value: 2, label: '分类2'},
-      {value: 3, label: '分类3'}
-    ]
+    return [{ value: 1, label: '分类1' }, { value: 2, label: '分类2' }, { value: 3, label: '分类3' }]
   }
   // 剂量单位筛选
-  getMiniUnitOptions() {
+  getDoseCountOption() {
     const { doseUnits } = this.props
     let array = []
     for (let key in doseUnits) {
@@ -411,33 +399,88 @@ class AddCDrugScreen extends Component {
       queryRouteAdministrationList({ keyword })
     }
   }
+
+  searchView() {
+    const drugs = this.props.drugs || []
+    return (
+      <div
+        className={'researchView'}
+        onMouseOver={e => {
+          this.setState({ toSearch: false })
+        }}
+        onMouseLeave={e => {
+          this.setState({ toSearch: true })
+        }}
+      >
+        <span>请选择患者或继续新增</span>
+        <ul>
+          {drugs.map(({ name, specification, english_name, packing_unit_name, print_name, license_no, dose_form_name, py_code, barcode, dose_count, dose_count_unit_name, manu_factory_name }, index) => {
+            return (
+              <li
+                key={index}
+                onClick={() => {
+                  const { drugInfo } = this.state
+                  this.setState({
+                    drugInfo: { ...drugInfo, name, specification, english_name, packing_unit_name, print_name, license_no, dose_form_name, py_code, barcode: barcode, dose_count, dose_count_unit_name, manu_factory_name: manu_factory_name },
+                    searchView: 0
+                  })
+                }}
+              >
+                <div className={'leftInfo'}>
+                  <div />
+                  <div>
+                    {name} {specification}
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    )
+  }
+
   // 药品基本信息
   renderBaseInfoBlank() {
-    const {drugInfo} = this.state
-    // console.log('drugInfo=======', drugInfo)
+    const { drugInfo } = this.state
+    console.log('drugInfo=======', drugInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span>药品基本信息</span>
         <div>
           <ul>
-            <li>
-              <label>通用名<b style={{color: 'red'}}>*</b></label>
+            <li style={{ position: 'relative' }}>
+              <label>
+                通用名<b style={{ color: 'red' }}>*</b>
+              </label>
               <input
                 type='text'
                 placeholder={'name'}
                 value={drugInfo.name}
                 onChange={e => {
                   this.setItemValue(e, 'name')
+                  let keyword = e.target.value
+                  this.props.queryDicDrugsList({ keyword, type: 1 })
+                  this.setState({ searchView: 1 })
+                }}
+                onFocus={e => {
+                  this.setState({ toSearch: true })
+                }}
+                onBlur={e => {
+                  if (this.state.toSearch && this.state.searchView === 1) {
+                    this.setState({ searchView: 0 })
+                  }
                 }}
               />
-              {this.state.nameFailed || drugInfo.name === '' || !drugInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.searchView === 1 ? this.searchView() : ''}
+              {this.state.nameFailed || drugInfo.name === '' || !drugInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>规格</label>
               <input
                 type='text'
                 placeholder={'specification'}
-                value={drugInfo.specification}
+                value={drugInfo.specification || ''}
                 onChange={e => {
                   this.setItemValue(e, 'specification')
                 }}
@@ -448,34 +491,38 @@ class AddCDrugScreen extends Component {
               <input
                 type='text'
                 placeholder={'english_name'}
-                value={drugInfo.english_name}
+                value={drugInfo.english_name || ''}
                 onChange={e => {
                   this.setItemValue(e, 'english_name')
                 }}
               />
             </li>
             <li>
-              <label>包装单位<b style={{color: 'red'}}>*</b></label>
+              <label>
+                包装单位<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
-                  options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(drugInfo.packing_unit_name, this.getMiniUnitOptions())}
-                  onInputChange={keyword => { this.getDoseUnitList(keyword) }}
-                  onChange={({value}) => {
+                  options={this.getDoseCountOption()}
+                  value={this.getSelectValue(drugInfo.packing_unit_name, this.getDoseCountOption())}
+                  onInputChange={keyword => {
+                    this.getDoseUnitList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'packing_unit_name', 2)
                   }}
                 />
               </div>
-              {this.state.packing_unit_nameFailed || drugInfo.packing_unit_name === '' || !drugInfo.packing_unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.packing_unit_nameFailed || drugInfo.packing_unit_name === '' || !drugInfo.packing_unit_name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>商品名</label>
               <input
                 type='text'
                 placeholder={'print_name'}
-                value={drugInfo.print_name}
+                value={drugInfo.print_name || ''}
                 onChange={e => {
                   this.setItemValue(e, 'print_name')
                 }}
@@ -486,50 +533,67 @@ class AddCDrugScreen extends Component {
               <input
                 type='text'
                 placeholder={'国药准字license_no'}
-                value={drugInfo.license_no}
+                value={drugInfo.license_no || ''}
                 onChange={e => {
                   this.setItemValue(e, 'license_no')
                 }}
               />
             </li>
             <li>
-              <label>剂型<b style={{color: 'red'}}>*</b></label>
+              <label>生产厂商</label>
+              <input
+                type='text'
+                placeholder={'生产厂商'}
+                value={drugInfo.manu_factory_name || ''}
+                onChange={e => {
+                  this.setItemValue(e, 'manu_factory_name')
+                }}
+              />
+            </li>
+            <li>
+              <label>
+                剂型<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
                   options={this.getDoseFormOptions()}
                   value={this.getSelectValue(drugInfo.dose_form_name, this.getDoseFormOptions())}
-                  onInputChange={keyword => { this.getDoseFormList(keyword) }}
-                  onChange={({value}) => {
+                  onInputChange={keyword => {
+                    this.getDoseFormList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'dose_form_name', 2)
                   }}
                 />
               </div>
-              {this.state.dose_form_nameFailed || drugInfo.dose_form_name === '' || !drugInfo.dose_form_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.dose_form_nameFailed || drugInfo.dose_form_name === '' || !drugInfo.dose_form_name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>拼音码</label>
               <input
                 type='text'
                 placeholder={'py_code'}
-                value={drugInfo.py_code}
+                value={drugInfo.py_code || ''}
                 onChange={e => {
                   this.setItemValue(e, 'py_code')
                 }}
               />
             </li>
             <li>
-              <label>药品条形码<b style={{color: 'red'}}>*</b></label>
+              <label>
+                药品条形码<b style={{ color: 'red' }}>*</b>
+              </label>
               <input
                 type='text'
                 placeholder={'barcode'}
-                value={drugInfo.barcode}
+                value={drugInfo.barcode || ''}
                 onChange={e => {
                   this.setItemValue(e, 'barcode')
                 }}
               />
-              {this.state.barcodeFailed || drugInfo.barcode === '' || !drugInfo.barcode ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.barcodeFailed || drugInfo.barcode === '' || !drugInfo.barcode ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>状态</label>
@@ -562,37 +626,42 @@ class AddCDrugScreen extends Component {
               <label>剂量</label>
               <input
                 type='number'
-                placeholder={'mini_dose'}
-                value={drugInfo.mini_dose}
+                placeholder={'dose_count'}
+                value={drugInfo.dose_count}
                 onChange={e => {
-                  this.setItemValue(e, 'mini_dose')
+                  this.setItemValue(e, 'dose_count')
                 }}
               />
             </li>
             <li>
-              <label>剂量单位<b style={{color: 'red'}}>*</b></label>
+              <label>
+                剂量单位<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
-                  options={this.getMiniUnitOptions()}
-                  value={this.getSelectValue(drugInfo.mini_unit_name, this.getMiniUnitOptions())}
-                  onInputChange={keyword => { this.getDoseUnitList(keyword) }}
-                  onChange={({value}) => {
-                    this.setItemValue(value, 'mini_unit_name', 2)
+                  options={this.getDoseCountOption()}
+                  value={this.getSelectValue(drugInfo.dose_count_unit_name, this.getDoseCountOption())}
+                  onInputChange={keyword => {
+                    this.getDoseUnitList(keyword)
+                  }}
+                  onChange={({ value }) => {
+                    this.setItemValue(value, 'dose_count_unit_name', 2)
                   }}
                 />
               </div>
-              {this.state.mini_unit_nameFailed || drugInfo.mini_unit_name === '' || !drugInfo.mini_unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.dose_count_unit_nameFaild || drugInfo.dose_count_unit_name === '' || !drugInfo.dose_count_unit_name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
           </ul>
         </div>
       </div>
     )
   }
+
   // 费用信息
   renderFeeInfoBlank() {
-    const {drugInfo} = this.state
+    const { drugInfo } = this.state
     // console.log('drugInfo=======', drugInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
@@ -600,7 +669,9 @@ class AddCDrugScreen extends Component {
         <div>
           <ul>
             <li>
-              <label>零售价<b style={{color: 'red'}}>*</b></label>
+              <label>
+                零售价<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <input
                   type='text'
@@ -611,7 +682,7 @@ class AddCDrugScreen extends Component {
                   }}
                 />元
               </div>
-              {this.state.ret_priceFailed || drugInfo.ret_price === '' || !drugInfo.ret_price ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.ret_priceFailed || drugInfo.ret_price === '' || !drugInfo.ret_price ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>成本价</label>
@@ -654,7 +725,9 @@ class AddCDrugScreen extends Component {
               </div>
             </li>
             <li>
-              <label>取药地点<b style={{color: 'red'}}>*</b></label>
+              <label>
+                取药地点<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <label>
                   <input
@@ -699,7 +772,7 @@ class AddCDrugScreen extends Component {
   }
   // 默认用法用量
   renderUsageInfoBlank() {
-    const {drugInfo} = this.state
+    const { drugInfo } = this.state
     // console.log('drugInfo=======', drugInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
@@ -707,18 +780,20 @@ class AddCDrugScreen extends Component {
         <div>
           <ul>
             <li>
-              <label>效期预警<b style={{color: 'red'}}>*</b></label>
+              <label>
+                效期预警<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <input
                   type='number'
-                  placeholder={'eff_day'}
-                  value={drugInfo.eff_day}
+                  placeholder={'day_warning'}
+                  value={drugInfo.day_warning}
                   onChange={e => {
-                    this.setItemValue(e, 'eff_day')
+                    this.setItemValue(e, 'day_warning')
                   }}
                 />天
               </div>
-              {this.state.eff_dayFailed || drugInfo.eff_day === '' || !drugInfo.eff_day ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.eff_dayFailed || drugInfo.day_warning === '' || !drugInfo.day_warning ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>库存预警数</label>
@@ -732,45 +807,51 @@ class AddCDrugScreen extends Component {
               />
             </li>
             <li>
-              <label>默认用法<b style={{color: 'red'}}>*</b></label>
+              <label>
+                默认用法<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
                   options={this.getRouteAdministrationOptions()}
                   value={this.getSelectValue(drugInfo.route_administration_name, this.getRouteAdministrationOptions())}
-                  onInputChange={keyword => { this.getRouteAdministrationList(keyword) }}
-                  onChange={({value}) => {
+                  onInputChange={keyword => {
+                    this.getRouteAdministrationList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'route_administration_name', 2)
                   }}
                 />
               </div>
-              {this.state.route_administration_nameFailed || drugInfo.route_administration_name === '' || !drugInfo.route_administration_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
-              <label>默认频次<b style={{color: 'red'}}>*</b></label>
+              <label>
+                默认频次<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
                   options={this.getFrequencyOptions()}
                   value={this.getSelectValue(drugInfo.frequency_name, this.getFrequencyOptions())}
-                  onInputChange={keyword => { this.getFrequencyList(keyword) }}
-                  onChange={({value}) => {
+                  onInputChange={keyword => {
+                    this.getFrequencyList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'frequency_name', 2)
                   }}
                 />
               </div>
-              {this.state.frequency_nameFailed || drugInfo.frequency_name === '' || !drugInfo.frequency_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>说明</label>
               <input
                 type='text'
-                placeholder={'default_remark'}
-                value={drugInfo.default_remark}
+                placeholder={'illustration'}
+                value={drugInfo.illustration}
                 onChange={e => {
-                  this.setItemValue(e, 'default_remark')
+                  this.setItemValue(e, 'illustration')
                 }}
               />
             </li>
@@ -783,20 +864,23 @@ class AddCDrugScreen extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log('state.drugs ===', state.drugs.drug_data)
   return {
     clinic_id: state.user.data.clinic_id,
     doseUnits: state.doseUnits.data,
     doseForms: state.doseForms.data,
     routeAdministrationss: state.routeAdministrationss.data,
-    frequencies: state.frequencies.data
+    frequencies: state.frequencies.data,
+    drugs: state.drugs.drug_data
   }
 }
 
 export default connect(mapStateToProps, {
-  drugCreate,
-  queryDrugList,
+  ClinicDrugCreate,
+  ClinicDrugList,
   queryDoseUnitList,
   queryDoseFormList,
   queryFrequencyList,
-  queryRouteAdministrationList
+  queryRouteAdministrationList,
+  queryDicDrugsList
 })(AddCDrugScreen)
