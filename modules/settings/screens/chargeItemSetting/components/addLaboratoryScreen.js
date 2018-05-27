@@ -2,14 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select } from '../../../../../components'
-import {
-  laboratoryCreate,
-  queryDoseUnitList,
-  queryLaboratorySampleList,
-  queryCuvetteColorList,
-  queryLaboList
-} from '../../../../../ducks'
-import {limitMoney} from '../../../../../utils'
+import { laboratoryCreate, queryDoseUnitList, queryLaboratorySampleList, queryCuvetteColorList, queryLaboList } from '../../../../../ducks'
+import { limitMoney, Confirm } from '../../../../../utils'
 
 // 病历
 class AddLaboratoryScreen extends Component {
@@ -19,7 +13,7 @@ class AddLaboratoryScreen extends Component {
       laboratoryInfo: {
         is_discount: false,
         is_delivery: false,
-        status: false,
+        status: true,
         unit_name: '项'
       },
       searchView: 0,
@@ -27,18 +21,17 @@ class AddLaboratoryScreen extends Component {
     }
   }
 
-  async componentDidMount() {
-  }
+  async componentDidMount() {}
   style() {
     return (
-      <style jsx>{`
-        .contentCenter{
+      <style jsx='true'>{`
+        .contentCenter {
           // background:#a0a0a0;
           display: flex;
           flex-direction: column;
         }
-        .contentCenter button{
-          background: rgba(255,255,255,1);
+        .contentCenter button {
+          background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           height: 32px;
@@ -46,58 +39,57 @@ class AddLaboratoryScreen extends Component {
           margin-left: 10px;
           font-size: 14px;
           font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
+          color: rgba(0, 0, 0, 0.65);
           padding: 0 15px;
         }
-        .contentCenter button:hover{
-          background:rgba(42,205,200,1);
-          color:rgba(255,255,255,1);
-          border: 1px solid rgba(42,205,200,1);
+        .contentCenter button:hover {
+          background: rgba(42, 205, 200, 1);
+          color: rgba(255, 255, 255, 1);
+          border: 1px solid rgba(42, 205, 200, 1);
         }
-        .bottomBtn{
+        .bottomBtn {
           // background:#909090;
           width: 1098px;
-          margin:0 0 30px 0;
+          margin: 0 0 30px 0;
           display: flex;
-          align-items:center;
+          align-items: center;
         }
-        .bottomBtn>div{
-          margin:0 auto;
+        .bottomBtn > div {
+          margin: 0 auto;
         }
-        .bottomBtn button{
-          
+        .bottomBtn button {
         }
-        .commonBlank{
-          background:rgba(255,255,255,1);
-          box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
-          border-radius: 4px ; 
-          margin-bottom:20px;
+        .commonBlank {
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+          margin-bottom: 20px;
           // width:1038px;
-          min-width:1038px;
+          min-width: 1038px;
           display: flex;
           flex-direction: column;
-          padding:5px 30px;
+          padding: 5px 30px;
         }
-        .commonBlank>span{
-          font-size:18px;
-          height:40px;
-          border-bottom:1px solid #d9d9d9;
+        .commonBlank > span {
+          font-size: 18px;
+          height: 40px;
+          border-bottom: 1px solid #d9d9d9;
           align-items: center;
           display: flex;
         }
-        .commonBlank>div{
+        .commonBlank > div {
           display: flex;
-          margin:10px 0;
+          margin: 10px 0;
         }
-        .commonBlank>div>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
+          padding: 0;
         }
-        .commonBlank>div>button{
-          background: rgba(255,255,255,1);
+        .commonBlank > div > button {
+          background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           height: 32px;
@@ -105,46 +97,45 @@ class AddLaboratoryScreen extends Component {
           margin-left: 10px;
           font-size: 14px;
           font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
+          color: rgba(0, 0, 0, 0.65);
           padding: 0 15px;
         }
-        .commonBlank>div>ul{
+        .commonBlank > div > ul {
           // background:#a0a0a0;
-          margin:0 auto;
-          width:100%;
+          margin: 0 auto;
+          width: 100%;
         }
-        .commonBlank>div>ul>li{
-          float:left;
-          width:19%;
+        .commonBlank > div > ul > li {
+          float: left;
+          width: 19%;
           display: flex;
           flex-direction: column;
-          height:70px;
-          margin-right:1%;
-          margin-top:5px;
+          height: 70px;
+          margin-right: 1%;
+          margin-top: 5px;
         }
-        .commonBlank>div>ul>li>label{
-          height:25px;
+        .commonBlank > div > ul > li > label {
+          height: 25px;
         }
-        .commonBlank>div>ul>li>div>input,
-        .commonBlank>div>ul>li>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > ul > li > div > input,
+        .commonBlank > div > ul > li > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
+          padding: 0;
         }
-        .commonBlank>div>ul>li>div{
-          
+        .commonBlank > div > ul > li > div {
         }
-        .commonBlank>div>ul>li>div>label{
-          margin-left:15px;
+        .commonBlank > div > ul > li > div > label {
+          margin-left: 15px;
           display: flex;
-          align-items:center;
-          float:left;
-          height:30px;
+          align-items: center;
+          float: left;
+          height: 30px;
         }
-        .commonBlank>div>ul>li>div>label:first-child{
-          margin-left:0;
+        .commonBlank > div > ul > li > div > label:first-child {
+          margin-left: 0;
         }
       `}</style>
     )
@@ -160,52 +151,53 @@ class AddLaboratoryScreen extends Component {
           </div>
         </div>
         {this.style()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
-      this.setState({nameFailed: true})
+      this.setState({ nameFailed: true })
       // alert(1)
       return false
     } else {
-      this.setState({nameFailed: false})
+      this.setState({ nameFailed: false })
     }
     if (!data.unit_name || data.unit_name === '') {
-      this.setState({unit_nameFailed: true})
+      this.setState({ unit_nameFailed: true })
       // alert(2)
       return false
     } else {
-      this.setState({unit_nameFailed: false})
+      this.setState({ unit_nameFailed: false })
     }
     if (!data.price || data.price === '') {
-      this.setState({priceFailed: true})
+      this.setState({ priceFailed: true })
       // alert(4)
       return false
     } else {
-      this.setState({priceFailed: false})
+      this.setState({ priceFailed: false })
     }
     if (!data.laboratory_sample || data.laboratory_sample === '') {
-      this.setState({laboratory_sampleFailed: true})
+      this.setState({ laboratory_sampleFailed: true })
       // alert(6)
       return false
     } else {
-      this.setState({laboratory_sampleFailed: false})
+      this.setState({ laboratory_sampleFailed: false })
     }
     if (!data.cuvette_color_name || data.cuvette_color_name === '') {
-      this.setState({cuvette_color_nameFailed: true})
+      this.setState({ cuvette_color_nameFailed: true })
       // alert(7)
       return false
     } else {
-      this.setState({cuvette_color_nameFailed: false})
+      this.setState({ cuvette_color_nameFailed: false })
     }
     return true
   }
   // 保存
   async submit() {
-    let {laboratoryInfo} = this.state
-    const {clinic_id, laboratoryCreate} = this.props
+    let { laboratoryInfo } = this.state
+    const { clinic_id, laboratoryCreate } = this.props
     laboratoryInfo.clinic_id = clinic_id
     if (this.validateData(laboratoryInfo)) {
       let error = await laboratoryCreate(laboratoryInfo)
@@ -217,18 +209,16 @@ class AddLaboratoryScreen extends Component {
     }
   }
   // 保存并入库
-  saveInStock() {
-
-  }
+  saveInStock() {}
   // 设置字段值
   setItemValue(e, key, type = 1) {
-    const {laboratoryInfo} = this.state
+    const { laboratoryInfo } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
     laboratoryInfo[key] = value
-    this.setState({laboratoryInfo})
+    this.setState({ laboratoryInfo })
   }
   // 设置选中显示
   getSelectValue(value, array) {
@@ -283,7 +273,7 @@ class AddLaboratoryScreen extends Component {
     return array
   }
   // LaboratorySampleList
-// CuvetteColorList
+  // CuvetteColorList
   // 获取单位数据
   getDoseUnitList(keyword) {
     const { queryDoseUnitList } = this.props
@@ -308,9 +298,9 @@ class AddLaboratoryScreen extends Component {
     queryLaboList({ keyword })
   }
   searchView() {
-    const {labos} = this.props
+    const { labos } = this.props
     console.log('labos=====', labos)
-    let {laboratoryInfo} = this.state
+    let { laboratoryInfo } = this.state
     return (
       <div
         className={'researchView'}
@@ -328,28 +318,25 @@ class AddLaboratoryScreen extends Component {
               <li
                 key={index}
                 onClick={() => {
-                  laboratoryInfo.name = item.name
-                  laboratoryInfo.laboratory_sample = item.laboratory_sample
-                  laboratoryInfo.clinical_significance = item.clinical_significance
-                  laboratoryInfo.cuvette_color_name = item.cuvette_color_name
-                  laboratoryInfo.en_name = item.en_name
-                  laboratoryInfo.idc_code = item.idc_code
-                  laboratoryInfo.py_code = item.py_code
-                  laboratoryInfo.remark = item.remark
-                  laboratoryInfo.time_report = item.time_report
-                  laboratoryInfo.laboratory_id = item.id
-                  // laboratoryInfo.unit_name = item.unit_name
+                  const { name, laboratory_sample, clinical_significance, cuvette_color_name, en_name, idc_code, py_code, remark, time_report } = item
+                  let obj = { name }
+                  if (laboratory_sample) obj.laboratory_sample = laboratory_sample
+                  if (clinical_significance) obj.clinical_significance = clinical_significance
+                  if (cuvette_color_name) obj.cuvette_color_name = cuvette_color_name
+                  if (en_name) obj.en_name = en_name
+                  if (idc_code) obj.idc_code = idc_code
+                  if (py_code) obj.py_code = py_code
+                  if (remark) obj.remark = remark
+                  if (time_report) obj.time_report = time_report
                   this.setState({
                     toSearch: false,
                     searchView: 0,
-                    laboratoryInfo
+                    laboratoryInfo: { ...laboratoryInfo, ...obj }
                   })
                 }}
               >
                 <div className={'leftInfo'}>
-                  <div>
-                    {item.name}
-                  </div>
+                  <div>{item.name}</div>
                   {/* <div>{item.phone}</div> */}
                 </div>
               </li>
@@ -384,15 +371,17 @@ class AddLaboratoryScreen extends Component {
   // }
   // 药品基本信息
   renderBaseInfoBlank() {
-    const {laboratoryInfo} = this.state
+    const { laboratoryInfo } = this.state
     // console.log('laboratoryInfo=======', laboratoryInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
         <div>
           <ul>
-            <li style={{position: 'relative'}}>
-              <label>通用名<b style={{color: 'red'}}>*</b></label>
+            <li style={{ position: 'relative' }}>
+              <label>
+                通用名<b style={{ color: 'red' }}>*</b>
+              </label>
               <input
                 type='text'
                 placeholder={'name'}
@@ -412,7 +401,7 @@ class AddLaboratoryScreen extends Component {
                 }}
               />
               {this.state.searchView === 1 ? this.searchView() : ''}
-              {this.state.nameFailed || laboratoryInfo.name === '' || !laboratoryInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.nameFailed || laboratoryInfo.name === '' || !laboratoryInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>英文名称</label>
@@ -451,7 +440,9 @@ class AddLaboratoryScreen extends Component {
               {/* {this.state.unit_nameFailed || laboratoryInfo.unit_name === '' || !laboratoryInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''} */}
             </li>
             <li>
-              <label>零售价<b style={{color: 'red'}}>*</b></label>
+              <label>
+                零售价<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <input
                   type='text'
@@ -463,7 +454,7 @@ class AddLaboratoryScreen extends Component {
                   }}
                 />元
               </div>
-              {this.state.priceFailed || laboratoryInfo.price === '' || !laboratoryInfo.price ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.priceFailed || laboratoryInfo.price === '' || !laboratoryInfo.price ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>成本价</label>
@@ -502,7 +493,9 @@ class AddLaboratoryScreen extends Component {
               />
             </li>
             <li>
-              <label>是否允许折扣<b style={{color: 'red'}}>*</b></label>
+              <label>
+                是否允许折扣<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <label>
                   <input
@@ -529,7 +522,9 @@ class AddLaboratoryScreen extends Component {
               </div>
             </li>
             <li>
-              <label>是否允许外送<b style={{color: 'red'}}>*</b></label>
+              <label>
+                是否允许外送<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <label>
                   <input
@@ -556,36 +551,52 @@ class AddLaboratoryScreen extends Component {
               </div>
             </li>
             <li>
-              <label>标本种类<b style={{color: 'red'}}>*</b></label>
+              <label>
+                标本种类<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
                   options={this.getLaboratorySampleIdOptions()}
                   value={this.getSelectValue(laboratoryInfo.laboratory_sample, this.getLaboratorySampleIdOptions())}
-                  onInputChange={keyword => { this.getLaboratorySampleList(keyword) }}
-                  onChange={({value}) => {
+                  onInputChange={keyword => {
+                    this.getLaboratorySampleList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'laboratory_sample', 2)
                   }}
                 />
               </div>
-              {this.state.laboratory_sampleFailed || laboratoryInfo.laboratory_sample === '' || !laboratoryInfo.laboratory_sample ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.laboratory_sampleFailed || laboratoryInfo.laboratory_sample === '' || !laboratoryInfo.laboratory_sample ? (
+                <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div>
+              ) : (
+                ''
+              )}
             </li>
             <li>
-              <label>试管颜色<b style={{color: 'red'}}>*</b></label>
+              <label>
+                试管颜色<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <Select
                   placeholder={'请选择'}
                   height={32}
                   options={this.getCuvetteColorIdOptions()}
                   value={this.getSelectValue(laboratoryInfo.cuvette_color_name, this.getCuvetteColorIdOptions())}
-                  onInputChange={keyword => { this.getCuvetteColorList(keyword) }}
-                  onChange={({value}) => {
+                  onInputChange={keyword => {
+                    this.getCuvetteColorList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'cuvette_color_name', 2)
                   }}
                 />
               </div>
-              {this.state.cuvette_color_nameFailed || laboratoryInfo.cuvette_color_name === '' || !laboratoryInfo.cuvette_color_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.cuvette_color_nameFailed || laboratoryInfo.cuvette_color_name === '' || !laboratoryInfo.cuvette_color_name ? (
+                <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div>
+              ) : (
+                ''
+              )}
             </li>
             <li>
               <label>合并标记</label>
