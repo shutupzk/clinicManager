@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
 import {
   laboratoryItemCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  queryLaboItemsList
 } from '../../../../../ducks'
 
 // 病历
@@ -14,11 +15,14 @@ class AddLaboratoryItemScreen extends Component {
     this.state = {
       laboratoryItemInfo: {
         data_type: 2,
-        status: false,
+        status: true,
         // items: [],
         is_special: false
       },
-      references: []
+      references: [],
+      searchView: 0,
+      toSearch: false,
+      readOnly: false
     }
   }
 
@@ -240,11 +244,11 @@ class AddLaboratoryItemScreen extends Component {
       // alert(1)
       return false
     }
-    if (!data.unit_name || data.unit_name === '') {
-      this.setState({unit_nameFailed: true})
-      // alert(2)
-      return false
-    }
+    // if (!data.unit_name || data.unit_name === '') {
+    //   this.setState({unit_nameFailed: true})
+    //   // alert(2)
+    //   return false
+    // }
     return true
   }
   // 保存
@@ -344,16 +348,115 @@ class AddLaboratoryItemScreen extends Component {
       queryDoseUnitList({ keyword })
     }
   }
+  async queryLaboItemList(keyword) {
+    const { queryLaboItemsList } = this.props
+    queryLaboItemsList({ keyword })
+  }
+  searchView() {
+    const {laboItemData} = this.props
+    // console.log('laboItemData=====', laboItemData)
+    let {laboratoryItemInfo} = this.state
+    return (
+      <div
+        className={'researchView'}
+        onMouseOver={e => {
+          this.setState({ toSearch: false })
+        }}
+        onMouseLeave={e => {
+          this.setState({ toSearch: true })
+        }}
+      >
+        <span onClick={() => {
+          const laboratoryItemInfo = {
+            data_type: 2,
+            status: true,
+            is_special: false,
+            name: '',
+            en_name: '',
+            unit_name: '',
+            reference_max: '',
+            reference_min: '',
+            items: [],
+            default_result: '',
+            instrument_code: ''
+          }
+          this.setState({
+            toSearch: false,
+            searchView: 0,
+            laboratoryItemInfo: laboratoryItemInfo,
+            readOnly: false
+          })
+        }}>请选择检验项目或点击继续新增</span>
+        <ul>
+          {laboItemData.map((item, index) => {
+            return (
+              <li
+                key={index}
+                onClick={() => {
+                  laboratoryItemInfo.name = item.name
+                  laboratoryItemInfo.laboratory_item_id = item.laboratory_item_id
+                  // laboratoryInfo.laboratory_sample = item.laboratory_sample
+                  // laboratoryInfo.clinical_significance = item.clinical_significance
+                  // laboratoryInfo.cuvette_color_name = item.cuvette_color_name
+                  laboratoryItemInfo.unit_name = item.unit_name
+                  laboratoryItemInfo.en_name = item.en_name
+                  laboratoryItemInfo.is_special = item.is_special
+                  laboratoryItemInfo.data_type = item.data_type
+                  laboratoryItemInfo.default_result = item.default_result
+                  laboratoryItemInfo.instrument_code = item.instrument_code
+                  if (!item.is_special) {
+                    laboratoryItemInfo.reference_max = item.references[0].reference_max
+                    laboratoryItemInfo.reference_min = item.references[0].reference_min
+                  } else {
+                    laboratoryItemInfo.items = item.references
+                  }
+                  // laboratoryInfo.py_code = item.py_code
+                  // laboratoryInfo.remark = item.remark
+                  // laboratoryInfo.time_report = item.time_report
+                  // laboratoryInfo.laboratory_id = item.id
+                  // // laboratoryInfo.unit_name = item.unit_name
+                  this.setState({
+                    toSearch: false,
+                    searchView: 0,
+                    laboratoryItemInfo,
+                    readOnly: true
+                  })
+                }}
+              >
+                <div className={'leftInfo'}>
+                  <div>
+                    {item.name}
+                  </div>
+                  {/* <div>{item.phone}</div> */}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+        <style jsx>{`
+          .researchView {
+            width: 100%;
+          }
+          .researchView li {
+            height: 30px;
+          }
+          .researchView li:hover {
+            background: #d8d8d8;
+          }
+        `}</style>
+      </div>
+    )
+  }
   // 检验项目基本信息
   renderBaseInfoBlank() {
-    const {laboratoryItemInfo} = this.state
-    // console.log('laboratoryItemInfo=======', laboratoryItemInfo)
+    const {laboratoryItemInfo, readOnly} = this.state
+    console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
         <div>
           <ul>
-            <li>
+            <li style={{position: 'relative'}}>
               <label>检验项目名称<b style={{color: 'red'}}>*</b></label>
               <input
                 type='text'
@@ -361,13 +464,25 @@ class AddLaboratoryItemScreen extends Component {
                 value={laboratoryItemInfo.name}
                 onChange={e => {
                   this.setItemValue(e, 'name')
+                  this.setState({ searchView: 1 })
+                  this.queryLaboItemList(e.target.value)
+                }}
+                onFocus={e => {
+                  this.setState({ toSearch: true, searchView: 1 })
+                }}
+                onBlur={e => {
+                  if (this.state.toSearch && this.state.searchView === 1) {
+                    this.setState({ searchView: 0 })
+                  }
                 }}
               />
+              {this.state.searchView === 1 ? this.searchView() : ''}
               {this.state.nameFailed || laboratoryItemInfo.name === '' || !laboratoryItemInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li>
               <label>英文名称</label>
               <input
+                readOnly={readOnly}
                 type='text'
                 placeholder={'en_name'}
                 value={laboratoryItemInfo.en_name}
@@ -377,9 +492,11 @@ class AddLaboratoryItemScreen extends Component {
               />
             </li>
             <li>
-              <label>单位<b style={{color: 'red'}}>*</b></label>
+              <label>单位</label>
               <div>
                 <Select
+                  readOnly={readOnly}
+                  disabled={readOnly}
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
@@ -390,12 +507,13 @@ class AddLaboratoryItemScreen extends Component {
                   }}
                 />
               </div>
-              {this.state.unit_nameFailed || laboratoryItemInfo.unit_name === '' || !laboratoryItemInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {/* {this.state.unit_nameFailed || laboratoryItemInfo.unit_name === '' || !laboratoryItemInfo.unit_name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''} */}
             </li>
             <li>
               <label>仪器编码</label>
               <div>
                 <input
+                  readOnly={readOnly}
                   type='text'
                   placeholder={'instrument_code'}
                   value={laboratoryItemInfo.instrument_code}
@@ -410,6 +528,8 @@ class AddLaboratoryItemScreen extends Component {
               <div>
                 <label>
                   <input
+                    readOnly={readOnly}
+                    disabled={readOnly}
                     type='radio'
                     name={'data_type'}
                     checked={laboratoryItemInfo.data_type === 2}
@@ -429,6 +549,8 @@ class AddLaboratoryItemScreen extends Component {
                 </label>
                 <label>
                   <input
+                    readOnly={readOnly}
+                    disabled={readOnly}
                     type='radio'
                     name={'data_type'}
                     checked={laboratoryItemInfo.data_type === 1}
@@ -450,6 +572,8 @@ class AddLaboratoryItemScreen extends Component {
               <label>参考值默认</label>
               <div className={'douInput'}>
                 <input
+                  readOnly={readOnly}
+                  disabled={readOnly}
                   type='text'
                   // min={0}
                   placeholder={'最小值'}
@@ -460,6 +584,8 @@ class AddLaboratoryItemScreen extends Component {
                 />
                 <span>—</span>
                 <input
+                  readOnly={readOnly}
+                  disabled={readOnly}
                   type='text'
                   // min={0}
                   placeholder={'最大值'}
@@ -474,6 +600,8 @@ class AddLaboratoryItemScreen extends Component {
               <label>参考值是否特殊<b style={{color: 'red'}}>*</b></label>
               <div>
                 <input
+                  readOnly={readOnly}
+                  disabled={readOnly}
                   type='checkbox'
                   checked={laboratoryItemInfo.is_special}
                   onChange={e => {
@@ -498,6 +626,7 @@ class AddLaboratoryItemScreen extends Component {
             <li>
               <label>临床意义</label>
               <input
+                readOnly={readOnly}
                 type='text'
                 placeholder={'临床意义'}
                 value={laboratoryItemInfo.clinical_significance}
@@ -567,7 +696,7 @@ class AddLaboratoryItemScreen extends Component {
   }
   // 显示特殊参考值
   renderIsSpecial() {
-    const { laboratoryItemInfo } = this.state
+    const { laboratoryItemInfo, readOnly } = this.state
     // console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     let references = laboratoryItemInfo.items || []
     return (
@@ -581,10 +710,12 @@ class AddLaboratoryItemScreen extends Component {
           </li>
           {references.map((item, index) => {
             return (
-              <li>
+              <li key={index}>
                 <div>
                   <div>
                     <Select
+                      readOnly={readOnly}
+                      disabled={readOnly}
                       placeholder={'性别'}
                       height={30}
                       value={this.getSelectValue(item.reference_sex, this.getSexOptions())}
@@ -602,6 +733,7 @@ class AddLaboratoryItemScreen extends Component {
                   {item.reference_sex === '女' ? <div>
                     <label>
                       <input
+                        readOnly={readOnly}
                         type='checkbox'
                         checked={item.is_pregnancy}
                         onChange={e => {
@@ -616,6 +748,7 @@ class AddLaboratoryItemScreen extends Component {
                 <div>
                   <div className={'douInput'}>
                     <input
+                      readOnly={readOnly}
                       type='number'
                       min={0}
                       placeholder={'最小年龄'}
@@ -627,6 +760,7 @@ class AddLaboratoryItemScreen extends Component {
                     />
                     <span>—</span>
                     <input
+                      readOnly={readOnly}
                       type='number'
                       min={0}
                       placeholder={'最大年龄'}
@@ -641,6 +775,7 @@ class AddLaboratoryItemScreen extends Component {
                 <div>
                   <div className={'douInput'}>
                     <input
+                      readOnly={readOnly}
                       type='text'
                       // min={0}
                       placeholder={'最小值'}
@@ -652,6 +787,7 @@ class AddLaboratoryItemScreen extends Component {
                     />
                     <span>—</span>
                     <input
+                      readOnly={readOnly}
                       type='number'
                       // min={0}
                       placeholder={'最大值'}
@@ -674,13 +810,16 @@ class AddLaboratoryItemScreen extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log()
   return {
     clinic_id: state.user.data.clinic_id,
-    doseUnits: state.doseUnits.data
+    doseUnits: state.doseUnits.data,
+    laboItemData: state.laboratoryItems.laboItem_data
   }
 }
 
 export default connect(mapStateToProps, {
   laboratoryItemCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  queryLaboItemsList
 })(AddLaboratoryItemScreen)

@@ -62,6 +62,8 @@ import { examinationModels, examinationModelList, examinationModelCreate } from 
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList, LaboratoryPatientModelList } from './laboratory_model'
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
+import {roles, queryRoleList, roleCreate, roleSelect} from './role'
+import {menus, queryMenuGetByClinicID, menuSelect} from './business'
 
 // keys
 export {
@@ -102,7 +104,9 @@ export {
   examinationModels,
   laboratoryPatientModels,
   onCredit,
-  associations
+  associations,
+  roles,
+  menus
 }
 
 // actions
@@ -210,5 +214,10 @@ export {
   LaboratoryAssociationCreate,
   LaboratoryPatientModelList,
   queryLaboItemsList,
-  queryDicDrugsList
+  queryDicDrugsList,
+  queryRoleList,
+  roleCreate,
+  roleSelect,
+  queryMenuGetByClinicID,
+  menuSelect
 }
