@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import moment from 'moment'
 // import { PageCard, Select } from '../../../../components'
-import StorageMgtScreen from './components/storage_mgt_screen'
+import StorageMgtScreen from './storage_mgt_screen'
 
 class PharmacyListScreen extends Component {
   constructor(props) {
