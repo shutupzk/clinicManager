@@ -1,5 +1,6 @@
 import { request } from './request'
 const CLINIC_LIST = 'CLINIC_LIST'
+const CLINIC_SELECT = 'CLINIC_SELECT'
 const CLINIC_CODE_ADD = 'CLINIC_CODE_ADD'
 
 const initState = {
@@ -13,6 +14,8 @@ export function clinics(state = initState, action = {}) {
   switch (action.type) {
     case CLINIC_LIST:
       return { ...state, data: action.data, page_info: action.page_info }
+    case CLINIC_SELECT:
+      return { ...state, selectId: action.selectId }
     case CLINIC_CODE_ADD:
       return { ...state, lastest_code: action.data }
     default:
@@ -70,9 +73,9 @@ export const clinicUpdate = ({ clinic_id, name, responsible_person, province, ci
   }
 }
 
-export const clinicUpdateStatus = ({clinic_id, status}) => async dispatch => {
+export const clinicUpdateStatus = ({ clinic_id, status }) => async dispatch => {
   try {
-    const data = await request('/clinic/update/status', {clinic_id, status})
+    const data = await request('/clinic/update/status', { clinic_id, status })
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
@@ -96,4 +99,8 @@ export const queryClinicCode = () => async dispatch => {
     console.log(e)
     return e.message
   }
+}
+
+export const clinicSelect = selectId => dispatch => {
+  dispatch({ type: CLINIC_SELECT, selectId })
 }

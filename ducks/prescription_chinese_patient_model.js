@@ -17,7 +17,7 @@ export function prescriptionChinesePatientModels(state = initState, action = {})
 
 export const PrescriptionChinesePatientModelList = ({ keyword = '', is_common, operation_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
-    const data = await request('/drug/PrescriptionChinesePatientModelList', {
+    const data = await request('/clinic_drug/PrescriptionChinesePatientModelList', {
       keyword,
       is_common,
       operation_id,
@@ -119,7 +119,7 @@ export const PrescriptionChinesePatientModelCreate = ({
   medicine_illustration
 }) => async dispatch => {
   try {
-    const data = await request('/drug/PrescriptionChinesePatientModelCreate', {
+    const data = await request('/clinic_drug/PrescriptionChinesePatientModelCreate', {
       model_name,
       is_common,
       operation_id,
