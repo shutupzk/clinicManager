@@ -17,7 +17,7 @@ export function prescriptionWesternPatientModels(state = initState, action = {})
 
 export const PrescriptionWesternPatientModelList = ({ keyword = '', is_common, operation_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
-    const data = await request('/drug/PrescriptionWesternPatientModelList', {
+    const data = await request('/clinic_drug/PrescriptionWesternPatientModelList', {
       keyword,
       is_common,
       operation_id,
@@ -105,7 +105,7 @@ export const PrescriptionWesternPatientModelList = ({ keyword = '', is_common, o
 
 export const PrescriptionWesternPatientModelCreate = ({ model_name, is_common = false, operation_id, items }) => async dispatch => {
   try {
-    const data = await request('/drug/PrescriptionWesternPatientModelCreate', {
+    const data = await request('/clinic_drug/PrescriptionWesternPatientModelCreate', {
       model_name,
       is_common,
       operation_id,

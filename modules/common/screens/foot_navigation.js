@@ -18,7 +18,7 @@ export default class Navigation extends Component {
           return (
             // <Link key={item.navigateName} href={item.navigateName}>
             // </Link>
-            <div onClick={() => Router.push(navigateName)} className={'childItem ' + (navigateName === url ? 'sel' : '')}>{item.title}</div>
+            <div key={index} onClick={() => Router.push(navigateName)} className={'childItem ' + (navigateName === url ? 'sel' : '')}>{item.title}</div>
           )
         })}
         <style jsx>{`
