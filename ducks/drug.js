@@ -86,7 +86,7 @@ export const ClinicDrugCreate = drugInfo => async dispatch => {
 }
 
 export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 10, type }) => async dispatch => {
-  if (!drug_type) return
+  if (!type) return
   try {
     const data = await request('/dictionaries/Drugs', {
       keyword,
