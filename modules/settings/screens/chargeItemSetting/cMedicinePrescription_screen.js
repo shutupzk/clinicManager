@@ -103,7 +103,7 @@ class CMedicinePrescriptionScreen extends Component {
         <div className={'contentTable'}>{this.renderTable()}</div>
         <style jsx>{`
           .contentCenterRight {
-            width: 822px;
+            width: 100%;
             height: 768px;
             background: rgba(255, 255, 255, 1);
             box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
@@ -213,7 +213,7 @@ class CMedicinePrescriptionScreen extends Component {
           offset={pageInfo.offset}
           limit={pageInfo.limit}
           total={pageInfo.total}
-          style={{ margin: '20px 0', width: '758px' }}
+          style={{ margin: '20px 0', width: '100%' }}
           onItemClick={({ offset, limit }) => {
             // const keyword = this.state.keyword
             this.getDrugsList({ offset, limit })

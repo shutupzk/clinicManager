@@ -94,6 +94,7 @@ class WMPrescriptionScreen extends Component {
         </ul>
         <style jsx>{`
           .contentCenterLeft {
+            flex: 1;
             width: 300px;
             height: 768px;
             background: rgba(255, 255, 255, 1);
@@ -220,6 +221,7 @@ class WMPrescriptionScreen extends Component {
         <div className={'contentTable'}>{this.renderTable()}</div>
         <style jsx>{`
           .contentCenterRight {
+            flex: 4;
             width: 822px;
             height: 768px;
             background: rgba(255, 255, 255, 1);
@@ -330,7 +332,7 @@ class WMPrescriptionScreen extends Component {
           offset={pageInfo.offset}
           limit={pageInfo.limit}
           total={pageInfo.total}
-          style={{ margin: '20px 0', width: '758px' }}
+          style={{ margin: '20px 0', width: '100%' }}
           onItemClick={({ offset, limit }) => {
             // const keyword = this.state.keyword
             this.getDrugsList({ offset, limit })
