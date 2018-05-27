@@ -7,7 +7,7 @@ import {
   querySupplierList
 } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
-import { formatMoney, limitMoney } from '../../../../../utils'
+import { formatMoney } from '../../../../../utils'
 
 // 病历
 class AddDrugInstockScreen extends Component {
@@ -166,7 +166,6 @@ class AddDrugInstockScreen extends Component {
                   onChange={({value}) => {
                     this.setState({ instock_way_name: value })
                   }}
-                  // placeholder='入库方式'
                   height={38}
                   onInputChange={keyword => { this.queryInstockWayList(keyword) }}
                   options={this.getInstockWayNameOptions()}
@@ -183,7 +182,6 @@ class AddDrugInstockScreen extends Component {
                   onChange={({value}) => {
                     this.setState({ supplier_name: value })
                   }}
-                  // placeholder='入库方式'
                   height={38}
                   onInputChange={keyword => { this.querySupplierList(keyword) }}
                   options={this.getSupplierOptions()}
