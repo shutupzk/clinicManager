@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 
-import { clinicCreate } from '../../../../ducks'
+import { clinicCreate, queryClinicCode } from '../../../../ducks'
 import { provinces } from '../../../../config/provinces'
 import { Select, Confirm } from '../../../../components'
 
@@ -30,7 +30,7 @@ class ClinicAddScreen extends Component {
 
   // 保存新增登记
   async submit() {
-    const { password, passwordConfirm, name, responsible_people, username, phone } = this.state
+    const { password, passwordConfirm, name, responsible_people, username, phone, area } = this.state
     const { clinicCreate } = this.props
     if (name === '') {
       return this.refs.myAlert.alert('请输入诊所名称！', null, null, 'Warning')
@@ -43,6 +43,9 @@ class ClinicAddScreen extends Component {
     }
     if (phone === '') {
       return this.refs.myAlert.alert('请输入管理员手机！', null, null, 'Warning')
+    }
+    if (area === '') {
+      return this.refs.myAlert.alert('请输入诊所地址！', null, null, 'Warning')
     }
     if (password === '') {
       return this.refs.myAlert.alert('请输入管理员密码！', null, null, 'Warning')
@@ -57,6 +60,10 @@ class ClinicAddScreen extends Component {
     this.refs.myAlert.alert('添加成功', null, () => {
       Router.push('/platform/clinique')
     })
+  }
+
+  componentDidMount() {
+    this.props.queryClinicCode()
   }
 
   getProvincesOptions() {
@@ -98,6 +105,9 @@ class ClinicAddScreen extends Component {
 
   // 显示添加新增
   showAddNew() {
+    let { lastest_code } = this.props
+    if (!lastest_code || lastest_code * 1 < 10000) lastest_code = 10000
+    lastest_code = lastest_code * 1 + 1
     return (
       <div className={'formList'} style={{ marginLeft: '65px' }}>
         <div className={'formListBox'} style={{}}>
@@ -114,7 +124,7 @@ class ClinicAddScreen extends Component {
                   this.setState({ name: e.target.value })
                 }}
               />
-              <label style={{ marginLeft: '60px' }}>诊所编码：{this.state.code}</label>
+              <label style={{ marginLeft: '60px' }}>诊所编码：{lastest_code}</label>
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
@@ -305,9 +315,11 @@ class ClinicAddScreen extends Component {
 }
 const mapStateToProps = state => {
   return {
-    personnel_id: state.user.data.id
+    personnel_id: state.user.data.id,
+    lastest_code: state.clinics.lastest_code
   }
 }
 export default connect(mapStateToProps, {
-  clinicCreate
+  clinicCreate,
+  queryClinicCode
 })(ClinicAddScreen)

@@ -40,7 +40,7 @@ class ClinicListScreen extends Component {
   }
 
   async submit() {
-    const { password, passwordConfirm, name, responsible_people, username, phone } = this.state
+    const { password, passwordConfirm, name, responsible_people, username, phone, area } = this.state
     const { clinicUpdate } = this.props
     if (name === '') {
       return this.refs.myAlert.alert('请输入诊所名称！', null, null, 'Warning')
@@ -53,6 +53,9 @@ class ClinicListScreen extends Component {
     }
     if (phone === '') {
       return this.refs.myAlert.alert('请输入管理员手机！', null, null, 'Warning')
+    }
+    if (area === '') {
+      return this.refs.myAlert.alert('请输入诊所地址！', null, null, 'Warning')
     }
     if (password === '') {
       return this.refs.myAlert.alert('请输入管理员密码！', null, null, 'Warning')
