@@ -6,6 +6,7 @@ import {
   queryDrugInstockRecord
 } from '../../../../ducks'
 import AddDrugInstockScreen from './components/addDrugInstockScreen'
+import moment from 'moment'
 
 // 病历
 class StorageMgtScreen extends Component {
@@ -64,18 +65,23 @@ class StorageMgtScreen extends Component {
                 {drugStocks.map((item, index) => {
                   return (
                     <tr key={index}>
-                      <td style={{flex: 2}}>{item.model_name}</td>
-                      <td style={{flex: 2}}>{item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
-                      <td>{item.is_common ? '通用' : '个人'}</td>
-                      <td style={{flex: 2}}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
-                      <td>{item.operation_name}</td>
-                      <td>{item.operation_name}</td>
+                      <td style={{flex: 2}}>{moment(item.instock_date).format('YYYY-MM-DD')}</td>
+                      <td style={{flex: 2}}>{item.order_number}</td>
+                      <td>{item.instock_way_name}</td>
+                      <td style={{flex: 2}}>{item.supplier_name}</td>
+                      <td>{item.instock_operation_name}</td>
+                      <td>{item.verify_status === '01' ? '未审核' : '已审核'}</td>
                       <td style={{flex: 2}} className={'operTd'}>
-                        <div>
+                        {item.verify_status === '01' ? <div>
                           <div>修改</div>
                           <div className={'divideLine'}>|</div>
-                          <div>停用</div>
+                          <div>审核</div>
+                          <div className={'divideLine'}>|</div>
+                          <div>删除</div>
+                        </div> : <div>
+                          <div>查看详情</div>
                         </div>
+                        }
                       </td>
                     </tr>
                   )
