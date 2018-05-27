@@ -68,8 +68,8 @@ class ClinicListScreen extends Component {
       return this.refs.myAlert.alert('更新失败', res, null, 'Warning')
     }
     this.refs.myAlert.alert('更新成功', null, () => {
-      this.queryClinicList({offset: this.props.page_info.offset})
-      this.setState({pageType: 1})
+      this.queryClinicList({ offset: this.props.page_info.offset })
+      this.setState({ pageType: 1 })
     })
   }
 
@@ -205,7 +205,8 @@ class ClinicListScreen extends Component {
                     <span style={{ color: '#2ACDC8', cursor: 'pointer' }} onClick={() => this.changeClinicStatus(item.clinic_id, !item.status)}>
                       {item.status ? '停用' : '启用'}
                     </span>
-                    <span style={{ color: '#2ACDC8', cursor: 'pointer', marginLeft: '6px' }} onClick={() => this.setState({ ...item, pageType: 2 })}>
+                    <span style={{ color: '#2ACDC8', margin: '0 5px 0 5px' }}>|</span>
+                    <span style={{ color: '#2ACDC8', cursor: 'pointer' }} onClick={() => this.setState({ ...item, pageType: 2 })}>
                       {'修改'}
                     </span>
                   </div>

@@ -20,13 +20,13 @@ export function clinics(state = initState, action = {}) {
   }
 }
 
-export const queryClinicList = ({ keyword, status, start_date, end_date, offset = 0, limit = 10 }) => async dispatch => {
+export const queryClinicList = ({ keyword, clinic_status, start_date, end_date, offset = 0, limit = 10 }) => async dispatch => {
   try {
     const data = await request('/clinic/list', {
       keyword,
       start_date,
       end_date,
-      status,
+      status: clinic_status,
       offset,
       limit
     })
