@@ -31,7 +31,7 @@ import {
   RemoveScheduleByID
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
-import { drugs, drugCreate, queryDrugList, queryDicDrugsList } from './drug'
+import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
 import { materials, materialCreate, queryMaterialList } from './material'
@@ -65,6 +65,7 @@ import { associations, queryAssociationList, LaboratoryAssociationCreate } from 
 import {roles, queryRoleList, roleCreate, roleSelect} from './role'
 import {menus, queryMenuGetByClinicID, menuSelect} from './business'
 import {drugStocks, queryDrugInstockRecord, createDrugInstock, drugStockSelect} from './drug_stock'
+import { drugClasses, queryDrugClassList } from './drug_class'
 
 // keys
 export {
@@ -108,7 +109,8 @@ export {
   associations,
   roles,
   menus,
-  drugStocks
+  drugStocks,
+  drugClasses
 }
 
 // actions
@@ -152,8 +154,8 @@ export {
   queryMedicalModels,
   queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
-  queryDrugList,
-  drugCreate,
+  ClinicDrugCreate,
+  ClinicDrugList,
   examinationCreate,
   laboratoryCreate,
   materialCreate,
@@ -226,5 +228,6 @@ export {
   menuSelect,
   queryDrugInstockRecord,
   createDrugInstock,
-  drugStockSelect
+  drugStockSelect,
+  queryDrugClassList
 }

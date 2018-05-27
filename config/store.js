@@ -43,7 +43,8 @@ import {
   associations,
   roles,
   menus,
-  drugStocks
+  drugStocks,
+  drugClasses
 } from '../ducks'
 import thunk from 'redux-thunk'
 
@@ -96,7 +97,8 @@ const appReducer = persistCombineReducers(persistConfig, {
   associations,
   roles,
   menus,
-  drugStocks
+  drugStocks,
+  drugClasses
 })
 
 const rootReducer = (state, action) => {
