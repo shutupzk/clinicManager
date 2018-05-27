@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 // import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from '../../../../ducks'
-import { ClinicDrugList } from '../../../../ducks'
+import { ClinicDrugList, queryDrugClassList } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddCDrugScreen from './components/addCDrugScreen'
 import { formatMoney } from '../../../../utils'
@@ -24,6 +24,7 @@ class CMedicinePrescriptionScreen extends Component {
   componentWillMount() {
     this.getDrugsList({ offset: 0, limit: 10 })
   }
+
   showView() {
     let { pageType } = this.state
     let map = {
@@ -43,19 +44,8 @@ class CMedicinePrescriptionScreen extends Component {
   // 获取药品列表
   getDrugsList({ offset = 0, limit = 10 }) {
     const { clinic_id, ClinicDrugList } = this.props
-    const { status, keyword, drug_type } = this.state
-    let requestData = {
-      clinic_id,
-      drug_type,
-      keyword,
-      offset,
-      limit
-    }
-    if (status !== '' && status !== -1) {
-      requestData.status = status
-    }
-    console.log('requestData======', requestData)
-    ClinicDrugList(requestData)
+    const { status, keyword } = this.state
+    ClinicDrugList({ clinic_id, type: 1, keyword, offset, limit, status })
   }
   // 状态筛选
   getStatusOptions() {
@@ -348,4 +338,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { ClinicDrugList })(CMedicinePrescriptionScreen)
+export default connect(mapStateToProps, { ClinicDrugList, queryDrugClassList })(CMedicinePrescriptionScreen)

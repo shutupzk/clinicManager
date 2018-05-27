@@ -64,6 +64,7 @@ import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordL
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import {roles, queryRoleList, roleCreate, roleSelect} from './role'
 import {menus, queryMenuGetByClinicID, menuSelect} from './business'
+import { drugClasses, queryDrugClassList } from './drug_class'
 
 // keys
 export {
@@ -106,7 +107,8 @@ export {
   onCredit,
   associations,
   roles,
-  menus
+  menus,
+  drugClasses
 }
 
 // actions
@@ -221,5 +223,6 @@ export {
   roleCreate,
   roleSelect,
   queryMenuGetByClinicID,
-  menuSelect
+  menuSelect,
+  queryDrugClassList
 }
