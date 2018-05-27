@@ -62,6 +62,7 @@ import { examinationModels, examinationModelList, examinationModelCreate } from 
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList, LaboratoryPatientModelList } from './laboratory_model'
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
+import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate, queryClinicCode } from './clinic'
 import {roles, queryRoleList, roleCreate, roleSelect} from './role'
 import {menus, queryMenuGetByClinicID, menuSelect} from './business'
 import {drugStocks, queryDrugInstockRecord, createDrugInstock, drugStockSelect, queryInstockWayList, querySupplierList} from './drug_stock'
@@ -107,6 +108,7 @@ export {
   laboratoryPatientModels,
   onCredit,
   associations,
+  clinics,
   roles,
   menus,
   drugStocks,
@@ -221,6 +223,11 @@ export {
   LaboratoryPatientModelList,
   queryLaboItemsList,
   queryDicDrugsList,
+  clinicCreate,
+  queryClinicList,
+  queryClinicCode,
+  clinicUpdateStatus,
+  clinicUpdate,
   queryRoleList,
   roleCreate,
   roleSelect,

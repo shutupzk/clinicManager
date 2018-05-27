@@ -90,9 +90,9 @@ class AddExaminationModelScreen extends Component {
     for (let { clinic_examination_id, times, organ, illustration } of examines) {
       items.push({
         clinic_examination_id: clinic_examination_id + '',
-        times: times + '',
-        organ: organ + '',
-        illustration: illustration + ''
+        times: times ? times + '' : '',
+        organ: organ ? organ + '' : '',
+        illustration: illustration ? illustration + '' : ''
       })
     }
     let error = await examinationModelCreate({ model_name, is_common, operation_id: personnel_id, items })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
+import { Select, Confirm } from '../../../../../components'
 import {
   materialCreate,
   queryDoseUnitList
@@ -14,7 +14,7 @@ class AddMeterialScreen extends Component {
     super(props)
     this.state = {
       materialsInfo: {
-        status: false,
+        status: true,
         is_discount: false
       }
     }
@@ -230,6 +230,7 @@ class AddMeterialScreen extends Component {
           </div>
         </div>
         {this.style()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -263,9 +264,10 @@ class AddMeterialScreen extends Component {
     if (this.validateData(materialsInfo)) {
       let error = await materialCreate(materialsInfo)
       if (error) {
-        alert(error)
+        this.refs.myAlert.alert('保存失败', error, null, 'Danger')
         this.setState({materialsInfo})
       } else {
+        this.refs.myAlert.alert('保存成功')
         this.props.back2List()
       }
     }

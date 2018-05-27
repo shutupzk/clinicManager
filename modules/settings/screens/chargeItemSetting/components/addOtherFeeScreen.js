@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
+import { Select, Confirm } from '../../../../../components'
 import {
   otherCostsCreate,
   queryDoseUnitList
@@ -13,7 +13,7 @@ class AddOtherFeeScreen extends Component {
     super(props)
     this.state = {
       otherCostInfo: {
-        status: false,
+        status: true,
         is_discount: false
       }
     }
@@ -229,6 +229,7 @@ class AddOtherFeeScreen extends Component {
           </div>
         </div>
         {this.style()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -262,9 +263,10 @@ class AddOtherFeeScreen extends Component {
     if (this.validateData(otherCostInfo)) {
       let error = await otherCostsCreate(otherCostInfo)
       if (error) {
-        alert(error)
+        this.refs.myAlert.alert('保存失败', error, null, 'Danger')
         this.setState({otherCostInfo})
       } else {
+        this.refs.myAlert.alert('保存成功')
         this.props.back2List()
       }
     }

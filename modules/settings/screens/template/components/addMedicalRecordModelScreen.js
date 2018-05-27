@@ -11,6 +11,7 @@ class AddMedicalRecordModelScreen extends Component {
     super(props)
     this.state = {
       modelInfo: {
+        status: true,
         is_common: false
       }
     }
