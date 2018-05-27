@@ -4,7 +4,7 @@ const LABORATORY_ARRAY_ADD = 'LABORATORY_ARRAY_ADD'
 const LABO_ARRAY_ADD = 'LABO_ARRAY_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   array_data: [],
   page_info: {},
   labo_data: [],
@@ -14,7 +14,7 @@ const initState = {
 export function laboratories(state = initState, action = {}) {
   switch (action.type) {
     case LABORATORY_PROJECT_ADD:
-      return { ...state, data: action.data, page_info: action.page_info }
+      return { ...state, data: { ...state.data, ...action.data } }
     case LABORATORY_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     case LABO_ARRAY_ADD:
@@ -50,8 +50,7 @@ export const queryLaboratoryList = ({ clinic_id, keyword = '', status, offset = 
       }
       dispatch({
         type: LABORATORY_PROJECT_ADD,
-        data: json,
-        page_info
+        data: json
       })
     }
     return null
@@ -73,8 +72,8 @@ export const queryLaboList = ({ keyword = '', offset = 0, limit = 10 }) => async
     // const page_info = data.page_info || {}
     console.log('docs======', docs)
     for (let doc of docs) {
-      const {laboratory_sample} = doc
-      if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
+      const { laboratory_sample } = doc
+      if (laboratory_sample) sample_data[laboratory_sample] = { name: laboratory_sample }
     }
     dispatch({
       type: LABO_ARRAY_ADD,
@@ -91,7 +90,7 @@ export const queryLaboList = ({ keyword = '', offset = 0, limit = 10 }) => async
   }
 }
 
-export const laboratoryCreate = (requestData) => async dispatch => {
+export const laboratoryCreate = requestData => async dispatch => {
   try {
     if (requestData.price) {
       requestData.price = Math.round(requestData.price * 100)
@@ -100,10 +99,7 @@ export const laboratoryCreate = (requestData) => async dispatch => {
       requestData.cost = Math.round(requestData.cost * 100)
     }
     const data = await request('/laboratory/create', requestData)
-    console.log(
-      requestData,
-      data
-    )
+    console.log(requestData, data)
     if (data.code === '200') return null
     return data.msg
   } catch (e) {

@@ -110,7 +110,7 @@ class AddLaboratoryModelScreen extends Component {
             <input
               type='text'
               placeholder={'model_name'}
-              value={model_name}
+              value={model_name || ''}
               onChange={e => {
                 let model_name = e.target.value
                 this.setState({ model_name })
@@ -194,13 +194,13 @@ class AddLaboratoryModelScreen extends Component {
               </div>
             </li>
             {laboratories.map((item, index) => {
-              let nameOptions = this.getNameOptions(laboratories[index])
+              let nameOptions = this.getNameOptions(item)
               return (
                 <li key={index}>
                   <div>
                     <div style={{ width: '100%' }}>
                       <Select
-                        value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
+                        value={this.getSelectValue(item.clinic_laboratory_id, nameOptions)}
                         onChange={({ value, label }) => {
                           this.setItemValue(value, index, 'clinic_laboratory_id', 2)
                           this.setItemValue(label, index, 'name', 2)
@@ -213,10 +213,10 @@ class AddLaboratoryModelScreen extends Component {
                     </div>
                   </div>
                   <div>
-                    <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                    <input value={item.times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                   </div>
                   <div>
-                    <input value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                    <input value={item.illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                   </div>
                   <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -538,7 +538,7 @@ class AddLaboratoryModelScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state=====', state)
+  console.log('state=====', state.laboratories)
   return {
     clinic_id: state.user.data.clinic_id,
     laboratories: state.laboratories.data,

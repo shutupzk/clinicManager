@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
-import {
-  laboratoryItemCreate,
-  queryDoseUnitList,
-  queryLaboItemsList
-} from '../../../../../ducks'
+import { Select, Confirm } from '../../../../../components'
+import { laboratoryItemCreate, queryDoseUnitList, queryLaboItemsList } from '../../../../../ducks'
 
 // 病历
 class AddLaboratoryItemScreen extends Component {
@@ -17,27 +13,26 @@ class AddLaboratoryItemScreen extends Component {
         data_type: 2,
         status: true,
         // items: [],
-        is_special: false
+        is_special: false,
+        is_delivery: false
       },
       references: [],
       searchView: 0,
-      toSearch: false,
-      readOnly: false
+      toSearch: false
     }
   }
 
-  async componentDidMount() {
-  }
+  async componentDidMount() {}
   style() {
     return (
-      <style jsx>{`
-        .contentCenter{
+      <style jsx='true'>{`
+        .contentCenter {
           // background:#a0a0a0;
           display: flex;
           flex-direction: column;
         }
-        .contentCenter button{
-          background: rgba(255,255,255,1);
+        .contentCenter button {
+          background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           height: 32px;
@@ -45,58 +40,57 @@ class AddLaboratoryItemScreen extends Component {
           margin-left: 10px;
           font-size: 14px;
           font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
+          color: rgba(0, 0, 0, 0.65);
           padding: 0 15px;
         }
-        .contentCenter button:hover{
-          background:rgba(42,205,200,1);
-          color:rgba(255,255,255,1);
-          border: 1px solid rgba(42,205,200,1);
+        .contentCenter button:hover {
+          background: rgba(42, 205, 200, 1);
+          color: rgba(255, 255, 255, 1);
+          border: 1px solid rgba(42, 205, 200, 1);
         }
-        .bottomBtn{
+        .bottomBtn {
           // background:#909090;
           width: 1098px;
-          margin:0 0 30px 0;
+          margin: 0 0 30px 0;
           display: flex;
-          align-items:center;
+          align-items: center;
         }
-        .bottomBtn>div{
-          margin:0 auto;
+        .bottomBtn > div {
+          margin: 0 auto;
         }
-        .bottomBtn button{
-          
+        .bottomBtn button {
         }
-        .commonBlank{
-          background:rgba(255,255,255,1);
-          box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
-          border-radius: 4px ; 
-          margin-bottom:20px;
+        .commonBlank {
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+          margin-bottom: 20px;
           // width:1038px;
-          min-width:1038px;
+          min-width: 1038px;
           display: flex;
           flex-direction: column;
-          padding:5px 30px;
+          padding: 5px 30px;
         }
-        .commonBlank>span{
-          font-size:18px;
-          height:40px;
-          border-bottom:1px solid #d9d9d9;
+        .commonBlank > span {
+          font-size: 18px;
+          height: 40px;
+          border-bottom: 1px solid #d9d9d9;
           align-items: center;
           display: flex;
         }
-        .commonBlank>div{
+        .commonBlank > div {
           display: flex;
-          margin:10px 0;
+          margin: 10px 0;
         }
-        .commonBlank>div>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
+          padding: 0;
         }
-        .commonBlank>div>button{
-          background: rgba(255,255,255,1);
+        .commonBlank > div > button {
+          background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           height: 32px;
@@ -104,74 +98,73 @@ class AddLaboratoryItemScreen extends Component {
           margin-left: 10px;
           font-size: 14px;
           font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
+          color: rgba(0, 0, 0, 0.65);
           padding: 0 15px;
         }
-        .commonBlank>div>ul{
+        .commonBlank > div > ul {
           // background:#a0a0a0;
-          margin:0 auto;
-          width:100%;
+          margin: 0 auto;
+          width: 100%;
         }
-        .commonBlank>div>ul>li{
-          float:left;
-          width:19%;
+        .commonBlank > div > ul > li {
+          float: left;
+          width: 19%;
           display: flex;
           flex-direction: column;
-          height:70px;
-          margin-right:1%;
-          margin-top:5px;
+          height: 70px;
+          margin-right: 1%;
+          margin-top: 5px;
         }
-        .commonBlank>div>ul>li>label{
-          height:25px;
+        .commonBlank > div > ul > li > label {
+          height: 25px;
         }
-        .commonBlank>div>ul>li>div>input,
-        .commonBlank>div>ul>li>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > ul > li > div > input,
+        .commonBlank > div > ul > li > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
+          padding: 0;
         }
-        .commonBlank>div>ul>li>div{
-          
+        .commonBlank > div > ul > li > div {
         }
-        .commonBlank>div>ul>li>div>label{
-          margin-left:15px;
+        .commonBlank > div > ul > li > div > label {
+          margin-left: 15px;
           display: flex;
-          align-items:center;
-          float:left;
-          height:30px;
+          align-items: center;
+          float: left;
+          height: 30px;
         }
-        .commonBlank>div>ul>li>div>label:first-child{
-          margin-left:0;
+        .commonBlank > div > ul > li > div > label:first-child {
+          margin-left: 0;
         }
-        .commonBlank>div>ul>li>div.douInput{
+        .commonBlank > div > ul > li > div.douInput {
           display: flex;
           align-items: center;
         }
-        .commonBlank>div>ul>li>div.douInput>input{
-          width:100px;
+        .commonBlank > div > ul > li > div.douInput > input {
+          width: 40%;
         }
-        .commonBlank>div>ul>li>div.douInput>span{
-          margin:0 5px;
+        .commonBlank > div > ul > li > div.douInput > span {
+          margin: 0 5px;
         }
-        .commonBlank>div>ul>li.tableLi{
+        .commonBlank > div > ul > li.tableLi {
           width: 100%;
           margin: 20px 0;
           height: auto;
         }
-        .commonBlank>div>ul>li.tableLi>div{
+        .commonBlank > div > ul > li.tableLi > div {
           // background: #909090;
           float: left;
           width: 1000px;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul{
+        .commonBlank > div > ul > li.tableLi > div > ul {
           width: 100%;
           border-top: 1px solid #d8d8d8;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li{
+        .commonBlank > div > ul > li.tableLi > div > ul > li {
           display: flex;
-          float:left;
+          float: left;
           width: 100%;
           // flex: 1;
           height: 40px;
@@ -180,42 +173,41 @@ class AddLaboratoryItemScreen extends Component {
           border-right: 1px solid #d8d8d8;
           border-bottom: 1px solid #d8d8d8;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li:first-child{
-          background: rgba(250,250,250,1);
-          box-shadow: 1px 1px 0px 0px rgba(232,232,232,1);
+        .commonBlank > div > ul > li.tableLi > div > ul > li:first-child {
+          background: rgba(250, 250, 250, 1);
+          box-shadow: 1px 1px 0px 0px rgba(232, 232, 232, 1);
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div{
-          flex:2;
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div {
+          flex: 2;
           height: 40px;
           border-left: 1px solid #d8d8d8;
-          float:left;
+          float: left;
           line-height: 40px;
           text-align: center;
           display: flex;
           align-items: center;
           justify-content: center;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div:last-child{
-          flex:1;
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div:last-child {
+          flex: 1;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div{
-          flex:1;
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div {
+          flex: 1;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div{
-         
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div {
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
           height: 30px;
-          padding:0;
-          width:100%;
+          padding: 0;
+          width: 100%;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div>span{
-          margin:0 5px;
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div > span {
+          margin: 0 5px;
         }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div.douInput{
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div.douInput {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -230,17 +222,24 @@ class AddLaboratoryItemScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button
+              onClick={() => {
+                this.submit()
+              }}
+            >
+              保存
+            </button>
           </div>
         </div>
         {this.style()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
-      this.setState({nameFailed: true})
+      this.setState({ nameFailed: true })
       // alert(1)
       return false
     }
@@ -253,36 +252,29 @@ class AddLaboratoryItemScreen extends Component {
   }
   // 保存
   async submit() {
-    let {laboratoryItemInfo} = this.state
-    const {clinic_id, laboratoryItemCreate} = this.props
+    let { laboratoryItemInfo } = this.state
+    const { clinic_id, laboratoryItemCreate } = this.props
     laboratoryItemInfo.clinic_id = clinic_id
-    // let requestData = {...laboratoryItemInfo}
-    // requestData.items = JSON.stringify(requestData.items)
-    // console.log('this.validateData(laboratoryItemInfo)=====', this.validateData(laboratoryItemInfo))
-    // if (this.validateData(laboratoryItemInfo)) {
-    // }
-    // alert(0)
-    let error = await laboratoryItemCreate({requestData: laboratoryItemInfo})
+    let error = await laboratoryItemCreate({ requestData: { ...laboratoryItemInfo, clinic_id } })
     if (error) {
-      alert(error)
-      this.setState({laboratoryItemInfo})
+      this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+      this.setState({ laboratoryItemInfo })
     } else {
+      this.refs.myAlert.alert('保存成功')
       this.props.back2List()
     }
   }
   // 保存并入库
-  saveInStock() {
-
-  }
+  saveInStock() {}
   // 设置字段值
   setItemValue(e, key, type = 1) {
-    const {laboratoryItemInfo} = this.state
+    const { laboratoryItemInfo } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
     laboratoryItemInfo[key] = value
-    this.setState({laboratoryItemInfo})
+    this.setState({ laboratoryItemInfo })
   }
   setChildrenItemValue(e, index, key, type = 1) {
     const { laboratoryItemInfo } = this.state
@@ -321,11 +313,7 @@ class AddLaboratoryItemScreen extends Component {
   }
   // 性别筛选
   getSexOptions() {
-    return [
-      {value: '通用', label: '通用'},
-      {value: '男', label: '男'},
-      {value: '女', label: '女'}
-    ]
+    return [{ value: '通用', label: '通用' }, { value: '男', label: '男' }, { value: '女', label: '女' }]
   }
   // 单位筛选
   getMiniUnitOptions() {
@@ -353,9 +341,9 @@ class AddLaboratoryItemScreen extends Component {
     queryLaboItemsList({ keyword })
   }
   searchView() {
-    const {laboItemData} = this.props
+    const { laboItemData } = this.props
     // console.log('laboItemData=====', laboItemData)
-    let {laboratoryItemInfo} = this.state
+    let { laboratoryItemInfo } = this.state
     return (
       <div
         className={'researchView'}
@@ -366,27 +354,30 @@ class AddLaboratoryItemScreen extends Component {
           this.setState({ toSearch: true })
         }}
       >
-        <span onClick={() => {
-          const laboratoryItemInfo = {
-            data_type: 2,
-            status: true,
-            is_special: false,
-            name: '',
-            en_name: '',
-            unit_name: '',
-            reference_max: '',
-            reference_min: '',
-            items: [],
-            default_result: '',
-            instrument_code: ''
-          }
-          this.setState({
-            toSearch: false,
-            searchView: 0,
-            laboratoryItemInfo: laboratoryItemInfo,
-            readOnly: false
-          })
-        }}>请选择检验项目或点击继续新增</span>
+        <span
+          onClick={() => {
+            const laboratoryItemInfo = {
+              data_type: 2,
+              status: true,
+              is_special: false,
+              name: '',
+              en_name: '',
+              unit_name: '',
+              reference_max: '',
+              reference_min: '',
+              items: [],
+              default_result: '',
+              instrument_code: ''
+            }
+            this.setState({
+              toSearch: false,
+              searchView: 0,
+              laboratoryItemInfo: laboratoryItemInfo
+            })
+          }}
+        >
+          请选择项目或点击继续新增
+        </span>
         <ul>
           {laboItemData.map((item, index) => {
             return (
@@ -418,15 +409,12 @@ class AddLaboratoryItemScreen extends Component {
                   this.setState({
                     toSearch: false,
                     searchView: 0,
-                    laboratoryItemInfo,
-                    readOnly: true
+                    laboratoryItemInfo
                   })
                 }}
               >
                 <div className={'leftInfo'}>
-                  <div>
-                    {item.name}
-                  </div>
+                  <div>{item.name}</div>
                   {/* <div>{item.phone}</div> */}
                 </div>
               </li>
@@ -449,15 +437,17 @@ class AddLaboratoryItemScreen extends Component {
   }
   // 检验项目基本信息
   renderBaseInfoBlank() {
-    const {laboratoryItemInfo, readOnly} = this.state
+    const { laboratoryItemInfo } = this.state
     console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
         <div>
           <ul>
-            <li style={{position: 'relative'}}>
-              <label>检验项目名称<b style={{color: 'red'}}>*</b></label>
+            <li style={{ position: 'relative' }}>
+              <label>
+                检验项目名称<b style={{ color: 'red' }}>*</b>
+              </label>
               <input
                 type='text'
                 placeholder={'name'}
@@ -477,12 +467,11 @@ class AddLaboratoryItemScreen extends Component {
                 }}
               />
               {this.state.searchView === 1 ? this.searchView() : ''}
-              {this.state.nameFailed || laboratoryItemInfo.name === '' || !laboratoryItemInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.nameFailed || laboratoryItemInfo.name === '' || !laboratoryItemInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
               <label>英文名称</label>
               <input
-                readOnly={readOnly}
                 type='text'
                 placeholder={'en_name'}
                 value={laboratoryItemInfo.en_name}
@@ -495,14 +484,14 @@ class AddLaboratoryItemScreen extends Component {
               <label>单位</label>
               <div>
                 <Select
-                  readOnly={readOnly}
-                  disabled={readOnly}
                   placeholder={'请选择'}
                   height={32}
                   options={this.getMiniUnitOptions()}
                   value={this.getSelectValue(laboratoryItemInfo.unit_name, this.getMiniUnitOptions())}
-                  onInputChange={keyword => { this.getDoseUnitList(keyword) }}
-                  onChange={({value}) => {
+                  onInputChange={keyword => {
+                    this.getDoseUnitList(keyword)
+                  }}
+                  onChange={({ value }) => {
                     this.setItemValue(value, 'unit_name', 2)
                   }}
                 />
@@ -513,7 +502,6 @@ class AddLaboratoryItemScreen extends Component {
               <label>仪器编码</label>
               <div>
                 <input
-                  readOnly={readOnly}
                   type='text'
                   placeholder={'instrument_code'}
                   value={laboratoryItemInfo.instrument_code}
@@ -524,84 +512,68 @@ class AddLaboratoryItemScreen extends Component {
               </div>
             </li>
             <li>
-              <label>数据类型<b style={{color: 'red'}}>*</b></label>
+              <label>
+                数据类型<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <label>
                   <input
-                    readOnly={readOnly}
-                    disabled={readOnly}
                     type='radio'
                     name={'data_type'}
                     checked={laboratoryItemInfo.data_type === 2}
                     onChange={e => {
                       this.setItemValue(2, 'data_type', 2)
-                      // delete laboratoryItemInfo.reference_max
-                      // delete laboratoryItemInfo.reference_min
-                      // if (laboratoryItemInfo.items) {
-                      //   for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
-                      //     delete laboratoryItemInfo.items[i].reference_max
-                      //     delete laboratoryItemInfo.items[i].reference_min
-                      //   }
-                      // }
                     }}
                   />
                   定量
                 </label>
                 <label>
                   <input
-                    readOnly={readOnly}
-                    disabled={readOnly}
                     type='radio'
                     name={'data_type'}
                     checked={laboratoryItemInfo.data_type === 1}
                     onChange={e => {
                       this.setItemValue(1, 'data_type', 2)
-                      // delete laboratoryItemInfo.reference_value
-                      // if (laboratoryItemInfo.items) {
-                      //   for (let i = 0; i < laboratoryItemInfo.items.length; i++) {
-                      //     delete laboratoryItemInfo.items[i].reference_value
-                      //   }
-                      // }
                     }}
                   />
                   定性
                 </label>
               </div>
             </li>
-            {!laboratoryItemInfo.is_special ? <li>
-              <label>参考值默认</label>
-              <div className={'douInput'}>
-                <input
-                  readOnly={readOnly}
-                  disabled={readOnly}
-                  type='text'
-                  // min={0}
-                  placeholder={'最小值'}
-                  value={laboratoryItemInfo.reference_min}
-                  onChange={e => {
-                    this.setItemValue(e, 'reference_min')
-                  }}
-                />
-                <span>—</span>
-                <input
-                  readOnly={readOnly}
-                  disabled={readOnly}
-                  type='text'
-                  // min={0}
-                  placeholder={'最大值'}
-                  value={laboratoryItemInfo.reference_max}
-                  onChange={e => {
-                    this.setItemValue(e, 'reference_max')
-                  }}
-                />
-              </div>
-            </li> : ''}
+            {!laboratoryItemInfo.is_special ? (
+              <li>
+                <label>参考值默认</label>
+                <div className={'douInput'}>
+                  <input
+                    type='text'
+                    // min={0}
+                    placeholder={'最小值'}
+                    value={laboratoryItemInfo.reference_min}
+                    onChange={e => {
+                      this.setItemValue(e, 'reference_min')
+                    }}
+                  />
+                  <span>—</span>
+                  <input
+                    type='text'
+                    // min={0}
+                    placeholder={'最大值'}
+                    value={laboratoryItemInfo.reference_max}
+                    onChange={e => {
+                      this.setItemValue(e, 'reference_max')
+                    }}
+                  />
+                </div>
+              </li>
+            ) : (
+              ''
+            )}
             <li>
-              <label>参考值是否特殊<b style={{color: 'red'}}>*</b></label>
+              <label>
+                参考值是否特殊<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <input
-                  readOnly={readOnly}
-                  disabled={readOnly}
                   type='checkbox'
                   checked={laboratoryItemInfo.is_special}
                   onChange={e => {
@@ -613,7 +585,7 @@ class AddLaboratoryItemScreen extends Component {
                       delete laboratoryItemInfo.reference_min
                       // delete laboratoryItemInfo.reference_value
                       laboratoryItemInfo.items = []
-                      this.setState({laboratoryItemInfo})
+                      this.setState({ laboratoryItemInfo })
                     } else {
                       // this.setItemValue('false', 'is_special', 2)
                       delete laboratoryItemInfo.items
@@ -626,7 +598,6 @@ class AddLaboratoryItemScreen extends Component {
             <li>
               <label>临床意义</label>
               <input
-                readOnly={readOnly}
                 type='text'
                 placeholder={'临床意义'}
                 value={laboratoryItemInfo.clinical_significance}
@@ -663,7 +634,9 @@ class AddLaboratoryItemScreen extends Component {
               </div>
             </li>
             <li>
-              <label>是否外送<b style={{color: 'red'}}>*</b></label>
+              <label>
+                是否外送<b style={{ color: 'red' }}>*</b>
+              </label>
               <div>
                 <label>
                   <input
@@ -696,7 +669,7 @@ class AddLaboratoryItemScreen extends Component {
   }
   // 显示特殊参考值
   renderIsSpecial() {
-    const { laboratoryItemInfo, readOnly } = this.state
+    const { laboratoryItemInfo } = this.state
     // console.log('laboratoryItemInfo=======', laboratoryItemInfo)
     let references = laboratoryItemInfo.items || []
     return (
@@ -706,7 +679,9 @@ class AddLaboratoryItemScreen extends Component {
             <div>性别</div>
             <div>年龄</div>
             <div>参考值</div>
-            <div onClick={() => this.addColumn()} style={{color: 'green', cursor: 'pointer'}}>增加</div>
+            <div onClick={() => this.addColumn()} style={{ color: 'green', cursor: 'pointer' }}>
+              增加
+            </div>
           </li>
           {references.map((item, index) => {
             return (
@@ -714,41 +689,41 @@ class AddLaboratoryItemScreen extends Component {
                 <div>
                   <div>
                     <Select
-                      readOnly={readOnly}
-                      disabled={readOnly}
                       placeholder={'性别'}
                       height={30}
                       value={this.getSelectValue(item.reference_sex, this.getSexOptions())}
                       options={this.getSexOptions()}
-                      onChange={({value, label}) => {
+                      onChange={({ value, label }) => {
                         this.setChildrenItemValue(label, index, 'reference_sex', 2)
                         // this.setChildrenItemValue(value, index, 'reference_sex_id', 2)
                         if (value !== '女') {
                           delete item.is_pregnancy
-                          this.setState({laboratoryItemInfo})
+                          this.setState({ laboratoryItemInfo })
                         }
                       }}
                     />
                   </div>
-                  {item.reference_sex === '女' ? <div>
-                    <label>
-                      <input
-                        readOnly={readOnly}
-                        type='checkbox'
-                        checked={item.is_pregnancy}
-                        onChange={e => {
-                          this.setChildrenItemValue(e.target.checked, index, 'is_pregnancy', 2)
-                          // console.log('checkbox==========', e.target.checked)
-                          // this.setItemValue(e.target.checked, 'is_special', 2)
-                        }}
-                      />妊娠期
-                    </label>
-                  </div> : ''}
+                  {item.reference_sex === '女' ? (
+                    <div>
+                      <label>
+                        <input
+                          type='checkbox'
+                          checked={item.is_pregnancy}
+                          onChange={e => {
+                            this.setChildrenItemValue(e.target.checked, index, 'is_pregnancy', 2)
+                            // console.log('checkbox==========', e.target.checked)
+                            // this.setItemValue(e.target.checked, 'is_special', 2)
+                          }}
+                        />妊娠期
+                      </label>
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </div>
                 <div>
                   <div className={'douInput'}>
                     <input
-                      readOnly={readOnly}
                       type='number'
                       min={0}
                       placeholder={'最小年龄'}
@@ -760,7 +735,6 @@ class AddLaboratoryItemScreen extends Component {
                     />
                     <span>—</span>
                     <input
-                      readOnly={readOnly}
                       type='number'
                       min={0}
                       placeholder={'最大年龄'}
@@ -775,7 +749,6 @@ class AddLaboratoryItemScreen extends Component {
                 <div>
                   <div className={'douInput'}>
                     <input
-                      readOnly={readOnly}
                       type='text'
                       // min={0}
                       placeholder={'最小值'}
@@ -787,7 +760,6 @@ class AddLaboratoryItemScreen extends Component {
                     />
                     <span>—</span>
                     <input
-                      readOnly={readOnly}
                       type='number'
                       // min={0}
                       placeholder={'最大值'}
@@ -799,7 +771,14 @@ class AddLaboratoryItemScreen extends Component {
                     />
                   </div>
                 </div>
-                <div onClick={() => { this.removeColumn(index) }} style={{color: 'red', cursor: 'pointer'}}>删除</div>
+                <div
+                  onClick={() => {
+                    this.removeColumn(index)
+                  }}
+                  style={{ color: 'red', cursor: 'pointer' }}
+                >
+                  删除
+                </div>
               </li>
             )
           })}

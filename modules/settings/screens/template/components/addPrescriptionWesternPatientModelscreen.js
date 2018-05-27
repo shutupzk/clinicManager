@@ -15,7 +15,7 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
     this.state = {
       modelInfo: {
         is_common: false,
-        status: false,
+        status: true,
         items: []
       },
       items: []

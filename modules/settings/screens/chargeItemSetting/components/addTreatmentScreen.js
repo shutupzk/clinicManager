@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
+import { Select, Confirm } from '../../../../../components'
 import {
   treatmentCreate,
   queryDoseUnitList
@@ -14,7 +14,7 @@ class AddTreatmentScreen extends Component {
     super(props)
     this.state = {
       treatmentInfo: {
-        status: false,
+        status: true,
         is_discount: false
       }
     }
@@ -230,6 +230,7 @@ class AddTreatmentScreen extends Component {
           </div>
         </div>
         {this.style()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -263,9 +264,10 @@ class AddTreatmentScreen extends Component {
     if (this.validateData(treatmentInfo)) {
       let error = await treatmentCreate(treatmentInfo)
       if (error) {
-        alert(error)
+        this.refs.myAlert.alert('保存失败', error, null, 'Danger')
         this.setState({treatmentInfo})
       } else {
+        this.refs.myAlert.alert('保存成功')
         this.props.back2List()
       }
     }
