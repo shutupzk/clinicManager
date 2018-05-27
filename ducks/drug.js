@@ -36,7 +36,7 @@ export const ClinicDrugList = ({ clinic_id, type, drug_class_id = '', keyword, s
     let doseFormJson = {}
     let json_data = {}
     for (let doc of docs) {
-      json_data[doc.drug_stock_id] = doc
+      json_data[doc.clinic_drug_id] = doc
       const { packing_unit_name, dose_count_unit_name, once_dose_unit_name, route_administration_name, frequency_name, dose_form_name } = doc
       if (packing_unit_name) unitJson[packing_unit_name] = { name: packing_unit_name }
       if (dose_count_unit_name) unitJson[dose_count_unit_name] = { name: dose_count_unit_name }
