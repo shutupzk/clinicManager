@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryChargePaidList } from '../../../../ducks'
+import { queryChargePaidList, chargePaidSelect } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
@@ -61,16 +61,16 @@ class ChargedScreen extends Component {
                       <a>{patient.doctor_name}</a>
                     </span>
                     <span>
-                      <a>登记人员：</a>
+                      <a>收费人员：</a>
                       <a>{patient.register_personnel_name}</a>
                     </span>
                     <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                      <a>缴费时间：</a>
+                      <a>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
                     </span>
                     <span>
-                      <a style={{ color: 'rgb(153, 153, 153)' }}>更新时间：</a>
-                      <a style={{ color: 'rgb(153, 153, 153)' }}>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                      <a style={{ color: 'rgb(153, 153, 153)' }}>登记时间：</a>
+                      <a style={{ color: 'rgb(153, 153, 153)' }}>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
                     </span>
                   </div>
                   <div className={'itemBottom'}>
@@ -78,7 +78,7 @@ class ChargedScreen extends Component {
                     <span style={{ cursor: 'unset' }}>打印发票</span>
                     <span
                       onClick={() => {
-                        // this.gotoChargeDetail(patient.clinic_triage_patient_id)
+                        this.gotoChargeDetail(patient.mz_paid_record_id)
                       }}
                     >
                       查看
@@ -103,8 +103,9 @@ class ChargedScreen extends Component {
   }
 
   // 收费详情
-  gotoChargeDetail() {
-    Router.push('/treatment/charge/toll')
+  gotoChargeDetail(clinic_triage_patient_id) {
+    this.props.chargePaidSelect({selectId: clinic_triage_patient_id})
+    Router.push('/treatment/charge/chargedDetail')
   }
   // 加载
   render() {
@@ -160,4 +161,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryChargePaidList })(ChargedScreen)
+export default connect(mapStateToProps, { queryChargePaidList, chargePaidSelect })(ChargedScreen)

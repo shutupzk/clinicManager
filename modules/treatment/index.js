@@ -9,6 +9,7 @@ import TriageRecordScreen from './screens/triage/triage_record_screen'
 import ListDetailScreen from './screens/registration/list_detail_screen'
 import TobeChargedScreen from './screens/charge'
 import ChargedScreen from './screens/charge/charged_screen'
+import ChargedDetailScreen from './screens/charge/charged_detail_screen'
 import AlreadyChargedScreen from './screens/charge/alreadyCharged_screen'
 import RefundedScreen from './screens/charge/refunded_screen'
 import OrderManagementScreen from './screens/charge/orderManagement_screen'
@@ -33,6 +34,7 @@ export {
   TriageRecordScreen,
   TobeChargedScreen,
   ChargedScreen,
+  ChargedDetailScreen,
   AlreadyChargedScreen,
   RefundedScreen,
   OrderManagementScreen,
