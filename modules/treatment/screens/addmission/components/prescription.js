@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
 import {
-  queryDrugList,
+  ClinicDrugList,
   PrescriptionWesternPatientCreate,
   PrescriptionWesternPatientGet,
   queryRouteAdministrationList,
@@ -93,10 +93,10 @@ class MedicalRecordScreen extends Component {
     return array
   }
 
-  queryDrugList(keyword, type = 0) {
-    const { queryDrugList, clinic_id } = this.props
+  ClinicDrugList(keyword, type = 0) {
+    const { ClinicDrugList, clinic_id } = this.props
     if (keyword) {
-      queryDrugList({ clinic_id, status: true, keyword, type }, true)
+      ClinicDrugList({ clinic_id, status: true, keyword, type }, true)
     }
   }
 
@@ -414,7 +414,7 @@ class MedicalRecordScreen extends Component {
                       }}
                       placeholder='搜索'
                       height={38}
-                      onInputChange={keyword => this.queryDrugList(keyword, 0)}
+                      onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
                       options={this.getWNameOptions()}
                     />
                   </div>
@@ -632,7 +632,7 @@ class MedicalRecordScreen extends Component {
                         placeholder='名称'
                         height={38}
                         options={this.getCNameOptions()}
-                        onInputChange={keyword => this.queryDrugList(keyword, 1)}
+                        onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
                       />
                     </div>
                   </div>
@@ -1636,7 +1636,7 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  queryDrugList,
+  ClinicDrugList,
   PrescriptionWesternPatientCreate,
   PrescriptionWesternPatientGet,
   queryRouteAdministrationList,

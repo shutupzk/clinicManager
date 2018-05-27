@@ -7,6 +7,7 @@ const initState = {
   data: [],
   array_data: [],
   page_info: {},
+  laboItem_data: [],
   selectId: null
 }
 
@@ -92,21 +93,21 @@ export const queryLaboItemsList = ({ keyword = '', offset = 0, limit = 10 }) => 
       limit
     })
     const docs = data.data || []
-    // let sample_data = {}
+    let unit_data = {}
     // const page_info = data.page_info || {}
     console.log('docs======', docs)
-    // for (let doc of docs) {
-    //   const {laboratory_sample} = doc
-    //   if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
-    // }
+    for (let doc of docs) {
+      const {unit_name} = doc
+      if (unit_name) unit_data[unit_name] = {id: unit_name, name: unit_name}
+    }
     dispatch({
       type: LABO_ITEM_ARRAY_ADD,
       laboItem_data: docs
     })
-    // dispatch({
-    //   type: 'LABORATORY_SAMPLE_LIST',
-    //   data: sample_data
-    // })
+    dispatch({
+      type: 'DOSE_UNIT_ADD',
+      data: unit_data
+    })
     return null
   } catch (e) {
     console.log(e)

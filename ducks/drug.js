@@ -5,6 +5,7 @@ const DIC_DRUG_ARRAY_ADD = 'DIC_DRUG_ARRAY_ADD'
 
 const initState = {
   data: [],
+  drug_data: [],
   json_data: {},
   page_info: {},
   selectId: null
@@ -23,41 +24,35 @@ export function drugs(state = initState, action = {}) {
   }
 }
 
-export const queryDrugList = (requetData, isJson) => async dispatch => {
+export const ClinicDrugList = ({ clinic_id, type, drug_class_id = '', keyword, status, offset, limit }, isJson) => async dispatch => {
   try {
-    console.log('limit====', requetData)
-    const data = await request('/drug/list', requetData)
-    console.log('queryDrugList=======', data)
+    const data = await request('/clinic_drug/ClinicDrugList', { clinic_id, type, drug_class_id, keyword, status, offset, limit })
+    console.log('ClinicDrugList=======', data, { clinic_id, type, drug_class_id, keyword, status, offset, limit })
     const docs = data.data || []
     const page_info = data.page_info || {}
+    let unitJson = {}
+    let frequencyJson = {}
+    let routeJson = {}
+    let doseFormJson = {}
+    let json_data = {}
+    for (let doc of docs) {
+      json_data[doc.drug_stock_id] = doc
+      const { packing_unit_name, dose_count_unit_name, once_dose_unit_name, route_administration_name, frequency_name, dose_form_name } = doc
+      if (packing_unit_name) unitJson[packing_unit_name] = { name: packing_unit_name }
+      if (dose_count_unit_name) unitJson[dose_count_unit_name] = { name: dose_count_unit_name }
+      if (once_dose_unit_name) unitJson[once_dose_unit_name] = { name: once_dose_unit_name }
+      if (route_administration_name) routeJson[route_administration_name] = { name: route_administration_name }
+      if (frequency_name) frequencyJson[frequency_name] = { name: frequency_name }
+      if (dose_form_name) doseFormJson[dose_form_name] = { name: dose_form_name }
+    }
+    dispatch({ type: 'DOSE_UNIT_ADD', data: unitJson })
+    dispatch({ type: 'FREQUENCY_ADD', data: frequencyJson })
+    dispatch({ type: 'ROUTE_ADMINISTRATION_ADD', data: routeJson })
+    dispatch({ type: 'DOSE_FORM_ADD', data: doseFormJson })
     if (isJson) {
-      let json_data = {}
-      let unitJson = {}
-      let frequencyJson = {}
-      let routeJson = {}
-      for (let doc of docs) {
-        const { packing_unit_id, packing_unit_name, once_dose_unit_id, once_dose_unit_name, route_administration_id, route_administration_name, frequency_id, frequency_name } = doc
-        json_data[doc.drug_stock_id] = doc
-        if (packing_unit_id) unitJson[packing_unit_id] = { id: packing_unit_id, name: packing_unit_name }
-        if (once_dose_unit_id) unitJson[once_dose_unit_id] = { id: once_dose_unit_id, name: once_dose_unit_name }
-        if (frequency_id) frequencyJson[frequency_id] = { id: frequency_id, name: frequency_name }
-        if (route_administration_id) routeJson[route_administration_id] = { id: route_administration_id, name: route_administration_name }
-      }
       dispatch({
         type: DRUG_JSON_ADD,
         json_data
-      })
-      dispatch({
-        type: 'DOSE_UNIT_ADD',
-        data: unitJson
-      })
-      dispatch({
-        type: 'FREQUENCY_ADD',
-        data: frequencyJson
-      })
-      dispatch({
-        type: 'ROUTE_ADMINISTRATION_ADD',
-        data: routeJson
       })
     } else {
       dispatch({
@@ -69,13 +64,23 @@ export const queryDrugList = (requetData, isJson) => async dispatch => {
     return null
   } catch (e) {
     console.log(e)
+    if (!isJson) {
+      dispatch({
+        type: DRUG_PROJECT_ADD,
+        data: [],
+        page_info: {}
+      })
+    }
     return e.message
   }
 }
 
-export const drugCreate = ({ drugInfo }) => async dispatch => {
+export const ClinicDrugCreate = drugInfo => async dispatch => {
   try {
-    const data = await request('/drug/create', drugInfo)
+    if (drugInfo.ret_price) drugInfo.ret_price = drugInfo.ret_price * 100
+    if (drugInfo.buy_price) drugInfo.buy_price = drugInfo.buy_price * 100
+    if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
+    const data = await request('/clinic_drug/ClinicDrugCreate', drugInfo)
     console.log(drugInfo, data)
     if (data.code === '200') return null
     return data.msg
@@ -85,30 +90,39 @@ export const drugCreate = ({ drugInfo }) => async dispatch => {
   }
 }
 
-export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 10 }) => async dispatch => {
+export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 10, type }) => async dispatch => {
+  if (!type && type !== 0) return
   try {
-    console.log('limit====', limit)
     const data = await request('/dictionaries/Drugs', {
       keyword,
       offset,
+      type,
       limit
     })
     const docs = data.data || []
-    // let sample_data = {}
-    // const page_info = data.page_info || {}
-    console.log('docs======', docs)
-    // for (let doc of docs) {
-    //   const {laboratory_sample} = doc
-    //   if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
-    // }
+    console.log('docs ==== ======= ', docs)
+    let unitJson = {}
+    let frequencyJson = {}
+    let routeJson = {}
+    let doseFormJson = {}
+    for (let doc of docs) {
+      const { packing_unit_name, dose_count_unit_name, once_dose_unit_name, route_administration_name, frequency_name, dose_form_name } = doc
+      if (packing_unit_name) unitJson[packing_unit_name] = { name: packing_unit_name }
+      if (dose_count_unit_name) unitJson[dose_count_unit_name] = { name: dose_count_unit_name }
+      if (once_dose_unit_name) unitJson[once_dose_unit_name] = { name: once_dose_unit_name }
+      if (route_administration_name) routeJson[route_administration_name] = { name: route_administration_name }
+      if (frequency_name) frequencyJson[frequency_name] = { name: frequency_name }
+      if (dose_form_name) doseFormJson[dose_form_name] = { name: dose_form_name }
+    }
+    dispatch({ type: 'DOSE_UNIT_ADD', data: unitJson })
+    dispatch({ type: 'FREQUENCY_ADD', data: frequencyJson })
+    dispatch({ type: 'ROUTE_ADMINISTRATION_ADD', data: routeJson })
+    dispatch({ type: 'DOSE_FORM_ADD', data: doseFormJson })
+
     dispatch({
       type: DIC_DRUG_ARRAY_ADD,
       drug_data: docs
     })
-    // dispatch({
-    //   type: 'LABORATORY_SAMPLE_LIST',
-    //   data: sample_data
-    // })
     return null
   } catch (e) {
     console.log(e)

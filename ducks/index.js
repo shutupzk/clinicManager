@@ -31,7 +31,7 @@ import {
   RemoveScheduleByID
 } from './schedules'
 import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
-import { drugs, drugCreate, queryDrugList, queryDicDrugsList } from './drug'
+import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
 import { materials, materialCreate, queryMaterialList } from './material'
@@ -63,6 +63,10 @@ import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPerson
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate } from './clinic'
+import {roles, queryRoleList, roleCreate, roleSelect} from './role'
+import {menus, queryMenuGetByClinicID, menuSelect} from './business'
+import {drugStocks, queryDrugInstockRecord, createDrugInstock, drugStockSelect} from './drug_stock'
+import { drugClasses, queryDrugClassList } from './drug_class'
 
 // keys
 export {
@@ -104,7 +108,11 @@ export {
   laboratoryPatientModels,
   onCredit,
   associations,
-  clinics
+  clinics,
+  roles,
+  menus,
+  drugStocks,
+  drugClasses
 }
 
 // actions
@@ -148,8 +156,8 @@ export {
   queryMedicalModels,
   queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
-  queryDrugList,
-  drugCreate,
+  ClinicDrugCreate,
+  ClinicDrugList,
   examinationCreate,
   laboratoryCreate,
   materialCreate,
@@ -218,5 +226,14 @@ export {
   clinicCreate,
   queryClinicList,
   clinicUpdateStatus,
-  clinicUpdate
+  clinicUpdate,
+  queryRoleList,
+  roleCreate,
+  roleSelect,
+  queryMenuGetByClinicID,
+  menuSelect,
+  queryDrugInstockRecord,
+  createDrugInstock,
+  drugStockSelect,
+  queryDrugClassList
 }
