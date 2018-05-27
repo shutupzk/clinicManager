@@ -18,7 +18,6 @@ class ClinicListScreen extends Component {
       end_date: moment()
         .add(1, 'd')
         .format('YYYY-MM-DD'),
-      item: {},
 
       cities: [],
       counties: [],
