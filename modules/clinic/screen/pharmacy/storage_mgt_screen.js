@@ -16,7 +16,9 @@ class StorageMgtScreen extends Component {
       start_date: '',
       end_date: '',
       order_number: '',
-      showType: 1
+      showType: 1,
+      showWay: 1,
+      drug_instock_record_id: ''
     }
   }
 
@@ -44,7 +46,7 @@ class StorageMgtScreen extends Component {
   }
   renderTable() {
     const { drugStocks, pageInfo } = this.props
-    console.log('drugStocks=====', drugStocks)
+    // console.log('drugStocks=====', drugStocks)
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'contentTable'}>
@@ -75,7 +77,13 @@ class StorageMgtScreen extends Component {
                         {item.verify_status === '01' ? <div>
                           <div>修改</div>
                           <div className={'divideLine'}>|</div>
-                          <div>审核</div>
+                          <div onClick={() => {
+                            this.setState({
+                              showType: 2,
+                              drug_instock_record_id: item.drug_instock_record_id,
+                              showWay: 2
+                            })
+                          }}>审核</div>
                           <div className={'divideLine'}>|</div>
                           <div>删除</div>
                         </div> : <div>
@@ -172,10 +180,10 @@ class StorageMgtScreen extends Component {
     )
   }
   showView() {
-    let { showType } = this.state
+    let { showType, drug_instock_record_id, showWay } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddDrugInstockScreen drugType={1} backToList={() => {
+      2: <AddDrugInstockScreen showWay={showWay} drug_instock_record_id={drug_instock_record_id} drugType={1} backToList={() => {
         this.setState({showType: 1})
         this.getDataList({offset: 0, limit: 10})
       }} />
@@ -214,7 +222,7 @@ class StorageMgtScreen extends Component {
         <div className={'boxRight'}>
           <button
             onClick={() => {
-              this.setState({showType: 2})
+              this.setState({showType: 2, showWay: 1, drug_instock_record_id: ''})
             }}
           >
             新增入库

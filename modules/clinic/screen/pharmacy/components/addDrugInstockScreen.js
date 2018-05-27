@@ -4,10 +4,12 @@ import {
   createDrugInstock,
   ClinicDrugList,
   queryInstockWayList,
-  querySupplierList
+  querySupplierList,
+  queryDrugInstockRecordDetail
 } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
-import { formatMoney } from '../../../../../utils'
+import { formatMoney, limitMoney } from '../../../../../utils'
+import moment from 'moment'
 
 // 病历
 class AddDrugInstockScreen extends Component {
@@ -18,13 +20,30 @@ class AddDrugInstockScreen extends Component {
       instock_way_name: '',
       supplier_name: '',
       items: [],
-      remark: ''
+      remark: '',
+      readOnly: false
     }
   }
 
   componentDidMount() {
+    const {showWay} = this.props
+    if (showWay !== 1) {
+      this.queryDetailData()
+      this.setState({readOnly: true})
+    }
   }
-
+  async queryDetailData() {
+    const {drug_instock_record_id, queryDrugInstockRecordDetail} = this.props
+    let data = await queryDrugInstockRecordDetail({drug_instock_record_id})
+    console.log('data=====', data)
+    this.setState({
+      instock_date: data.instock_date,
+      instock_way_name: data.instock_way_name,
+      supplier_name: data.supplier_name,
+      remark: data.remark,
+      items: data.items
+    })
+  }
   // 验证字段
   validateData(data) {
     if (!data.model_name || data.model_name === '') {
@@ -67,39 +86,36 @@ class AddDrugInstockScreen extends Component {
   }
 
   async createDrugInstock() {
-    const { createDrugInstock } = this.props
+    const { createDrugInstock, clinic_id, instock_operation_id } = this.props
     const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
+    for (let key of items) {
+      key.clinic_drug_id = key.clinic_drug_id + ''
+      key.buy_price = key.buy_price * 100 + ''
+      key.ret_price = key.ret_price + ''
+    }
     let requestData = {
+      clinic_id,
+      instock_operation_id,
       instock_date,
       instock_way_name,
       supplier_name,
       remark,
       items: JSON.stringify(items)
     }
-    console.log('requestData====', requestData, items)
-    // createDrugInstock(requestData)
-    // let items = []
-    // for (let { clinic_examination_id, times, organ, illustration } of examines) {
-    //   items.push({
-    //     clinic_examination_id: clinic_examination_id + '',
-    //     times: times + '',
-    //     organ: organ + '',
-    //     illustration: illustration + ''
-    //   })
-    // }
-    // let error = await examinationModelCreate({ model_name, is_common, operation_id: personnel_id, items })
-    // if (error) {
-    //   return this.refs.myAlert.alert('保存失败', error)
-    // } else {
-    //   this.setState({ showSaveModel: false })
-    //   this.refs.myAlert.alert('保存成功')
-    //   backToList()
-    // }
+    // console.log('requestData====', requestData, items)
+    let error = await createDrugInstock(requestData)
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      // this.setState({ showSaveModel: false })
+      this.refs.myAlert.alert('保存成功')
+      this.props.backToList()
+    }
   }
   // 获取入库方式筛选
   getInstockWayNameOptions() {
     const { instock_way } = this.props
-    console.log('instock_way====', instock_way)
+    // console.log('instock_way====', instock_way)
     let array = []
     for (let key in instock_way) {
       let {name} = instock_way[key]
@@ -114,12 +130,14 @@ class AddDrugInstockScreen extends Component {
   // 获取入库方式数据
   queryInstockWayList(keyword) {
     const {queryInstockWayList} = this.props
-    queryInstockWayList({keyword})
+    if (keyword) {
+      queryInstockWayList({keyword})
+    }
   }
   // 获取供应商筛选
   getSupplierOptions() {
     const { supplier_data } = this.props
-    console.log('supplier_data====', supplier_data)
+    // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in supplier_data) {
       let {name} = supplier_data[key]
@@ -134,11 +152,15 @@ class AddDrugInstockScreen extends Component {
   // 获取供应商数据
   querySupplierList(keyword) {
     const {querySupplierList} = this.props
-    querySupplierList({keyword})
+    if (keyword) {
+      querySupplierList({keyword})
+    }
   }
   // 入库基本信息
   renderBaseInfoBlank() {
-    const {instock_date, instock_way_name, supplier_name, remark} = this.state
+    const {instock_date, instock_way_name, supplier_name, remark, readOnly} = this.state
+    const {showWay} = this.props
+    console.log('instock_date, instock_way_name, supplier_name, remark', instock_date, instock_way_name, supplier_name, remark)
     return (
       <div>
         <ul>
@@ -147,9 +169,10 @@ class AddDrugInstockScreen extends Component {
               入库日期
             </label>
             <input
+              readOnly={readOnly}
               type='date'
               placeholder={'instock_date'}
-              value={instock_date}
+              value={moment(instock_date).format('YYYY-MM-DD')}
               onChange={e => {
                 let instock_date = e.target.value
                 this.setState({ instock_date })
@@ -158,11 +181,11 @@ class AddDrugInstockScreen extends Component {
           </li>
           <li>
             <label>入库方式</label>
-            <div>
+            {showWay === 1 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
                   placeholder={'instock_way_name'}
-                  value={instock_way_name}
+                  // value={getSelectValue(instock_way_name, this.getInstockWayNameOptions())}
                   onChange={({value}) => {
                     this.setState({ instock_way_name: value })
                   }}
@@ -171,14 +194,18 @@ class AddDrugInstockScreen extends Component {
                   options={this.getInstockWayNameOptions()}
                 />
               </div>
-            </div>
+            </div> : <input
+              readOnly={readOnly}
+              type='text'
+              value={instock_way_name}
+            />}
           </li>
           <li>
             <label>供应商</label>
-            <div>
+            {showWay === 1 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
-                  value={supplier_name}
+                  // value={this.getSelectValue(supplier_name, this.getSupplierOptions())}
                   onChange={({value}) => {
                     this.setState({ supplier_name: value })
                   }}
@@ -187,11 +214,16 @@ class AddDrugInstockScreen extends Component {
                   options={this.getSupplierOptions()}
                 />
               </div>
-            </div>
+            </div> : <input
+              readOnly={readOnly}
+              type='text'
+              value={supplier_name}
+            />}
           </li>
           <li>
             <label>备注</label>
             <input
+              readOnly={readOnly}
               type='text'
               placeholder={'remark'}
               value={remark}
@@ -229,7 +261,7 @@ class AddDrugInstockScreen extends Component {
         packing_unit_name,
         ret_price,
         instock_amount: stock_amount,
-        buy_price
+        buy_price: formatMoney(buy_price)
       })
     }
     return array
@@ -243,7 +275,9 @@ class AddDrugInstockScreen extends Component {
   }
 
   renderItems() {
-    const { items } = this.state
+    const { items, readOnly } = this.state
+    const {showWay} = this.props
+    console.log(items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -259,18 +293,18 @@ class AddDrugInstockScreen extends Component {
               <div>成本合计</div>
               <div>批号</div>
               <div>有效期</div>
-              <div>
+              {showWay === 1 ? <div>
                 <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
                   新增
                 </div>
-              </div>
+              </div> : '' }
             </li>
             {items.map((item, index) => {
               return (
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    <div style={{width: '100%'}}>
+                    {showWay === 1 ? <div style={{width: '100%'}}>
                       <Select
                         value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions())}
                         onChange={({
@@ -295,16 +329,17 @@ class AddDrugInstockScreen extends Component {
                         onInputChange={keyword => this.ClinicDrugList(keyword)}
                         options={this.getDrugOptions()}
                       />
-                    </div>
+                    </div> : item.drug_name }
                   </div>
                   <div>{item.packing_unit_name}</div>
-                  <div>
+                  <div title={item.manu_factory_name}>
                     <div className={'longTxt'}>
                       {item.manu_factory_name}
                     </div>
                   </div>
                   <div>
                     <input
+                      readOnly={readOnly}
                       placeholder={'入库数量'}
                       type='number'
                       value={item.instock_amount}
@@ -316,11 +351,12 @@ class AddDrugInstockScreen extends Component {
                   <div>{formatMoney(item.ret_price)}</div>
                   <div>
                     <input
+                      readOnly={readOnly}
                       placeholder={'成本价'}
                       type='text'
-                      value={formatMoney(item.buy_price)}
+                      value={showWay === 1 ? item.buy_price : formatMoney(item.buy_price)}
                       onChange={e => {
-                        let value = e.target.value // limitMoney(e.target.value)
+                        let value = limitMoney(e.target.value)
                         this.setItemValue(value, index, 'buy_price', 2)
                       }}
                     />
@@ -330,11 +366,12 @@ class AddDrugInstockScreen extends Component {
                       readOnly
                       placeholder={'成本合计'}
                       type='text'
-                      value={formatMoney(item.instock_amount * item.buy_price)}
+                      value={item.instock_amount * item.buy_price}
                     />
                   </div>
                   <div>
                     <input
+                      readOnly={readOnly}
                       placeholder={'批号'}
                       type='text'
                       value={item.serial}
@@ -345,19 +382,20 @@ class AddDrugInstockScreen extends Component {
                   </div>
                   <div>
                     <input
+                      readOnly={readOnly}
                       placeholder={'有效期'}
                       type='date'
-                      value={item.eff_date}
+                      value={moment(item.eff_date).format('YYYY-MM-DD')}
                       onChange={e => {
                         this.setItemValue(e, index, 'eff_date')
                       }}
                     />
                   </div>
-                  <div>
+                  {showWay === 1 ? <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
                       删除
                     </div>
-                  </div>
+                  </div> : '' }
                 </li>
               )
             })}
@@ -685,9 +723,11 @@ const mapStateToProps = state => {
   console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
+    instock_operation_id: state.user.data.id,
     drugs: state.drugs.json_data,
     instock_way: state.drugStocks.instock_way,
-    supplier_data: state.drugStocks.supplier_data
+    supplier_data: state.drugStocks.supplier_data,
+    detail_data: state.drugStocks.detail_data
   }
 }
 
@@ -695,5 +735,6 @@ export default connect(mapStateToProps, {
   createDrugInstock,
   ClinicDrugList,
   queryInstockWayList,
-  querySupplierList
+  querySupplierList,
+  queryDrugInstockRecordDetail
 })(AddDrugInstockScreen)
