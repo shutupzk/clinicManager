@@ -13,6 +13,8 @@ import MedicalRecordTemplateScreen from './screens/template/medicalRecordTemplat
 import InspectionTemplateScreen from './screens/template/inspectionTemplate_screen'
 import CMedicinePrescriptionTemplateScreen from './screens/template/cMedicinePrescriptionTemplate_screen'
 import CheckTemplateScreen from './screens/template/checkTemplate_screen'
+import UserRightsScreen from './screens/userRights'
+import PermissionGroupScreen from './screens/permissionGroup'
 
 export {
   WMPrescriptionScreen,
@@ -29,5 +31,7 @@ export {
   MedicalRecordTemplateScreen,
   InspectionTemplateScreen,
   CMedicinePrescriptionTemplateScreen,
-  CheckTemplateScreen
+  CheckTemplateScreen,
+  UserRightsScreen,
+  PermissionGroupScreen
 }

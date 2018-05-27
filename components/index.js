@@ -18,6 +18,7 @@ import DraftCard from './DraftCard'
 import Select from './Select'
 import SearchInput from './SearchInput'
 import Confirm from './Confirm'
+import MyTree from './Tree'
 
 export {
   CardWhite,
@@ -45,5 +46,6 @@ export {
   DraftCard,
   Select,
   SearchInput,
-  Confirm
+  Confirm,
+  MyTree
 }
