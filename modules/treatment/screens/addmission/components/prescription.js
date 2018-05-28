@@ -30,6 +30,7 @@ class MedicalRecordScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      is_common: false,
       c_presc_btn: 0,
       cPrescItemArray: [],
       wPrescItemArray: [],
@@ -270,7 +271,7 @@ class MedicalRecordScreen extends Component {
     const { PrescriptionWesternPatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { wPrescItemArray } = this.state
     let items = []
-    for (let items of wPrescItemArray) {
+    for (let item of wPrescItemArray) {
       let obj = {}
       for (let key in item) {
         if (item[key] === 0) {
@@ -320,7 +321,7 @@ class MedicalRecordScreen extends Component {
             </div>
           </li>
           {wPrescItemArray.map((item, index) => {
-            let stock_amount = item.stock_amount === undefined ? '' : item.stock_amount
+            let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
             let packing_unit_name = item.packing_unit_name || ''
             return (
               <li key={index}>
@@ -504,7 +505,7 @@ class MedicalRecordScreen extends Component {
               </div>
             </li>
             {array.map((item, index) => {
-              let stock_amount = item.stock_amount === undefined ? '' : item.stock_amount
+              let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
               let packing_unit_name = item.packing_unit_name || ''
               return (
                 <li key={index}>
@@ -534,7 +535,6 @@ class MedicalRecordScreen extends Component {
                         value={this.getSelectValue(item.once_dose_unit_name, this.getUnitoptions())}
                         onChange={({ value, label }) => {
                           this.setCItemValue(value, index, 'once_dose_unit_name', 2)
-                          this.setCItemValue(label, index, 'once_dose_unit_name', 2)
                         }}
                         placeholder='搜索'
                         height={38}
@@ -696,7 +696,7 @@ class MedicalRecordScreen extends Component {
                 <span>模板名称</span>
                 <input
                   style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
-                  value={this.state.model_name}
+                  value={this.state.model_name || ''}
                   onChange={e => {
                     let model_name = e.target.value
                     this.setState({ model_name })
