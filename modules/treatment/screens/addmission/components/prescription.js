@@ -270,18 +270,16 @@ class MedicalRecordScreen extends Component {
     const { PrescriptionWesternPatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { wPrescItemArray } = this.state
     let items = []
-    for (let { clinic_drug_id, once_dose, once_dose_unit_id, route_administration_name, frequency_name, amount, illustration, fetch_address, eff_day, once_dose_unit_name } of wPrescItemArray) {
-      items.push({
-        clinic_drug_id: clinic_drug_id + '',
-        once_dose: once_dose + '',
-        once_dose_unit_id: (once_dose_unit_id || once_dose_unit_name) + '',
-        route_administration_name: route_administration_name + '',
-        frequency_name: frequency_name + '',
-        amount: amount + '',
-        illustration: illustration + '',
-        fetch_address: fetch_address + '',
-        eff_day: eff_day + ''
-      })
+    for (let items of wPrescItemArray) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await PrescriptionWesternPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
@@ -458,15 +456,16 @@ class MedicalRecordScreen extends Component {
     let info = cPrescItemArray[selIndex].info
     let array = cPrescItemArray[selIndex].data
     let items = []
-    for (let obj of array) {
-      const { clinic_drug_id, once_dose, once_dose_unit_id, amount, special_illustration, once_dose_unit_name } = obj
-      items.push({
-        clinic_drug_id: clinic_drug_id + '',
-        once_dose: once_dose + '',
-        once_dose_unit_id: (once_dose_unit_id || once_dose_unit_name) + '',
-        amount: amount + '',
-        special_illustration: special_illustration + ''
-      })
+    for (let item of array) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
     if (error) {
@@ -578,10 +577,10 @@ class MedicalRecordScreen extends Component {
                     value={this.getSelectValue(info.route_administration_name, this.getUsageOptions())}
                     onChange={({ value, label }) => {
                       this.setCInfoValue(value, 'route_administration_name', 2)
-                      this.setCInfoValue(label, 'route_administration_name', 2)
                     }}
                     placeholder='搜索用法'
                     height={38}
+                    onInputChange={keyword => this.queryDictionaries(keyword, 'queryRouteAdministrationList')}
                     options={this.getUsageOptions()}
                   />
                 </div>
@@ -591,7 +590,7 @@ class MedicalRecordScreen extends Component {
               </div>
               <div>
                 <input
-                  value={info.amount === undefined ? '' : info.amount}
+                  value={info.amount || ''}
                   type='number'
                   onChange={e => {
                     this.setCInfoAmountValue(e)
@@ -604,10 +603,10 @@ class MedicalRecordScreen extends Component {
                     value={this.getSelectValue(info.frequency_name, this.getFrequencyOptions())}
                     onChange={({ value, label }) => {
                       this.setCInfoValue(value, 'frequency_name', 2)
-                      this.setCInfoValue(label, 'frequency_name', 2)
                     }}
                     placeholder='搜索频次'
                     height={38}
+                    onInputChange={keyword => this.queryDictionaries(keyword, 'queryFrequencyList')}
                     options={this.getFrequencyOptions()}
                   />
                 </div>
@@ -661,18 +660,16 @@ class MedicalRecordScreen extends Component {
     const { PrescriptionWesternPatientModelCreate, personnel_id } = this.props
     const { wPrescItemArray, is_common, model_name } = this.state
     let items = []
-    for (let { clinic_drug_id, once_dose, once_dose_unit_id, route_administration_name, frequency_name, amount, illustration, fetch_address, eff_day, once_dose_unit_name } of wPrescItemArray) {
-      items.push({
-        clinic_drug_id: clinic_drug_id + '',
-        once_dose: once_dose + '',
-        once_dose_unit_id: (once_dose_unit_id || once_dose_unit_name) + '',
-        route_administration_name: route_administration_name + '',
-        frequency_name: frequency_name + '',
-        amount: amount + '',
-        illustration: illustration + '',
-        fetch_address: fetch_address + '',
-        eff_day: eff_day + ''
-      })
+    for (let item of wPrescItemArray) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await PrescriptionWesternPatientModelCreate({ model_name, is_common, operation_id: personnel_id, items })
     if (error) {
@@ -882,15 +879,16 @@ class MedicalRecordScreen extends Component {
     let info = cPrescItemArray[selIndex].info
     let array = cPrescItemArray[selIndex].data
     let items = []
-    for (let obj of array) {
-      const { clinic_drug_id, once_dose, once_dose_unit_id, amount, special_illustration, once_dose_unit_name } = obj
-      items.push({
-        clinic_drug_id: clinic_drug_id + '',
-        once_dose: once_dose + '',
-        once_dose_unit_id: (once_dose_unit_id || once_dose_unit_name) + '',
-        amount: amount + '',
-        special_illustration: special_illustration + ''
-      })
+    for (let item of array) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await PrescriptionChinesePatientModelCreate({ operation_id: personnel_id, is_common, model_name, ...info, items })
     if (error) {
