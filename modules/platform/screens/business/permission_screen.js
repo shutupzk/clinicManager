@@ -84,7 +84,7 @@ class BusinessClinicPermissionScreen extends Component {
             line-height: 24px;
           }
           .boxTitle {
-            margin: 29px 0 0 32px
+            margin: 29px 0 0 32px;
             height: 22px;
             font-size: 14px;
             font-family: PingFangSC-Regular;
@@ -92,62 +92,69 @@ class BusinessClinicPermissionScreen extends Component {
             line-height: 22px;
           }
           .boxContent {
-            margin: 30px 0 0 32px
+            margin: 30px 0 0 32px;
           }
           .boxContent ul {
-            width: 100%
+            width: 100%;
           }
           .boxContent ul li {
-            margin: 0
-            width: 49%
-            margin-right: 1%
+            margin: 0;
+            width: 49%;
+            margin-right: 1%;
           }
-          .boxContent ul li>span {
-            height:20px;
-            font-size:14px;
-            font-family:PingFangSC-Regular;
-            color:rgba(0,0,0,0.85);
-            line-height:20px;
+          .boxContent ul li > span {
+            height: 20px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: rgba(0, 0, 0, 0.85);
+            line-height: 20px;
           }
           .boxContentItem {
-            margin-top: 8px
-            width:100%;
-            height:482px
-            background:rgba(255,255,255,1)
-            border-radius:4px
-            border:1px solid rgba(0,0,0,0.15)
+            margin-top: 8px;
+            width: 100%;
+            height: 482px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
           }
           .boxContentList {
-            width: 94%
-            margin-top: 20px
+            width: 94%;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             float: left;
-            padding-left: 24px
-            font-size:14px;
-            font-family:PingFangSC-Regular;
-            color:rgba(0,0,0,0.85);
-            line-height:20px;
+            padding-left: 24px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: rgba(0, 0, 0, 0.85);
+            line-height: 20px;
           }
           .boxContentList ul {
-            width: 100%
-          }
-          .boxContentList ul li{
-            margin: 0
-            width: 25%
-
+            width: 100%;
           }
           .boxContentList span {
-            height:20px;
-            margin-bottom: 10px
+            height: 20px;
+            margin-bottom: 10px;
           }
-          .boxContentList input {
-            margin: 0
-            margin-top: 2px
-            width:16px;
-            height:16px;
-            background:rgba(42,205,200,1);
-            border-radius:2px;
+          .boxContentList > ul > li {
+            margin: 0;
+            width: 25%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+          .boxContentList > ul > li > input {
+            margin: 0;
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 2px;
+            flex: 1;
+          }
+          .boxContentList > ul > li > label {
+            flex: 4;
           }
         `}</style>
       </div>

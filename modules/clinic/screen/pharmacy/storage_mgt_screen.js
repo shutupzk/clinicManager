@@ -46,7 +46,7 @@ class StorageMgtScreen extends Component {
     queryDrugInstockRecord(requestData)
   }
   async DrugInstockRecordDelete(drug_instock_record_id) {
-    const {DrugInstockRecordDelete, pageInfo, drugStocks } = this.props
+    const { DrugInstockRecordDelete, pageInfo, drugStocks } = this.props
     this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
       let error = await DrugInstockRecordDelete({drug_instock_record_id})
       if (error) {
