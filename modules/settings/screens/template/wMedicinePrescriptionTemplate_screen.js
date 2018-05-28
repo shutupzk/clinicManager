@@ -33,7 +33,7 @@ class WMedicinePrescriptionTemplateScreen extends Component {
     let { pageType } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddPrescriptionWesternPatientModelscreen drugType={1} back2List={() => {
+      2: <AddPrescriptionWesternPatientModelscreen drugType={1} backToList={() => {
         this.setState({pageType: 1})
         this.getDataList({offset: 0, limit: 10})
       }} />

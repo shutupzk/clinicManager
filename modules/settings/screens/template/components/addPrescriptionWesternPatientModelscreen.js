@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import Router from 'next/router'
-// import { Select } from '../../../../../components'
 import { ClinicDrugList, queryRouteAdministrationList, queryFrequencyList, queryDoseUnitList, PrescriptionWesternPatientModelCreate } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 const places = [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
@@ -108,14 +106,14 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
     if (type === 1) {
       value = e.target.value
     }
-    let array = [...wPrescItemArray] // [...treatments]
+    let array = [...wPrescItemArray]
     array[index][key] = value
     this.setState({ wPrescItemArray: array })
   }
 
   setWItemValues(data, index) {
     const { wPrescItemArray } = this.state
-    let array = [...wPrescItemArray] // [...treatments]
+    let array = [...wPrescItemArray]
     array[index] = { ...array[index], ...data }
     this.setState({ wPrescItemArray: array })
   }
@@ -153,7 +151,6 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
     )
   }
 
-  // 检验项目基本信息
   renderBaseInfoBlank() {
     const { status, is_common, model_name } = this.state
     return (
@@ -253,6 +250,7 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
       this.refs.myAlert.alert('保存失败', error)
     } else {
       this.refs.myAlert.alert('保存成功')
+      this.props.backToList()
     }
   }
 
@@ -298,7 +296,7 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
                         }}
                         placeholder='搜索'
                         height={38}
-                        onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
+                        onInputChange={keyword => this.ClinicDrugList(keyword)}
                         options={this.getWNameOptions()}
                       />
                     </div>
@@ -618,7 +616,7 @@ class AddPrescriptionWesternPatientModelscreen extends Component {
         }
         .tableDIV {
           display: flex;
-          width: 1388px;
+          width: 100%;
           background: rgba(255, 255, 255, 1);
           border-radius: 4px;
           flex-direction: column;
@@ -672,7 +670,6 @@ const mapStateToProps = state => {
     treatments: state.treatments.data,
     operation_id: state.user.data.id,
     drugs: state.drugs.json_data,
-    prescriptionWesternPatients: state.prescriptionWesternPatients.data,
     routeAdministrationss: state.routeAdministrationss.data,
     frequencies: state.frequencies.data,
     doseUnits: state.doseUnits.data
