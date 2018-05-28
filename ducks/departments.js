@@ -15,7 +15,7 @@ export function departments(state = initState, action = {}) {
     case DEPARTMENT_ADD:
       return { ...state, data: action.data, page_info: action.page_info }
     case DEPARTMENT_JSON_ADD:
-      return { ...state, json_data: {...state.data, ...action.data}, page_info: action.page_info }
+      return { ...state, json_data: {...state.json_data, ...action.json_data}, page_info: action.page_info }
     case DEPARTMENT_SELECT:
       return { ...state, selectId: action.selectId }
     default:
@@ -41,7 +41,7 @@ export const queryDepartmentList = ({ clinic_id, keyword, offset = 0, limit = 10
       }
       dispatch({
         type: DEPARTMENT_JSON_ADD,
-        data: json,
+        json_data: json,
         page_info
       })
     } else {

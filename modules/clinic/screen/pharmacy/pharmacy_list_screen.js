@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 // import moment from 'moment'
 // import { PageCard, Select } from '../../../../components'
 import StorageMgtScreen from './storage_mgt_screen'
+import OutboundMgtScreen from './outbound_mgt_screen'
 
 class PharmacyListScreen extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class PharmacyListScreen extends Component {
     let { personnel_type } = this.state
     let map = {
       1: <StorageMgtScreen />,
-      2: <StorageMgtScreen />,
+      2: <OutboundMgtScreen />,
       3: <StorageMgtScreen />,
       4: <StorageMgtScreen />
     }
