@@ -17,8 +17,8 @@ export function prescriptionChinesePatients(state = initState, action = {}) {
 export const PrescriptionChinesePatientCreate = ({
   id,
   clinic_triage_patient_id,
-  route_administration_id,
-  frequency_id,
+  route_administration_name,
+  frequency_name,
   amount,
   medicine_illustration,
   fetch_address,
@@ -30,8 +30,8 @@ export const PrescriptionChinesePatientCreate = ({
     const data = await request('/triage/PrescriptionChinesePatientCreate', {
       id,
       clinic_triage_patient_id,
-      route_administration_id,
-      frequency_id,
+      route_administration_name,
+      frequency_name,
       amount,
       medicine_illustration,
       fetch_address,
@@ -39,7 +39,7 @@ export const PrescriptionChinesePatientCreate = ({
       personnel_id,
       items: JSON.stringify(items)
     })
-    console.log(clinic_triage_patient_id, route_administration_id, frequency_id, amount, medicine_illustration, fetch_address, eff_day, personnel_id, items)
+    console.log(id, clinic_triage_patient_id, route_administration_name, frequency_name, amount, medicine_illustration, fetch_address, eff_day, personnel_id, items)
     console.log('data ======', data)
     if (data.code !== '200') return data.msg
     return null
