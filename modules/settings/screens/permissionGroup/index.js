@@ -186,7 +186,7 @@ class PermissionGroupScreen extends Component {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td style={{flex: 2}}>{item.name}</td>
-                  <td style={{flex: 2}}>{item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
+                  <td style={{flex: 2}}>{''}</td>
                   <td style={{flex: 2}}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>

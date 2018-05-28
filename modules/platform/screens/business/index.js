@@ -95,7 +95,7 @@ class BusinessClinicListScreen extends Component {
                   <div>{item.status ? '已启用' : '已停用'}</div>
                   <div>{moment(item.updated_time).format('YYYY-MM-DD')}</div>
                   <div>
-                    <span style={{ color: '#2ACDC8', cursor: 'pointer' }} onClick={this.setPermissions(item.clinic_id)}>
+                    <span style={{ color: '#2ACDC8', cursor: 'pointer' }} onClick={() => this.setPermissions(item.clinic_id)}>
                       {'修改'}
                     </span>
                   </div>

@@ -1,5 +1,5 @@
 import { request } from './request'
-const ROLE_ADD = 'ROLE_ADD'
+const ROLE_ARRAY_ADD = 'ROLE_ADD'
 const ROLE_JSON = 'ROLE_JSON'
 const ROLE_SELECT = 'ROLE_SELECT'
 
@@ -12,7 +12,7 @@ const initState = {
 
 export function roles(state = initState, action = {}) {
   switch (action.type) {
-    case ROLE_ADD:
+    case ROLE_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     case ROLE_JSON:
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
@@ -53,7 +53,7 @@ export const queryRoleList = ({ clinic_id, keyword = '', offset = 0, limit = 6 }
       })
     } else {
       dispatch({
-        type: ROLE_ADD,
+        type: ROLE_ARRAY_ADD,
         array_data: docs,
         page_info
       })

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { PageCard } from '../../../../components'
+import { PageCard, Confirm } from '../../../../components'
 // import moment from 'moment'
 import {
-  queryDrugInstockRecord
+  queryDrugInstockRecord,
+  DrugInstockRecordDelete
 } from '../../../../ducks'
 import AddDrugInstockScreen from './components/addDrugInstockScreen'
 import moment from 'moment'
@@ -25,7 +26,7 @@ class StorageMgtScreen extends Component {
   async componentWillMount() {
     this.getDataList({offset: 0, limit: 10})
   }
-  getDataList({ offset, limit }) {
+  getDataList({ offset = 0, limit = 10 }) {
     const {clinic_id, queryDrugInstockRecord} = this.props
     const {start_date, end_date, order_number} = this.state
     let requestData = {
@@ -43,6 +44,22 @@ class StorageMgtScreen extends Component {
       requestData.order_number = order_number
     }
     queryDrugInstockRecord(requestData)
+  }
+  async DrugInstockRecordDelete(drug_instock_record_id) {
+    const {DrugInstockRecordDelete, pageInfo, drugStocks } = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await DrugInstockRecordDelete({drug_instock_record_id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (drugStocks.length > 1) {
+          this.getDataList({ offset: pageInfo.offset, limit: 10 })
+        } else if (pageInfo.offset > 0) {
+          this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
+        }
+      }
+    })
   }
   renderTable() {
     const { drugStocks, pageInfo } = this.props
@@ -75,7 +92,13 @@ class StorageMgtScreen extends Component {
                       <td>{item.verify_status === '01' ? '未审核' : '已审核'}</td>
                       <td style={{flex: 2}} className={'operTd'}>
                         {item.verify_status === '01' ? <div>
-                          <div>修改</div>
+                          <div onClick={() => {
+                            this.setState({
+                              showType: 2,
+                              drug_instock_record_id: item.drug_instock_record_id,
+                              showWay: 4
+                            })
+                          }}>修改</div>
                           <div className={'divideLine'}>|</div>
                           <div onClick={() => {
                             this.setState({
@@ -85,9 +108,17 @@ class StorageMgtScreen extends Component {
                             })
                           }}>审核</div>
                           <div className={'divideLine'}>|</div>
-                          <div>删除</div>
+                          <div onClick={() => {
+                            this.DrugInstockRecordDelete(item.drug_instock_record_id)
+                          }}>删除</div>
                         </div> : <div>
-                          <div>查看详情</div>
+                          <div onClick={() => {
+                            this.setState({
+                              showType: 2,
+                              drug_instock_record_id: item.drug_instock_record_id,
+                              showWay: 3
+                            })
+                          }}>查看详情</div>
                         </div>
                         }
                       </td>
@@ -341,6 +372,7 @@ class StorageMgtScreen extends Component {
             min-width:1165px;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -355,5 +387,6 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  queryDrugInstockRecord
+  queryDrugInstockRecord,
+  DrugInstockRecordDelete
 })(StorageMgtScreen)
