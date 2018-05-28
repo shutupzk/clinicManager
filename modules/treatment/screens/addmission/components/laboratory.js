@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
-import { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList } from '../../../../../ducks'
+import { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet, LaboratoryPatientModelCreate, LaboratoryPatientModelList } from '../../../../../ducks'
 
 // 病历
 class LaboratoryScreen extends Component {
@@ -211,9 +211,9 @@ class LaboratoryScreen extends Component {
     )
   }
 
-  LaboratoryPersonalPatientModelList({ keyword, offset, limit }) {
-    const { LaboratoryPersonalPatientModelList, personnel_id } = this.props
-    LaboratoryPersonalPatientModelList({ keyword, offset, limit, operation_id: personnel_id })
+  LaboratoryPatientModelList({ keyword, offset, limit }) {
+    const { LaboratoryPatientModelList } = this.props
+    LaboratoryPatientModelList({ keyword, offset, limit })
   }
 
   renderModelList() {
@@ -254,7 +254,7 @@ class LaboratoryScreen extends Component {
                     }}
                     onClick={() => {
                       const keyword = this.state.keyword
-                      this.LaboratoryPersonalPatientModelList({ keyword })
+                      this.LaboratoryPatientModelList({ keyword })
                     }}
                   >
                     搜索
@@ -302,7 +302,7 @@ class LaboratoryScreen extends Component {
             total={page_info.total}
             onItemClick={({ offset, limit }) => {
               const keyword = this.state.keyword
-              this.LaboratoryPersonalPatientModelList({ offset, limit, keyword })
+              this.LaboratoryPatientModelList({ offset, limit, keyword })
             }}
           />
         </div>
@@ -313,7 +313,7 @@ class LaboratoryScreen extends Component {
 
   getStyle() {
     return (
-      <style jsx>
+      <style jsx='true'>
         {`
           .tableDIV {
             display: flex;
@@ -438,7 +438,7 @@ class LaboratoryScreen extends Component {
             <button
               style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
               onClick={() => {
-                this.LaboratoryPersonalPatientModelList({})
+                this.LaboratoryPatientModelList({})
                 this.setState({ showModelList: true })
               }}
             >
@@ -537,4 +537,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList })(LaboratoryScreen)
+export default connect(mapStateToProps, { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet, LaboratoryPatientModelCreate, LaboratoryPatientModelList })(LaboratoryScreen)

@@ -15,7 +15,7 @@ export function examinationModels(state = initState, action = {}) {
   }
 }
 
-export const examinationModelList = ({ keyword = '', is_common, operation_id, offset = 0, limit = 10 }) => async dispatch => {
+export const examinationModelList = ({ keyword = '', is_common = '', operation_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
     const data = await request('/examination/ExaminationPatientModelList', {
       keyword,

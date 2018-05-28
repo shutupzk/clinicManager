@@ -18,7 +18,7 @@ class AddExaminationModelScreen extends Component {
 
   componentDidMount() {
     const { queryExaminationOrganList } = this.props
-    queryExaminationOrganList({ limit: 1000 })
+    queryExaminationOrganList({ limit: 1000 }, true)
   }
 
   // 验证字段
@@ -315,10 +315,8 @@ class AddExaminationModelScreen extends Component {
                           this.setItemValue(value, index, 'clinic_examination_id', 2)
                           this.setItemValue(label, index, 'name', 2)
                           if (organ) {
-                            console.log('organ ===', organ)
                             this.setItemValue(organ, index, 'organ', 2)
                             let selOrgans = organ.split(',')
-                            console.log('selOrgans ====', selOrgans)
                             this.setState({ selOrgans })
                           }
                         }}
