@@ -102,20 +102,20 @@ class BusinessClinicPermissionScreen extends Component {
             width: 49%;
             margin-right: 1%;
           }
-          .boxContent ul li>span {
-            height:20px;
-            font-size:14px;
-            font-family:PingFangSC-Regular;
-            color:rgba(0,0,0,0.85);
-            line-height:20px;
+          .boxContent ul li > span {
+            height: 20px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: rgba(0, 0, 0, 0.85);
+            line-height: 20px;
           }
           .boxContentItem {
             margin-top: 8px;
-            width:100%;
-            height:482px;
-            background:rgba(255,255,255,1);
-            border-radius:4px
-            border:1px solid rgba(0,0,0,0.15)
+            width: 100%;
+            height: 482px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
           }
           .boxContentList {
             width: 94%;
@@ -124,30 +124,37 @@ class BusinessClinicPermissionScreen extends Component {
             flex-direction: column;
             float: left;
             padding-left: 24px;
-            font-size:14px;
-            font-family:PingFangSC-Regular;
-            color:rgba(0,0,0,0.85);
-            line-height:20px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: rgba(0, 0, 0, 0.85);
+            line-height: 20px;
           }
           .boxContentList ul {
             width: 100%;
           }
-          .boxContentList ul li{
-            margin: 0;
-            width: 25%;
-
-          }
           .boxContentList span {
-            height:20px;
+            height: 20px;
             margin-bottom: 10px;
           }
-          .boxContentList input {
+          .boxContentList > ul > li {
+            margin: 0;
+            width: 25%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+          .boxContentList > ul > li > input {
             margin: 0;
             margin-top: 2px;
-            width:16px;
-            height:16px;
-            background:rgba(42,205,200,1);
-            border-radius:2px;
+            width: 16px;
+            height: 16px;
+            background: rgba(42, 205, 200, 1);
+            border-radius: 2px;
+            flex: 1;
+          }
+          .boxContentList > ul > li > label {
+            flex: 4;
           }
         `}</style>
       </div>
