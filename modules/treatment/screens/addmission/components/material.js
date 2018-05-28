@@ -188,7 +188,7 @@ class MaterialScreen extends Component {
             </div>
           </div>
         </div>
-        <style jsx>
+        <style jsx='true'>
           {`
             .tableDIV {
               display: flex;
