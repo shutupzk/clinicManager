@@ -75,6 +75,30 @@ export const createDrugInstock = (requetData) => async dispatch => {
   }
 }
 
+export const DrugInstockUpdate = (requetData) => async dispatch => {
+  try {
+    const data = await request('/clinic_drug/instockUpdate', requetData)
+    console.log(requetData, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const DrugInstockRecordDelete = (requetData) => async dispatch => {
+  try {
+    const data = await request('/clinic_drug/instockDelete', requetData)
+    console.log(requetData, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const drugStockSelect = ({ id }) => async dispatch => {
   try {
     dispatch({
@@ -107,6 +131,19 @@ export const queryDrugInstockRecordDetail = ({drug_instock_record_id}) => async 
     return {} // e.message
   }
 }
+
+export const DrugInstockCheck = (requetData) => async dispatch => {
+  try {
+    const data = await request('/clinic_drug/instockCheck', requetData)
+    console.log(requetData, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const queryInstockWayList = ({keyword = '', limit = 10, offset = 0}) => async dispatch => {
   try {
     console.log('limit====', keyword)

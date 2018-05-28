@@ -5,7 +5,9 @@ import {
   ClinicDrugList,
   queryInstockWayList,
   querySupplierList,
-  queryDrugInstockRecordDetail
+  queryDrugInstockRecordDetail,
+  DrugInstockCheck,
+  DrugInstockUpdate
 } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 import { formatMoney, limitMoney } from '../../../../../utils'
@@ -29,7 +31,9 @@ class AddDrugInstockScreen extends Component {
     const {showWay} = this.props
     if (showWay !== 1) {
       this.queryDetailData()
-      this.setState({readOnly: true})
+      if (showWay !== 4) {
+        this.setState({readOnly: true})
+      }
     }
   }
   async queryDetailData() {
@@ -88,10 +92,15 @@ class AddDrugInstockScreen extends Component {
   async createDrugInstock() {
     const { createDrugInstock, clinic_id, instock_operation_id } = this.props
     const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
+    let array = []
     for (let key of items) {
-      key.clinic_drug_id = key.clinic_drug_id + ''
-      key.buy_price = key.buy_price * 100 + ''
-      key.ret_price = key.ret_price + ''
+      let value = {}
+      value.clinic_drug_id = key.clinic_drug_id + ''
+      value.buy_price = key.buy_price * 100 + ''
+      value.instock_amount = key.instock_amount + ''
+      value.serial = key.serial
+      value.eff_date = key.eff_date
+      array.push(value)
     }
     let requestData = {
       clinic_id,
@@ -100,7 +109,7 @@ class AddDrugInstockScreen extends Component {
       instock_way_name,
       supplier_name,
       remark,
-      items: JSON.stringify(items)
+      items: JSON.stringify(array)
     }
     // console.log('requestData====', requestData, items)
     let error = await createDrugInstock(requestData)
@@ -111,6 +120,57 @@ class AddDrugInstockScreen extends Component {
       this.refs.myAlert.alert('保存成功')
       this.props.backToList()
     }
+  }
+  // 修改
+  async DrugInstockUpdate() {
+    const { DrugInstockUpdate, clinic_id, instock_operation_id, drug_instock_record_id } = this.props
+    const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
+    let array = []
+    for (let key of items) {
+      let value = {}
+      value.clinic_drug_id = key.clinic_drug_id + ''
+      value.buy_price = key.buy_price * 100 + ''
+      value.instock_amount = key.instock_amount + ''
+      value.serial = key.serial
+      value.eff_date = key.eff_date
+      array.push(value)
+    }
+    let requestData = {
+      drug_instock_record_id,
+      clinic_id,
+      instock_operation_id,
+      instock_date,
+      instock_way_name,
+      supplier_name,
+      remark,
+      items: JSON.stringify(array)
+    }
+    // console.log('requestData====', requestData, items)
+    let error = await DrugInstockUpdate(requestData)
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      // this.setState({ showSaveModel: false })
+      this.refs.myAlert.alert('保存成功')
+      this.props.backToList()
+    }
+  }
+  // 审核
+  async DrugInstockCheck() {
+    const {drug_instock_record_id, instock_operation_id, DrugInstockCheck} = this.props
+    let requestData = {
+      drug_instock_record_id,
+      verify_operation_id: instock_operation_id
+    }
+    this.refs.myAlert.confirm('提示', '是否审核通过，请确认？', 'Warning', async () => {
+      let error = await DrugInstockCheck(requestData)
+      if (error) {
+        return this.refs.myAlert.alert('审核失败', error)
+      } else {
+        this.refs.myAlert.alert('审核成功')
+        this.props.backToList()
+      }
+    })
   }
   // 获取入库方式筛选
   getInstockWayNameOptions() {
@@ -160,7 +220,7 @@ class AddDrugInstockScreen extends Component {
   renderBaseInfoBlank() {
     const {instock_date, instock_way_name, supplier_name, remark, readOnly} = this.state
     const {showWay} = this.props
-    console.log('instock_date, instock_way_name, supplier_name, remark', instock_date, instock_way_name, supplier_name, remark)
+    // console.log('instock_date, instock_way_name, supplier_name, remark', instock_date, instock_way_name, supplier_name, remark)
     return (
       <div>
         <ul>
@@ -181,11 +241,11 @@ class AddDrugInstockScreen extends Component {
           </li>
           <li>
             <label>入库方式</label>
-            {showWay === 1 ? <div>
+            {showWay === 1 || showWay === 4 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
                   placeholder={'instock_way_name'}
-                  // value={getSelectValue(instock_way_name, this.getInstockWayNameOptions())}
+                  value={this.getSelectValue(instock_way_name, this.getInstockWayNameOptions())}
                   onChange={({value}) => {
                     this.setState({ instock_way_name: value })
                   }}
@@ -202,10 +262,10 @@ class AddDrugInstockScreen extends Component {
           </li>
           <li>
             <label>供应商</label>
-            {showWay === 1 ? <div>
+            {showWay === 1 || showWay === 4 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
-                  // value={this.getSelectValue(supplier_name, this.getSupplierOptions())}
+                  value={this.getSelectValue(supplier_name, this.getSupplierOptions())}
                   onChange={({value}) => {
                     this.setState({ supplier_name: value })
                   }}
@@ -241,7 +301,7 @@ class AddDrugInstockScreen extends Component {
   // 药筛选项
   getDrugOptions() {
     const { drugs } = this.props
-    console.log('drugs====', drugs)
+    // console.log('drugs====', drugs)
     let array = []
     for (let key in drugs) {
       let {
@@ -277,7 +337,7 @@ class AddDrugInstockScreen extends Component {
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    console.log(items)
+    // console.log(items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -293,7 +353,7 @@ class AddDrugInstockScreen extends Component {
               <div>成本合计</div>
               <div>批号</div>
               <div>有效期</div>
-              {showWay === 1 ? <div>
+              {showWay === 1 || showWay === 4 ? <div>
                 <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
                   新增
                 </div>
@@ -304,7 +364,7 @@ class AddDrugInstockScreen extends Component {
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    {showWay === 1 ? <div style={{width: '100%'}}>
+                    {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
                       <Select
                         value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions())}
                         onChange={({
@@ -354,7 +414,7 @@ class AddDrugInstockScreen extends Component {
                       readOnly={readOnly}
                       placeholder={'成本价'}
                       type='text'
-                      value={showWay === 1 ? item.buy_price : formatMoney(item.buy_price)}
+                      value={showWay === 1 || showWay === 4 ? item.buy_price : formatMoney(item.buy_price)}
                       onChange={e => {
                         let value = limitMoney(e.target.value)
                         this.setItemValue(value, index, 'buy_price', 2)
@@ -391,7 +451,7 @@ class AddDrugInstockScreen extends Component {
                       }}
                     />
                   </div>
-                  {showWay === 1 ? <div>
+                  {showWay === 1 || showWay === 4 ? <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
                       删除
                     </div>
@@ -407,6 +467,7 @@ class AddDrugInstockScreen extends Component {
   }
 
   render() {
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         <div className={'commonBlank baseInfoBlank'}>
@@ -419,10 +480,18 @@ class AddDrugInstockScreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.createDrugInstock()
+                if (showWay === 1) {
+                  this.createDrugInstock()
+                }
+                if (showWay === 2) {
+                  this.DrugInstockCheck()
+                }
+                if (showWay === 4) {
+                  this.DrugInstockUpdate()
+                }
               }}
             >
-              保存
+              {showWay === 1 || showWay === 4 ? '保存' : showWay === 2 ? '审核' : showWay === 3 ? '打印' : ''}
             </button>
           </div>
         </div>
@@ -736,5 +805,7 @@ export default connect(mapStateToProps, {
   ClinicDrugList,
   queryInstockWayList,
   querySupplierList,
-  queryDrugInstockRecordDetail
+  queryDrugInstockRecordDetail,
+  DrugInstockCheck,
+  DrugInstockUpdate
 })(AddDrugInstockScreen)
