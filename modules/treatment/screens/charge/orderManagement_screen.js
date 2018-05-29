@@ -107,7 +107,7 @@ class OrderManagementScreen extends Component {
             })}
           </ul>
         </div>
-        <style jsx>
+        <style jsx='true'>
           {`
             .feeScheduleBox ul li div:nth-child(2),
             .feeScheduleBox ul li div:nth-child(1) {

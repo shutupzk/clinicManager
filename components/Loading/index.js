@@ -22,7 +22,7 @@ function Loading(props) {
           <div className={'loadingTxt'}>
             <i>正</i><i>在</i><i>加</i><i>载</i><i>.</i><i>.</i><i>.</i>
           </div>
-          <style jsx>{`
+          <style jsx='true'>{`
             .loadEffect1 {
               width: 100px;
               height: 100px;

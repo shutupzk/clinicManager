@@ -112,7 +112,7 @@ class BusinessClinicListScreen extends Component {
             this.queryCommonData({ offset, limit })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .bussinessTitle {
             margin: 24px 0 26px 33px;
             width: 80px;

@@ -343,7 +343,7 @@ class AddLaboratoryScreen extends Component {
             )
           })}
         </ul>
-        <style jsx>{`
+        <style jsx='true'>{`
           .researchView {
             width: 100%;
           }

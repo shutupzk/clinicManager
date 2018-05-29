@@ -188,7 +188,7 @@ class ChargedDetailScreen extends Component {
           <button>打印</button>
           <button>退费</button>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             margin: 20px 0 0 65px;
             display: flex;
@@ -371,7 +371,7 @@ class ChargedDetailScreen extends Component {
           </div>
         </div>
         <Confirm ref='myAlert' />
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             margin: 20px 0 0 65px;
             display: flex;

@@ -11,7 +11,7 @@ export class FilterCard extends Component {
       <div style={{ fontSize: theme.fontsize, marginBottom: theme.tbmargin }}>
         {this.props.children}
         <div className='clearfix' />
-        <style jsx>{`
+        <style jsx='true'>{`
           select,
           section,
           article,

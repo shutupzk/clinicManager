@@ -24,7 +24,7 @@ export default function TabHeader (props) {
             </li>
           )
         })}
-      <style jsx>{`
+      <style jsx='true'>{`
         .tabheader {
           background: #fff;
         }

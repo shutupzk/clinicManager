@@ -140,7 +140,7 @@ class RegistrationListScreen extends Component {
             this.quetryTriagePatientsList({ offset, limit, keyword, status_start: 10, status_end: 100 })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .itemBottom span:nth-child(1) {
             flex: 1;
             border-right: none;

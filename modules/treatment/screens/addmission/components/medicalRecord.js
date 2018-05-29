@@ -221,7 +221,7 @@ class PrescriptionScreen extends Component {
               </li>
             </ul>
           </div>
-          <style jsx>{`
+          <style jsx='true'>{`
             .contentBox {
               margin: 2px 45px 0 45px;
               height: 591px;
@@ -316,7 +316,7 @@ class PrescriptionScreen extends Component {
             }}
           />
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .meical_nodel_item {
             width: 90%;
             margin: 22px 5% 0 5%;
@@ -510,7 +510,7 @@ class PrescriptionScreen extends Component {
             复 制
           </button>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .medical_detail {
             height: unset;
             border: none;
@@ -751,7 +751,7 @@ class PrescriptionScreen extends Component {
         {this.showMedicalModels()}
         {this.showHistroyMedicals()}
         <Confirm ref='myAlert' isAlert />
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             flex-direction: column;
             // margin-top: -10px;

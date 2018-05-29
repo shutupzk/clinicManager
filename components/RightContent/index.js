@@ -135,7 +135,7 @@ class RightContent extends Component {
         <div className={'contentBox'} style={{ height: this.state.windowHeight - 64 }}>
           {this.props.children}
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
 					.rightContent {
 						// float: left;
 						position: absolute;

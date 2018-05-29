@@ -53,7 +53,7 @@ class SigninScreen extends Component {
 						登录
 					</button>
         </section>
-        <style jsx>{`
+        <style jsx='true'>{`
           .loginLogo{
             background: url('/static/login/login_logo.png') top center no-repeat;
             width:172px;

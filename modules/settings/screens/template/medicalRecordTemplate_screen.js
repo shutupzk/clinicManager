@@ -152,7 +152,7 @@ class MedicalRecordTemplateScreen extends Component {
         <div className={'contentTable'}>
           {this.renderTable()}
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentCenterRight{
             width:100%;
             height:768px; 
@@ -264,7 +264,7 @@ class MedicalRecordTemplateScreen extends Component {
             this.getDataList({ offset, limit })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .tableContent{
 
           }
@@ -322,7 +322,7 @@ class MedicalRecordTemplateScreen extends Component {
       <div className={'contentCenter'}>
         {/* {this.renderLeftTree()} */}
         {this.renderRightTable()}
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentCenter{
             // background:#a0a0a0;
             display: flex;
@@ -341,7 +341,7 @@ class MedicalRecordTemplateScreen extends Component {
         </div>
         {pageType === 1 ? this.renderList() : this.showView()}
         {alertType === 1 ? this.relatedItems() : ''}
-        <style jsx>{`
+        <style jsx='true'>{`
           .boxContent{
             // background:#909090;
             display: flex;

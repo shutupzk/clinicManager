@@ -69,7 +69,7 @@ class PharmacyListScreen extends Component {
           </span>
         </div>
         {this.renderContent()}
-        <style jsx>{`
+        <style jsx='true'>{`
           .childTopBar {
             float: left;
             width: 100%;

@@ -9,7 +9,7 @@ export function Modal (props) {
         <div className={props.classChild + ' modal'} style={props.style}>
           {/* <p className='shade'></p> */}
           <section style={props.sectionStyle}>{props.children}</section>
-          <style jsx>{`
+          <style jsx='true'>{`
             .modal {
               position: fixed;
               top: 10%;
@@ -148,7 +148,7 @@ export function FilterTimeResult (props) {
           当前搜索：{props.startDate} 至 {props.endDate}
         </p>
       )}
-      <style jsx>{`
+      <style jsx='true'>{`
         .filterTimeResult {
           color: ${theme.fontcolor};
           font-size: ${theme.nfontsize};

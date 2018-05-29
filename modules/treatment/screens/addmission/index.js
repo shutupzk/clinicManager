@@ -173,7 +173,7 @@ class AddmisionScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
-        <style jsx>{`
+        <style jsx='true'>{`
           .itemBottom span:nth-child(2) {
             border-right: 2px solid #31b0b3;
           }

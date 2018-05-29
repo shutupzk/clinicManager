@@ -92,7 +92,7 @@ class WMPrescriptionScreen extends Component {
             )
           })}
         </ul>
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentCenterLeft {
             flex: 1;
             width: 300px;
@@ -219,7 +219,7 @@ class WMPrescriptionScreen extends Component {
           </div>
         </div>
         <div className={'contentTable'}>{this.renderTable()}</div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentCenterRight {
             flex: 4;
             width: 822px;
@@ -338,7 +338,7 @@ class WMPrescriptionScreen extends Component {
             this.getDrugsList({ offset, limit })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .tableContent {
           }
           .tableContent table {
@@ -395,7 +395,7 @@ class WMPrescriptionScreen extends Component {
       <div className={'contentCenter'}>
         {this.renderLeftTree()}
         {this.renderRightTable()}
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentCenter {
             // background:#a0a0a0;
             display: flex;
@@ -419,7 +419,7 @@ class WMPrescriptionScreen extends Component {
           )}
         </div>
         {pageType === 1 ? this.renderList() : this.showView()}
-        <style jsx>{`
+        <style jsx='true'>{`
           .boxContent {
             // background:#909090;
             display: flex;

@@ -86,13 +86,16 @@ class ExamineScreen extends Component {
     const { ExaminationPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
     const { examines } = this.state
     let items = []
-    for (let { clinic_examination_id, times, organ, illustration } of examines) {
-      items.push({
-        clinic_examination_id: clinic_examination_id + '',
-        times: times + '',
-        organ: organ + '',
-        illustration: illustration + ''
-      })
+    for (let item of examines) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await ExaminationPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
@@ -256,7 +259,7 @@ class ExamineScreen extends Component {
                 let organ = ''
                 for (let i = 0; i < selOrgans.length; i++) {
                   if (i < selOrgans.length - 1) {
-                    organ += selOrgans[i] + '，'
+                    organ += selOrgans[i] + ','
                   } else {
                     organ += selOrgans[i]
                   }
@@ -269,7 +272,7 @@ class ExamineScreen extends Component {
             </button>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentList {
             width: 100%;
             height: 500px;
@@ -367,7 +370,8 @@ class ExamineScreen extends Component {
                     </div>
                     <div>
                       <input value={item.organ || ''} type='text' readOnly />
-                      <button
+                      <div
+                        style={{ cursor: 'pointer', border: '1px solid rgba(42, 205, 200, 1)', borderRadius: '5px', height: '20px', width: '50px', textAlign: 'center', lineHeight: '20px', color: 'rgba(42, 205, 200, 1)' }}
                         onClick={() => {
                           let { organ } = item
                           let selOrgans = []
@@ -378,7 +382,7 @@ class ExamineScreen extends Component {
                         }}
                       >
                         选择
-                      </button>
+                      </div>
                     </div>
                     <div>
                       <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />

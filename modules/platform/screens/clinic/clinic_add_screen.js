@@ -270,7 +270,7 @@ class ClinicAddScreen extends Component {
             </button>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .formListBox ul {
             margin-left: 22px;
           }

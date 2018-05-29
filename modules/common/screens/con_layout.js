@@ -30,7 +30,7 @@ class ConLayout extends Component {
           </div>
         </div> */}
         <div className='clearfix' />
-        <style jsx>{`
+        <style jsx='true'>{`
           .leftBar{
             width: 256px;
             /* float: left; */
