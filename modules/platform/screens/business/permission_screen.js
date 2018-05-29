@@ -1,150 +1,74 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { queryClinicList, clinicSelect } from '../../../../ducks'
+import { queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions } from '../../../../ducks'
 import { Confirm } from '../../../../components'
 
 class BusinessClinicPermissionScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      array1: [
-        {
-          parent_id: 1,
-          parent_name: '工作站',
-          parent_url: 'jobClub',
-          childrens_menus: [
-            {
-              functionmenu_id: 19,
-              menu_name: '医生工作站',
-              menu_url: 'doctor'
-            },
-            {
-              functionmenu_id: 20,
-              menu_name: '护士工作站',
-              menu_url: '/nurse'
-            },
-            {
-              functionmenu_id: 21,
-              menu_name: '专员工作站',
-              menu_url: '/staff'
-            }
-          ]
-        },
-        {
-          parent_id: 2,
-          parent_name: '就诊流程',
-          parent_url: 'jiuzhenliucheng',
-          childrens_menus: [
-            {
-              functionmenu_id: 22,
-              menu_name: '登记',
-              menu_url: '/register'
-            },
-            {
-              functionmenu_id: 23,
-              menu_name: '预约',
-              menu_url: '/appointment'
-            },
-            {
-              functionmenu_id: 24,
-              menu_name: '检验',
-              menu_url: '/laboratory'
-            },
-            {
-              functionmenu_id: 25,
-              menu_name: '检查',
-              menu_url: '/examination'
-            },
-            {
-              functionmenu_id: 26,
-              menu_name: '治疗',
-              menu_url: '/treatment'
-            }
-          ]
-        },
-        {
-          parent_id: 3,
-          parent_name: '诊所管理',
-          parent_url: 'clinicmanage',
-          childrens_menus: [
-            {
-              functionmenu_id: 27,
-              menu_name: '科室管理',
-              menu_url: '/department'
-            },
-            {
-              functionmenu_id: 28,
-              menu_name: '医生管理',
-              menu_url: '/doctor'
-            },
-            {
-              functionmenu_id: 29,
-              menu_name: '人员管理',
-              menu_url: '/personnel'
-            },
-            {
-              functionmenu_id: 30,
-              menu_name: '患者管理',
-              menu_url: '/patient'
-            },
-            {
-              functionmenu_id: 31,
-              menu_name: '药房管理',
-              menu_url: '/storehouse'
-            }
-          ]
-        },
-        {
-          parent_id: 4,
-          parent_name: '财务管理',
-          parent_url: 'financeManage',
-          childrens_menus: [
-            {
-              functionmenu_id: 32,
-              menu_name: '费用报表',
-              menu_url: '/feeReport'
-            },
-            {
-              functionmenu_id: 33,
-              menu_name: '医用报表',
-              menu_url: '/MedicalReport'
-            }
-          ]
-        },
-        {
-          parent_id: 5,
-          parent_name: '设置管理',
-          parent_url: 'setUpManage',
-          childrens_menus: [
-            {
-              functionmenu_id: 34,
-              menu_name: '收费项目设置',
-              menu_url: '/feeProjec'
-            },
-            {
-              functionmenu_id: 35,
-              menu_name: '模板设置',
-              menu_url: '/ModelProject'
-            },
-            {
-              functionmenu_id: 36,
-              menu_name: '权限设置',
-              menu_url: '/authority'
-            }
-          ]
-        }
-      ],
+      array1: [],
       array2: []
     }
   }
 
+  async submit() {
+    const { array2 } = this.state
+    const { clinic_selectId, createClinicPermissions } = this.props
+    let items = []
+    for (let item of array2) {
+      for (let it of item.childrens_menus) {
+        console.log(it)
+        items.push({ functionMenu_id: it.functionmenu_id + '' })
+      }
+    }
+    let error = await createClinicPermissions({ clinic_id: clinic_selectId, items: JSON.stringify(items) })
+    if (error) {
+      return this.refs.myAlert.alert('设置权限失败', error, null, 'Warning')
+    } else {
+      this.refs.myAlert.alert('设置权限成功')
+    }
+  }
+
+  cancel() {
+    const { has_set_permissions, un_set_permissions } = this.props
+    this.setState({ array1: un_set_permissions, array2: has_set_permissions })
+  }
+
+  async componentDidMount() {
+    let { queryClinicHassetPermissions, queryClinicUnsetPermissions, clinic_selectId } = this.props
+    let array1 = await queryClinicUnsetPermissions(clinic_selectId)
+    let array2 = await queryClinicHassetPermissions(clinic_selectId)
+    this.setState({ array1, array2 })
+  }
+
+  // 将arr2中存在的元素从arr1中删除
+  // compare(arr1, arr2) {
+  // }
+
+  // 添加功能
   addFunc(parent, menu) {
-    let { array2 } = this.state
-    // 主功能是否存在
+    let { array2, array1 } = this.state
+    this.chargeFunc(array1, array2, parent, menu)
+    this.setState({ array2, array1 })
+  }
+
+  // 删除功能
+  delFunc(parent, menu) {
+    let { array2, array1 } = this.state
+    this.chargeFunc(array2, array1, parent, menu)
+    this.setState({ array2, array1 })
+  }
+
+  // 将fromArray中的功能块移到toArray中并
+  chargeFunc(fromArray, toArray, parent, menu, cb) {
+    // 向toArray中添加数据
     let index = -1
-    for (let i = 0; i < array2.length; i++) {
+    for (let i = 0; i < toArray.length; i++) {
+      let item = toArray[i]
       if (item.parent_id === parent.parent_id) {
         index = i
+        break
       }
     }
     if (index === -1) {
@@ -160,25 +84,47 @@ class BusinessClinicPermissionScreen extends Component {
           }
         ]
       }
-      array2.push(obj)
+      toArray.push(obj)
     } else {
-      let funcs = array2[index].childrens_menus
+      let funcs = toArray[index].childrens_menus
+      let exist = false
       for (let func of funcs) {
         // 子功能存在与否
-        let exist = false
         if (func.functionmenu_id === menu.functionmenu_id) {
           exist = true
-        }
-        if (!exist) {
-          array2[index].childrens_menus.push({
-            functionmenu_id: menu.functionmenu_id,
-            menu_name: menu.menu_name,
-            menu_url: menu.menu_url
-          })
+          break
         }
       }
+      if (!exist) {
+        toArray[index].childrens_menus.push({
+          functionmenu_id: menu.functionmenu_id,
+          menu_name: menu.menu_name,
+          menu_url: menu.menu_url
+        })
+      }
     }
-    this.setState({ array2 })
+
+    // 删除fromArray中的数据
+    for (let ai = 0; ai < fromArray.length; ai++) {
+      let childrens = fromArray[ai].childrens_menus
+      for (let bi = 0; bi < childrens.length; bi++) {
+        if (childrens[bi].functionmenu_id === menu.functionmenu_id) {
+          fromArray[ai].childrens_menus.splice(bi, 1)
+          break
+        }
+      }
+      if (fromArray[ai].childrens_menus.length === 0) fromArray.splice(ai, 1)
+    }
+
+    fromArray = this.sort(fromArray)
+    toArray = this.sort(toArray)
+  }
+
+  sort(array) {
+    for (let i = 0; i < array.length; i++) {
+      array[i].childrens_menus = array[i].childrens_menus.sort((a, b) => a.functionmenu_id * 1 - b.functionmenu_id * 1)
+    }
+    return array.sort((a, b) => a.parent_id * 1 - b.parent_id * 1)
   }
 
   showList() {
@@ -200,13 +146,19 @@ class BusinessClinicPermissionScreen extends Component {
                 <div className={'boxContentItem'}>
                   {array1.map((item, iKey) => {
                     return (
-                      <div iKey={iKey} className={'boxContentList'}>
+                      <div key={iKey} className={'boxContentList'}>
                         <span>{item.parent_name}</span>
                         <ul>
                           {item.childrens_menus.map((func, funkey) => {
                             return (
-                              <li iKey={funkey}>
-                                <input type={'checkBox'} />
+                              <li key={funkey}>
+                                <input
+                                  type={'checkBox'}
+                                  checked={false}
+                                  onChange={e => {
+                                    this.addFunc(item, func)
+                                  }}
+                                />
                                 <label>{func.menu_name}</label>
                               </li>
                             )
@@ -222,13 +174,19 @@ class BusinessClinicPermissionScreen extends Component {
                 <div className={'boxContentItem'}>
                   {array2.map((item, iKey) => {
                     return (
-                      <div iKey={iKey} className={'boxContentList'}>
+                      <div key={iKey} className={'boxContentList'}>
                         <span>{item.parent_name}</span>
                         <ul>
                           {item.childrens_menus.map((func, funkey) => {
                             return (
-                              <li iKey={funkey}>
-                                <input type={'checkBox'} />
+                              <li key={funkey}>
+                                <input
+                                  type={'checkBox'}
+                                  checked
+                                  onChange={e => {
+                                    this.delFunc(item, func)
+                                  }}
+                                />
                                 <label>{func.menu_name}</label>
                               </li>
                             )
@@ -241,13 +199,22 @@ class BusinessClinicPermissionScreen extends Component {
               </li>
             </ul>
           </div>
-          <div style={{ float: 'left', margin: '59px 0 174px 0' }}>
-            <button style={{ marginLeft: '453px' }} className='saveBtn' onClick={() => this.setState({})}>
-              取消
-            </button>
-            <button style={{ marginLeft: '8px' }} className='saveBtn' onClick={() => this.submit()}>
-              保存
-            </button>
+          <div style={{ float: 'left', margin: '59px 0 174px 0', width: '100%' }}>
+            <div
+              style={{
+                width: 'auto',
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center'
+              }}
+            >
+              <button style={{ margin: 0 }} className='saveBtn' onClick={() => this.cancel()}>
+                取消
+              </button>
+              <button style={{ margin: 0, marginLeft: '10px' }} className='saveBtn' onClick={() => this.submit()}>
+                保存
+              </button>
+            </div>
           </div>
         </div>
         <style jsx>{`
@@ -314,6 +281,7 @@ class BusinessClinicPermissionScreen extends Component {
           }
           .boxContentList > ul > li {
             margin: 0;
+            margin-bottom: 5px;
             width: 25%;
             display: flex;
             flex-direction: row;
@@ -349,8 +317,10 @@ class BusinessClinicPermissionScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinics: state.clinics.data,
-    clinic_selectId: state.clinics.selectId
+    clinic_selectId: state.clinics.selectId,
+    has_set_permissions: state.clinicPermissions.has_set_permissions,
+    un_set_permissions: state.clinicPermissions.un_set_permissions
   }
 }
 
-export default connect(mapStateToProps, { queryClinicList, clinicSelect })(BusinessClinicPermissionScreen)
+export default connect(mapStateToProps, { queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions })(BusinessClinicPermissionScreen)

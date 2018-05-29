@@ -63,8 +63,8 @@ import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPerson
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate, queryClinicCode, clinicSelect } from './clinic'
-import {roles, queryRoleList, roleCreate, roleSelect} from './role'
-import {menus, queryMenuGetByClinicID, menuSelect} from './business'
+import { roles, queryRoleList, roleCreate, roleSelect } from './role'
+import { menus, queryMenuGetByClinicID, menuSelect } from './business'
 import {
   drugStocks,
   queryDrugInstockRecord,
@@ -90,6 +90,7 @@ import {
   queryOutstockWayList,
   queryDrugStockList
 } from './drug_outstock'
+import { clinicPermissions, queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions } from './clinic_permission'
 
 // keys
 export {
@@ -136,7 +137,8 @@ export {
   menus,
   drugStocks,
   drugClasses,
-  drugOutStocks
+  drugOutStocks,
+  clinicPermissions
 }
 
 // actions
@@ -276,5 +278,8 @@ export {
   queryDrugOutstockRecordDetail,
   DrugOutstockCheck,
   queryOutstockWayList,
-  queryDrugStockList
+  queryDrugStockList,
+  queryClinicHassetPermissions,
+  queryClinicUnsetPermissions,
+  createClinicPermissions
 }
