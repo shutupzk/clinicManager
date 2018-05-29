@@ -4,7 +4,7 @@ const DOCTOR_JSON = 'DOCTOR_JSON'
 const DOCTOR_SELECT = 'DOCTOR_SELECT'
 
 const initState = {
-  data: [],
+  data: {},
   array_data: [],
   page_info: {},
   selectId: null

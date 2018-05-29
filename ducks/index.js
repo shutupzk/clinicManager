@@ -78,6 +78,18 @@ import {
   DrugInstockRecordDelete
 } from './drug_stock'
 import { drugClasses, queryDrugClassList } from './drug_class'
+import {
+  drugOutStocks,
+  queryDrugOutstockRecord,
+  createDrugOutstock,
+  DrugOutstockUpdate,
+  DrugOutstockRecordDelete,
+  drugOutStockSelect,
+  queryDrugOutstockRecordDetail,
+  DrugOutstockCheck,
+  queryOutstockWayList,
+  queryDrugStockList
+} from './drug_outstock'
 
 // keys
 export {
@@ -123,7 +135,8 @@ export {
   roles,
   menus,
   drugStocks,
-  drugClasses
+  drugClasses,
+  drugOutStocks
 }
 
 // actions
@@ -254,5 +267,14 @@ export {
   queryDrugInstockRecordDetail,
   DrugInstockCheck,
   DrugInstockUpdate,
-  DrugInstockRecordDelete
+  DrugInstockRecordDelete,
+  queryDrugOutstockRecord,
+  createDrugOutstock,
+  DrugOutstockUpdate,
+  DrugOutstockRecordDelete,
+  drugOutStockSelect,
+  queryDrugOutstockRecordDetail,
+  DrugOutstockCheck,
+  queryOutstockWayList,
+  queryDrugStockList
 }
