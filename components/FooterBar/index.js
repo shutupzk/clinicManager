@@ -11,7 +11,7 @@ export default class FooterBar extends Component {
           {HOSPITALINFO.contact[1].title}:{HOSPITALINFO.contact[1].values}
         </span>
         {HOSPITALINFO.contact[2].title} */}
-        <style jsx>
+        <style jsx='true'>
           {`
             .footerBar {
               line-height: 40px;

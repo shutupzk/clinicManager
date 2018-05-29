@@ -4,7 +4,7 @@ import Tree, { TreeNode } from 'rc-tree'
 export default class MyTree extends Component {
   style() {
     return (
-      <style jsx>{`
+      <style jsx='true'>{`
         .rc-tree {
           margin: 0;
           padding: 5px;

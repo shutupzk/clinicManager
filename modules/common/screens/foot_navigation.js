@@ -21,7 +21,7 @@ export default class Navigation extends Component {
             <div key={index} onClick={() => Router.push(navigateName)} className={'childItem ' + (navigateName === url ? 'sel' : '')}>{item.title}</div>
           )
         })}
-        <style jsx>{`
+        <style jsx='true'>{`
           .childItem {
             text-indent: 112px;
             font-family: MicrosoftYaHei;

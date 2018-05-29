@@ -29,15 +29,14 @@ class OtherScreen extends Component {
     const { otherCostS } = this.props
     let array = []
     for (let key in otherCostS) {
-      const { name, clinic_other_cost_id, unit_name } = otherCostS[key]
+      const { name, clinic_other_cost_id } = otherCostS[key]
       array.push({
         value: clinic_other_cost_id,
         label: name,
-        unit_name
+        ...otherCostS[key]
       })
     }
     return array
-    // return [{ value: 1, label: '肌红蛋白' }, { value: 2, label: '幽门螺杆菌抗原快速检测' }]
   }
 
   getSelectValue(value, array) {
@@ -76,16 +75,27 @@ class OtherScreen extends Component {
     this.setState({ othercosts: array })
   }
 
+  setItemValues(data, index) {
+    const { othercosts } = this.state
+    let array = [...othercosts] // [...treatments]
+    array[index] = { ...array[index], ...data }
+    this.setState({ othercosts: array })
+  }
+
   async submit() {
     const { OtherCostPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
     const { othercosts } = this.state
     let items = []
-    for (let { clinic_other_cost_id, amount, illustration } of othercosts) {
-      items.push({
-        clinic_other_cost_id: clinic_other_cost_id + '',
-        amount: amount + '',
-        illustration: illustration + ''
-      })
+    for (let item of othercosts) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await OtherCostPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
@@ -102,9 +112,7 @@ class OtherScreen extends Component {
       <div className='filterBox'>
         {/* <Loading showLoading /> */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>选择模板</button>
-          </div>
+          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} />
           <div className={'alergyBlank'}>
             <div>
               <label>过敏史</label>
@@ -135,11 +143,9 @@ class OtherScreen extends Component {
                     <div>
                       <div style={{ width: '100%' }}>
                         <Select
-                          value={this.getSelectValue(othercosts[index].clinic_other_cost_id, nameOptions)}
-                          onChange={({ value, name, unit_name }) => {
-                            this.setItemValue(value, index, 'clinic_other_cost_id', 2)
-                            this.setItemValue(name, index, 'name', 2)
-                            this.setItemValue(unit_name, index, 'unit_name', 2)
+                          value={this.getSelectValue(item.clinic_other_cost_id, nameOptions)}
+                          onChange={(data) => {
+                            this.setItemValues(data, index)
                           }}
                           placeholder='搜索名称'
                           height={38}
@@ -149,13 +155,13 @@ class OtherScreen extends Component {
                       </div>
                     </div>
                     <div>
-                      <input readOnly value={othercosts[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
+                      <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
                     </div>
                     <div>
-                      <input value={othercosts[index].amount} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
+                      <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
                     </div>
                     <div>
-                      <input value={othercosts[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                      <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -175,12 +181,11 @@ class OtherScreen extends Component {
               </button>
             </div>
             <div className={'bottomRight'}>
-              <button>存为模板</button>
               <button>打印清单</button>
             </div>
           </div>
         </div>
-        <style jsx>
+        <style jsx='true'>
           {`
             .tableDIV {
               display: flex;

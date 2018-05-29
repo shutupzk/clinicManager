@@ -469,7 +469,7 @@ class AppointmentAddScreen extends Component {
             保存
           </button>
         </div>
-        <style jsx>
+        <style jsx='true'>
           {`
             .formDiv {
               margin-top: 10px;

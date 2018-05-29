@@ -134,7 +134,7 @@ class DoctorListScreen extends Component {
           </ul>
           {/* <PageCard numberValue={1} data={[{}, {}]} page={1} /> */}
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             float: left;
             width: 1098px;
@@ -540,7 +540,7 @@ class DoctorListScreen extends Component {
             this.queryDoctorList({ personnel_type, offset, limit, keyword })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .childTopBar {
             float: left;
             width: 100%;

@@ -113,7 +113,7 @@ class AlreadyChargedDetailScreen extends Component {
             this.props.queryCreditRecordList({ clinic_triage_patient_id: this.props.triage_list_selectId, offset, limit })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             margin: 20px 0 0 65px;
             display: flex;
@@ -199,7 +199,7 @@ class AlreadyChargedDetailScreen extends Component {
           </div>
         </div>
         <Confirm ref='myAlert' />
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             margin: 20px 0 0 65px;
             display: flex;

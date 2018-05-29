@@ -316,7 +316,7 @@ class TreatmentScreen extends Component {
   }
   getStyle() {
     return (
-      <style jsx>
+      <style jsx='true'>
         {`
           .tableDIV {
             display: flex;

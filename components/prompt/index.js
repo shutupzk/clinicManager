@@ -12,7 +12,7 @@ class Prompt extends Component {
       <div className={`promptDiv ${this.props.show === true ? 'show' : ''}`}>
         {this.props.text}
         {this.props.children}
-        <style jsx>
+        <style jsx='true'>
           {`
             .promptDiv {
               background-color: #888;

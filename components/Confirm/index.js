@@ -81,7 +81,7 @@ export default class Confirm extends Component {
             </div>
           </div>
         </div>
-        <style jsx>
+        <style jsx='true'>
           {`
             .mask {
               position: fixed;

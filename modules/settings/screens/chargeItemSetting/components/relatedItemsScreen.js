@@ -51,7 +51,7 @@ export default class RelatedItemsScreen extends Component {
   }
   style() {
     return (
-      <style jsx>{`
+      <style jsx='true'>{`
         .formContent{
           display: flex;
           flex-direction: column;

@@ -1,6 +1,6 @@
 export function UI () {
   return (
-    <style jsx>
+    <style jsx='true'>
       {`
         .DraftEditor-editorContainer,
         .DraftEditor-root,
