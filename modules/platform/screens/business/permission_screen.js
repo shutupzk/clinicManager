@@ -74,7 +74,7 @@ class BusinessClinicPermissionScreen extends Component {
             </ul>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .bussinessTitle {
             margin: 24px 0 26px 33px;
             height: 24px;

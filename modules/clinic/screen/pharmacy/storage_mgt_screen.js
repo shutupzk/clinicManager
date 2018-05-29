@@ -139,7 +139,7 @@ class StorageMgtScreen extends Component {
             />
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentCenterRight{
             width:100%;
             height:715px; 
@@ -259,7 +259,7 @@ class StorageMgtScreen extends Component {
             新增入库
           </button>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             float: left;
             width: 100%;
@@ -331,7 +331,7 @@ class StorageMgtScreen extends Component {
         <div className='back2List' onClick={() => this.setState({showType: 1})}>
           {'<返回'}
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             float: left;
             width: 100%;
@@ -363,7 +363,7 @@ class StorageMgtScreen extends Component {
       <div className={'boxContent'}>
         {showType === 1 ? this.renderFilter() : this.renderBack()}
         {showType === 1 ? this.renderTable() : this.showView()}
-        <style jsx>{`
+        <style jsx='true'>{`
           .boxContent{
             // background:#909090;
             display: flex;

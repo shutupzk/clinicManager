@@ -169,7 +169,7 @@ class TollScreen extends Component {
           <button>打印</button>
           <button onClick={() => this.setState({ pageType: 2 })}>结账</button>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             margin: 20px 0 0 65px;
             display: flex;
@@ -411,7 +411,7 @@ class TollScreen extends Component {
           </div>
         </div>
         <Confirm ref='myAlert' />
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             margin: 20px 0 0 65px;
             display: flex;

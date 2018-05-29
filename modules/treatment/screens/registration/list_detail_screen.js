@@ -8,7 +8,6 @@ import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triageP
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../config/provinces'
-import { PageCard } from '../../../../components'
 
 class ListDetailScreen extends Component {
   constructor(props) {
@@ -347,7 +346,7 @@ class ListDetailScreen extends Component {
             </button>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .formList {
             margin: 20px 66px 33px 66px;
           }
@@ -398,7 +397,7 @@ class ListDetailScreen extends Component {
             <button className={'addBtn'}>设置密码</button>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .detailBox {
             float: left;
           }
@@ -444,7 +443,7 @@ class ListDetailScreen extends Component {
           <div className={'seeMore'}>查看更多</div>
         </div>
         <div className={'blankBox'}>sadas</div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .detailBox {
             float: left;
           }

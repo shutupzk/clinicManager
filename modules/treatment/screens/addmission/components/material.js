@@ -29,14 +29,11 @@ class MaterialScreen extends Component {
     const { materials } = this.props
     let array = []
     for (let key in materials) {
-      const { material_stock_id, name, specification, unit_id, unit_name, stock_amount } = materials[key]
+      const { clinic_material_id, name } = materials[key]
       array.push({
-        value: material_stock_id,
+        value: clinic_material_id,
         label: name,
-        specification,
-        unit_id,
-        unit_name,
-        stock_amount
+        ...materials[key]
       })
     }
     return array
@@ -74,16 +71,27 @@ class MaterialScreen extends Component {
     this.setState({ eaterials: array })
   }
 
+  setItemValues(data, index) {
+    const { eaterials } = this.state
+    let array = [...eaterials] // [...treatments]
+    array[index] = { ...array[index], ...data }
+    this.setState({ eaterials: array })
+  }
+
   async submit() {
     const { MaterialPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
     const { eaterials } = this.state
     let items = []
-    for (let { material_stock_id, amount, illustration } of eaterials) {
-      items.push({
-        material_stock_id: material_stock_id + '',
-        amount: amount + '',
-        illustration: illustration + ''
-      })
+    for (let item of eaterials) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
     }
     let error = await MaterialPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
@@ -99,15 +107,13 @@ class MaterialScreen extends Component {
     return (
       <div className='filterBox'>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}>选择模板</button>
-          </div>
+          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} />
           <div className={'alergyBlank'}>
             <div>
               <label>过敏史</label>
               <input readOnly type='text' value={medicalRecord.allergic_history} />
             </div>
-            <div style={{marginLeft: '40px'}}>
+            <div style={{ marginLeft: '40px' }}>
               <label>过敏反应</label>
               <input readOnly type='text' value={medicalRecord.allergic_reaction} />
             </div>
@@ -134,14 +140,9 @@ class MaterialScreen extends Component {
                     <div>
                       <div style={{ width: '100%' }}>
                         <Select
-                          value={this.getSelectValue(eaterials[index].material_stock_id, nameOptions)}
-                          onChange={({ value, label, specification, unit_id, unit_name, stock_amount }) => {
-                            this.setItemValue(value, index, 'material_stock_id', 2)
-                            this.setItemValue(label, index, 'name', 2)
-                            this.setItemValue(specification, index, 'specification', 2)
-                            this.setItemValue(unit_id, index, 'unit_id', 2)
-                            this.setItemValue(unit_name, index, 'unit_name', 2)
-                            this.setItemValue(stock_amount, index, 'stock_amount', 2)
+                          value={this.getSelectValue(item.clinic_material_id, nameOptions)}
+                          onChange={(item) => {
+                            this.setItemValues(item, index)
                           }}
                           placeholder='搜索名称'
                           height={38}
@@ -151,19 +152,19 @@ class MaterialScreen extends Component {
                       </div>
                     </div>
                     <div>
-                      <input readOnly value={eaterials[index].specification} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
+                      <input readOnly value={item.specification || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
                     </div>
                     <div>
-                      <input readOnly value={eaterials[index].unit_name} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
+                      <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
                     </div>
                     <div>
-                      <input readOnly value={eaterials[index].stock_amount} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
+                      <input readOnly value={item.stock_amount || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
                     </div>
                     <div>
-                      <input value={eaterials[index].amount} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
+                      <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
                     </div>
                     <div>
-                      <input value={eaterials[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                      <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                     </div>
                     <div>
                       <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
@@ -183,130 +184,136 @@ class MaterialScreen extends Component {
               </button>
             </div>
             <div className={'bottomRight'}>
-              <button>存为模板</button>
               <button>打印清单</button>
             </div>
           </div>
         </div>
-        <style jsx='true'>
-          {`
-            .tableDIV {
-              display: flex;
-              width: 987px;
-              background: rgba(255, 255, 255, 1);
-              border-radius: 4px;
-              margin: 0 65px 65px 47px;
-            }
-            .tableDIV ul {
-              width: 100%;
-              display: flex;
-              flex-direction: column;
-              border: 1px solid #e9e9e9;
-              border-bottom: none;
-            }
-            .tableDIV ul li {
-              display: flex;
-              height: 50px;
-              border-bottom: 1px solid #e9e9e9;
-              line-height: 40px;
-              text-align: center;
-            }
-            .tableDIV ul li:nth-child(1) {
-              background: rgba(247, 247, 247, 1);
-            }
-            .tableDIV ul li > div {
-              flex: 2;
-              border-left: 1px #e9e9e9 dashed;
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: center;
-            }
-            .tableDIV ul li > div > input {
-              width: 90%;
-              height: 30px;
-              border-radius: 4px;
-              outline-style: none;
-              border: none;
-            }
-            .tableDIV ul li > div:nth-child(1) {
-              flex: 3;
-            }
-            .formListBottom {
-              width: 1000px;
-              margin: 30px auto;
-            }
-            .formListBottom .bottomCenter {
-              margin: 0 auto;
-              display: block;
-              width: 150px;
-            }
-            .formListBottom .bottomCenter button.cancel {
-              width: 70px;
-              height: 26px;
-              background: rgba(167, 167, 167, 1);
-              color: rgba(255, 255, 255, 1);
-              border-radius: 15px;
-              border: none;
-              float: left;
-              cursor: pointer;
-            }
-            .formListBottom .bottomCenter button.save {
-              width: 70px;
-              height: 26px;
-              background: rgba(49, 176, 179, 1);
-              color: rgba(255, 255, 255, 1);
-              border-radius: 15px;
-              border: none;
-              float: right;
-              cursor: pointer;
-            }
-            .formListBottom .bottomRight {
-              float: right;
-              margin-top: -23px;
-            }
-            .formListBottom .bottomRight button {
-              width: 80px;
-              height: 26px;
-              border-radius: 15px;
-              border: 1px solid #2acdc8;
-              font-size: 12px;
-              font-family: MicrosoftYaHei;
-              color: rgba(49, 176, 179, 1);
-              background: transparent;
-              margin-right: 10px;
-              cursor: pointer;
-            }
-            .alergyBlank {
-              display: flex;
-              flex-direction: row;
-              margin: 0 65px 20px 47px;
-            }
-            .alergyBlank div {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-            }
-            .alergyBlank div label {
-              width: 98%;
-            }
-            .alergyBlank div input {
-              width: 100%;
-              height: 30px;
-              background: rgba(245, 248, 249, 1);
-              border-radius: 4px;
-              border: 1px solid #d8d8d8;
-              margin-top: 15px;
-            }
-          `}
-        </style>
+        {this.getStyle()}
         <Confirm ref='myAlert' />
       </div>
+    )
+  }
+
+  getStyle() {
+    return (
+      <style jsx='true'>
+        {`
+          .tableDIV {
+            display: flex;
+            width: 987px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin: 0 65px 65px 47px;
+          }
+          .tableDIV ul {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9e9e9;
+            border-bottom: none;
+          }
+          .tableDIV ul li {
+            display: flex;
+            height: 50px;
+            border-bottom: 1px solid #e9e9e9;
+            line-height: 40px;
+            text-align: center;
+          }
+          .tableDIV ul li:nth-child(1) {
+            background: rgba(247, 247, 247, 1);
+          }
+          .tableDIV ul li > div {
+            flex: 2;
+            border-left: 1px #e9e9e9 dashed;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+          }
+          .tableDIV ul li > div > input {
+            width: 90%;
+            height: 30px;
+            border-radius: 4px;
+            outline-style: none;
+            border: none;
+          }
+          .tableDIV ul li > div:nth-child(1) {
+            flex: 3;
+          }
+          .formListBottom {
+            width: 1000px;
+            margin: 30px auto;
+          }
+          .formListBottom .bottomCenter {
+            margin: 0 auto;
+            display: block;
+            width: 150px;
+          }
+          .formListBottom .bottomCenter button.cancel {
+            width: 70px;
+            height: 26px;
+            background: rgba(167, 167, 167, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: left;
+            cursor: pointer;
+          }
+          .formListBottom .bottomCenter button.save {
+            width: 70px;
+            height: 26px;
+            background: rgba(49, 176, 179, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: right;
+            cursor: pointer;
+          }
+          .formListBottom .bottomRight {
+            float: right;
+            margin-top: -23px;
+          }
+          .formListBottom .bottomRight button {
+            width: 80px;
+            height: 26px;
+            border-radius: 15px;
+            border: 1px solid #2acdc8;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: rgba(49, 176, 179, 1);
+            background: transparent;
+            margin-right: 10px;
+            cursor: pointer;
+          }
+          .alergyBlank {
+            display: flex;
+            flex-direction: row;
+            margin: 0 65px 20px 47px;
+          }
+          .alergyBlank div {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+          .alergyBlank div label {
+            width: 98%;
+          }
+          .alergyBlank div input {
+            width: 100%;
+            height: 30px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            border: 1px solid #d8d8d8;
+            margin-top: 15px;
+          }
+        `}
+      </style>
     )
   }
 }
 
 const mapStateToProps = state => {
+  console.log(state.materials)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
     personnel_id: state.user.data.id,

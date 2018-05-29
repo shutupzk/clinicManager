@@ -111,7 +111,7 @@ class DepartmentListScreen extends Component {
             this.queryDepartmentList({ offset, limit, keyword })
           }}
         />
-        <style jsx>{`
+        <style jsx='true'>{`
           .filterBox {
             float: left;
             width: 1098px;

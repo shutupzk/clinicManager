@@ -3,7 +3,7 @@ const MATERIAL_PROJECT_ADD = 'MATERIAL_PROJECT_ADD'
 const MATERIAL_ARRAY_ADD = 'MATERIAL_ARRAY_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   array_data: [],
   page_info: {},
   selectId: null
@@ -20,9 +20,9 @@ export function materials(state = initState, action = {}) {
   }
 }
 
-export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limit = 6 }, arrayType) => async dispatch => {
+export const queryMaterialList = ({ clinic_id, keyword, status = '', offset = 0, limit = 6 }, arrayType) => async dispatch => {
   try {
-    console.log('limit====', limit)
+    console.log('limit====', limit, clinic_id, keyword, status)
     const data = await request('/material/list', {
       clinic_id,
       keyword,
@@ -32,6 +32,7 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
     })
     const docs = data.data || []
     const page_info = data.page_info || {}
+    console.log(docs)
     if (arrayType) {
       dispatch({
         type: MATERIAL_ARRAY_ADD,
@@ -41,12 +42,11 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
     } else {
       let json = {}
       for (let doc of docs) {
-        json[doc.material_stock_id] = doc
+        json[doc.clinic_material_id] = doc
       }
       dispatch({
         type: MATERIAL_PROJECT_ADD,
-        data: json,
-        page_info
+        data: json
       })
     }
     return null

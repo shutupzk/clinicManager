@@ -408,7 +408,7 @@ class RegistrationAddScreen extends Component {
             </button>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .formList {
             margin: 20px 66px 33px 66px;
           }

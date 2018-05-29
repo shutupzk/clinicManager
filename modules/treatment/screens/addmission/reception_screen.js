@@ -142,7 +142,7 @@ class RecptionScreen extends Component {
         {this.showDataList()}
         <Confirm ref='myAlert' isAlert />
         <Confirm ref='myConfirm' />
-        <style jsx>
+        <style jsx='true'>
           {`
             .childTopBar {
               width: ${pageType === 2 ? '1500px' : '1098px'};

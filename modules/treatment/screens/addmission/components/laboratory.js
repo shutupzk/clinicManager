@@ -76,12 +76,16 @@ class LaboratoryScreen extends Component {
     const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
     const { laboratories } = this.state
     let items = []
-    for (let { clinic_laboratory_id, times, illustration } of laboratories) {
-      items.push({
-        clinic_laboratory_id: clinic_laboratory_id + '',
-        times: times + '',
-        illustration: illustration + ''
-      })
+    for (let item of laboratories) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+        items.push(obj)
+      }
     }
     let error = await LaboratoryPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {

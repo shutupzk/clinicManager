@@ -493,7 +493,7 @@ class AppointmentListScreen extends Component {
         {this.state.showType === 1 ? this.showCalendarList() : ''}
         {this.state.showType === 2 ? this.showPatientList() : ''}
         <div className={'pagination'} />
-        <style jsx>
+        <style jsx='true'>
           {`
             .boxLeft label {
               float: left;

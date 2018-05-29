@@ -71,52 +71,52 @@ class PageCard extends Component {
     total = total * 1
     let pageTotal = Math.ceil(total / limit)
     return (
-      <div >
+      <div>
         <footer className={'fenye flex tb-flex lr-flex'} style={this.props.style}>
           <article className='left'>共 {this.props.total} 条</article>
           <div className={'pageContent'}>
-          <span
-            className={'fenyeItem otherPage'}
-            onClick={() => {
-              if (this.props.onItemClick) {
-                this.props.onItemClick({ offset: offset - limit < 0 ? 0 : offset - limit, limit })
+            <span
+              className={'fenyeItem otherPage'}
+              onClick={() => {
+                if (this.props.onItemClick) {
+                  this.props.onItemClick({ offset: offset - limit < 0 ? 0 : offset - limit, limit })
+                }
+              }}
+            >{`<`}</span>
+            {array.map(({ offset, limit, omitted, iscurrent, page }, index) => {
+              if (omitted) return <span className={`fenyeItem otherPage`}>...</span>
+              let className = `fenyeItem otherPage`
+              if (iscurrent) {
+                className = 'fenyeItem curPageCss'
               }
-            }}
-          >{`<`}</span>
-          {array.map(({ offset, limit, omitted, iscurrent, page }, index) => {
-            if (omitted) return <span className={`fenyeItem otherPage`}>...</span>
-            let className = `fenyeItem otherPage`
-            if (iscurrent) {
-              className = 'fenyeItem curPageCss'
-            }
-            return (
-              <span
-                key={index}
-                className={className}
-                onClick={() => {
-                  if (this.props.onItemClick) {
-                    this.props.onItemClick({ offset, limit })
-                  }
-                }}
-              >
-                {page}
-              </span>
-            )
-          })}
-          <span
-            className={'fenyeItem otherPage lastItem'}
-            onClick={() => {
-              if (this.props.onItemClick) {
-                let nextOffset = offset + limit > (pageTotal - 1) * limit ? (pageTotal - 1) * limit : offset + limit
-                this.props.onItemClick({ offset: nextOffset, limit })
-              }
-            }}
-          >
-            {'>'}
-          </span>
+              return (
+                <span
+                  key={index}
+                  className={className}
+                  onClick={() => {
+                    if (this.props.onItemClick) {
+                      this.props.onItemClick({ offset, limit })
+                    }
+                  }}
+                >
+                  {page}
+                </span>
+              )
+            })}
+            <span
+              className={'fenyeItem otherPage lastItem'}
+              onClick={() => {
+                if (this.props.onItemClick) {
+                  let nextOffset = offset + limit > (pageTotal - 1) * limit ? (pageTotal - 1) * limit : offset + limit
+                  this.props.onItemClick({ offset: nextOffset, limit })
+                }
+              }}
+            >
+              {'>'}
+            </span>
           </div>
         </footer>
-        <style jsx>{`
+        <style jsx='true'>{`
           .fenye {
             margin-top: 40px;
             padding: 10px;
@@ -137,21 +137,21 @@ class PageCard extends Component {
             padding: 0;
             margin: 0 ${theme.midmargin};
           }
-          .pageContent{
-            float:right;
+          .pageContent {
+            float: right;
             margin-right: 20px;
           }
           .fenyeItem {
-            width:28px;
-            height:28px; 
-            background:rgba(255,255,255,1);
-            border-radius: 4px ; 
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 1);
             border-radius: 4px;
-            margin-right:10px;
+            border-radius: 4px;
+            margin-right: 10px;
             line-height: 28px;
             text-align: center;
-            cursor:pointer;
-            display:block;
+            cursor: pointer;
+            display: block;
             float: left;
           }
           .fenyeItem.curPageCss {

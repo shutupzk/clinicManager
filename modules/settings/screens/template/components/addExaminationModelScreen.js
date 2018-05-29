@@ -239,7 +239,7 @@ class AddExaminationModelScreen extends Component {
                 let organ = ''
                 for (let i = 0; i < selOrgans.length; i++) {
                   if (i < selOrgans.length - 1) {
-                    organ += selOrgans[i] + '，'
+                    organ += selOrgans[i] + ','
                   } else {
                     organ += selOrgans[i]
                   }
@@ -252,7 +252,7 @@ class AddExaminationModelScreen extends Component {
             </button>
           </div>
         </div>
-        <style jsx>{`
+        <style jsx='true'>{`
           .contentList {
             width: 100%;
             height: 500px;
