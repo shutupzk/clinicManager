@@ -7,7 +7,7 @@ import StorageMgtScreen from './storage_mgt_screen'
 import OutboundMgtScreen from './outbound_mgt_screen'
 import CurrentInventoryScreen from './current_inventory_screen'
 
-class PharmacyListScreen extends Component {
+class ConsumableListScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -118,4 +118,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {})(PharmacyListScreen)
+export default connect(mapStateToProps, {})(ConsumableListScreen)

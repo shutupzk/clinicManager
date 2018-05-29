@@ -6,14 +6,17 @@ const OUTSTOCK_WAY_JSON = 'OUTSTOCK_WAY_JSON'
 // const SUPPLIER_JSON = 'SUPPLIER_JSON'
 const OUTSTOCK_RECORD_DETAIL = 'INSTOCK_RECORD_DETAIL'
 const STOCK_LIST = 'STOCK_LIST'
+const STOCK_ARRAY_LIST = 'STOCK_ARRAY_LIST'
 
 const initState = {
   data: [],
   json_data: {},
   page_info: {},
+  stock_page_info: {},
   outstock_way: {},
   detail_data: {},
   stock_data: {},
+  stock_array_data: [],
   selectId: null
 }
 
@@ -29,6 +32,8 @@ export function drugOutStocks(state = initState, action = {}) {
       return { ...state, detail_data: { ...state.detail_data, ...action.detail_data } }
     case STOCK_LIST:
       return { ...state, stock_data: { ...state.stock_data, ...action.stock_data } }
+    case STOCK_ARRAY_LIST:
+      return { ...state, stock_array_data: action.stock_array_data, stock_page_info: action.stock_page_info }
     default:
       return state
   }
@@ -158,21 +163,29 @@ export const queryOutstockWayList = ({keyword = '', limit = 10, offset = 0}) => 
   }
 }
 
-export const queryDrugStockList = ({keyword = '', limit = 10, offset = 0, clinic_id}) => async dispatch => {
+export const queryDrugStockList = (requestData, arrayType) => async dispatch => {
   try {
-    console.log('limit====', keyword)
-    const data = await request('/clinic_drug/DrugStockList', {keyword, limit, offset, clinic_id})
+    console.log('limit====', requestData)
+    const data = await request('/clinic_drug/DrugStockList', requestData)
     console.log('queryDrugStockList=======', data)
     const docs = data.data || []
-    // const page_info = data.page_info || {}
-    let stock_data = {}
-    for (let doc of docs) {
-      stock_data[doc.drug_stock_id] = doc
+    const page_info = data.page_info || {}
+    if (arrayType) {
+      dispatch({
+        type: STOCK_ARRAY_LIST,
+        stock_array_data: docs,
+        stock_page_info: page_info
+      })
+    } else {
+      let stock_data = {}
+      for (let doc of docs) {
+        stock_data[doc.drug_stock_id] = doc
+      }
+      dispatch({
+        type: STOCK_LIST,
+        stock_data
+      })
     }
-    dispatch({
-      type: STOCK_LIST,
-      stock_data
-    })
     return null
     // return stock_data
   } catch (e) {

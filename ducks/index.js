@@ -90,6 +90,27 @@ import {
   queryOutstockWayList,
   queryDrugStockList
 } from './drug_outstock'
+import {
+  materailStocks,
+  queryMaterialInstockRecord,
+  createMaterialInstock,
+  MaterialInstockUpdate,
+  MaterialInstockRecordDelete,
+  materialStockSelect,
+  queryMaterialInstockRecordDetail,
+  MaterialInstockCheck
+} from './material_stock'
+import {
+  materialOutStocks,
+  queryMaterialOutstockRecord,
+  createMaterialOutstock,
+  MaterialOutstockUpdate,
+  MaterialOutstockRecordDelete,
+  materialOutStockSelect,
+  queryMaterialOutstockRecordDetail,
+  MaterialOutstockCheck,
+  queryMaterialStockList
+} from './material_outstock'
 
 // keys
 export {
@@ -136,7 +157,9 @@ export {
   menus,
   drugStocks,
   drugClasses,
-  drugOutStocks
+  drugOutStocks,
+  materailStocks,
+  materialOutStocks
 }
 
 // actions
@@ -276,5 +299,20 @@ export {
   queryDrugOutstockRecordDetail,
   DrugOutstockCheck,
   queryOutstockWayList,
-  queryDrugStockList
+  queryDrugStockList,
+  queryMaterialInstockRecord,
+  createMaterialInstock,
+  MaterialInstockUpdate,
+  MaterialInstockRecordDelete,
+  materialStockSelect,
+  queryMaterialInstockRecordDetail,
+  MaterialInstockCheck,
+  queryMaterialOutstockRecord,
+  createMaterialOutstock,
+  MaterialOutstockUpdate,
+  MaterialOutstockRecordDelete,
+  materialOutStockSelect,
+  queryMaterialOutstockRecordDetail,
+  MaterialOutstockCheck,
+  queryMaterialStockList
 }

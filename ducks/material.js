@@ -41,7 +41,7 @@ export const queryMaterialList = ({ clinic_id, keyword, status, offset = 0, limi
     } else {
       let json = {}
       for (let doc of docs) {
-        json[doc.material_stock_id] = doc
+        json[doc.clinic_material_id] = doc
       }
       dispatch({
         type: MATERIAL_PROJECT_ADD,
