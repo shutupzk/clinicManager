@@ -19,7 +19,7 @@ class BusinessClinicPermissionScreen extends Component {
     for (let item of array2) {
       for (let it of item.childrens_menus) {
         console.log(it)
-        items.push({ functionMenu_id: it.functionmenu_id + '' })
+        items.push({ function_menu_id: it.function_menu_id + '' })
       }
     }
     let error = await createClinicPermissions({ clinic_id: clinic_selectId, items: JSON.stringify(items) })
@@ -42,26 +42,22 @@ class BusinessClinicPermissionScreen extends Component {
     this.setState({ array1, array2 })
   }
 
-  // 将arr2中存在的元素从arr1中删除
-  // compare(arr1, arr2) {
-  // }
-
   // 添加功能
   addFunc(parent, menu) {
     let { array2, array1 } = this.state
-    this.chargeFunc(array1, array2, parent, menu)
+    this.changeFunc(array1, array2, parent, menu)
     this.setState({ array2, array1 })
   }
 
   // 删除功能
   delFunc(parent, menu) {
     let { array2, array1 } = this.state
-    this.chargeFunc(array2, array1, parent, menu)
+    this.changeFunc(array2, array1, parent, menu)
     this.setState({ array2, array1 })
   }
 
   // 将fromArray中的功能块移到toArray中并
-  chargeFunc(fromArray, toArray, parent, menu, cb) {
+  changeFunc(fromArray, toArray, parent, menu, cb) {
     // 向toArray中添加数据
     let index = -1
     for (let i = 0; i < toArray.length; i++) {
@@ -78,7 +74,7 @@ class BusinessClinicPermissionScreen extends Component {
         parent_url: parent.parent_url,
         childrens_menus: [
           {
-            functionmenu_id: menu.functionmenu_id,
+            function_menu_id: menu.function_menu_id,
             menu_name: menu.menu_name,
             menu_url: menu.menu_url
           }
@@ -90,14 +86,14 @@ class BusinessClinicPermissionScreen extends Component {
       let exist = false
       for (let func of funcs) {
         // 子功能存在与否
-        if (func.functionmenu_id === menu.functionmenu_id) {
+        if (func.function_menu_id === menu.function_menu_id) {
           exist = true
           break
         }
       }
       if (!exist) {
         toArray[index].childrens_menus.push({
-          functionmenu_id: menu.functionmenu_id,
+          function_menu_id: menu.function_menu_id,
           menu_name: menu.menu_name,
           menu_url: menu.menu_url
         })
@@ -108,7 +104,7 @@ class BusinessClinicPermissionScreen extends Component {
     for (let ai = 0; ai < fromArray.length; ai++) {
       let childrens = fromArray[ai].childrens_menus
       for (let bi = 0; bi < childrens.length; bi++) {
-        if (childrens[bi].functionmenu_id === menu.functionmenu_id) {
+        if (childrens[bi].function_menu_id === menu.function_menu_id) {
           fromArray[ai].childrens_menus.splice(bi, 1)
           break
         }
@@ -122,7 +118,7 @@ class BusinessClinicPermissionScreen extends Component {
 
   sort(array) {
     for (let i = 0; i < array.length; i++) {
-      array[i].childrens_menus = array[i].childrens_menus.sort((a, b) => a.functionmenu_id * 1 - b.functionmenu_id * 1)
+      array[i].childrens_menus = array[i].childrens_menus.sort((a, b) => a.function_menu_id * 1 - b.function_menu_id * 1)
     }
     return array.sort((a, b) => a.parent_id * 1 - b.parent_id * 1)
   }
