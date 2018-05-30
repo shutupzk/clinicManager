@@ -43,6 +43,7 @@ class MedicalRecordScreen extends Component {
   async componentDidMount() {
     const { PrescriptionWesternPatientGet, PrescriptionChinesePatientGet, clinic_triage_patient_id } = this.props
     let wPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+    console.log('wPrescItemArray ======', wPrescItemArray)
     wPrescItemArray = wPrescItemArray || []
     let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
     let cPrescItemArray = []
@@ -1500,7 +1501,7 @@ class MedicalRecordScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state.drugs ==========', state.drugs)
+  // console.log('state.drugs ==========', state.drugs)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
     personnel_id: state.user.data.id,
