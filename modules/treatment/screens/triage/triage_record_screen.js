@@ -55,8 +55,14 @@ class TriageRecordScreen extends Component {
       <div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='text' placeholder='搜索科室' />
-            <button>查询</button>
+            <input
+              type='text'
+              placeholder='搜索就诊人姓名/身份证号码/手机号码'
+              onChange={e => {
+                this.setState({ keyword: e.target.value })
+              }}
+            />
+            <button onClick={() => this.commonQueryList({})}>查询</button>
           </div>
         </div>
         <div className={'listContent'}>

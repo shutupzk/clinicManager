@@ -12,7 +12,7 @@ import {
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../config/provinces'
-import { Select } from '../../../../components'
+import { Select, Confirm } from '../../../../components'
 
 class RegistrationAddScreen extends Component {
   constructor(props) {
@@ -46,9 +46,24 @@ class RegistrationAddScreen extends Component {
     let patientInfo = this.state.patientInfo
     patientInfo.clinic_id = clinic_id
     patientInfo.personnel_id = personnel_id
+    if (!patientInfo.name) {
+      return this.refs.myAlert.alert('提示', '请填写姓名', null, 'Danger')
+    }
+    if (!patientInfo.birthday) {
+      return this.refs.myAlert.alert('提示', '请填写生日', null, 'Danger')
+    }
+    if (!patientInfo.sex) {
+      return this.refs.myAlert.alert('提示', '请选择性别', null, 'Danger')
+    }
+    if (!patientInfo.phone) {
+      return this.refs.myAlert.alert('提示', '请填写手机号', null, 'Danger')
+    }
+    if (!patientInfo.visit_type) {
+      return this.refs.myAlert.alert('提示', '请选择出诊类型', null, 'Danger')
+    }
     let error = await addTriagePatientsList({ patientInfo })
     if (error) {
-      alert(error)
+      this.refs.myAlert.alert('提交失败', error, null, 'Danger')
     } else {
       Router.push('/treatment/registration/list')
     }
@@ -425,6 +440,7 @@ class RegistrationAddScreen extends Component {
           <span onClick={() => Router.push('/treatment/registration/list')}>登记列表</span>
         </div>
         {this.showAddNew()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
