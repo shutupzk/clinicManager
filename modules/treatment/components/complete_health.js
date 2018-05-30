@@ -15,6 +15,11 @@ export default class CompleteHealth extends Component {
     }
   }
 
+  show(clinic_triage_patient_id, bodySign = {}, preMedicalRecords = {}, preDiagnosisRecords = {}) {
+    if (!clinic_triage_patient_id) return
+    this.setState({ show: true, clinic_triage_patient_id, bodySign, preMedicalRecords, preDiagnosisRecords })
+  }
+
   bloodType() {
     let options = [
       {
@@ -44,15 +49,15 @@ export default class CompleteHealth extends Component {
   rhBloodType() {
     let options = [
       {
-        value: 'UC',
+        value: 0,
         label: '未查'
       },
       {
-        value: '0',
+        value: -1,
         label: '阴性'
       },
       {
-        value: '1',
+        value: 1,
         label: '阳性'
       }
     ]
@@ -62,23 +67,23 @@ export default class CompleteHealth extends Component {
   temperatureType() {
     let options = [
       {
-        value: '1',
+        value: 1,
         label: '口温'
       },
       {
-        value: '2',
+        value: 2,
         label: '耳温'
       },
       {
-        value: '3',
+        value: 3,
         label: '额温'
       },
       {
-        value: '4',
+        value: 4,
         label: '腋温'
       },
       {
-        value: '5',
+        value: 5,
         label: '肛温'
       }
     ]
@@ -88,88 +93,62 @@ export default class CompleteHealth extends Component {
   bloodSugarType() {
     let options = [
       {
-        value: '1',
+        value: 1,
         label: '睡前'
       },
       {
-        value: '2',
+        value: 2,
         label: '晚餐后'
       },
       {
-        value: '3',
+        value: 3,
         label: '晚餐前'
       },
       {
-        value: '4',
+        value: 4,
         label: '午餐后'
       },
       {
-        value: '5',
+        value: 5,
         label: '午餐前'
       },
       {
-        value: '6',
+        value: 6,
         label: '早餐后'
       },
       {
-        value: '7',
+        value: 7,
         label: '早餐前'
       },
       {
-        value: '8',
+        value: 8,
         label: '凌晨'
       },
       {
-        value: '9',
+        value: 9,
         label: '空腹'
       }
     ]
     return options
   }
 
-  painScore() {
-    let options = [
-      {
-        value: '1',
-        label: '1'
-      },
-      {
-        value: '2',
-        label: '2'
-      },
-      {
-        value: '3',
-        label: '3'
-      },
-      {
-        value: '4',
-        label: '4'
-      },
-      {
-        value: '5',
-        label: '5'
-      },
-      {
-        value: '6',
-        label: '6'
-      },
-      {
-        value: '7',
-        label: '7'
-      },
-      {
-        value: '8',
-        label: '8'
-      },
-      {
-        value: '9',
-        label: '9'
-      },
-      {
-        value: '10',
-        label: '10'
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
       }
-    ]
+    }
+    return null
+  }
+
+  painScore() {
+    let options = []
+    for (let i = 1; i < 11; i++) {
+      options.push({
+        value: i,
+        label: i
+      })
+    }
     return options
   }
 
@@ -178,8 +157,10 @@ export default class CompleteHealth extends Component {
     const { bodySign } = this.state
     if (type === 1) {
       bodySign[key] = e.target.value
-    } else {
+    } else if (type === 2) {
       bodySign[key] = e.value
+    } else if (type === 3) {
+      bodySign[key] = e
     }
     this.setState({ bodySign })
   }
@@ -188,6 +169,7 @@ export default class CompleteHealth extends Component {
   async submitBodySign() {
     const { clinic_triage_patient_id, bodySign } = this.state
     const { completeBodySign } = this.props
+    console.log('bodySign ============', bodySign)
     let error = await completeBodySign({ ...bodySign, clinic_triage_patient_id })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
@@ -217,7 +199,7 @@ export default class CompleteHealth extends Component {
                   let bmi = ''
                   if (bodySign.height) {
                     let weight = e.target.value
-                    bmi = weight / (bodySign.height * bodySign.height / 10000)
+                    bmi = (weight / (bodySign.height * bodySign.height / 10000)).toFixed(2)
                     this.setState({ BMI: bmi })
                   }
                   bodySign.bmi = bmi
@@ -235,7 +217,7 @@ export default class CompleteHealth extends Component {
                   let bmi = ''
                   if (bodySign.weight) {
                     let height = e.target.value
-                    bmi = bodySign.weight / (height * height / 10000)
+                    bmi = (bodySign.weight / (height * height / 10000)).toFixed(2)
                     this.setState({ BMI: bmi })
                   }
                   bodySign.bmi = bmi
@@ -260,6 +242,7 @@ export default class CompleteHealth extends Component {
               <div style={{ display: 'block', width: '115px' }}>
                 <Select
                   placeholder='请选择...'
+                  value={this.getSelectValue(bodySign.blood_type, this.bloodType())}
                   options={this.bloodType()}
                   height={39}
                   onChange={e => {
@@ -273,6 +256,7 @@ export default class CompleteHealth extends Component {
               <div style={{ display: 'block', width: '115px' }}>
                 <Select
                   placeholder='请选择...'
+                  value={this.getSelectValue(bodySign.rh_blood_type, this.rhBloodType())}
                   options={this.rhBloodType()}
                   height={39}
                   onChange={e => {
@@ -286,6 +270,7 @@ export default class CompleteHealth extends Component {
               <div style={{ display: 'block', width: '115px', float: 'left', marginTop: '3px' }}>
                 <Select
                   placeholder='请选择...'
+                  value={this.getSelectValue(bodySign.temperature_type, this.temperatureType())}
                   options={this.temperatureType()}
                   height={39}
                   onChange={e => {
@@ -295,6 +280,7 @@ export default class CompleteHealth extends Component {
               </div>
               <input
                 type='text'
+                value={bodySign.temperature}
                 style={{ width: '200px', marginLeft: '10px' }}
                 placeholder='请填写温度数值'
                 onChange={e => {
@@ -306,6 +292,7 @@ export default class CompleteHealth extends Component {
               <label>呼吸(次/分钟)</label>
               <input
                 type='number'
+                value={bodySign.breathe || ''}
                 placeholder='请填写呼吸次数'
                 onChange={e => {
                   this.setBodySign(1, e, 'breathe')
@@ -316,6 +303,7 @@ export default class CompleteHealth extends Component {
               <label>脉搏(次/分钟)</label>
               <input
                 type='number'
+                value={bodySign.pulse || ''}
                 placeholder='请填写脉搏次数'
                 onChange={e => {
                   this.setBodySign(1, e, 'pulse')
@@ -326,6 +314,7 @@ export default class CompleteHealth extends Component {
               <label>血压(mmHg)</label>
               <input
                 type='number'
+                value={bodySign.systolic_blood_pressure || ''}
                 style={{ width: '140px' }}
                 placeholder='请填写血压收缩压'
                 onChange={e => {
@@ -334,6 +323,7 @@ export default class CompleteHealth extends Component {
               />
               <input
                 type='number'
+                value={bodySign.diastolic_blood_pressure || ''}
                 style={{ width: '140px', marginLeft: '10px' }}
                 placeholder='请填写血压舒张压'
                 onChange={e => {
@@ -342,32 +332,34 @@ export default class CompleteHealth extends Component {
               />
             </li>
             <li>
-              <label>血糖浓度(mmol/I)</label>
+              <label>血糖时间</label>
               {/* //时间控件 */}
               <input
-                type='datetime-local'
-                style={{ width: '95px', float: 'left' }}
-                placeholder='请填写血糖时间'
+                type='text'
+                placeholder='YYYY-MM-DD HH:mm'
+                value={bodySign.blood_sugar_time || ''}
                 onChange={e => {
-                  console.log('血糖时间======', e)
                   this.setBodySign(1, e, 'blood_sugar_time')
                 }}
-                onSelect={e => {
-                  console.log('血糖时间  ======', e.target.value)
-                }}
               />
-              <div style={{ display: 'block', width: '105px', float: 'left', marginTop: '3px', marginLeft: '10px' }}>
+            </li>
+            <li>
+              <label>血糖浓度(mmol/I)</label>
+              <div style={{ display: 'block', width: '105px', float: 'left', marginTop: '3px' }}>
                 <Select
+                  height={39}
                   placeholder='请选择...'
+                  value={this.getSelectValue(bodySign.blood_sugar_type, this.bloodSugarType())}
                   options={this.bloodSugarType()}
                   onChange={e => {
-                    this.setBodySign(2, e, 'diastolic_blood_pressure')
+                    this.setBodySign(2, e, 'blood_sugar_type')
                   }}
                 />
               </div>
               <input
                 type='text'
                 placeholder='请填写血糖浓度'
+                value={bodySign.blood_sugar_concentration || ''}
                 style={{ width: '105px', float: 'left', marginLeft: '10px' }}
                 onChange={e => {
                   this.setBodySign(1, e, 'blood_sugar_concentration')
@@ -379,6 +371,7 @@ export default class CompleteHealth extends Component {
               <input
                 type='text'
                 style={{ width: '130px' }}
+                value={bodySign.left_vision || ''}
                 placeholder='请填写左眼视力'
                 onChange={e => {
                   this.setBodySign(1, e, 'left_vision')
@@ -390,6 +383,7 @@ export default class CompleteHealth extends Component {
               <input
                 type='text'
                 style={{ width: '130px' }}
+                value={bodySign.right_vision || ''}
                 placeholder='请填写右眼视力'
                 onChange={e => {
                   this.setBodySign(1, e, 'right_vision')
@@ -400,6 +394,7 @@ export default class CompleteHealth extends Component {
               <label>氧饱和度(%)</label>
               <input
                 type='text'
+                value={bodySign.oxygen_saturation || ''}
                 placeholder='请填写氧饱和度'
                 onChange={e => {
                   this.setBodySign(1, e, 'oxygen_saturation')
@@ -411,6 +406,7 @@ export default class CompleteHealth extends Component {
               <div style={{ display: 'block', width: '326px', float: 'left', marginTop: '3px' }}>
                 <Select
                   placeholder='请选择...'
+                  value={this.getSelectValue(bodySign.pain_score, this.painScore())}
                   options={this.painScore()}
                   height={39}
                   onChange={e => {
@@ -469,6 +465,7 @@ export default class CompleteHealth extends Component {
                   type='radio'
                   name='allergy'
                   style={{ width: 'auto', height: 'auto' }}
+                  checked={preMedicalRecords.has_allergic_history === true}
                   value={!false}
                   onChange={e => {
                     console.log('过敏史=======', e)
@@ -480,6 +477,7 @@ export default class CompleteHealth extends Component {
                 <input
                   type='radio'
                   name='allergy'
+                  checked={preMedicalRecords.has_allergic_history === false}
                   style={{ width: 'auto', height: 'auto' }}
                   value={false}
                   onChange={e => {
@@ -490,6 +488,7 @@ export default class CompleteHealth extends Component {
               <input
                 type='text'
                 placeholder={'对什么过敏'}
+                value={preMedicalRecords.allergic_history || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'allergic_history')
                 }}
@@ -499,6 +498,7 @@ export default class CompleteHealth extends Component {
               <label>个人史</label>
               <textarea
                 style={{ height: '63px' }}
+                value={preMedicalRecords.personal_medical_history || ''}
                 placeholder='请填写个人史'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'personal_medical_history')
@@ -510,6 +510,7 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '70px' }}
                 placeholder='请填写家族史'
+                value={preMedicalRecords.family_medical_history || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'family_medical_history')
                 }}
@@ -520,6 +521,7 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '35px' }}
                 placeholder='请填写接种疫苗'
+                value={preMedicalRecords.vaccination || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'vaccination')
                 }}
@@ -531,6 +533,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '170px' }}
                 placeholder='月经初潮年龄'
+                value={preMedicalRecords.menarche_age || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menarche_age')
                 }}
@@ -539,6 +542,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '120px', marginLeft: '15px' }}
                 placeholder='月经经期开始时间'
+                value={preMedicalRecords.menstrual_period_start_day || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_period_start_day')
                 }}
@@ -547,6 +551,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '120px', marginLeft: '5px' }}
                 placeholder='月经经期结束时间'
+                value={preMedicalRecords.menstrual_period_end_day || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_period_end_day')
                 }}
@@ -555,6 +560,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '120px', marginLeft: '15px', marginTop: '10px' }}
                 placeholder='月经周期开始时间'
+                value={preMedicalRecords.menstrual_cycle_start_day || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
                 }}
@@ -563,6 +569,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '120px', marginLeft: '5px', marginTop: '10px' }}
                 placeholder='月经周期结束时间'
+                value={preMedicalRecords.menstrual_cycle_end_day || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
                 }}
@@ -571,6 +578,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '170px', marginTop: '10px' }}
                 placeholder='末次月经时间'
+                value={preMedicalRecords.menstrual_last_day || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'menstrual_last_day')
                 }}
@@ -579,6 +587,7 @@ export default class CompleteHealth extends Component {
                 type='text'
                 style={{ width: '170px', marginLeft: '15px', marginTop: '10px' }}
                 placeholder='孕周'
+                value={preMedicalRecords.gestational_weeks || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'gestational_weeks')
                 }}
@@ -589,6 +598,7 @@ export default class CompleteHealth extends Component {
               <input
                 type='text'
                 style={{ width: '661px' }}
+                value={preMedicalRecords.childbearing_history || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'childbearing_history')
                 }}
@@ -628,6 +638,7 @@ export default class CompleteHealth extends Component {
 
   // 诊前预诊
   showPreDiagnosisRecords() {
+    const { preDiagnosisRecords } = this.state
     return (
       <div>
         <div className={'progress'}>
@@ -641,9 +652,10 @@ export default class CompleteHealth extends Component {
               </label>
               <textarea
                 style={{ height: '70px' }}
+                value={preDiagnosisRecords.chief_complaint || ''}
                 placeholder='请填写主述'
                 onChange={e => {
-                  setPreDiagnosisRecords(e, 'chief_complaint')
+                  this.setPreDiagnosisRecords(e, 'chief_complaint')
                 }}
               />
             </li>
@@ -652,8 +664,9 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '70px' }}
                 placeholder='请填写现病史'
+                value={preDiagnosisRecords.history_of_rresent_illness || ''}
                 onChange={e => {
-                  setPreDiagnosisRecords(e, 'history_of_rresent_illness')
+                  this.setPreDiagnosisRecords(e, 'history_of_rresent_illness')
                 }}
               />
             </li>
@@ -661,9 +674,10 @@ export default class CompleteHealth extends Component {
               <label>既往史</label>
               <textarea
                 style={{ height: '70px' }}
+                value={preDiagnosisRecords.history_of_past_illness || ''}
                 placeholder='请填写既往史'
                 onChange={e => {
-                  setPreDiagnosisRecords(e, 'history_of_past_illness')
+                  this.setPreDiagnosisRecords(e, 'history_of_past_illness')
                 }}
               />
             </li>
@@ -672,8 +686,9 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '70px' }}
                 placeholder='请填写体格检查'
+                value={preDiagnosisRecords.physical_examination || ''}
                 onChange={e => {
-                  setPreDiagnosisRecords(e, 'physical_examination')
+                  this.setPreDiagnosisRecords(e, 'physical_examination')
                 }}
               />
             </li>
@@ -682,8 +697,9 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '70px' }}
                 placeholder='请填写备注'
+                value={preDiagnosisRecords.remark || ''}
                 onChange={e => {
-                  setPreDiagnosisRecords(e, 'remark')
+                  this.setPreDiagnosisRecords(e, 'remark')
                 }}
               />
             </li>
@@ -701,12 +717,7 @@ export default class CompleteHealth extends Component {
     )
   }
 
-  show(clinic_triage_patient_id) {
-    if (!clinic_triage_patient_id) return
-    this.setState({ show: true, clinic_triage_patient_id })
-  }
-
-  close () {
+  close() {
     this.setState({ show: false })
   }
 

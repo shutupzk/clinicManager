@@ -12,7 +12,8 @@ import {
   queryAppointmentsByDate,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis
+  completePreDiagnosis,
+  GetHealthRecord
 } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
@@ -90,6 +91,27 @@ import {
   queryOutstockWayList,
   queryDrugStockList
 } from './drug_outstock'
+import {
+  materailStocks,
+  queryMaterialInstockRecord,
+  createMaterialInstock,
+  MaterialInstockUpdate,
+  MaterialInstockRecordDelete,
+  materialStockSelect,
+  queryMaterialInstockRecordDetail,
+  MaterialInstockCheck
+} from './material_stock'
+import {
+  materialOutStocks,
+  queryMaterialOutstockRecord,
+  createMaterialOutstock,
+  MaterialOutstockUpdate,
+  MaterialOutstockRecordDelete,
+  materialOutStockSelect,
+  queryMaterialOutstockRecordDetail,
+  MaterialOutstockCheck,
+  queryMaterialStockList
+} from './material_outstock'
 import { clinicPermissions, queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions } from './clinic_permission'
 
 // keys
@@ -138,6 +160,8 @@ export {
   drugStocks,
   drugClasses,
   drugOutStocks,
+  materailStocks,
+  materialOutStocks,
   clinicPermissions
 }
 
@@ -279,7 +303,23 @@ export {
   DrugOutstockCheck,
   queryOutstockWayList,
   queryDrugStockList,
+  queryMaterialInstockRecord,
+  createMaterialInstock,
+  MaterialInstockUpdate,
+  MaterialInstockRecordDelete,
+  materialStockSelect,
+  queryMaterialInstockRecordDetail,
+  MaterialInstockCheck,
+  queryMaterialOutstockRecord,
+  createMaterialOutstock,
+  MaterialOutstockUpdate,
+  MaterialOutstockRecordDelete,
+  materialOutStockSelect,
+  queryMaterialOutstockRecordDetail,
+  MaterialOutstockCheck,
+  queryMaterialStockList,
   queryClinicHassetPermissions,
   queryClinicUnsetPermissions,
-  createClinicPermissions
+  createClinicPermissions,
+  GetHealthRecord
 }

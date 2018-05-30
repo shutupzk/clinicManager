@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 // import { PageCard, Select } from '../../../../components'
 import StorageMgtScreen from './storage_mgt_screen'
 import OutboundMgtScreen from './outbound_mgt_screen'
-import CurrentInventoryScreen from './current_inventory_screen'
 
-class PharmacyListScreen extends Component {
+class PatientScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -25,9 +24,7 @@ class PharmacyListScreen extends Component {
     let { personnel_type } = this.state
     let map = {
       1: <StorageMgtScreen />,
-      2: <OutboundMgtScreen />,
-      3: <CurrentInventoryScreen />
-      // 4: <StorageMgtScreen />
+      2: <OutboundMgtScreen />
     }
     return map[personnel_type] || null
   }
@@ -42,7 +39,7 @@ class PharmacyListScreen extends Component {
               this.changeContent({ personnel_type: 1 })
             }}
           >
-            入库管理
+            就诊人管理
           </span>
           <span
             className={this.state.personnel_type === 2 ? 'sel' : ''}
@@ -50,24 +47,8 @@ class PharmacyListScreen extends Component {
               this.changeContent({ personnel_type: 2 })
             }}
           >
-            出库管理
+            会员管理
           </span>
-          <span
-            className={this.state.personnel_type === 3 ? 'sel' : ''}
-            onClick={() => {
-              this.changeContent({ personnel_type: 3 })
-            }}
-          >
-            当前库存
-          </span>
-          {/* <span
-            className={this.state.personnel_type === 4 ? 'sel' : ''}
-            onClick={() => {
-              this.changeContent({ personnel_type: 4 })
-            }}
-          >
-            药库盘点
-          </span> */}
         </div>
         {this.renderContent()}
         <style jsx='true'>{`
@@ -118,4 +99,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {})(PharmacyListScreen)
+export default connect(mapStateToProps, {})(PatientScreen)

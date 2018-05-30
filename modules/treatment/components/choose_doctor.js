@@ -54,7 +54,6 @@ export default class ChooseDoctor extends Component {
       } else {
         this.close()
         refreshPatients({})
-        return this.refs.myAlert.alert('分诊成功')
       }
     })
   }

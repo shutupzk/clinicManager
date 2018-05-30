@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  createDrugInstock,
-  ClinicDrugList,
+  createMaterialInstock,
+  queryMaterialList,
   queryInstockWayList,
   querySupplierList,
-  queryDrugInstockRecordDetail,
-  DrugInstockCheck,
-  DrugInstockUpdate
+  queryMaterialInstockRecordDetail,
+  MaterialInstockCheck,
+  MaterialInstockUpdate
 } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 import { formatMoney, limitMoney } from '../../../../../utils'
 import moment from 'moment'
 
 // 病历
-class AddDrugInstockScreen extends Component {
+class AddMaterialInstockScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -40,9 +40,12 @@ class AddDrugInstockScreen extends Component {
     }
   }
   async queryDetailData() {
-    const {drug_instock_record_id, queryDrugInstockRecordDetail} = this.props
-    let data = await queryDrugInstockRecordDetail({drug_instock_record_id})
+    const {material_instock_record_id, queryMaterialInstockRecordDetail} = this.props
+    let data = await queryMaterialInstockRecordDetail({material_instock_record_id})
     console.log('data=====', data)
+    for (let key of data.items) {
+      key.buy_price = formatMoney(key.buy_price)
+    }
     this.setState({
       instock_date: data.instock_date,
       instock_way_name: data.instock_way_name,
@@ -95,13 +98,13 @@ class AddDrugInstockScreen extends Component {
     this.setState({ items: array })
   }
 
-  async createDrugInstock() {
-    const { createDrugInstock, clinic_id, instock_operation_id } = this.props
+  async createMaterialInstock() {
+    const { createMaterialInstock, clinic_id, instock_operation_id } = this.props
     const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
     let array = []
     for (let key of items) {
       let value = {}
-      value.clinic_drug_id = key.clinic_drug_id + ''
+      value.clinic_material_id = key.clinic_material_id + ''
       value.buy_price = key.buy_price * 100 + ''
       value.instock_amount = key.instock_amount + ''
       value.serial = key.serial
@@ -118,7 +121,7 @@ class AddDrugInstockScreen extends Component {
       items: JSON.stringify(array)
     }
     // console.log('requestData====', requestData, items)
-    let error = await createDrugInstock(requestData)
+    let error = await createMaterialInstock(requestData)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -128,13 +131,13 @@ class AddDrugInstockScreen extends Component {
     }
   }
   // 修改
-  async DrugInstockUpdate() {
-    const { DrugInstockUpdate, clinic_id, instock_operation_id, drug_instock_record_id } = this.props
+  async MaterialInstockUpdate() {
+    const { MaterialInstockUpdate, clinic_id, instock_operation_id, material_instock_record_id } = this.props
     const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
     let array = []
     for (let key of items) {
       let value = {}
-      value.clinic_drug_id = key.clinic_drug_id + ''
+      value.clinic_material_id = key.clinic_material_id + ''
       value.buy_price = key.buy_price * 100 + ''
       value.instock_amount = key.instock_amount + ''
       value.serial = key.serial
@@ -142,7 +145,7 @@ class AddDrugInstockScreen extends Component {
       array.push(value)
     }
     let requestData = {
-      drug_instock_record_id,
+      material_instock_record_id,
       clinic_id,
       instock_operation_id,
       instock_date,
@@ -152,7 +155,7 @@ class AddDrugInstockScreen extends Component {
       items: JSON.stringify(array)
     }
     // console.log('requestData====', requestData, items)
-    let error = await DrugInstockUpdate(requestData)
+    let error = await MaterialInstockUpdate(requestData)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -162,14 +165,14 @@ class AddDrugInstockScreen extends Component {
     }
   }
   // 审核
-  async DrugInstockCheck() {
-    const {drug_instock_record_id, instock_operation_id, DrugInstockCheck} = this.props
+  async MaterialInstockCheck() {
+    const {material_instock_record_id, instock_operation_id, MaterialInstockCheck} = this.props
     let requestData = {
-      drug_instock_record_id,
+      material_instock_record_id,
       verify_operation_id: instock_operation_id
     }
     this.refs.myAlert.confirm('提示', '是否审核通过，请确认？', 'Warning', async () => {
-      let error = await DrugInstockCheck(requestData)
+      let error = await MaterialInstockCheck(requestData)
       if (error) {
         return this.refs.myAlert.alert('审核失败', error)
       } else {
@@ -332,26 +335,26 @@ class AddDrugInstockScreen extends Component {
     )
   }
   // 药筛选项
-  getDrugOptions() {
-    const { drugs } = this.props
-    // console.log('drugs====', drugs)
+  getMaterialOptions() {
+    const { materials } = this.props
+    console.log('materials====', materials)
     let array = []
-    for (let key in drugs) {
+    for (let key in materials) {
       let {
-        clinic_drug_id,
-        drug_name,
-        packing_unit_name,
+        clinic_material_id,
+        name,
+        unit_name,
         manu_factory_name,
         ret_price,
         stock_amount,
         buy_price
-      } = drugs[key]
+      } = materials[key]
       // if (type !== 0) continue
       array.push({
-        value: clinic_drug_id,
-        label: drug_name,
+        value: clinic_material_id,
+        label: name,
         manu_factory_name,
-        packing_unit_name,
+        unit_name,
         ret_price,
         instock_amount: stock_amount,
         buy_price: formatMoney(buy_price)
@@ -360,17 +363,17 @@ class AddDrugInstockScreen extends Component {
     return array
   }
   // 搜索药
-  ClinicDrugList(keyword) {
-    const {clinic_id, ClinicDrugList} = this.props
+  queryMaterialList(keyword) {
+    const {clinic_id, queryMaterialList} = this.props
     if (keyword) {
-      ClinicDrugList({ clinic_id, status: true, keyword }, true)
+      queryMaterialList({ clinic_id, status: true, keyword })
     }
   }
 
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    // console.log(items)
+    console.log('items', items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -399,32 +402,32 @@ class AddDrugInstockScreen extends Component {
                   <div>
                     {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
                       <Select
-                        value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions())}
+                        value={this.getSelectValue(item.clinic_material_id, this.getMaterialOptions())}
                         onChange={({
                           value,
                           label,
                           manu_factory_name,
-                          packing_unit_name,
+                          unit_name,
                           ret_price,
                           instock_amount,
                           buy_price
                         }) => {
                           // let data = {}
-                          this.setItemValue(value, index, 'clinic_drug_id', 2)
+                          this.setItemValue(value, index, 'clinic_material_id', 2)
                           this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
-                          this.setItemValue(packing_unit_name, index, 'packing_unit_name', 2)
+                          this.setItemValue(unit_name, index, 'unit_name', 2)
                           this.setItemValue(ret_price, index, 'ret_price', 2)
                           this.setItemValue(instock_amount, index, 'instock_amount', 2)
                           this.setItemValue(buy_price, index, 'buy_price', 2)
                         }}
                         placeholder='搜索'
                         height={38}
-                        onInputChange={keyword => this.ClinicDrugList(keyword)}
-                        options={this.getDrugOptions()}
+                        onInputChange={keyword => this.queryMaterialList(keyword)}
+                        options={this.getMaterialOptions()}
                       />
-                    </div> : item.drug_name }
+                    </div> : item.material_name }
                   </div>
-                  <div>{item.packing_unit_name}</div>
+                  <div>{item.unit_name}</div>
                   <div title={item.manu_factory_name}>
                     <div className={'longTxt'}>
                       {item.manu_factory_name}
@@ -514,13 +517,13 @@ class AddDrugInstockScreen extends Component {
             <button
               onClick={() => {
                 if (showWay === 1) {
-                  this.createDrugInstock()
+                  this.createMaterialInstock()
                 }
                 if (showWay === 2) {
-                  this.DrugInstockCheck()
+                  this.MaterialInstockCheck()
                 }
                 if (showWay === 4) {
-                  this.DrugInstockUpdate()
+                  this.MaterialInstockUpdate()
                 }
               }}
             >
@@ -826,19 +829,19 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     instock_operation_id: state.user.data.id,
-    drugs: state.drugs.json_data,
+    materials: state.materials.data,
     instock_way: state.drugStocks.instock_way,
     supplier_data: state.drugStocks.supplier_data,
-    detail_data: state.drugStocks.detail_data
+    detail_data: state.materailStocks.detail_data
   }
 }
 
 export default connect(mapStateToProps, {
-  createDrugInstock,
-  ClinicDrugList,
+  createMaterialInstock,
+  queryMaterialList,
   queryInstockWayList,
   querySupplierList,
-  queryDrugInstockRecordDetail,
-  DrugInstockCheck,
-  DrugInstockUpdate
-})(AddDrugInstockScreen)
+  queryMaterialInstockRecordDetail,
+  MaterialInstockCheck,
+  MaterialInstockUpdate
+})(AddMaterialInstockScreen)

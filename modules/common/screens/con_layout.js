@@ -57,14 +57,14 @@ class ConLayout extends Component {
             margin: 25px 0 32px 5px;
           }
           .logoBox span:nth-child(1){
-            width:106px;
+            // width:106px;
             height:19px; 
             font-size:14px;
             font-family:MicrosoftYaHei-Bold;
             color:rgba(52,52,52,1);
             line-height:19px;
             float:left;
-            width: 100px;
+            width: 112px;
             text-align: left;
           }
           .logoBox span:nth-child(2){
