@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from '../../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis, GetHealthRecord } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
@@ -53,8 +53,14 @@ class TriageScreen extends Component {
       <div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='text' placeholder='搜索科室' />
-            <button>查询</button>
+            <input
+              type='text'
+              placeholder='搜索就诊人姓名/身份证号码/手机号码'
+              onChange={e => {
+                this.setState({ keyword: e.target.value })
+              }}
+            />
+            <button onClick={() => this.commonQueryList({})}>查询</button>
           </div>
         </div>
         <div className={'listContent'}>
@@ -67,9 +73,12 @@ class TriageScreen extends Component {
                     buttons={[
                       {
                         title: '完善健康档案',
-                        onClick: () => {
+                        onClick: async () => {
                           let { clinic_triage_patient_id } = patient
-                          this.showCompleteHealthFile(clinic_triage_patient_id)
+                          let data = await this.props.GetHealthRecord({ clinic_triage_patient_id })
+                          const { body_sign, pre_medical_record, pre_diagnosis } = data
+                          console.log('data =====', data)
+                          this.showCompleteHealthFile(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis)
                           this.setState({ clinic_triage_patient_id })
                         }
                       },
@@ -99,8 +108,8 @@ class TriageScreen extends Component {
     )
   }
 
-  showCompleteHealthFile(clinic_triage_patient_id) {
-    this.refs.CompleteHealth.show(clinic_triage_patient_id)
+  showCompleteHealthFile(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis) {
+    this.refs.CompleteHealth.show(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis)
   }
 
   render() {
@@ -175,5 +184,6 @@ export default connect(mapStateToProps, {
   queryDoctorList,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis
+  completePreDiagnosis,
+  GetHealthRecord
 })(TriageScreen)

@@ -201,6 +201,7 @@ export const completeBodySign = ({
   diastolic_blood_pressure,
   blood_sugar_time,
   blood_sugar_type,
+  blood_sugar_concentration,
   left_vision,
   right_vision,
   oxygen_saturation,
@@ -222,6 +223,7 @@ export const completeBodySign = ({
       diastolic_blood_pressure,
       blood_sugar_time,
       blood_sugar_type,
+      blood_sugar_concentration,
       left_vision,
       right_vision,
       oxygen_saturation,
@@ -240,6 +242,7 @@ export const completeBodySign = ({
       pulse,
       systolic_blood_pressure,
       diastolic_blood_pressure,
+      blood_sugar_concentration,
       blood_sugar_time,
       blood_sugar_type,
       left_vision,
@@ -324,5 +327,15 @@ export const triagePatientsSelect = ({ clinic_triage_patient_id }) => async disp
     return null
   } catch (e) {
     return e.message
+  }
+}
+
+export const GetHealthRecord = ({ clinic_triage_patient_id }) => async dispatch => {
+  try {
+    const data = await request('/triage/GetHealthRecord', { clinic_triage_patient_id })
+    return data
+  } catch (e) {
+    console.log(e)
+    return {}
   }
 }

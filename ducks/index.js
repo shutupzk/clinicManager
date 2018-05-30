@@ -12,7 +12,8 @@ import {
   queryAppointmentsByDate,
   completeBodySign,
   completePreMedicalRecord,
-  completePreDiagnosis
+  completePreDiagnosis,
+  GetHealthRecord
 } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate } from './departments'
@@ -319,5 +320,6 @@ export {
   queryMaterialStockList,
   queryClinicHassetPermissions,
   queryClinicUnsetPermissions,
-  createClinicPermissions
+  createClinicPermissions,
+  GetHealthRecord
 }
