@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { PageCard, Confirm } from '../../../../components'
 // import moment from 'moment'
 import {
-  queryDrugOutstockRecord,
-  DrugOutstockRecordDelete
+  queryMaterialOutstockRecord,
+  MaterialOutstockRecordDelete
 } from '../../../../ducks'
-import AddDrugOutstockScreen from './components/addDrugOutstockScreen'
+import AddMaterialOutstockScreen from './components/addMaterialOutstockScreen'
 import moment from 'moment'
 
 // 病历
@@ -19,7 +19,7 @@ class OutboundMgtScreen extends Component {
       order_number: '',
       showType: 1,
       showWay: 1,
-      drug_outstock_record_id: ''
+      material_outstock_record_id: ''
     }
   }
 
@@ -27,7 +27,7 @@ class OutboundMgtScreen extends Component {
     this.getDataList({offset: 0, limit: 10})
   }
   getDataList({ offset = 0, limit = 10 }) {
-    const {clinic_id, queryDrugOutstockRecord} = this.props
+    const {clinic_id, queryMaterialOutstockRecord} = this.props
     const {start_date, end_date, order_number} = this.state
     let requestData = {
       clinic_id,
@@ -43,17 +43,17 @@ class OutboundMgtScreen extends Component {
     if (order_number !== '') {
       requestData.order_number = order_number
     }
-    queryDrugOutstockRecord(requestData)
+    queryMaterialOutstockRecord(requestData)
   }
-  async DrugOutstockRecordDelete(drug_outstock_record_id) {
-    const { DrugOutstockRecordDelete, pageInfo, drugOutStocks } = this.props
+  async MaterialOutstockRecordDelete(material_outstock_record_id) {
+    const { MaterialOutstockRecordDelete, pageInfo, materialOutStocks } = this.props
     this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
-      let error = await DrugOutstockRecordDelete({drug_outstock_record_id})
+      let error = await MaterialOutstockRecordDelete({material_outstock_record_id})
       if (error) {
         return this.refs.myAlert.alert('删除失败', error)
       } else {
         this.refs.myAlert.alert('删除成功')
-        if (drugOutStocks.length > 1) {
+        if (materialOutStocks.length > 1) {
           this.getDataList({ offset: pageInfo.offset, limit: 10 })
         } else if (pageInfo.offset > 0) {
           this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
@@ -62,8 +62,8 @@ class OutboundMgtScreen extends Component {
     })
   }
   renderTable() {
-    const { drugOutStocks, pageInfo } = this.props
-    console.log('drugOutStocks=====', drugOutStocks)
+    const { materialOutStocks, pageInfo } = this.props
+    console.log('materialOutStocks=====', materialOutStocks)
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'contentTable'}>
@@ -82,7 +82,7 @@ class OutboundMgtScreen extends Component {
                 </tr>
               </thead>
               <tbody>
-                {drugOutStocks.map((item, index) => {
+                {materialOutStocks.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td style={{flex: 2}}>{moment(item.outstock_date).format('YYYY-MM-DD')}</td>
@@ -97,7 +97,7 @@ class OutboundMgtScreen extends Component {
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
-                              drug_outstock_record_id: item.drug_outstock_record_id,
+                              material_outstock_record_id: item.material_outstock_record_id,
                               showWay: 4
                             })
                           }}>修改</div>
@@ -105,19 +105,19 @@ class OutboundMgtScreen extends Component {
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
-                              drug_outstock_record_id: item.drug_outstock_record_id,
+                              material_outstock_record_id: item.material_outstock_record_id,
                               showWay: 2
                             })
                           }}>审核</div>
                           <div className={'divideLine'}>|</div>
                           <div onClick={() => {
-                            this.DrugOutstockRecordDelete(item.drug_outstock_record_id)
+                            this.MaterialOutstockRecordDelete(item.material_outstock_record_id)
                           }}>删除</div>
                         </div> : <div>
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
-                              drug_outstock_record_id: item.drug_outstock_record_id,
+                              material_outstock_record_id: item.material_outstock_record_id,
                               showWay: 3
                             })
                           }}>查看详情</div>
@@ -213,10 +213,10 @@ class OutboundMgtScreen extends Component {
     )
   }
   showView() {
-    let { showType, drug_outstock_record_id, showWay } = this.state
+    let { showType, material_outstock_record_id, showWay } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddDrugOutstockScreen showWay={showWay} drug_outstock_record_id={drug_outstock_record_id} drugType={1} backToList={() => {
+      2: <AddMaterialOutstockScreen showWay={showWay} material_outstock_record_id={material_outstock_record_id} drugType={1} backToList={() => {
         this.setState({showType: 1})
         this.getDataList({offset: 0, limit: 10})
       }} />
@@ -255,7 +255,7 @@ class OutboundMgtScreen extends Component {
         <div className={'boxRight'}>
           <button
             onClick={() => {
-              this.setState({showType: 2, showWay: 1, drug_outstock_record_id: ''})
+              this.setState({showType: 2, showWay: 1, material_outstock_record_id: ''})
             }}
           >
             新增出库
@@ -383,12 +383,12 @@ class OutboundMgtScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    drugOutStocks: state.drugOutStocks.data,
-    pageInfo: state.drugOutStocks.page_info
+    materialOutStocks: state.materialOutStocks.data,
+    pageInfo: state.materialOutStocks.page_info
   }
 }
 
 export default connect(mapStateToProps, {
-  queryDrugOutstockRecord,
-  DrugOutstockRecordDelete
+  queryMaterialOutstockRecord,
+  MaterialOutstockRecordDelete
 })(OutboundMgtScreen)

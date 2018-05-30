@@ -28,7 +28,10 @@ class AddDrugOutstockScreen extends Component {
       personnel_name: '',
       items: [],
       remark: '',
-      readOnly: false
+      readOnly: false,
+      outstock_operation_name: '',
+      order_number: '',
+      created_time: ''
     }
   }
 
@@ -53,7 +56,10 @@ class AddDrugOutstockScreen extends Component {
       personnel_name: data.personnel_name,
       personnel_id: data.personnel_id,
       remark: data.remark,
-      items: data.items
+      items: data.items,
+      created_time: data.created_time,
+      outstock_operation_name: data.outstock_operation_name,
+      order_number: data.order_number
     })
   }
   // 验证字段
@@ -244,7 +250,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 出库基本信息
   renderBaseInfoBlank() {
-    const {outstock_date, outstock_way_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name} = this.state
+    const {outstock_date, outstock_way_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name, created_time, outstock_operation_name, order_number} = this.state
     const {showWay} = this.props
     // console.log('outstock_date, outstock_way_name, supplier_name, remark', outstock_date, outstock_way_name, supplier_name, remark)
     return (
@@ -339,6 +345,33 @@ class AddDrugOutstockScreen extends Component {
               }}
             />
           </li>
+          {showWay !== 1 ? <li>
+            <label>操作日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'created_time'}
+              value={moment(created_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay !== 1 ? <li>
+            <label>操作人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'outstock_operation_name'}
+              value={outstock_operation_name}
+            />
+          </li> : ''}
+          {showWay !== 1 ? <li>
+            <label>出库单号</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'order_number'}
+              value={order_number}
+            />
+          </li> : ''}
         </ul>
         {this.style()}
       </div>
