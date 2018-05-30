@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { PageCard, Confirm, Select } from '../../../../components'
 // import moment from 'moment'
 import {
-  queryDrugStockList,
+  queryMaterialStockList,
   querySupplierList
 } from '../../../../ducks'
-// import AdddrugCurrentStockscreen from './components/adddrugCurrentStockscreen'
+// import AddmeterialCurrentStockscreen from './components/addmeterialCurrentStockscreen'
 import moment from 'moment'
 
 // 病历
@@ -20,7 +20,7 @@ class CurrentInventoryScreen extends Component {
       keyword: '',
       showType: 1,
       showWay: 1,
-      drug_outstock_record_id: ''
+      material_outstock_record_id: ''
     }
   }
 
@@ -28,7 +28,7 @@ class CurrentInventoryScreen extends Component {
     this.getDataList({offset: 0, limit: 10})
   }
   getDataList({ offset = 0, limit = 10 }) {
-    const {clinic_id, queryDrugStockList} = this.props
+    const {clinic_id, queryMaterialStockList} = this.props
     const {supplier_name, amount, date_warning, keyword} = this.state
     let requestData = {
       clinic_id,
@@ -47,11 +47,11 @@ class CurrentInventoryScreen extends Component {
     if (keyword !== '') {
       requestData.keyword = keyword
     }
-    queryDrugStockList(requestData, true)
+    queryMaterialStockList(requestData, true)
   }
   renderTable() {
-    const { drugCurrentStocks, pageInfo } = this.props
-    console.log('drugCurrentStocks=====', drugCurrentStocks)
+    const { meterialCurrentStocks, pageInfo } = this.props
+    console.log('meterialCurrentStocks=====', meterialCurrentStocks)
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'contentTable'}>
@@ -72,12 +72,12 @@ class CurrentInventoryScreen extends Component {
                 </tr>
               </thead>
               <tbody>
-                {drugCurrentStocks.map((item, index) => {
+                {meterialCurrentStocks.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td style={{flex: 2}}>{item.name}</td>
                       <td style={{flex: 2}}>{item.specification}</td>
-                      <td>{item.packing_unit_name}</td>
+                      <td>{item.unit_name}</td>
                       <td style={{flex: 2}} title={item.manu_factory_name}>{item.manu_factory_name}</td>
                       <td>{item.supplier_name}</td>
                       <td>{item.ret_price}</td>
@@ -352,13 +352,13 @@ class CurrentInventoryScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    drugCurrentStocks: state.drugOutStocks.stock_array_data,
-    pageInfo: state.drugOutStocks.stock_page_info,
+    meterialCurrentStocks: state.materialOutStocks.stock_array_data,
+    pageInfo: state.materialOutStocks.stock_page_info,
     supplier_data: state.drugStocks.supplier_data
   }
 }
 
 export default connect(mapStateToProps, {
-  queryDrugStockList,
+  queryMaterialStockList,
   querySupplierList
 })(CurrentInventoryScreen)

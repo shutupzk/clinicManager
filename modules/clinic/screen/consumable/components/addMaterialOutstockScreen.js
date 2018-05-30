@@ -1,22 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  createDrugOutstock,
-  ClinicDrugList,
+  createMaterialOutstock,
+  queryMaterialList,
   queryOutstockWayList,
-  queryDrugOutstockRecordDetail,
-  DrugOutstockCheck,
-  DrugOutstockUpdate,
+  queryMaterialOutstockRecordDetail,
+  MaterialOutstockCheck,
+  MaterialOutstockUpdate,
   queryDepartmentList,
   queryDoctorList,
-  queryDrugStockList
+  queryMaterialStockList
 } from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 import { formatMoney } from '../../../../../utils'
 import moment from 'moment'
 
 // 病历
-class AddDrugOutstockScreen extends Component {
+class AddMaterialOutstockScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -28,7 +28,10 @@ class AddDrugOutstockScreen extends Component {
       personnel_name: '',
       items: [],
       remark: '',
-      readOnly: false
+      readOnly: false,
+      outstock_operation_name: '',
+      order_number: '',
+      created_time: ''
     }
   }
 
@@ -42,8 +45,8 @@ class AddDrugOutstockScreen extends Component {
     }
   }
   async queryDetailData() {
-    const {drug_outstock_record_id, queryDrugOutstockRecordDetail} = this.props
-    let data = await queryDrugOutstockRecordDetail({drug_outstock_record_id})
+    const {material_outstock_record_id, queryMaterialOutstockRecordDetail} = this.props
+    let data = await queryMaterialOutstockRecordDetail({material_outstock_record_id})
     console.log('data=====', data)
     this.setState({
       outstock_date: moment(data.outstock_date).format('YYYY/MM/DD'),
@@ -53,7 +56,10 @@ class AddDrugOutstockScreen extends Component {
       personnel_name: data.personnel_name,
       personnel_id: data.personnel_id,
       remark: data.remark,
-      items: data.items
+      items: data.items,
+      created_time: data.created_time,
+      outstock_operation_name: data.outstock_operation_name,
+      order_number: data.order_number
     })
   }
   // 验证字段
@@ -97,14 +103,14 @@ class AddDrugOutstockScreen extends Component {
     this.setState({ items: array })
   }
 
-  async createDrugOutstock() {
-    const { createDrugOutstock, clinic_id, outstock_operation_id } = this.props
+  async createMaterialOutstock() {
+    const { createMaterialOutstock, clinic_id, outstock_operation_id } = this.props
     const { outstock_date, outstock_way_name, items, remark, department_id, personnel_id } = this.state
     let array = []
     for (let key of items) {
       let value = {}
       value.outstock_amount = key.outstock_amount + ''
-      value.drug_stock_id = key.drug_stock_id + ''
+      value.material_stock_id = key.material_stock_id + ''
       array.push(value)
     }
     let requestData = {
@@ -118,7 +124,7 @@ class AddDrugOutstockScreen extends Component {
       items: JSON.stringify(array)
     }
     // console.log('requestData====', requestData, items)
-    let error = await createDrugOutstock(requestData)
+    let error = await createMaterialOutstock(requestData)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -128,18 +134,18 @@ class AddDrugOutstockScreen extends Component {
     }
   }
   // 修改
-  async DrugOutstockUpdate() {
-    const { DrugOutstockUpdate, clinic_id, outstock_operation_id, drug_outstock_record_id } = this.props
+  async MaterialOutstockUpdate() {
+    const { MaterialOutstockUpdate, clinic_id, outstock_operation_id, material_outstock_record_id } = this.props
     const { outstock_date, outstock_way_name, items, remark, department_id, personnel_id } = this.state
     let array = []
     for (let key of items) {
       let value = {}
       value.outstock_amount = key.outstock_amount + ''
-      value.drug_stock_id = key.drug_stock_id + ''
+      value.material_stock_id = key.material_stock_id + ''
       array.push(value)
     }
     let requestData = {
-      drug_outstock_record_id,
+      material_outstock_record_id,
       clinic_id,
       outstock_operation_id,
       outstock_date,
@@ -150,7 +156,7 @@ class AddDrugOutstockScreen extends Component {
       items: JSON.stringify(array)
     }
     // console.log('requestData====', requestData, items)
-    let error = await DrugOutstockUpdate(requestData)
+    let error = await MaterialOutstockUpdate(requestData)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -160,14 +166,14 @@ class AddDrugOutstockScreen extends Component {
     }
   }
   // 审核
-  async DrugOutstockCheck() {
-    const {drug_outstock_record_id, outstock_operation_id, DrugOutstockCheck} = this.props
+  async MaterialOutstockCheck() {
+    const {material_outstock_record_id, outstock_operation_id, MaterialOutstockCheck} = this.props
     let requestData = {
-      drug_outstock_record_id,
+      material_outstock_record_id,
       verify_operation_id: outstock_operation_id
     }
     this.refs.myAlert.confirm('提示', '是否审核通过，请确认？', 'Warning', async () => {
-      let error = await DrugOutstockCheck(requestData)
+      let error = await MaterialOutstockCheck(requestData)
       if (error) {
         return this.refs.myAlert.alert('审核失败', error)
       } else {
@@ -244,7 +250,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 出库基本信息
   renderBaseInfoBlank() {
-    const {outstock_date, outstock_way_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name} = this.state
+    const {outstock_date, outstock_way_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name, created_time, outstock_operation_name, order_number} = this.state
     const {showWay} = this.props
     // console.log('outstock_date, outstock_way_name, supplier_name, remark', outstock_date, outstock_way_name, supplier_name, remark)
     return (
@@ -339,36 +345,63 @@ class AddDrugOutstockScreen extends Component {
               }}
             />
           </li>
+          {showWay !== 1 ? <li>
+            <label>操作日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'created_time'}
+              value={moment(created_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay !== 1 ? <li>
+            <label>操作人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'outstock_operation_name'}
+              value={outstock_operation_name}
+            />
+          </li> : ''}
+          {showWay !== 1 ? <li>
+            <label>出库单号</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'order_number'}
+              value={order_number}
+            />
+          </li> : ''}
         </ul>
         {this.style()}
       </div>
     )
   }
   // 药筛选项
-  getDrugStockOptions() {
-    const { drug_stock } = this.props
-    console.log('drug_stock====', drug_stock)
+  getMaterialStockOptions() {
+    const { material_stock } = this.props
+    console.log('material_stock====', material_stock)
     let array = []
-    for (let key in drug_stock) {
+    for (let key in material_stock) {
       let {
         buy_price,
-        drug_stock_id,
+        material_stock_id,
         name,
         eff_date,
         manu_factory_name,
-        packing_unit_name,
+        unit_name,
         ret_price,
         serial,
         specification,
         stock_amount,
         supplier_name
-      } = drug_stock[key]
+      } = material_stock[key]
       // if (type !== 0) continue
       array.push({
-        value: drug_stock_id,
+        value: material_stock_id,
         label: name,
         manu_factory_name,
-        packing_unit_name,
+        unit_name,
         ret_price,
         stock_amount,
         buy_price: formatMoney(buy_price),
@@ -381,17 +414,18 @@ class AddDrugOutstockScreen extends Component {
     return array
   }
   // 搜索药
-  queryDrugStockList(keyword) {
-    const {clinic_id, queryDrugStockList} = this.props
+  queryMaterialStockList(keyword) {
+    const {clinic_id, queryMaterialStockList} = this.props
     if (keyword) {
-      queryDrugStockList({ clinic_id, keyword })
+      queryMaterialStockList({ clinic_id, keyword })
     }
+    // queryMaterialStockList({ clinic_id, keyword })
   }
 
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    // console.log(items)
+    console.log(items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -421,12 +455,12 @@ class AddDrugOutstockScreen extends Component {
                   <div>
                     {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
                       <Select
-                        value={this.getSelectValue(item.drug_stock_id, this.getDrugStockOptions())}
+                        value={this.getSelectValue(item.material_stock_id, this.getMaterialStockOptions())}
                         onChange={({
                           value,
                           label,
                           manu_factory_name,
-                          packing_unit_name,
+                          unit_name,
                           ret_price,
                           stock_amount,
                           buy_price,
@@ -436,9 +470,9 @@ class AddDrugOutstockScreen extends Component {
                           supplier_name
                         }) => {
                           // let data = {}
-                          this.setItemValue(value, index, 'drug_stock_id', 2)
+                          this.setItemValue(value, index, 'material_stock_id', 2)
                           this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
-                          this.setItemValue(packing_unit_name, index, 'packing_unit_name', 2)
+                          this.setItemValue(unit_name, index, 'unit_name', 2)
                           this.setItemValue(ret_price, index, 'ret_price', 2)
                           this.setItemValue(stock_amount, index, 'stock_amount', 2)
                           this.setItemValue(buy_price, index, 'buy_price', 2)
@@ -449,12 +483,12 @@ class AddDrugOutstockScreen extends Component {
                         }}
                         placeholder='搜索'
                         height={38}
-                        onInputChange={keyword => this.queryDrugStockList(keyword)}
-                        options={this.getDrugStockOptions()}
+                        onInputChange={keyword => this.queryMaterialStockList(keyword)}
+                        options={this.getMaterialStockOptions()}
                       />
-                    </div> : item.drug_name }
+                    </div> : item.material_name }
                   </div>
-                  <div>{item.packing_unit_name}</div>
+                  <div>{item.unit_name}</div>
                   <div title={item.manu_factory_name}>
                     <div className={'longTxt'}>{item.manu_factory_name}</div>
                   </div>
@@ -513,13 +547,13 @@ class AddDrugOutstockScreen extends Component {
             <button
               onClick={() => {
                 if (showWay === 1) {
-                  this.createDrugOutstock()
+                  this.createMaterialOutstock()
                 }
                 if (showWay === 2) {
-                  this.DrugOutstockCheck()
+                  this.MaterialOutstockCheck()
                 }
                 if (showWay === 4) {
-                  this.DrugOutstockUpdate()
+                  this.MaterialOutstockUpdate()
                 }
               }}
             >
@@ -825,23 +859,23 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     outstock_operation_id: state.user.data.id,
-    drugs: state.drugs.json_data,
+    materials: state.materials.data,
     outstock_way: state.drugOutStocks.outstock_way,
-    detail_data: state.drugOutStocks.detail_data,
+    detail_data: state.materialOutStocks.detail_data,
     departments: state.departments.json_data,
     persons: state.doctors.data,
-    drug_stock: state.drugOutStocks.stock_data
+    material_stock: state.materialOutStocks.stock_data
   }
 }
 
 export default connect(mapStateToProps, {
-  createDrugOutstock,
-  ClinicDrugList,
+  createMaterialOutstock,
+  queryMaterialList,
   queryOutstockWayList,
-  queryDrugOutstockRecordDetail,
-  DrugOutstockCheck,
-  DrugOutstockUpdate,
+  queryMaterialOutstockRecordDetail,
+  MaterialOutstockCheck,
+  MaterialOutstockUpdate,
   queryDepartmentList,
   queryDoctorList,
-  queryDrugStockList
-})(AddDrugOutstockScreen)
+  queryMaterialStockList
+})(AddMaterialOutstockScreen)

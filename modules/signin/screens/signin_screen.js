@@ -37,7 +37,7 @@ class SigninScreen extends Component {
         <div className={'loginLogo'} />
         <div className={'login_border'} />
         <div className={'login_welcome'}>
-          <a>欢迎使用</a><a>诊小二管家平台</a>
+          <a>欢迎使用</a><a>海王星辰管家平台</a>
         </div>
         <section>
           <span className={'loginTxt'}>登录系统</span>
@@ -72,7 +72,7 @@ class SigninScreen extends Component {
             left:256px;
           }
           .login_welcome{
-            width:375px;
+            width:400px;
             height:120px; 
             font-size:50px;
             font-family:PingFangTC-Semibold;

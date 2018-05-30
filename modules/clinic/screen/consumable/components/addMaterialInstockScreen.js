@@ -23,7 +23,10 @@ class AddMaterialInstockScreen extends Component {
       supplier_name: '',
       items: [],
       remark: '',
-      readOnly: false
+      readOnly: false,
+      instock_operation_name: '',
+      order_number: '',
+      created_time: ''
     }
   }
 
@@ -48,7 +51,10 @@ class AddMaterialInstockScreen extends Component {
       instock_way_name: data.instock_way_name,
       supplier_name: data.supplier_name,
       remark: data.remark,
-      items: data.items
+      items: data.items,
+      created_time: data.created_time,
+      instock_operation_name: data.instock_operation_name,
+      order_number: data.order_number
     })
   }
   // 验证字段
@@ -221,7 +227,7 @@ class AddMaterialInstockScreen extends Component {
   }
   // 入库基本信息
   renderBaseInfoBlank() {
-    const {instock_date, instock_way_name, supplier_name, remark, readOnly} = this.state
+    const {instock_date, instock_way_name, supplier_name, remark, created_time, instock_operation_name, order_number, readOnly} = this.state
     const {showWay} = this.props
     // console.log('instock_date, instock_way_name, supplier_name, remark', instock_date, instock_way_name, supplier_name, remark)
     return (
@@ -296,6 +302,33 @@ class AddMaterialInstockScreen extends Component {
               }}
             />
           </li>
+          {showWay !== 1 ? <li>
+            <label>操作日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'created_time'}
+              value={moment(created_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay !== 1 ? <li>
+            <label>操作人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'instock_operation_name'}
+              value={instock_operation_name}
+            />
+          </li> : ''}
+          {showWay !== 1 ? <li>
+            <label>入库单号</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'order_number'}
+              value={order_number}
+            />
+          </li> : ''}
         </ul>
         {this.style()}
       </div>
