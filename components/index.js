@@ -19,7 +19,6 @@ import Select from './Select'
 import SearchInput from './SearchInput'
 import Confirm from './Confirm'
 import MyTree from './Tree'
-import FileUpload from './FileUpload'
 
 export {
   CardWhite,
@@ -48,6 +47,5 @@ export {
   Select,
   SearchInput,
   Confirm,
-  MyTree,
-  FileUpload
+  MyTree
 }
