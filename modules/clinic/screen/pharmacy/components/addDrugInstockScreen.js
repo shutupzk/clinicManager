@@ -43,6 +43,9 @@ class AddDrugInstockScreen extends Component {
     const {drug_instock_record_id, queryDrugInstockRecordDetail} = this.props
     let data = await queryDrugInstockRecordDetail({drug_instock_record_id})
     console.log('data=====', data)
+    for (let key of data.items) {
+      key.buy_price = formatMoney(key.buy_price)
+    }
     this.setState({
       instock_date: data.instock_date,
       instock_way_name: data.instock_way_name,
@@ -180,7 +183,7 @@ class AddDrugInstockScreen extends Component {
   }
   // 获取入库方式筛选
   getInstockWayNameOptions() {
-    const { instock_way } = this.props
+    const { instock_way, queryInstockWayList } = this.props
     // console.log('instock_way====', instock_way)
     let array = []
     for (let key in instock_way) {
@@ -190,6 +193,9 @@ class AddDrugInstockScreen extends Component {
         value: name,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryInstockWayList({keyword: ''})
     }
     return array
   }
@@ -202,7 +208,7 @@ class AddDrugInstockScreen extends Component {
   }
   // 获取供应商筛选
   getSupplierOptions() {
-    const { supplier_data } = this.props
+    const { supplier_data, querySupplierList } = this.props
     // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in supplier_data) {
@@ -212,6 +218,9 @@ class AddDrugInstockScreen extends Component {
         value: name,
         label: name
       })
+    }
+    if (array.length === 0) {
+      querySupplierList({keyword: ''})
     }
     return array
   }
@@ -333,7 +342,7 @@ class AddDrugInstockScreen extends Component {
   }
   // 药筛选项
   getDrugOptions() {
-    const { drugs } = this.props
+    const { clinic_id, ClinicDrugList, drugs } = this.props
     // console.log('drugs====', drugs)
     let array = []
     for (let key in drugs) {
@@ -358,11 +367,15 @@ class AddDrugInstockScreen extends Component {
         buy_price: formatMoney(buy_price)
       })
     }
+    if (array.length === 0) {
+      ClinicDrugList({ clinic_id, status: true, keyword: '' }, true)
+    }
     return array
   }
   // 搜索药
   ClinicDrugList(keyword) {
     const {clinic_id, ClinicDrugList} = this.props
+    // console.log('drugs===', drugs)
     if (keyword) {
       ClinicDrugList({ clinic_id, status: true, keyword }, true)
     }

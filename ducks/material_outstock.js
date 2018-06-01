@@ -145,14 +145,21 @@ export const queryMaterialStockList = (requestData, arrayType) => async dispatch
     console.log('queryMaterialStockList=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
+    let stock_data = {}
     if (arrayType) {
       dispatch({
         type: MATERIAL_STOCK_ARRAY_LIST,
         stock_array_data: docs,
         stock_page_info: page_info
       })
+      for (let doc of docs) {
+        stock_data[doc.material_stock_id] = doc
+      }
+      dispatch({
+        type: MATERIAL_STOCK_LIST,
+        stock_data
+      })
     } else {
-      let stock_data = {}
       for (let doc of docs) {
         stock_data[doc.material_stock_id] = doc
       }

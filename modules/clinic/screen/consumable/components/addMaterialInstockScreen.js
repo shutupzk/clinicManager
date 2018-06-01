@@ -18,7 +18,7 @@ class AddMaterialInstockScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      instock_date: '',
+      instock_date: moment().format('YYYY-MM-DD'),
       instock_way_name: '',
       supplier_name: '',
       items: [],
@@ -77,7 +77,7 @@ class AddMaterialInstockScreen extends Component {
 
   addColumn() {
     const { items } = this.state
-    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0}] })
+    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0, eff_date: moment().format('YYYY-MM-DD')}] })
   }
 
   removeColumn(index) {
@@ -183,7 +183,7 @@ class AddMaterialInstockScreen extends Component {
   }
   // 获取入库方式筛选
   getInstockWayNameOptions() {
-    const { instock_way } = this.props
+    const { instock_way, queryInstockWayList } = this.props
     // console.log('instock_way====', instock_way)
     let array = []
     for (let key in instock_way) {
@@ -193,6 +193,9 @@ class AddMaterialInstockScreen extends Component {
         value: name,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryInstockWayList({keyword: ''})
     }
     return array
   }
@@ -205,7 +208,7 @@ class AddMaterialInstockScreen extends Component {
   }
   // 获取供应商筛选
   getSupplierOptions() {
-    const { supplier_data } = this.props
+    const { supplier_data, querySupplierList } = this.props
     // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in supplier_data) {
@@ -215,6 +218,9 @@ class AddMaterialInstockScreen extends Component {
         value: name,
         label: name
       })
+    }
+    if (array.length === 0) {
+      querySupplierList({keyword: ''})
     }
     return array
   }
@@ -336,7 +342,7 @@ class AddMaterialInstockScreen extends Component {
   }
   // 药筛选项
   getMaterialOptions() {
-    const { materials } = this.props
+    const { clinic_id, queryMaterialList, materials } = this.props
     console.log('materials====', materials)
     let array = []
     for (let key in materials) {
@@ -347,18 +353,22 @@ class AddMaterialInstockScreen extends Component {
         manu_factory_name,
         ret_price,
         stock_amount,
-        buy_price
+        buy_price,
+        specification
       } = materials[key]
       // if (type !== 0) continue
       array.push({
         value: clinic_material_id,
-        label: name,
+        label: name + '—' + specification,
         manu_factory_name,
         unit_name,
         ret_price,
         instock_amount: stock_amount,
         buy_price: formatMoney(buy_price)
       })
+    }
+    if (array.length === 0) {
+      queryMaterialList({ clinic_id, status: true, keyword: '' })
     }
     return array
   }

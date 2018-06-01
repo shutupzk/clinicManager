@@ -51,6 +51,8 @@ class RegistrationAddScreen extends Component {
     }
     if (!patientInfo.birthday) {
       return this.refs.myAlert.alert('提示', '请填写生日', null, 'Danger')
+    } else {
+      patientInfo.birthday = moment(patientInfo.birthday).format('YYYYMMDD')
     }
     if (!patientInfo.sex) {
       return this.refs.myAlert.alert('提示', '请选择性别', null, 'Danger')
@@ -61,6 +63,7 @@ class RegistrationAddScreen extends Component {
     if (!patientInfo.visit_type) {
       return this.refs.myAlert.alert('提示', '请选择出诊类型', null, 'Danger')
     }
+    console.log('patientInfo=====', patientInfo)
     let error = await addTriagePatientsList({ patientInfo })
     if (error) {
       this.refs.myAlert.alert('提交失败', error, null, 'Danger')

@@ -184,7 +184,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 获取出库方式筛选
   getOutstockWayNameOptions() {
-    const { outstock_way } = this.props
+    const { outstock_way, queryOutstockWayList } = this.props
     // console.log('outstock_way====', outstock_way)
     let array = []
     for (let key in outstock_way) {
@@ -194,6 +194,9 @@ class AddDrugOutstockScreen extends Component {
         value: name,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryOutstockWayList({keyword: ''})
     }
     return array
   }
@@ -206,7 +209,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 获取科室筛选
   getDepartmentOptions() {
-    const { departments } = this.props
+    const { queryDepartmentList, clinic_id, departments } = this.props
     // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in departments) {
@@ -216,6 +219,9 @@ class AddDrugOutstockScreen extends Component {
         value: id,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryDepartmentList({keyword: '', clinic_id}, true)
     }
     return array
   }
@@ -228,7 +234,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 获取人员筛选
   getPersonsOptions() {
-    const { persons } = this.props
+    const { persons, queryDoctorList, clinic_id } = this.props
     // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in persons) {
@@ -238,6 +244,9 @@ class AddDrugOutstockScreen extends Component {
         value: id,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryDoctorList({keyword: '', clinic_id}, true)
     }
     return array
   }
@@ -379,7 +388,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 药筛选项
   getDrugStockOptions() {
-    const { drug_stock } = this.props
+    const { drug_stock, clinic_id, queryDrugStockList } = this.props
     console.log('drug_stock====', drug_stock)
     let array = []
     for (let key in drug_stock) {
@@ -399,7 +408,7 @@ class AddDrugOutstockScreen extends Component {
       // if (type !== 0) continue
       array.push({
         value: drug_stock_id,
-        label: name,
+        label: name + '—' + specification,
         manu_factory_name,
         packing_unit_name,
         ret_price,
@@ -410,6 +419,9 @@ class AddDrugOutstockScreen extends Component {
         specification,
         supplier_name
       })
+    }
+    if (array.length === 0) {
+      queryDrugStockList({ clinic_id, keyword: '' })
     }
     return array
   }

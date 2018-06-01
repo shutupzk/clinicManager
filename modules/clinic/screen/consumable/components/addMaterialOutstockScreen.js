@@ -20,7 +20,7 @@ class AddMaterialOutstockScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      outstock_date: '',
+      outstock_date: moment().format('YYYY-MM-DD'),
       outstock_way_name: '',
       department_id: '',
       department_name: '',
@@ -184,7 +184,7 @@ class AddMaterialOutstockScreen extends Component {
   }
   // 获取出库方式筛选
   getOutstockWayNameOptions() {
-    const { outstock_way } = this.props
+    const { outstock_way, queryOutstockWayList } = this.props
     // console.log('outstock_way====', outstock_way)
     let array = []
     for (let key in outstock_way) {
@@ -194,6 +194,9 @@ class AddMaterialOutstockScreen extends Component {
         value: name,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryOutstockWayList({keyword: ''})
     }
     return array
   }
@@ -206,7 +209,7 @@ class AddMaterialOutstockScreen extends Component {
   }
   // 获取科室筛选
   getDepartmentOptions() {
-    const { departments } = this.props
+    const { queryDepartmentList, clinic_id, departments } = this.props
     // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in departments) {
@@ -216,6 +219,9 @@ class AddMaterialOutstockScreen extends Component {
         value: id,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryDepartmentList({keyword: '', clinic_id}, true)
     }
     return array
   }
@@ -228,7 +234,7 @@ class AddMaterialOutstockScreen extends Component {
   }
   // 获取人员筛选
   getPersonsOptions() {
-    const { persons } = this.props
+    const { persons, queryDoctorList, clinic_id } = this.props
     // console.log('supplier_data====', supplier_data)
     let array = []
     for (let key in persons) {
@@ -238,6 +244,9 @@ class AddMaterialOutstockScreen extends Component {
         value: id,
         label: name
       })
+    }
+    if (array.length === 0) {
+      queryDoctorList({keyword: '', clinic_id}, true)
     }
     return array
   }
@@ -379,7 +388,7 @@ class AddMaterialOutstockScreen extends Component {
   }
   // 药筛选项
   getMaterialStockOptions() {
-    const { material_stock } = this.props
+    const { material_stock, clinic_id, queryMaterialStockList } = this.props
     console.log('material_stock====', material_stock)
     let array = []
     for (let key in material_stock) {
@@ -399,7 +408,7 @@ class AddMaterialOutstockScreen extends Component {
       // if (type !== 0) continue
       array.push({
         value: material_stock_id,
-        label: name,
+        label: name + '—' + specification,
         manu_factory_name,
         unit_name,
         ret_price,
@@ -410,6 +419,9 @@ class AddMaterialOutstockScreen extends Component {
         specification,
         supplier_name
       })
+    }
+    if (array.length === 0) {
+      queryMaterialStockList({ clinic_id, keyword: '' })
     }
     return array
   }
