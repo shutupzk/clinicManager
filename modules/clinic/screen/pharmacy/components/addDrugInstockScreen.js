@@ -18,7 +18,7 @@ class AddDrugInstockScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      instock_date: '',
+      instock_date: moment().format('YYYY-MM-DD'),
       instock_way_name: '',
       supplier_name: '',
       items: [],
@@ -74,7 +74,7 @@ class AddDrugInstockScreen extends Component {
 
   addColumn() {
     const { items } = this.state
-    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0}] })
+    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0, eff_date: moment().format('YYYY-MM-DD')}] })
   }
 
   removeColumn(index) {
@@ -344,12 +344,13 @@ class AddDrugInstockScreen extends Component {
         manu_factory_name,
         ret_price,
         stock_amount,
-        buy_price
+        buy_price,
+        specification
       } = drugs[key]
       // if (type !== 0) continue
       array.push({
         value: clinic_drug_id,
-        label: drug_name,
+        label: drug_name + '—' + specification,
         manu_factory_name,
         packing_unit_name,
         ret_price,

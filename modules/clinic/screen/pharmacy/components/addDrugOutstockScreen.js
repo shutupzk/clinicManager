@@ -20,7 +20,7 @@ class AddDrugOutstockScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      outstock_date: '',
+      outstock_date: moment().format('YYYY-MM-DD'),
       outstock_way_name: '',
       department_id: '',
       department_name: '',
@@ -82,7 +82,7 @@ class AddDrugOutstockScreen extends Component {
 
   addColumn() {
     const { items } = this.state
-    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0}] })
+    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0, eff_date: moment().format('YYYY-MM-DD')}] })
   }
 
   removeColumn(index) {
