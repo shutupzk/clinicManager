@@ -53,12 +53,6 @@ class DoctorListScreen extends Component {
     this.setState({ personnel_type })
   }
 
-  async changeAppointment() {
-    const {doctorInfo} = this.state
-    console.log('doctorInfo======', doctorInfo)
-    // await this.PersonnelUpdate()
-  }
-
   renderPersonnelList() {
     const { personnel_type, doctorKeyword, employeeKeyword } = this.state
     let defaultValue = doctorKeyword
@@ -68,8 +62,8 @@ class DoctorListScreen extends Component {
       defaultValue = employeeKeyword
     }
     let { doctors } = this.props
-    let {items} = this.state
-    items = doctors
+    // let {items} = this.state
+    // items = doctors
     console.log('doctors====', doctors)
     return (
       <div>
@@ -108,7 +102,7 @@ class DoctorListScreen extends Component {
               <div>是否开放预约/挂号</div>
               <div>操作</div>
             </li>
-            {items.map((doctor, index) => {
+            {doctors.map((doctor, index) => {
               return (
                 <li key={index}>
                   <div>{index + 1}</div>
@@ -123,11 +117,17 @@ class DoctorListScreen extends Component {
                           // readOnly
                           type='radio'
                           checked={doctor.is_appointment}
-                          onChange={e => {
-                            let array = doctors
-                            array[index].is_appointment = true
-                            this.setState({items: array, doctorInfo: array[index]})
-                            // this.changeAppointment()
+                          onChange={async e => {
+                            let info = {...doctor}
+                            info.is_appointment = true
+                            const { PersonnelUpdate, clinic_id } = this.props
+                            const { personnel_type } = this.state
+                            console.log('info=====', info)
+                            let error = await PersonnelUpdate({ ...info, clinic_id, personnel_type })
+                            if (error) {
+                              return alert('修改失败', error)
+                            }
+                            this.queryDoctorList({ personnel_type })
                           }}
                         />
                         是
@@ -137,12 +137,17 @@ class DoctorListScreen extends Component {
                           // readOnly
                           type='radio'
                           checked={!doctor.is_appointment}
-                          onChange={e => {
-                            let array = {...doctors}
-                            console.log('array=====', array)
-                            array[index].is_appointment = false
-                            console.log(array[index])
-                            this.setState({items: array, doctorInfo: array[index]})
+                          onChange={async e => {
+                            let info = {...doctor}
+                            info.is_appointment = false
+                            const { PersonnelUpdate, clinic_id } = this.props
+                            const { personnel_type } = this.state
+                            console.log('info=====', info)
+                            let error = await PersonnelUpdate({ ...info, clinic_id, personnel_type })
+                            if (error) {
+                              return alert('修改失败', error)
+                            }
+                            this.queryDoctorList({ personnel_type })
                           }}
                         />
                         否
