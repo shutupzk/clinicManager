@@ -344,10 +344,10 @@ class MedicalRecordScreen extends Component {
                       options={this.getDrugOptions(0)}
                       renderTitle={(item, index) => {
                         return (
-                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center' }} key={index}>
-                            <div style={{ flex: 3, textAlign: 'center' }}>药品名</div>
-                            <div style={{ flex: 2, textAlign: 'center' }}>规格</div>
-                            <div style={{ flex: 3, textAlign: 'center' }}>生产厂家</div>
+                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                            <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
                             <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
                           </div>
                         )
@@ -357,9 +357,9 @@ class MedicalRecordScreen extends Component {
                         let packing_unit_name = item.packing_unit_name || ''
                         return (
                           <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
-                            <div style={{ flex: 3, textAlign: 'center' }}>{item.drug_name}</div>
-                            <div style={{ flex: 2, textAlign: 'center' }}>{item.specification}</div>
-                            <div style={{ flex: 3, textAlign: 'center' }}>{item.manu_factory_name}</div>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                            <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
                             <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
                           </div>
                         )
