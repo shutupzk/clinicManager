@@ -12,7 +12,6 @@ export default class CustomSelect extends Component {
   renderOption() {
     const { showOptions } = this.state
     let { renderItem, options, onChange } = this.props
-    console.log('options =============', showOptions, options)
     options = options || []
     if (!showOptions) return null
     return (
@@ -21,10 +20,10 @@ export default class CustomSelect extends Component {
           return (
             <div
               onMouseOver={e => {
-                this.setState({ onMouseOver: false })
+                this.setState({ onMouseOver: true })
               }}
               onMouseLeave={e => {
-                this.setState({ onMouseOver: true })
+                this.setState({ onMouseOver: false })
               }}
               className='itemDiv'
               key={index}
@@ -52,8 +51,8 @@ export default class CustomSelect extends Component {
   }
 
   render() {
-    const { onInputChange, value, controlStyle } = this.props
-    const { onMouseOver, showOptions } = this.props
+    const { onInputChange, value, controlStyle, placeholder } = this.props
+    const { onMouseOver, showOptions } = this.state
     return (
       <div
         style={{
@@ -71,6 +70,7 @@ export default class CustomSelect extends Component {
             borderRadius: '4px',
             border: '1px solid #d9d9d9'
           }}
+          placeholder={placeholder || ''}
           value={value || ''}
           type='text'
           onChange={e => {
@@ -84,7 +84,7 @@ export default class CustomSelect extends Component {
             this.setState({ showOptions: true })
           }}
           onBlur={e => {
-            if (showOptions && onMouseOver) {
+            if (showOptions && !onMouseOver) {
               this.setState({ showOptions: false })
             }
           }}

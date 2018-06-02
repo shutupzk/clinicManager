@@ -163,6 +163,7 @@ class RegistrationAddScreen extends Component {
                 就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
               <CustomSelect
+                placeholder='就诊人姓名'
                 controlStyle={{ marginTop: '17px' }}
                 value={patient.name}
                 options={patients}
