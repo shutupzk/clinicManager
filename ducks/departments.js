@@ -69,6 +69,28 @@ export const departmentCreate = ({ departInfo }) => async dispatch => {
   }
 }
 
+export const DepartmentUpdate = (departInfo) => async dispatch => {
+  try {
+    console.log('departInfo', departInfo)
+    const data = await request('/department/update', departInfo)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    return e.message
+  }
+}
+
+export const DepartmentDelete = ({ departmentID }) => async dispatch => {
+  try {
+    // console.log('departmentID', departmentID)
+    const data = await request('/department/delete', {departmentID})
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    return e.message
+  }
+}
+
 export const departmentSelect = ({ department_id }) => async dispatch => {
   try {
     dispatch({
