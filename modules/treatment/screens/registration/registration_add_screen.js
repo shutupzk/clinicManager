@@ -188,7 +188,7 @@ class RegistrationAddScreen extends Component {
                     }
                   }
                   let birthday = moment(item.birthday).format('YYYY-MM-DD')
-                  let age = getAgeByBirthday(birthday)
+                  let age = getAgeByBirthday(birthday) || ''
                   this.setState({
                     toSearch: false,
                     patientInfo: { ...this.state.patientInfo, ...item, birthday, age },
