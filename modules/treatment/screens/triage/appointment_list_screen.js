@@ -45,6 +45,7 @@ class AppointmentListScreen extends Component {
   }
   getDoctorOptions() {
     const { selectDoctors } = this.props
+    console.log('selectDoctors====', selectDoctors)
     let options = [{ value: -1, label: '全部医生' }]
     for (let { id, name } of selectDoctors) {
       options.push({
@@ -566,7 +567,7 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     triageDoctors: state.triageDoctors.data,
     departments: state.departments.data,
-    selectDoctors: state.doctors.data,
+    selectDoctors: state.doctors.array_data,
     date_appointments: state.triagePatients.date_appointments,
     triagePatients: state.triagePatients.data,
     patient_page_info: state.triagePatients.page_info

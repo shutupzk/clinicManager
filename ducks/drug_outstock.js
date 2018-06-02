@@ -170,14 +170,21 @@ export const queryDrugStockList = (requestData, arrayType) => async dispatch => 
     console.log('queryDrugStockList=======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
+    let stock_data = {}
     if (arrayType) {
       dispatch({
         type: STOCK_ARRAY_LIST,
         stock_array_data: docs,
         stock_page_info: page_info
       })
+      for (let doc of docs) {
+        stock_data[doc.drug_stock_id] = doc
+      }
+      dispatch({
+        type: STOCK_LIST,
+        stock_data
+      })
     } else {
-      let stock_data = {}
       for (let doc of docs) {
         stock_data[doc.drug_stock_id] = doc
       }

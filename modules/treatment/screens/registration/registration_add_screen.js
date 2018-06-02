@@ -51,6 +51,8 @@ class RegistrationAddScreen extends Component {
     }
     if (!patientInfo.birthday) {
       return this.refs.myAlert.alert('提示', '请填写生日', null, 'Danger')
+    } else {
+      patientInfo.birthday = moment(patientInfo.birthday).format('YYYYMMDD')
     }
     if (!patientInfo.sex) {
       return this.refs.myAlert.alert('提示', '请选择性别', null, 'Danger')
@@ -61,6 +63,7 @@ class RegistrationAddScreen extends Component {
     if (!patientInfo.visit_type) {
       return this.refs.myAlert.alert('提示', '请选择出诊类型', null, 'Danger')
     }
+    console.log('patientInfo=====', patientInfo)
     let error = await addTriagePatientsList({ patientInfo })
     if (error) {
       this.refs.myAlert.alert('提交失败', error, null, 'Danger')
@@ -251,8 +254,16 @@ class RegistrationAddScreen extends Component {
                 value={patient.cert_no}
                 onChange={e => {
                   let newPatient = patient
-                  newPatient.birthday = e.target.value.substring(6, 14)
-                  newPatient.sex = (e.target.value.substring(16, 17) % 2) === 0 ? '0' : '1'
+                  if (e.target.value.length > 14) {
+                    newPatient.birthday = moment(e.target.value.substring(6, 14)).format('YYYY-MM-DD')
+                  }
+                  if (e.target.value.length > 16) {
+                    newPatient.sex = (e.target.value.substring(16, 17) % 2) === 0 ? '0' : '1'
+                  }
+                  // console.log('newPatient.birthday===', newPatient.birthday)
+                  if (e.target.value.length > 14) {
+                    newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
+                  }
                   // console.log('newPatient.sex=====', newPatient.sex)
                   this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
@@ -266,10 +277,12 @@ class RegistrationAddScreen extends Component {
               <input
                 type='date'
                 style={{ width: '120px' }}
-                value={moment(patient.birthday).format('YYYY-MM-DD')}
+                value={patient.birthday}
                 onChange={e => {
                   let newPatient = patient
-                  newPatient.birthday = moment(e.target.value).format('YYYYMMDD')
+                  newPatient.birthday = moment(e.target.value).format('YYYY-MM-DD')
+                  console.log('newPatient.birthday====', newPatient.birthday)
+                  newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
                   this.setState({ patientInfo: newPatient })
                 }}
               />
@@ -281,7 +294,7 @@ class RegistrationAddScreen extends Component {
               <input
                 type='text'
                 style={{ width: '120px' }}
-                value={moment().diff(patient.birthday, 'years') === 0 ? '' : moment().diff(patient.birthday, 'years') + '岁' || ''}
+                value={patient.age}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.age = e.target.value

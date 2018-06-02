@@ -13,7 +13,8 @@ class AddDrugScreen extends Component {
         fetch_address: 0,
         is_bulk_sales: false,
         status: true,
-        drug_class_id: props.drug_class_id
+        drug_class_id: props.drug_class_id,
+        is_discount: false
       }
     }
   }
@@ -188,13 +189,13 @@ class AddDrugScreen extends Component {
       this.setState({ drug_class_idFailed: false })
     }
 
-    if (!data.barcode || data.barcode === '') {
-      this.setState({ barcodeFailed: true })
-      this.refs.myAlert.alert('提示', '请填写 药品条形码！', null, 'Danger')
-      return false
-    } else {
-      this.setState({ barcodeFailed: false })
-    }
+    // if (!data.barcode || data.barcode === '') {
+    //   this.setState({ barcodeFailed: true })
+    //   this.refs.myAlert.alert('提示', '请填写 药品条形码！', null, 'Danger')
+    //   return false
+    // } else {
+    //   this.setState({ barcodeFailed: false })
+    // }
 
     if (!data.packing_unit_name || data.packing_unit_name === '') {
       this.setState({ packing_unit_nameFailed: true })
@@ -595,7 +596,7 @@ class AddDrugScreen extends Component {
                   this.setItemValue(e, 'barcode')
                 }}
               />
-              {this.state.barcodeFailed || drugInfo.barcode === '' || !drugInfo.barcode ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
+              {/* {this.state.barcodeFailed || drugInfo.barcode === '' || !drugInfo.barcode ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''} */}
             </li>
             <li>
               <label>状态</label>
