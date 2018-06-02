@@ -30,7 +30,6 @@ class PendingDetailDrugScreen extends Component {
           <div style={{ flex: 2 }}>就诊ID：{triagePatient.cert_no}</div>
           <div style={{ flex: 2 }}>手机号码：{phone}</div>
           <div style={{ flex: 3 }}>就诊日期：{moment(visit_date).format('YYYY年MM月DD日')}</div>
-          <div style={{ flex: 2 }}>手机号码：{phone}</div>
         </div>
         <div className={'filterBox'}>
           <div style={{ flex: 1 }}>开单医生：{doctor_name}</div>
