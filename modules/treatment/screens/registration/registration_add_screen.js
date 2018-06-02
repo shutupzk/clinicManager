@@ -2,17 +2,12 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 
-import {
-  getPatientByCertNo,
-  queryDepartmentList,
-  addTriagePatientsList,
-  getPatientByKeyword
-} from '../../../../ducks'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, getPatientByKeyword } from '../../../../ducks'
 
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../config/provinces'
-import { Select, Confirm } from '../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../components'
 
 class RegistrationAddScreen extends Component {
   constructor(props) {
@@ -81,67 +76,6 @@ class RegistrationAddScreen extends Component {
   async queryPatients(keyword) {
     const { getPatientByKeyword } = this.props
     getPatientByKeyword({ keyword })
-  }
-
-  searchView() {
-    const patients = this.props.patients || []
-    return (
-      <div
-        className={'researchView'}
-        onMouseOver={e => {
-          this.setState({ toSearch: false })
-        }}
-        onMouseLeave={e => {
-          this.setState({ toSearch: true })
-        }}
-      >
-        <span>请选择患者或继续新增</span>
-        <ul>
-          {patients.map((item, index) => {
-            return (
-              <li
-                key={index}
-                onClick={() => {
-                  let cities = []
-                  for (let province of provinces) {
-                    if (item.province === province.name) {
-                      cities = province.city
-                      break
-                    }
-                  }
-                  let counties = []
-                  for (let city of cities) {
-                    if (item.city === city.name) {
-                      counties = city.area
-                      break
-                    }
-                  }
-
-                  this.setState({
-                    toSearch: false,
-                    patientInfo: { ...this.state.patientInfo, ...item },
-                    searchView: 0,
-                    province: item.province,
-                    city: item.city,
-                    county: item.district,
-                    cities: cities,
-                    counties: counties
-                  })
-                }}
-              >
-                <img src={'/static/login/u49.png'} />
-                <div className={'leftInfo'}>
-                  <div>
-                    {item.name} {item.sex === 1 ? '男' : '女'} {getAgeByBirthday(item.birthday)}
-                  </div>
-                  <div>{item.phone}</div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    )
   }
 
   getProvincesOptions() {
@@ -219,6 +153,7 @@ class RegistrationAddScreen extends Component {
   showAddNew() {
     if (this.state.pageType !== 1) return null
     let patient = this.state.patientInfo
+    const patients = this.props.patients || []
     return (
       <div className={'formList'}>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
@@ -227,38 +162,68 @@ class RegistrationAddScreen extends Component {
               <label htmlFor='patientName'>
                 就诊人名称：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input
-                type='text'
-                value={patient.name}
-                onChange={e => {
+              <CustomSelect
+                placeholder='就诊人姓名'
+                controlStyle={{ marginTop: '17px' }}
+                labelKey='name'
+                withoutFitler={!false}
+                options={patients}
+                onInputChange={name => {
                   let newPatient = this.state.patientInfo
-                  newPatient.name = e.target.value
-                  this.setState({ patientInfo: newPatient, searchView: 1 })
-                  this.queryPatients(e.target.value)
+                  newPatient.name = name
+                  this.setState({ patientInfo: newPatient })
+                  this.queryPatients(name)
                 }}
-                onFocus={e => {
-                  this.setState({ toSearch: true })
-                }}
-                onBlur={e => {
-                  if (this.state.toSearch && this.state.searchView === 1) {
-                    this.setState({ searchView: 0 })
+                onChange={(item) => {
+                  let cities = []
+                  for (let province of provinces) {
+                    if (item.province === province.name) {
+                      cities = province.city
+                      break
+                    }
                   }
+                  let counties = []
+                  for (let city of cities) {
+                    if (item.city === city.name) {
+                      counties = city.area
+                      break
+                    }
+                  }
+                  let birthday = moment(item.birthday).format('YYYY-MM-DD')
+                  let age = getAgeByBirthday(birthday) || ''
+                  this.setState({
+                    toSearch: false,
+                    patientInfo: { ...this.state.patientInfo, ...item, birthday, age },
+                    searchView: 0,
+                    province: item.province,
+                    city: item.city,
+                    county: item.district,
+                    cities: cities,
+                    counties: counties
+                  })
+                }}
+                renderItem={(item, index) => {
+                  return (
+                    <div style={{ width: '470px', height: '60px', flexDirection: 'column', display: 'flex', justifyContent: 'center', paddingLeft: '15px' }} key={index}>
+                      <div>{`${item.name}    ${item.sex === 1 ? '男' : '女'}   ${getAgeByBirthday(item.birthday)}`}</div>
+                      <div style={{ marginTop: '5px' }}>{item.phone}</div>
+                    </div>
+                  )
                 }}
               />
-              {this.state.searchView === 1 ? this.searchView() : ''}
             </li>
             <li>
               <label>身份证号码：</label>
               <input
                 type='text'
-                value={patient.cert_no}
+                value={patient.cert_no || ''}
                 onChange={e => {
                   let newPatient = patient
                   if (e.target.value.length > 14) {
                     newPatient.birthday = moment(e.target.value.substring(6, 14)).format('YYYY-MM-DD')
                   }
                   if (e.target.value.length > 16) {
-                    newPatient.sex = (e.target.value.substring(16, 17) % 2) === 0 ? '0' : '1'
+                    newPatient.sex = e.target.value.substring(16, 17) % 2 === 0 ? '0' : '1'
                   }
                   // console.log('newPatient.birthday===', newPatient.birthday)
                   if (e.target.value.length > 14) {
@@ -277,7 +242,7 @@ class RegistrationAddScreen extends Component {
               <input
                 type='date'
                 style={{ width: '120px' }}
-                value={patient.birthday}
+                value={moment(patient.birthday).format('YYYY-MM-DD')}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.birthday = moment(e.target.value).format('YYYY-MM-DD')
