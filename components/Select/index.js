@@ -2,8 +2,20 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 
 export default class MySelect extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
   render() {
-    let { height } = this.props
+    let { height, options, onInputChange } = this.props
+    const { keyword } = this.state
+    let array = []
+    for (let option of options) {
+      let { value, label, py_code } = option
+      let pattern = new RegExp(keyword, 'gi')
+      if (!pattern.test(value) && !pattern.test(label) && !pattern.test(py_code)) continue
+      array.push(option)
+    }
     const customStyles = {
       control: (base, state) => {
         return {
@@ -16,6 +28,17 @@ export default class MySelect extends Component {
         }
       }
     }
-    return <Select styles={customStyles} {...this.props} />
+    return (
+      <Select
+        styles={customStyles}
+        {...this.props}
+        filterOption={false}
+        options={array}
+        onInputChange={keyword => {
+          this.setState({ keyword })
+          onInputChange(keyword)
+        }}
+      />
+    )
   }
 }

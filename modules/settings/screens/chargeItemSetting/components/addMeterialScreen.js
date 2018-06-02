@@ -258,9 +258,6 @@ class AddMeterialScreen extends Component {
     let {materialsInfo} = this.state
     const {clinic_id, materialCreate} = this.props
     materialsInfo.clinic_id = clinic_id
-    // let requestData = {...materialsInfo}
-    // requestData.items = JSON.stringify(requestData.items)
-    // console.log('this.validateData(materialsInfo)=====', this.validateData(materialsInfo))
     if (this.validateData(materialsInfo)) {
       let error = await materialCreate(materialsInfo)
       if (error) {
@@ -317,10 +314,10 @@ class AddMeterialScreen extends Component {
     let array = []
     for (let key in doseUnits) {
       const { name } = doseUnits[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array

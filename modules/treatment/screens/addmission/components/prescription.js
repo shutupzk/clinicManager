@@ -106,7 +106,8 @@ class MedicalRecordScreen extends Component {
       let { name } = routeAdministrationss[key]
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...routeAdministrationss[key]
       })
     }
     return array
@@ -333,6 +334,7 @@ class MedicalRecordScreen extends Component {
                       onChange={item => {
                         this.setWItemValues(item, index)
                       }}
+                      filterOption={false}
                       placeholder='搜索'
                       height={38}
                       onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
