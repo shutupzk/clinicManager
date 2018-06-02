@@ -30,9 +30,9 @@ class PendingDrugScreen extends Component {
     queryDrugPendingTraigeList({ keyword, offset, limit, clinic_id, start_date, end_date })
   }
 
-  goToDetail(selectId) {
+  async goToDetail(selectId) {
     const { drugPendingTraigeSelect } = this.props
-    drugPendingTraigeSelect(selectId)
+    await drugPendingTraigeSelect(selectId)
     Router.push('/treatment/drugdelivery/detail')
   }
 

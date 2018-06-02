@@ -14,7 +14,7 @@ export function drugDeliveryRefund(state = initState, action = {}) {
     case QUERY_DRUG_REFUND_TRIAGE:
       return { ...state, traige_list: action.data, traige_list_page: action.page_info }
     case QUERY_DRUG_REFUND_TRIAGE_SELECT:
-      return { ...state, traige_selectId: action.traige_selectId }
+      return { ...state, traige_selectId: action.selectId }
     default:
       return state
   }

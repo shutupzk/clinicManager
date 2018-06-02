@@ -14,7 +14,7 @@ export function drugDeliveryPending(state = initState, action = {}) {
     case QUERY_DRUG_PENDING_TRIAGE:
       return { ...state, traige_list: action.data, traige_list_page: action.page_info }
     case QUERY_DRUG_PENDING_TRIAGE_SELECT:
-      return { ...state, traige_selectId: action.traige_selectId }
+      return { ...state, traige_selectId: action.selectId }
     default:
       return state
   }
@@ -30,7 +30,6 @@ export const queryDrugPendingTraigeList = ({ keyword, offset = 0, limit = 6, cli
       start_date,
       end_date
     })
-    console.log('queryDrugPendingTraigeList =====', data)
     const docs = data.data || []
     const page_info = data.page_info || {
       offset,
