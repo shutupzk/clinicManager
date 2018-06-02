@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { PageCard, Select, Confirm } from '../../../components'
+import { cutdownStr } from '../../../utils'
 
 export default class ChooseDoctor extends Component {
   constructor(props) {
@@ -77,6 +78,7 @@ export default class ChooseDoctor extends Component {
                     this.setState({ department_id: id })
                     this.queryDcotors({ department_id: id })
                   }}
+                  height={38}
                 />
               </div>
               <input type='text' placeholder={'医生名称'} />
@@ -95,7 +97,7 @@ export default class ChooseDoctor extends Component {
                       <span>{doctor.doctor_name}</span>
                     </div>
                     <div>
-                      <span>科室名称：{doctor.department_name}</span>
+                      <span title={doctor.department_name}>科室名称：{cutdownStr(doctor.department_name, 5)}</span>
                       <span>今日待接诊：{doctor.wait_total}人</span>
                       <span>今日已接诊：{doctor.triaged_total}人</span>
                     </div>

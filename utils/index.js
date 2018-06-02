@@ -115,3 +115,11 @@ export const createTradeNo = () => {
   let r2 = (Math.random() + '').substr(4, 3)
   return sec + r2
 }
+
+// 截取字符串长度
+export const cutdownStr = (str = '', len = 0) => {
+  if (str.length > len) {
+    str = str.substr(0, len) + '...'
+  }
+  return str
+}
