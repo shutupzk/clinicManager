@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
-import { queryDoctorList, doctorCreate, queryDepartmentList } from '../../../../ducks'
+import {
+  queryDoctorList,
+  doctorCreate,
+  queryDepartmentList,
+  PersonnelUpdate
+} from '../../../../ducks'
 // import moment from 'moment'
 import { PageCard, Select } from '../../../../components'
 
@@ -13,7 +18,9 @@ class DoctorListScreen extends Component {
       doctorKeyword: '',
       employeeKeyword: '',
       showAddPersonnel: false,
-      doctorInfo: {}
+      doctorInfo: {},
+      items: [],
+      editType: 0
     }
   }
 
@@ -46,6 +53,12 @@ class DoctorListScreen extends Component {
     this.setState({ personnel_type })
   }
 
+  async changeAppointment() {
+    const {doctorInfo} = this.state
+    console.log('doctorInfo======', doctorInfo)
+    // await this.PersonnelUpdate()
+  }
+
   renderPersonnelList() {
     const { personnel_type, doctorKeyword, employeeKeyword } = this.state
     let defaultValue = doctorKeyword
@@ -55,6 +68,8 @@ class DoctorListScreen extends Component {
       defaultValue = employeeKeyword
     }
     let { doctors } = this.props
+    let {items} = this.state
+    items = doctors
     console.log('doctors====', doctors)
     return (
       <div>
@@ -75,7 +90,7 @@ class DoctorListScreen extends Component {
           <div className={'boxRight'}>
             <button
               onClick={() => {
-                this.setState({ showAddPersonnel: true })
+                this.setState({ showAddPersonnel: true, editType: 0, doctorInfo: {} })
               }}
             >
               新增{showText}
@@ -93,7 +108,7 @@ class DoctorListScreen extends Component {
               <div>是否开放预约/挂号</div>
               <div>操作</div>
             </li>
-            {doctors.map((doctor, index) => {
+            {items.map((doctor, index) => {
               return (
                 <li key={index}>
                   <div>{index + 1}</div>
@@ -105,17 +120,30 @@ class DoctorListScreen extends Component {
                     <div>
                       <label>
                         <input
-                          readOnly
+                          // readOnly
                           type='radio'
                           checked={doctor.is_appointment}
+                          onChange={e => {
+                            let array = doctors
+                            array[index].is_appointment = true
+                            this.setState({items: array, doctorInfo: array[index]})
+                            // this.changeAppointment()
+                          }}
                         />
                         是
                       </label>
                       <label>
                         <input
-                          readOnly
+                          // readOnly
                           type='radio'
                           checked={!doctor.is_appointment}
+                          onChange={e => {
+                            let array = {...doctors}
+                            console.log('array=====', array)
+                            array[index].is_appointment = false
+                            console.log(array[index])
+                            this.setState({items: array, doctorInfo: array[index]})
+                          }}
                         />
                         否
                       </label>
@@ -123,7 +151,11 @@ class DoctorListScreen extends Component {
                   </div>
                   <div>
                     <div>
-                      <span>编辑</span>
+                      <span
+                        onClick={() => {
+                          this.setState({ showAddPersonnel: true, editType: 1, doctorInfo: doctor })
+                        }}
+                      >编辑</span>
                       |
                       <span>删除</span>
                     </div>
@@ -331,6 +363,18 @@ class DoctorListScreen extends Component {
     alert('添加成功')
     this.setState({ showAddPersonnel: false })
   }
+  // 保存编辑
+  async PersonnelUpdate() {
+    const { PersonnelUpdate, clinic_id } = this.props
+    const { doctorInfo, personnel_type } = this.state
+    let error = await PersonnelUpdate({ ...doctorInfo, clinic_id, personnel_type })
+    if (error) {
+      return alert('添加失败', error)
+    }
+    this.queryDoctorList({ personnel_type })
+    alert('修改成功')
+    this.setState({ showAddPersonnel: false })
+  }
 
   setDoctorInfo(e, key, type = 1) {
     let newDoctor = this.state.doctorInfo
@@ -343,15 +387,16 @@ class DoctorListScreen extends Component {
   }
 
   showAddPersonnelDiv() {
-    const { showAddPersonnel, personnel_type } = this.state
+    const { showAddPersonnel, personnel_type, doctorInfo, editType } = this.state
     if (!showAddPersonnel) return null
     // const departments = this.getDepartmentList()
+    console.log('doctorInfo====', doctorInfo)
     let keyName = personnel_type === 2 ? '医生' : '职员'
     return (
       <div className={'mask'}>
         <div className={'doctorList'} style={{ width: '700px', height: '800px', left: '450px', top: '50px' }}>
           <div className={'doctorList_top'}>
-            <span>新增{keyName}</span>
+            <span>{editType === 0 ? '新增' : '编辑'}{keyName}</span>
             <div />
             <span onClick={() => this.setState({ showAddPersonnel: false })}>×</span>
           </div>
@@ -359,11 +404,17 @@ class DoctorListScreen extends Component {
             <ul>
               <li>
                 <label>{keyName}编码：</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'code')} />
+                <input
+                  value={doctorInfo.code}
+                  onChange={e => this.setDoctorInfo(e, 'code')}
+                />
               </li>
               <li>
                 <label>{keyName}名称</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'name')} />
+                <input
+                  value={doctorInfo.name}
+                  onChange={e => this.setDoctorInfo(e, 'name')}
+                />
               </li>
               <li>
                 <label>所属诊所</label>
@@ -375,6 +426,7 @@ class DoctorListScreen extends Component {
                   <div>
                     <Select
                       placeholder={'请选择科室'}
+                      value={{value: doctorInfo.department_id, label: doctorInfo.department_name}}
                       options={this.getDepartmentList()}
                       onChange={({value, label}) => {
                         this.setDoctorInfo(value, 'department_id', 2)
@@ -385,30 +437,49 @@ class DoctorListScreen extends Component {
               </li>
               <li>
                 <label>{keyName}权重</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'weight')} />
+                <input
+                  value={doctorInfo.weight}
+                  onChange={e => this.setDoctorInfo(e, 'weight')}
+                />
               </li>
               <li>
                 <label>{keyName}职称</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'title')} />
+                <input
+                  value={doctorInfo.title}
+                  onChange={e => this.setDoctorInfo(e, 'title')}
+                />
               </li>
               <li>
                 <label>登录账号</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'username')} />
+                <input
+                  value={doctorInfo.username}
+                  onChange={e => this.setDoctorInfo(e, 'username')}
+                />
               </li>
               <li>
                 <label>设置密码</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'password')} />
+                <input
+                  value={doctorInfo.password}
+                  onChange={e => this.setDoctorInfo(e, 'password')}
+                />
               </li>
               <li>
                 <label>确认密码</label>
-                <input defaultValue='' onChange={e => this.setDoctorInfo(e, 'passwordConfirm')} />
+                <input
+                  value={doctorInfo.passwordConfirm}
+                  onChange={e => this.setDoctorInfo(e, 'passwordConfirm')}
+                />
               </li>
             </ul>
             <div className={'buttonBtn'}>
               <button onClick={() => this.setState({ showAddPersonnel: false })}>取消</button>
               <button
                 onClick={() => {
-                  this.saveAdd()
+                  if (editType === 0) {
+                    this.saveAdd()
+                  } else {
+                    this.PersonnelUpdate()
+                  }
                 }}
               >
                 保存
@@ -592,4 +663,9 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDoctorList, doctorCreate, queryDepartmentList })(DoctorListScreen)
+export default connect(mapStateToProps, {
+  queryDoctorList,
+  doctorCreate,
+  queryDepartmentList,
+  PersonnelUpdate
+})(DoctorListScreen)

@@ -36,7 +36,9 @@ export default class MySelect extends Component {
         options={array}
         onInputChange={keyword => {
           this.setState({ keyword })
-          onInputChange(keyword)
+          if (onInputChange) {
+            onInputChange(keyword)
+          }
         }}
       />
     )
