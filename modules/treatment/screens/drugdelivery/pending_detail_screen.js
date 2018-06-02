@@ -1,25 +1,61 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { queryMedicalRecord, queryDrugDeliveryList } from '../../../../ducks'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
 import { PageCard } from '../../../../components'
 
 class PendingDetailDrugScreen extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      allSelect: false,
+      selectArray: []
+    }
+  }
+
+  async componentDidMount() {
+    const { queryMedicalRecord, triagePatientSelectId, queryDrugDeliveryList } = this.props
+    queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '01' })
+    await queryMedicalRecord(triagePatientSelectId)
+  }
+
+  changeAllSelect() {
+    const { allSelect } = this.state
+    const selectArray = allSelect ? [] : this.props.drug_delivery_ids
+    this.setState({ allSelect: !allSelect, selectArray })
+  }
+
+  itemSelect(itemId, checked) {
+    if (checked) this.deleteItem(itemId)
+    else this.addItem(itemId)
+  }
+
+  deleteItem(itemId) {
+    const { selectArray } = this.state
+    let index = []
+    for (let i = 0; i < selectArray.length; i++) {
+      if (selectArray[i] === itemId) index.push(i)
+    }
+    for (let it of index) selectArray.splice(it, 1)
+    this.setState({ selectArray })
+  }
+
+  addItem(itemId) {
+    const { selectArray } = this.state
+    selectArray.push(itemId)
+    this.setState({ selectArray })
   }
 
   // 加载
   render() {
-    const { triagePatients, triagePatientSelectId } = this.props
+    const { triagePatients, triagePatientSelectId, medicalRecord, drug_delivery_list, drug_delivery_list_page } = this.props
+    const { allSelect } = this.state
     let triagePatient = {}
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === triagePatientSelectId) triagePatient = tp
     }
     const { birthday, patient_name, phone, visit_date, sex, department_name, doctor_name, updated_time } = triagePatient
-
-    let b = '1233333333333312333333333333123333333333331233333333333312333333333333123333333333331233333333333312333333333333'
 
     return (
       <div className={'detailBox'}>
@@ -47,62 +83,54 @@ class PendingDetailDrugScreen extends Component {
         <div className={'filterBox'}>
           <div>
             <label>诊断：</label>
-            <textarea
-              style={{
-                width: '70%',
-                height: '30px'
-              }}
-              value={b}
-              disabled
-            />
+            <textarea value={medicalRecord.diagnosis} disabled />
           </div>
           <div>
             <label>过敏史：</label>
-            <textarea
-              style={{
-                width: '70%',
-                height: '30px'
-              }}
-              value={b}
-              disabled
-            />
+            <textarea value={medicalRecord.allergic_history} disabled />
           </div>
         </div>
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
-              <div>选择</div>
+              <div>
+                <input type={'checkbox'} checked={allSelect} onChange={() => this.changeAllSelect()} />
+              </div>
               <div>序号</div>
               <div>药品名称</div>
               <div>规格</div>
+              <div>生产厂商</div>
+              <div>剂型</div>
               <div>数量</div>
-              <div>金额</div>
-              <div>折扣</div>
-              <div>折后金额</div>
-              <div>开费科室</div>
-              <div>开费医生</div>
             </li>
-            {[].map((item, iKey) => {
+            {drug_delivery_list.map((item, iKey) => {
+              let checked = this.state.selectArray.indexOf(item.id + '') > -1
               return (
                 <li key={iKey}>
+                  <div>
+                    <input
+                      type={'checkbox'}
+                      checked={checked}
+                      onChange={() => {
+                        this.itemSelect(item.id + '', checked)
+                      }}
+                    />
+                  </div>
                   <div>{iKey + 1}</div>
                   <div>{item.name}</div>
-                  <div>{formatMoney(item.price)}</div>
+                  <div>{item.specification}</div>
+                  <div>{item.manu_factory_name}</div>
+                  <div>{item.dose_form_name}</div>
                   <div>{item.amount}</div>
-                  <div>{formatMoney(item.total)}</div>
-                  <div>{formatMoney(item.discount)}</div>
-                  <div>{formatMoney(item.fee)}</div>
-                  <div>{item.department_name}</div>
-                  <div>{item.doctor_name}</div>
                 </li>
               )
             })}
           </ul>
         </div>
         <PageCard
-          offset={1}
-          limit={1}
-          total={1}
+          offset={drug_delivery_list_page.offset}
+          limit={drug_delivery_list_page.limit}
+          total={drug_delivery_list_page.total}
           onItemClick={({ offset, limit }) => {
             this.props.queryUnPaidOrders({ clinic_triage_patient_id: this.props.charge_unpay_selectId, offset, limit })
           }}
@@ -123,6 +151,17 @@ class PendingDetailDrugScreen extends Component {
           .filterBox div {
             flex: 1;
             text-align: center;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+          }
+          .filterBox > div > textarea {
+            width: 70%;
+            height: 35px;
+            resize: none;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            border: 1px solid #d8d8d8;
           }
         `}</style>
       </div>
@@ -133,8 +172,12 @@ class PendingDetailDrugScreen extends Component {
 const mapStateToProps = state => {
   return {
     triagePatients: state.drugDeliveryPending.traige_list,
-    triagePatientSelectId: state.drugDeliveryPending.traige_selectId
+    triagePatientSelectId: state.drugDeliveryPending.traige_selectId,
+    medicalRecord: state.medicalRecords.data,
+    drug_delivery_list_page: state.drugDeliveryPending.drug_delivery_list_page,
+    drug_delivery_ids: state.drugDeliveryPending.drug_delivery_list_page.ids || [],
+    drug_delivery_list: state.drugDeliveryPending.drug_delivery_list
   }
 }
 
-export default connect(mapStateToProps, {})(PendingDetailDrugScreen)
+export default connect(mapStateToProps, { queryMedicalRecord, queryDrugDeliveryList })(PendingDetailDrugScreen)
