@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
-import { queryDepartmentList, departmentCreate } from '../../../../ducks'
+import { queryDepartmentList, departmentCreate, DepartmentDelete, DepartmentUpdate } from '../../../../ducks'
 // import moment from 'moment'
-import { PageCard } from '../../../../components'
+import { PageCard, Confirm } from '../../../../components'
 
 class DepartmentListScreen extends Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class DepartmentListScreen extends Component {
       personnelType: 1,
       pageType: 1,
       alertType: 0,
+      editType: 0,
       keyword: '',
       departInfo: {
         code: '',
@@ -29,18 +30,38 @@ class DepartmentListScreen extends Component {
   queryDepartmentList({ keyword, offset = 0, limit = 10 }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, offset, limit })
-    const { departments } = this.props
-    this.setState({items: departments})
+    // const { departments } = this.props
+    // this.setState({items: departments})
   }
 
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
 
+  // 删除科室
+  DepartmentDelete(id) {
+    const {DepartmentDelete, page_info, departments} = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await DepartmentDelete({departmentID: id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (departments.length > 1) {
+          this.queryDepartmentList({ offset: page_info.offset, limit: 10 })
+        } else if (page_info.offset > 0) {
+          this.queryDepartmentList({ offset: page_info.offset - 1, limit: 10 })
+        }
+      }
+    })
+  }
+
   showDoctor() {
     if (this.state.pageType !== 1) return null
-    let { page_info, clinic_name } = this.props
+    let { departments, page_info, clinic_name } = this.props
     let { items } = this.state
+    items = departments
+    console.log('departments=====', departments)
     // this.setState({items: departments})
     return (
       <div className={'newList'}>
@@ -57,7 +78,15 @@ class DepartmentListScreen extends Component {
           <div className={'boxRight'}>
             <button
               onClick={() => {
-                this.setState({ alertType: 1 })
+                this.setState({
+                  alertType: 1,
+                  editType: 0,
+                  departInfo: {
+                    code: '',
+                    name: '',
+                    weight: ''
+                  }
+                })
               }}
             >
               新增科室
@@ -113,9 +142,15 @@ class DepartmentListScreen extends Component {
                   </div>
                   <div>
                     <div>
-                      <span>编辑</span>
+                      <span onClick={() => {
+                        this.setState({alertType: 1, editType: 1, departInfo: depart})
+                      }}>编辑</span>
                       |
-                      <span>删除</span>
+                      <span
+                        onClick={() => {
+                          this.DepartmentDelete(depart.id)
+                        }}
+                      >删除</span>
                     </div>
                   </div>
                 </li>
@@ -329,6 +364,25 @@ class DepartmentListScreen extends Component {
       this.setState({ alertType: 0 })
     }
   }
+  async DepartmentUpdate() {
+    const { DepartmentUpdate, clinic_id } = this.props
+    const {departInfo} = this.state
+    let requestData = {}
+    requestData.clinic_id = clinic_id
+    requestData.departmentID = departInfo.id
+    requestData.code = departInfo.code
+    requestData.name = departInfo.name
+    requestData.weight = departInfo.weight
+    let error = await DepartmentUpdate(requestData)
+    if (error) {
+      alert(error)
+    } else {
+      const { queryDepartmentList, clinic_id } = this.props
+      queryDepartmentList({ clinic_id })
+      this.setState({ alertType: 0 })
+    }
+  }
+
   setDeaprtInfo(e, key) {
     let newDepart = this.state.departInfo
     newDepart[key] = e.target.value
@@ -338,11 +392,12 @@ class DepartmentListScreen extends Component {
   showAddDepart() {
     // let departInfo = this.state.departInfo
     if (this.state.alertType !== 1) return null
+    const {departInfo, editType} = this.state
     return (
       <div className={'mask'}>
         <div className={'doctorList'} style={{ width: '700px', height: '480px', left: '500px' }}>
           <div className={'doctorList_top'}>
-            <span>新增科室</span>
+            <span>{editType === 0 ? '新增科室' : '编辑科室'}</span>
             <div />
             <span onClick={() => this.setState({ alertType: 0 })}>×</span>
           </div>
@@ -350,11 +405,19 @@ class DepartmentListScreen extends Component {
             <ul>
               <li>
                 <label>科室编码：</label>
-                <input placeholder='请填写科室编码' defaultValue='' onChange={e => this.setDeaprtInfo(e, 'code')} />
+                <input
+                  placeholder='请填写科室编码'
+                  value={departInfo.code}
+                  onChange={e => this.setDeaprtInfo(e, 'code')}
+                />
               </li>
               <li>
                 <label>科室名称：</label>
-                <input placeholder='请填写科室名称' defaultValue='' onChange={e => this.setDeaprtInfo(e, 'name')} />
+                <input
+                  placeholder='请填写科室名称'
+                  value={departInfo.name}
+                  onChange={e => this.setDeaprtInfo(e, 'name')}
+                />
               </li>
               <li>
                 <label>所属诊所：</label>
@@ -362,14 +425,22 @@ class DepartmentListScreen extends Component {
               </li>
               <li>
                 <label>科室权重：</label>
-                <input placeholder='请填写科室权重' defaultValue='' onChange={e => this.setDeaprtInfo(e, 'weight')} />
+                <input
+                  placeholder='请填写科室权重'
+                  value={departInfo.weight}
+                  onChange={e => this.setDeaprtInfo(e, 'weight')}
+                />
               </li>
             </ul>
             <div className={'buttonBtn'}>
               <button>取消</button>
               <button
                 onClick={() => {
-                  this.saveAdd()
+                  if (editType === 0) {
+                    this.saveAdd()
+                  } else {
+                    this.DepartmentUpdate()
+                  }
                 }}
               >
                 保存
@@ -462,6 +533,7 @@ class DepartmentListScreen extends Component {
       <div className={'orderRecordsPage'}>
         {this.showDoctor()}
         {this.showAddDepart()}
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -472,9 +544,8 @@ const mapStateToProps = state => {
     departments: state.departments.data,
     page_info: state.departments.page_info,
     clinic_id: state.user.data.clinic_id,
-    clinic_code: '00000001',
     clinic_name: state.user.data.clinic_name
   }
 }
 
-export default connect(mapStateToProps, { queryDepartmentList, departmentCreate })(DepartmentListScreen)
+export default connect(mapStateToProps, { queryDepartmentList, departmentCreate, DepartmentDelete, DepartmentUpdate })(DepartmentListScreen)
