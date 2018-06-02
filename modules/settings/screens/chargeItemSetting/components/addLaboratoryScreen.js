@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select } from '../../../../../components'
+import { Select, Confirm } from '../../../../../components'
 import { laboratoryCreate, queryDoseUnitList, queryLaboratorySampleList, queryCuvetteColorList, queryLaboList } from '../../../../../ducks'
-import { limitMoney, Confirm } from '../../../../../utils'
+import { limitMoney } from '../../../../../utils'
 
 // 病历
 class AddLaboratoryScreen extends Component {
@@ -22,124 +22,7 @@ class AddLaboratoryScreen extends Component {
   }
 
   async componentDidMount() {}
-  style() {
-    return (
-      <style jsx='true'>{`
-        .contentCenter {
-          // background:#a0a0a0;
-          display: flex;
-          flex-direction: column;
-        }
-        .contentCenter button {
-          background: rgba(255, 255, 255, 1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          height: 32px;
-          cursor: pointer;
-          margin-left: 10px;
-          font-size: 14px;
-          font-family: MicrosoftYaHei;
-          color: rgba(0, 0, 0, 0.65);
-          padding: 0 15px;
-        }
-        .contentCenter button:hover {
-          background: rgba(42, 205, 200, 1);
-          color: rgba(255, 255, 255, 1);
-          border: 1px solid rgba(42, 205, 200, 1);
-        }
-        .bottomBtn {
-          // background:#909090;
-          width: 1098px;
-          margin: 0 0 30px 0;
-          display: flex;
-          align-items: center;
-        }
-        .bottomBtn > div {
-          margin: 0 auto;
-        }
-        .bottomBtn button {
-        }
-        .commonBlank {
-          background: rgba(255, 255, 255, 1);
-          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
-          border-radius: 4px;
-          margin-bottom: 20px;
-          // width:1038px;
-          min-width: 1038px;
-          display: flex;
-          flex-direction: column;
-          padding: 5px 30px;
-        }
-        .commonBlank > span {
-          font-size: 18px;
-          height: 40px;
-          border-bottom: 1px solid #d9d9d9;
-          align-items: center;
-          display: flex;
-        }
-        .commonBlank > div {
-          display: flex;
-          margin: 10px 0;
-        }
-        .commonBlank > div > input {
-          background: rgba(245, 248, 249, 1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          height: 30px;
-          padding: 0;
-        }
-        .commonBlank > div > button {
-          background: rgba(255, 255, 255, 1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          height: 32px;
-          cursor: pointer;
-          margin-left: 10px;
-          font-size: 14px;
-          font-family: MicrosoftYaHei;
-          color: rgba(0, 0, 0, 0.65);
-          padding: 0 15px;
-        }
-        .commonBlank > div > ul {
-          // background:#a0a0a0;
-          margin: 0 auto;
-          width: 100%;
-        }
-        .commonBlank > div > ul > li {
-          float: left;
-          width: 19%;
-          display: flex;
-          flex-direction: column;
-          height: 70px;
-          margin-right: 1%;
-          margin-top: 5px;
-        }
-        .commonBlank > div > ul > li > label {
-          height: 25px;
-        }
-        .commonBlank > div > ul > li > div > input,
-        .commonBlank > div > ul > li > input {
-          background: rgba(245, 248, 249, 1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          height: 30px;
-          padding: 0;
-        }
-        .commonBlank > div > ul > li > div {
-        }
-        .commonBlank > div > ul > li > div > label {
-          margin-left: 15px;
-          display: flex;
-          align-items: center;
-          float: left;
-          height: 30px;
-        }
-        .commonBlank > div > ul > li > div > label:first-child {
-          margin-left: 0;
-        }
-      `}</style>
-    )
-  }
+
   render() {
     return (
       <div className={'contentCenter'}>
@@ -232,48 +115,43 @@ class AddLaboratoryScreen extends Component {
   // 单位筛选
   getMiniUnitOptions() {
     const { doseUnits } = this.props
-    // console.log('doseUnits=====', doseUnits)
     let array = []
     for (let key in doseUnits) {
       const { name } = doseUnits[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array
   }
   getLaboratorySampleIdOptions() {
-    // return [{value: 1, label: '标本1'}, {value: 2, label: '标本2'}]
     const { laboratorySamples } = this.props
     let array = []
     for (let key in laboratorySamples) {
       const { name } = laboratorySamples[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...laboratorySamples[key]
       })
     }
     return array
   }
   getCuvetteColorIdOptions() {
-    // return [{value: 1, label: '颜色1'}, {value: 2, label: '颜色2'}]
     const { cuvetteColors } = this.props
     let array = []
     for (let key in cuvetteColors) {
       const { name } = cuvetteColors[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...cuvetteColors[key]
       })
     }
     return array
   }
-  // LaboratorySampleList
-  // CuvetteColorList
   // 获取单位数据
   getDoseUnitList(keyword) {
     const { queryDoseUnitList } = this.props
@@ -299,7 +177,6 @@ class AddLaboratoryScreen extends Component {
   }
   searchView() {
     const { labos } = this.props
-    console.log('labos=====', labos)
     let { laboratoryInfo } = this.state
     return (
       <div
@@ -357,22 +234,9 @@ class AddLaboratoryScreen extends Component {
       </div>
     )
   }
-  // limitMoney(money) {
-  //   let value = ''
-  //   value = money.replace(/[^\d.]/g, '')
-  //   value = value.replace(/^\./g, '')
-  //   value = value
-  //     .replace('.', '$#$')
-  //     .replace(/\./g, '')
-  //     .replace('$#$', '.')
-  //   let valus = value.split('.')
-  //   if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
-  //   return value
-  // }
   // 药品基本信息
   renderBaseInfoBlank() {
     const { laboratoryInfo } = this.state
-    // console.log('laboratoryInfo=======', laboratoryInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
@@ -672,6 +536,125 @@ class AddLaboratoryScreen extends Component {
           </ul>
         </div>
       </div>
+    )
+  }
+
+  style() {
+    return (
+      <style jsx='true'>{`
+        .contentCenter {
+          // background:#a0a0a0;
+          display: flex;
+          flex-direction: column;
+        }
+        .contentCenter button {
+          background: rgba(255, 255, 255, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 32px;
+          cursor: pointer;
+          margin-left: 10px;
+          font-size: 14px;
+          font-family: MicrosoftYaHei;
+          color: rgba(0, 0, 0, 0.65);
+          padding: 0 15px;
+        }
+        .contentCenter button:hover {
+          background: rgba(42, 205, 200, 1);
+          color: rgba(255, 255, 255, 1);
+          border: 1px solid rgba(42, 205, 200, 1);
+        }
+        .bottomBtn {
+          // background:#909090;
+          width: 1098px;
+          margin: 0 0 30px 0;
+          display: flex;
+          align-items: center;
+        }
+        .bottomBtn > div {
+          margin: 0 auto;
+        }
+        .bottomBtn button {
+        }
+        .commonBlank {
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+          margin-bottom: 20px;
+          // width:1038px;
+          min-width: 1038px;
+          display: flex;
+          flex-direction: column;
+          padding: 5px 30px;
+        }
+        .commonBlank > span {
+          font-size: 18px;
+          height: 40px;
+          border-bottom: 1px solid #d9d9d9;
+          align-items: center;
+          display: flex;
+        }
+        .commonBlank > div {
+          display: flex;
+          margin: 10px 0;
+        }
+        .commonBlank > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 30px;
+          padding: 0;
+        }
+        .commonBlank > div > button {
+          background: rgba(255, 255, 255, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 32px;
+          cursor: pointer;
+          margin-left: 10px;
+          font-size: 14px;
+          font-family: MicrosoftYaHei;
+          color: rgba(0, 0, 0, 0.65);
+          padding: 0 15px;
+        }
+        .commonBlank > div > ul {
+          // background:#a0a0a0;
+          margin: 0 auto;
+          width: 100%;
+        }
+        .commonBlank > div > ul > li {
+          float: left;
+          width: 19%;
+          display: flex;
+          flex-direction: column;
+          height: 70px;
+          margin-right: 1%;
+          margin-top: 5px;
+        }
+        .commonBlank > div > ul > li > label {
+          height: 25px;
+        }
+        .commonBlank > div > ul > li > div > input,
+        .commonBlank > div > ul > li > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 30px;
+          padding: 0;
+        }
+        .commonBlank > div > ul > li > div {
+        }
+        .commonBlank > div > ul > li > div > label {
+          margin-left: 15px;
+          display: flex;
+          align-items: center;
+          float: left;
+          height: 30px;
+        }
+        .commonBlank > div > ul > li > div > label:first-child {
+          margin-left: 0;
+        }
+      `}</style>
     )
   }
 }

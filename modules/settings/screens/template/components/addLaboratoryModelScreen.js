@@ -38,7 +38,8 @@ class AddLaboratoryModelScreen extends Component {
       const { clinic_laboratory_id, laboratory_name } = laboratories[key]
       array.push({
         value: clinic_laboratory_id,
-        label: laboratory_name
+        label: laboratory_name,
+        ...laboratories[key]
       })
     }
     return array

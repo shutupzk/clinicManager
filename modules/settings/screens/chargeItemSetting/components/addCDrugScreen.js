@@ -253,7 +253,8 @@ class AddCDrugScreen extends Component {
       // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseForms[key]
       })
     }
     return array
@@ -271,7 +272,8 @@ class AddCDrugScreen extends Component {
       // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array
@@ -285,7 +287,8 @@ class AddCDrugScreen extends Component {
       // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...routeAdministrationss[key]
       })
     }
     return array
@@ -299,7 +302,8 @@ class AddCDrugScreen extends Component {
       // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...frequencies[key]
       })
     }
     return array

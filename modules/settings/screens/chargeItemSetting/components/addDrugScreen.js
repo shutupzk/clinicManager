@@ -269,10 +269,10 @@ class AddDrugScreen extends Component {
     let array = []
     for (let key in doseForms) {
       const { name } = doseForms[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseForms[key]
       })
     }
     return array
@@ -286,7 +286,8 @@ class AddDrugScreen extends Component {
       let { id, name } = drugClasses[key]
       array.push({
         value: id,
-        label: name
+        label: name,
+        ...drugClasses[key]
       })
     }
     return array
@@ -298,10 +299,10 @@ class AddDrugScreen extends Component {
     let array = []
     for (let key in doseUnits) {
       const { name } = doseUnits[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array
@@ -312,10 +313,10 @@ class AddDrugScreen extends Component {
     let array = []
     for (let key in routeAdministrationss) {
       const { name } = routeAdministrationss[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...routeAdministrationss[key]
       })
     }
     return array
@@ -326,10 +327,10 @@ class AddDrugScreen extends Component {
     let array = []
     for (let key in frequencies) {
       const { name } = frequencies[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...frequencies[key]
       })
     }
     return array

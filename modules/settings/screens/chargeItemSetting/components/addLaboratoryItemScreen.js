@@ -240,14 +240,8 @@ class AddLaboratoryItemScreen extends Component {
   validateData(data) {
     if (!data.name || data.name === '') {
       this.setState({ nameFailed: true })
-      // alert(1)
       return false
     }
-    // if (!data.unit_name || data.unit_name === '') {
-    //   this.setState({unit_nameFailed: true})
-    //   // alert(2)
-    //   return false
-    // }
     return true
   }
   // 保存
@@ -321,10 +315,10 @@ class AddLaboratoryItemScreen extends Component {
     let array = []
     for (let key in doseUnits) {
       const { name } = doseUnits[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array

@@ -17,7 +17,8 @@ class DepartmentListScreen extends Component {
         code: '',
         name: '',
         weight: ''
-      }
+      },
+      items: []
     }
   }
 
@@ -28,6 +29,8 @@ class DepartmentListScreen extends Component {
   queryDepartmentList({ keyword, offset = 0, limit = 10 }) {
     const { queryDepartmentList, clinic_id } = this.props
     queryDepartmentList({ clinic_id, keyword, offset, limit })
+    const { departments } = this.props
+    this.setState({items: departments})
   }
 
   changeContent({ type }) {
@@ -36,7 +39,9 @@ class DepartmentListScreen extends Component {
 
   showDoctor() {
     if (this.state.pageType !== 1) return null
-    let { departments, page_info, clinic_name } = this.props
+    let { page_info, clinic_name } = this.props
+    let { items } = this.state
+    // this.setState({items: departments})
     return (
       <div className={'newList'}>
         <div className={'filterBox'}>
@@ -69,7 +74,7 @@ class DepartmentListScreen extends Component {
               <div>是否开放预约/挂号</div>
               <div>操作</div>
             </li>
-            {departments.map((depart, index) => {
+            {items.map((depart, index) => {
               return (
                 <li key={index}>
                   <div>{index + 1}</div>
@@ -80,23 +85,39 @@ class DepartmentListScreen extends Component {
                     <div>
                       <label>
                         <input
-                          readOnly
+                          // readOnly
                           type='radio'
                           checked={depart.is_appointment}
+                          onChange={e => {
+                            let array = items
+                            array[index].is_appointment = true
+                            this.setState({items: array})
+                          }}
                         />
                         是
                       </label>
                       <label>
                         <input
-                          readOnly
+                          // readOnly
                           type='radio'
                           checked={!depart.is_appointment}
+                          onChange={e => {
+                            let array = items
+                            array[index].is_appointment = false
+                            this.setState({items: array})
+                          }}
                         />
                         否
                       </label>
                     </div>
                   </div>
-                  <div>删除</div>
+                  <div>
+                    <div>
+                      <span>编辑</span>
+                      |
+                      <span>删除</span>
+                    </div>
+                  </div>
                 </li>
               )
             })}
@@ -284,6 +305,11 @@ class DepartmentListScreen extends Component {
           }
           .listContent ul li>div>div>label{
             flex: 1;
+          }
+          .listContent ul li>div>div>span{
+            flex: 1;
+            cursor: pointer;
+            color: #2ACDC8;
           }
         `}</style>
       </div>
