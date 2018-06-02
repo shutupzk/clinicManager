@@ -122,7 +122,7 @@ class DoctorListScreen extends Component {
                             info.is_appointment = true
                             const { PersonnelUpdate, clinic_id } = this.props
                             const { personnel_type } = this.state
-                            console.log('info=====', info)
+                            // console.log('info=====', info)
                             let error = await PersonnelUpdate({ ...info, clinic_id, personnel_type })
                             if (error) {
                               return alert('修改失败', error)
@@ -142,7 +142,7 @@ class DoctorListScreen extends Component {
                             info.is_appointment = false
                             const { PersonnelUpdate, clinic_id } = this.props
                             const { personnel_type } = this.state
-                            console.log('info=====', info)
+                            // console.log('info=====', info)
                             let error = await PersonnelUpdate({ ...info, clinic_id, personnel_type })
                             if (error) {
                               return alert('修改失败', error)
@@ -395,7 +395,7 @@ class DoctorListScreen extends Component {
     const { showAddPersonnel, personnel_type, doctorInfo, editType } = this.state
     if (!showAddPersonnel) return null
     // const departments = this.getDepartmentList()
-    console.log('doctorInfo====', doctorInfo)
+    // console.log('doctorInfo====', doctorInfo)
     let keyName = personnel_type === 2 ? '医生' : '职员'
     return (
       <div className={'mask'}>
@@ -435,6 +435,7 @@ class DoctorListScreen extends Component {
                       options={this.getDepartmentList()}
                       onChange={({value, label}) => {
                         this.setDoctorInfo(value, 'department_id', 2)
+                        this.setDoctorInfo(label, 'department_name', 2)
                       }}
                     />
                   </div>
