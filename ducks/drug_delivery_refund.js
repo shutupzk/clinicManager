@@ -1,5 +1,6 @@
 import { request } from './request'
 const QUERY_DRUG_REFUND_TRIAGE = 'QUERY_DRUG_REFUND_TRIAGE'
+const QUERY_DRUG_REFUND_TRIAGE_SELECT = 'QUERY_DRUG_REFUND_TRIAGE_SELECT'
 
 const initState = {
   traige_list: [],
@@ -12,6 +13,8 @@ export function drugDeliveryRefund(state = initState, action = {}) {
   switch (action.type) {
     case QUERY_DRUG_REFUND_TRIAGE:
       return { ...state, traige_list: action.data, traige_list_page: action.page_info }
+    case QUERY_DRUG_REFUND_TRIAGE_SELECT:
+      return { ...state, traige_selectId: action.traige_selectId }
     default:
       return state
   }
@@ -43,4 +46,11 @@ export const queryDrugRefundTraigeList = ({ keyword, offset = 0, limit = 6, clin
     console.log(e)
     return null
   }
+}
+
+export const drugRefundTraigeSelect = selectId => dispatch => {
+  dispatch({
+    type: QUERY_DRUG_REFUND_TRIAGE_SELECT,
+    selectId
+  })
 }

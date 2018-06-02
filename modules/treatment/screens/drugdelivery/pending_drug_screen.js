@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryDrugPendingTraigeList } from '../../../../ducks'
+import { queryDrugPendingTraigeList, drugPendingTraigeSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
@@ -30,7 +30,12 @@ class PendingDrugScreen extends Component {
     queryDrugPendingTraigeList({ keyword, offset, limit, clinic_id, start_date, end_date })
   }
 
-  // 显示待收费
+  goToDetail(selectId) {
+    const { drugPendingTraigeSelect } = this.props
+    drugPendingTraigeSelect(selectId)
+    Router.push('/treatment/drugdelivery/detail')
+  }
+
   showTriageList() {
     let { triagePatientsPage, triagePatients } = this.props
     return (
@@ -76,7 +81,7 @@ class PendingDrugScreen extends Component {
                   <div className={'itemBottom'}>
                     <span
                       onClick={() => {
-
+                        this.goToDetail(patient.clinic_triage_patient_id)
                       }}
                     >
                       发药
@@ -151,4 +156,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDrugPendingTraigeList })(PendingDrugScreen)
+export default connect(mapStateToProps, { queryDrugPendingTraigeList, drugPendingTraigeSelect })(PendingDrugScreen)

@@ -122,9 +122,9 @@ import {
   queryMaterialStockList
 } from './material_outstock'
 import { clinicPermissions, queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions } from './clinic_permission'
-import { drugDeliveryPending, queryDrugPendingTraigeList } from './drug_delivery_pending'
-import { drugDeliveryIssued, queryDrugIssuedTraigeList } from './drug_delivery_issued'
-import { drugDeliveryRefund, queryDrugRefundTraigeList } from './drug_delivery_refund'
+import { drugDeliveryPending, queryDrugPendingTraigeList, drugPendingTraigeSelect } from './drug_delivery_pending'
+import { drugDeliveryIssued, queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from './drug_delivery_issued'
+import { drugDeliveryRefund, queryDrugRefundTraigeList, drugRefundTraigeSelect } from './drug_delivery_refund'
 
 // keys
 export {
@@ -339,6 +339,9 @@ export {
   GetHealthRecord,
   queryChiefComplaints,
   queryDrugPendingTraigeList,
+  drugPendingTraigeSelect,
   queryDrugRefundTraigeList,
+  drugRefundTraigeSelect,
+  drugIssuedTraigeSelect,
   queryDrugIssuedTraigeList
 }

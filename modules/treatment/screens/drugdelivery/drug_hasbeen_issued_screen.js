@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryDrugIssuedTraigeList } from '../../../../ducks'
+import { queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
@@ -24,13 +24,18 @@ class DrugHasBeenIssuedScreen extends Component {
     this.getTriagePatientListData({})
   }
 
+  goToDetail(selectId) {
+    const { drugIssuedTraigeSelect } = this.props
+    drugIssuedTraigeSelect(selectId)
+    // Router.push('/treatment/charge/toll')
+  }
+
   getTriagePatientListData({ offset, limit }) {
     const { clinic_id, queryDrugIssuedTraigeList } = this.props
     const { start_date, end_date, keyword } = this.state
     queryDrugIssuedTraigeList({ keyword, offset, limit, clinic_id, start_date, end_date })
   }
 
-  // 显示待收费
   showTriageList() {
     let { triagePatientsPage, triagePatients } = this.props
     return (
@@ -76,7 +81,7 @@ class DrugHasBeenIssuedScreen extends Component {
                   <div className={'itemBottom'}>
                     <span
                       onClick={() => {
-
+                        this.goToDetail(patient.clinic_triage_patient_id)
                       }}
                     >
                       查看
@@ -151,4 +156,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDrugIssuedTraigeList })(DrugHasBeenIssuedScreen)
+export default connect(mapStateToProps, { queryDrugIssuedTraigeList, drugIssuedTraigeSelect })(DrugHasBeenIssuedScreen)

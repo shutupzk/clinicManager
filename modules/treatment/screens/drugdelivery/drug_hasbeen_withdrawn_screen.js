@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryDrugRefundTraigeList } from '../../../../ducks'
+import { queryDrugRefundTraigeList, drugRefundTraigeSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
@@ -30,7 +30,12 @@ class DrugHasBeenWithdrawnScreen extends Component {
     queryDrugRefundTraigeList({ keyword, offset, limit, clinic_id, start_date, end_date })
   }
 
-  // 显示待收费
+  goToDetail(selectId) {
+    const { drugRefundTraigeSelect } = this.props
+    drugRefundTraigeSelect(selectId)
+    // Router.push('/treatment/charge/toll')
+  }
+
   showTriageList() {
     let { triagePatientsPage, triagePatients } = this.props
     return (
@@ -76,7 +81,7 @@ class DrugHasBeenWithdrawnScreen extends Component {
                   <div className={'itemBottom'}>
                     <span
                       onClick={() => {
-
+                        this.goToDetail(patient.clinic_triage_patient_id)
                       }}
                     >
                       查看
@@ -151,4 +156,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDrugRefundTraigeList })(DrugHasBeenWithdrawnScreen)
+export default connect(mapStateToProps, { queryDrugRefundTraigeList, drugRefundTraigeSelect })(DrugHasBeenWithdrawnScreen)
