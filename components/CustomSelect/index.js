@@ -16,7 +16,7 @@ export default class CustomSelect extends Component {
     options = options || []
     if (!showOptions) return null
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', position: 'absolute', top: '50px', left: '0px', zIndex: 100, border: '1px solid #d9d9d9', borderRadius: '4px', background: '#FFFFFF', paddingTop: '2px', paddingBottom: '2px', maxHeight: '100px', overflow: 'auto' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', position: 'absolute', top: '50px', left: '0px', zIndex: 100, border: '1px solid #d9d9d9', borderRadius: '4px', background: '#FFFFFF', paddingTop: '2px', paddingBottom: '2px', maxHeight: '255px', overflow: 'auto' }}>
         {options.map((item, index) => {
           return (
             <div
