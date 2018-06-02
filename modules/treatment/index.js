@@ -15,6 +15,7 @@ import RefundedScreen from './screens/charge/refunded_screen'
 import OrderManagementScreen from './screens/charge/orderManagement_screen'
 import TollScreen from './screens/charge/toll_screen'
 import PendingDrugScreen from './screens/drugdelivery/pending_drug_screen'
+import PendingDetailDrugScreen from './screens/drugdelivery/pending_detail_screen'
 import DrugHasBeenIssuedScreen from './screens/drugdelivery/drug_hasbeen_issued_screen'
 import DrugHasBeenWithdrawnScreen from './screens/drugdelivery/drug_hasbeen_withdrawn_screen'
 import RecptionScreen from './screens/addmission/reception_screen'
@@ -41,6 +42,7 @@ export {
   TollScreen,
   // NewListDetails,
   PendingDrugScreen,
+  PendingDetailDrugScreen,
   DrugHasBeenIssuedScreen,
   DrugHasBeenWithdrawnScreen,
   RecptionScreen,
