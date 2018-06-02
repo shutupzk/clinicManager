@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, Confirm, PageCard } from '../../../../../components'
+import { Select, Confirm, PageCard, CustomSelect } from '../../../../../components'
 import moment from 'moment'
 import {
   ClinicDrugList,
@@ -329,16 +329,41 @@ class MedicalRecordScreen extends Component {
               <li key={index}>
                 <div style={{ flex: 4 }}>
                   <div>
-                    <Select
-                      value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions(0))}
+                    <CustomSelect
+                      controlStyle={{ height: '38px' }}
+                      value={item.clinic_drug_id || ''}
+                      label={item.drug_name || ''}
+                      mustOptionValue={!false}
+                      valueKey='clinic_drug_id'
+                      labelKey='drug_name'
+                      placeholder='搜索'
                       onChange={item => {
                         this.setWItemValues(item, index)
                       }}
-                      filterOption={false}
-                      placeholder='搜索'
-                      height={38}
                       onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
                       options={this.getDrugOptions(0)}
+                      renderTitle={(item, index) => {
+                        return (
+                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                            <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                            <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                          </div>
+                        )
+                      }}
+                      renderItem={(item, index) => {
+                        let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                        let packing_unit_name = item.packing_unit_name || ''
+                        return (
+                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                            <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                            <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                          </div>
+                        )
+                      }}
                     />
                   </div>
                 </div>
@@ -402,7 +427,7 @@ class MedicalRecordScreen extends Component {
                   </div>
                 </div>
                 <div style={{ flex: 3 }}>
-                  <input value={item.illustration === undefined ? '' : item.illustration} type='text' onChange={e => this.setWItemValue(e, index, 'illustration')} />
+                  <input value={item.illustration || ''} type='text' onChange={e => this.setWItemValue(e, index, 'illustration')} />
                 </div>
                 <div style={{ flex: 2 }}>
                   <div
@@ -514,7 +539,7 @@ class MedicalRecordScreen extends Component {
                 <li key={index}>
                   <div>
                     <div>
-                      <Select
+                      {/* <Select
                         value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions(1))}
                         onChange={item => {
                           this.setCItemValues(item, index)
@@ -523,6 +548,42 @@ class MedicalRecordScreen extends Component {
                         height={38}
                         options={this.getDrugOptions(1)}
                         onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
+                      /> */}
+                      <CustomSelect
+                        controlStyle={{ height: '38px' }}
+                        value={item.clinic_drug_id || ''}
+                        label={item.drug_name || ''}
+                        mustOptionValue={!false}
+                        valueKey='clinic_drug_id'
+                        labelKey='drug_name'
+                        placeholder='搜索'
+                        onChange={item => {
+                          this.setCItemValues(item, index)
+                        }}
+                        onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
+                        options={this.getDrugOptions(1)}
+                        renderTitle={(item, index) => {
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                            </div>
+                          )
+                        }}
+                        renderItem={(item, index) => {
+                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                          let packing_unit_name = item.packing_unit_name || ''
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                            </div>
+                          )
+                        }}
                       />
                     </div>
                   </div>

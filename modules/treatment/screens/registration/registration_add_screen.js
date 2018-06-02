@@ -165,7 +165,8 @@ class RegistrationAddScreen extends Component {
               <CustomSelect
                 placeholder='就诊人姓名'
                 controlStyle={{ marginTop: '17px' }}
-                value={patient.name}
+                labelKey='name'
+                withoutFitler={!false}
                 options={patients}
                 onInputChange={name => {
                   let newPatient = this.state.patientInfo
@@ -215,7 +216,7 @@ class RegistrationAddScreen extends Component {
               <label>身份证号码：</label>
               <input
                 type='text'
-                value={patient.cert_no}
+                value={patient.cert_no || ''}
                 onChange={e => {
                   let newPatient = patient
                   if (e.target.value.length > 14) {
