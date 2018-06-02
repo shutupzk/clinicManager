@@ -315,10 +315,10 @@ class AddExaminationScreen extends Component {
     let array = []
     for (let key in doseUnits) {
       const { name } = doseUnits[key]
-      // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array

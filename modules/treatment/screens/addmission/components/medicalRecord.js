@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient } from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints } from '../../../../../ducks'
 // 病历
-class PrescriptionScreen extends Component {
+class MedicalRecordScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -32,7 +32,8 @@ class PrescriptionScreen extends Component {
   }
 
   async componentWillMount() {
-    const { queryMedicalRecord, clinic_triage_patient_id } = this.props
+    const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints } = this.props
+    await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
     this.setState({ ...this.state, ...record })
   }
@@ -67,7 +68,21 @@ class PrescriptionScreen extends Component {
 
   showSaveModel() {
     if (!this.state.saveAsModel) return null
-    let { is_common, name, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
+    let {
+      is_common,
+      name,
+      chief_complaint,
+      history_of_present_illness,
+      history_of_past_illness,
+      family_medical_history,
+      allergic_history,
+      allergic_reaction,
+      body_examination,
+      immunizations,
+      diagnosis,
+      cure_suggestion,
+      remark
+    } = this.state
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '680px', left: '324px' }}>
@@ -298,7 +313,10 @@ class PrescriptionScreen extends Component {
                     <li>{model_name}</li>
                     <li>{is_common ? '通用模板' : '非通用模板'}</li>
                     <li>{moment(created_time).format('YYYY-MM-DD')}</li>
-                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.setState({ ...this.state, ...item, showMedicalModels: false })}>
+                    <li
+                      style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }}
+                      onClick={() => this.setState({ ...this.state, ...item, showMedicalModels: false })}
+                    >
                       复 制
                     </li>
                   </ul>
@@ -355,9 +373,9 @@ class PrescriptionScreen extends Component {
 
   // 打开病历模板
   async setMedicalModesl() {
-    let {operation_id} = this.props
+    let { operation_id } = this.props
     const { queryMedicalModelsByDoctor } = this.props
-    await queryMedicalModelsByDoctor({operation_id})
+    await queryMedicalModelsByDoctor({ operation_id })
     this.setState({ showMedicalModels: true })
   }
 
@@ -398,7 +416,10 @@ class PrescriptionScreen extends Component {
                     <li>{visit_type_name}</li>
                     <li>{clinic_name}</li>
                     <li>{doctor_name}</li>
-                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}>
+                    <li
+                      style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }}
+                      onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}
+                    >
                       {this.state.choseHistoryId === item.id ? '收 起' : '展 开'}
                     </li>
                   </ul>
@@ -458,7 +479,18 @@ class PrescriptionScreen extends Component {
     const { choseHistoryId } = this.state
     if (choseHistoryId !== item.id) return null
 
-    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, body_examination, immunizations, cure_suggestion, remark } = item
+    let {
+      morbidity_date,
+      chief_complaint,
+      history_of_present_illness,
+      history_of_past_illness,
+      family_medical_history,
+      allergic_history,
+      body_examination,
+      immunizations,
+      cure_suggestion,
+      remark
+    } = item
     return (
       <div className='medical_detail'>
         <div className='medical_detail_item'>
@@ -574,7 +606,22 @@ class PrescriptionScreen extends Component {
   }
 
   render() {
-    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
+    let {
+      morbidity_date,
+      chief_complaint,
+      history_of_present_illness,
+      history_of_past_illness,
+      family_medical_history,
+      allergic_history,
+      allergic_reaction,
+      body_examination,
+      immunizations,
+      diagnosis,
+      cure_suggestion,
+      remark
+    } = this.state
+    const { chief_complaints } = this.props
+    console.log('chief_complaints', chief_complaints)
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
@@ -890,8 +937,11 @@ const mapStateToProps = state => {
     medicalModels: state.medicalRecords.models,
     medicalModelPage: state.medicalRecords.model_page,
     medicalHistory: state.medicalRecords.history_medicals,
-    medicalHistoryPage: state.medicalRecords.history_page_info
+    medicalHistoryPage: state.medicalRecords.history_page_info,
+    chief_complaints: state.medicalRecords.chief_complaints
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient })(PrescriptionScreen)
+export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints })(
+  MedicalRecordScreen
+)

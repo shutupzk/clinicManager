@@ -319,7 +319,8 @@ class AddOtherFeeScreen extends Component {
       // console.log(doseForms[key])
       array.push({
         value: name,
-        label: name
+        label: name,
+        ...doseUnits[key]
       })
     }
     return array
