@@ -31,7 +31,7 @@ import {
   querySchedules,
   RemoveScheduleByID
 } from './schedules'
-import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor } from './medicRecord'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor, queryChiefComplaints } from './medicRecord'
 import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
@@ -321,5 +321,6 @@ export {
   queryClinicHassetPermissions,
   queryClinicUnsetPermissions,
   createClinicPermissions,
-  GetHealthRecord
+  GetHealthRecord,
+  queryChiefComplaints
 }
