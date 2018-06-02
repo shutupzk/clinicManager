@@ -2,8 +2,10 @@ import { request } from './request'
 const MEDICAL_RECORD_ADD = 'MEDICAL_RECORD_ADD'
 const MEDICAL_MODEL_ADD = 'MEDICAL_MODEL_ADD'
 const MEDICAL_HISTORY_ADD = 'MEDICAL_HISTORY_ADD'
+const CHIEF_COMPLAINTS_ADD = 'CHIEF_COMPLAINTS_ADD'
 
 const initState = {
+  chief_complaints: [], // 主诉
   data: {},
   models: [],
   model_page: {},
@@ -19,6 +21,8 @@ export function medicalRecords(state = initState, action = {}) {
       return { ...state, models: action.data, model_page: action.page }
     case MEDICAL_HISTORY_ADD:
       return { ...state, history_medicals: action.data, history_page_info: action.page }
+    case CHIEF_COMPLAINTS_ADD:
+      return { ...state, chief_complaints: action.data }
     default:
       return state
   }
@@ -177,6 +181,21 @@ export const createMedicalRecordAsModel = ({
       diagnosis,
       cure_suggestion,
       remark
+    })
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    return e
+  }
+}
+
+export const queryChiefComplaints = () => async dispatch => {
+  try {
+    const data = await request('/chiefComplaint/list', {})
+    let res = data.data || []
+    dispatch({
+      type: CHIEF_COMPLAINTS_ADD,
+      data: res
     })
     if (data.code === '200') return null
     return data.msg
