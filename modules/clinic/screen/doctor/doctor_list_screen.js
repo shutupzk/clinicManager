@@ -8,7 +8,7 @@ import {
   PersonnelUpdate
 } from '../../../../ducks'
 // import moment from 'moment'
-import { PageCard, Select } from '../../../../components'
+import { PageCard, Select, Confirm } from '../../../../components'
 
 class DoctorListScreen extends Component {
   constructor(props) {
@@ -130,7 +130,7 @@ class DoctorListScreen extends Component {
                             // console.log('info=====', info)
                             let error = await PersonnelUpdate(requestData)
                             if (error) {
-                              return alert('修改失败', error)
+                              return this.refs.myAlert.alert('修改失败', error)
                             }
                             this.queryDoctorList({ personnel_type })
                           }}
@@ -155,7 +155,7 @@ class DoctorListScreen extends Component {
                             // console.log('info=====', info)
                             let error = await PersonnelUpdate(requestData)
                             if (error) {
-                              return alert('修改失败', error)
+                              return this.refs.myAlert.alert('修改失败', error)
                             }
                             this.queryDoctorList({ personnel_type })
                           }}
@@ -372,10 +372,10 @@ class DoctorListScreen extends Component {
     const { doctorInfo, personnel_type } = this.state
     let error = await doctorCreate({ ...doctorInfo, clinic_id, personnel_type })
     if (error) {
-      return alert('添加失败', error)
+      return this.refs.myAlert.alert('添加失败', error)
     }
     this.queryDoctorList({ personnel_type })
-    alert('添加成功')
+    this.refs.myAlert.alert('添加成功')
     this.setState({ showAddPersonnel: false })
   }
   // 保存编辑
@@ -385,10 +385,10 @@ class DoctorListScreen extends Component {
     let personnel_id = doctorInfo.id
     let error = await PersonnelUpdate({ ...doctorInfo, personnel_id, clinic_id, personnel_type })
     if (error) {
-      return alert('添加失败', error)
+      return this.refs.myAlert.alert('添加失败', error)
     }
     this.queryDoctorList({ personnel_type })
-    alert('修改成功')
+    this.refs.myAlert.alert('修改成功')
     this.setState({ showAddPersonnel: false })
   }
 
@@ -665,6 +665,7 @@ class DoctorListScreen extends Component {
             border-radius: 4px 4px 0px 0px;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
