@@ -116,8 +116,7 @@ export default class CustomSelect extends Component {
           position: 'relative',
           display: 'flex',
           flexDirection: 'column',
-          flex: 1,
-          ...controlStyle
+          flex: 1
         }}
       >
         <input
@@ -125,7 +124,8 @@ export default class CustomSelect extends Component {
             height: '40px',
             background: 'rgba(245, 248, 249, 1)',
             borderRadius: '4px',
-            border: '1px solid #d9d9d9'
+            border: '1px solid #d9d9d9',
+            ...controlStyle
           }}
           placeholder={placeholder || ''}
           value={label || ''}

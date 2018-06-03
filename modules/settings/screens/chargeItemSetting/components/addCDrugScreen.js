@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { ClinicDrugCreate, ClinicDrugList, queryDoseUnitList, queryDoseFormList, queryFrequencyList, queryRouteAdministrationList, queryDicDrugsList } from '../../../../../ducks'
 
 // 病历
@@ -106,7 +106,7 @@ class AddCDrugScreen extends Component {
           width: 19%;
           display: flex;
           flex-direction: column;
-          height: 70px;
+          height: 80px;
           margin-right: 1%;
           margin-top: 5px;
         }
@@ -346,26 +346,25 @@ class AddCDrugScreen extends Component {
     }
   }
 
-  searchView() {
+  // 药品基本信息
+  renderBaseInfoBlank() {
+    const { drugInfo } = this.state
     const drugs = this.props.drugs || []
     return (
-      <div
-        className={'researchView'}
-        onMouseOver={e => {
-          this.setState({ toSearch: false })
-        }}
-        onMouseLeave={e => {
-          this.setState({ toSearch: true })
-        }}
-      >
-        <span>请选择患者或继续新增</span>
-        <ul>
-          {drugs.map(({ name, specification, english_name, packing_unit_name, print_name, license_no, dose_form_name, py_code, barcode, dosage, dosage_unit_name, manu_factory_name }, index) => {
-            return (
-              <li
-                key={index}
-                onClick={() => {
-                  const { drugInfo } = this.state
+      <div className={'commonBlank baseInfoBlank'}>
+        <span>药品基本信息</span>
+        <div>
+          <ul>
+            <li style={{ position: 'relative' }}>
+              <label>
+                通用名<b style={{ color: 'red' }}>*</b>
+              </label>
+              <CustomSelect
+                placeholder='搜索'
+                controlStyle={{ height: '30px' }}
+                labelKey='name'
+                withoutFitler={!false}
+                onChange={({ name, specification, english_name, packing_unit_name, print_name, license_no, dose_form_name, py_code, barcode, dosage, dosage_unit_name, manu_factory_name }) => {
                   let obj = {
                     name,
                     specification,
@@ -381,58 +380,33 @@ class AddCDrugScreen extends Component {
                   if (dosage) obj.dosage = dosage
                   if (dosage_unit_name) obj.dosage_unit_name = dosage_unit_name
                   this.setState({
-                    drugInfo: { ...drugInfo, ...obj },
-                    searchView: 0
+                    drugInfo: { ...drugInfo, ...obj }
                   })
                 }}
-              >
-                <div className={'leftInfo'}>
-                  <div />
-                  <div>
-                    {name} {specification}
-                  </div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    )
-  }
-
-  // 药品基本信息
-  renderBaseInfoBlank() {
-    const { drugInfo } = this.state
-    console.log('drugInfo=======', drugInfo)
-    return (
-      <div className={'commonBlank baseInfoBlank'}>
-        <span>药品基本信息</span>
-        <div>
-          <ul>
-            <li style={{ position: 'relative' }}>
-              <label>
-                通用名<b style={{ color: 'red' }}>*</b>
-              </label>
-              <input
-                type='text'
-                placeholder={'name'}
-                value={drugInfo.name}
-                onChange={e => {
-                  this.setItemValue(e, 'name')
-                  let keyword = e.target.value
+                onInputChange={keyword => {
+                  this.setItemValue(keyword, 'name', 2)
                   this.props.queryDicDrugsList({ keyword, type: 1 })
-                  this.setState({ searchView: 1 })
                 }}
-                onFocus={e => {
-                  this.setState({ toSearch: true })
+                options={drugs}
+                renderTitle={(item, index) => {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                    </div>
+                  )
                 }}
-                onBlur={e => {
-                  if (this.state.toSearch && this.state.searchView === 1) {
-                    this.setState({ searchView: 0 })
-                  }
+                renderItem={(item, index) => {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.name}</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                    </div>
+                  )
                 }}
               />
-              {this.state.searchView === 1 ? this.searchView() : ''}
               {this.state.nameFailed || drugInfo.name === '' || !drugInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
@@ -760,9 +734,7 @@ class AddCDrugScreen extends Component {
               />
             </li>
             <li>
-              <label>
-                默认用法
-              </label>
+              <label>默认用法</label>
               <div>
                 <Select
                   placeholder={'请选择'}
@@ -779,9 +751,7 @@ class AddCDrugScreen extends Component {
               </div>
             </li>
             <li>
-              <label>
-                默认频次
-              </label>
+              <label>默认频次</label>
               <div>
                 <Select
                   placeholder={'请选择'}

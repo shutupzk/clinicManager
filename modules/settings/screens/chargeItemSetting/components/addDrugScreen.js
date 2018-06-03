@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { ClinicDrugCreate, ClinicDrugList, queryDoseUnitList, queryDoseFormList, queryFrequencyList, queryRouteAdministrationList, queryDicDrugsList } from '../../../../../ducks'
 
 // 病历
@@ -114,7 +114,7 @@ class AddDrugScreen extends Component {
           width: 19%;
           display: flex;
           flex-direction: column;
-          height: 70px;
+          height: 80px;
           margin-right: 1%;
           margin-top: 5px;
         }
@@ -460,6 +460,7 @@ class AddDrugScreen extends Component {
   // 药品基本信息
   renderBaseInfoBlank() {
     const { drugInfo } = this.state
+    const drugs = this.props.drugs || []
     // console.log('drugInfo=======', drugInfo)
     return (
       <div className={'commonBlank baseInfoBlank'}>
@@ -470,26 +471,80 @@ class AddDrugScreen extends Component {
               <label>
                 通用名<b style={{ color: 'red' }}>*</b>
               </label>
-              <input
-                type='text'
-                placeholder={'name'}
-                value={drugInfo.name || ''}
-                onChange={e => {
-                  this.setItemValue(e, 'name')
-                  let keyword = e.target.value
-                  this.props.queryDicDrugsList({ keyword, type: 0 })
-                  this.setState({ searchView: 1 })
-                }}
-                onFocus={e => {
-                  this.setState({ toSearch: true })
-                }}
-                onBlur={e => {
-                  if (this.state.toSearch && this.state.searchView === 1) {
-                    this.setState({ searchView: 0 })
+              <CustomSelect
+                placeholder='搜索'
+                controlStyle={{ marginTop: '0px', height: '30px' }}
+                labelKey='name'
+                withoutFitler={!false}
+                onChange={({
+                  name,
+                  specification,
+                  english_name,
+                  packing_unit_name,
+                  print_name,
+                  license_no,
+                  dose_form_name,
+                  py_code,
+                  barcode,
+                  dosage,
+                  dosage_unit_name,
+                  manu_factory_name,
+                  preparation_count,
+                  preparation_count_unit_name,
+                  frequency_name,
+                  route_administration_name,
+                  once_dose,
+                  once_dose_unit_name
+                }) => {
+                  let obj = {
+                    name,
+                    specification,
+                    packing_unit_name,
+                    py_code,
+                    manu_factory_name: manu_factory_name
                   }
+                  if (once_dose) obj.once_dose = once_dose
+                  if (once_dose_unit_name) obj.once_dose_unit_name = once_dose_unit_name
+                  if (route_administration_name) obj.route_administration_name = route_administration_name
+                  if (frequency_name) obj.frequency_name = frequency_name
+                  if (preparation_count_unit_name) obj.preparation_count_unit_name = preparation_count_unit_name
+                  if (preparation_count) obj.preparation_count = preparation_count
+                  if (dosage) obj.dosage = dosage
+                  if (dosage_unit_name) obj.dosage_unit_name = dosage_unit_name
+                  if (barcode) obj.barcode = barcode
+                  if (dose_form_name) obj.dose_form_name = dose_form_name
+                  if (english_name) obj.english_name = english_name
+                  if (print_name) obj.print_name = print_name
+                  if (license_no) obj.license_no = license_no
+                  this.setState({
+                    drugInfo: { ...drugInfo, ...obj }
+                  })
+                }}
+                onInputChange={keyword => {
+                  this.setItemValue(keyword, 'name', 2)
+                  this.props.queryDicDrugsList({ keyword, type: 0 })
+                }}
+                options={drugs}
+                renderTitle={(item, index) => {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                    </div>
+                  )
+                }}
+                renderItem={(item, index) => {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.name}</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                    </div>
+                  )
                 }}
               />
-              {this.state.searchView === 1 ? this.searchView() : ''}
+              {/* {this.state.searchView === 1 ? this.searchView() : ''} */}
               {this.state.nameFailed || drugInfo.name === '' || !drugInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
             <li>
@@ -892,9 +947,7 @@ class AddDrugScreen extends Component {
               />
             </li>
             <li>
-              <label>
-                剂量单位
-              </label>
+              <label>剂量单位</label>
               <div>
                 <Select
                   placeholder={'请选择'}
@@ -911,9 +964,7 @@ class AddDrugScreen extends Component {
               </div>
             </li>
             <li>
-              <label>
-                默认用法
-              </label>
+              <label>默认用法</label>
               <div>
                 <Select
                   placeholder={'请选择'}
@@ -930,9 +981,7 @@ class AddDrugScreen extends Component {
               </div>
             </li>
             <li>
-              <label>
-                默认频次
-              </label>
+              <label>默认频次</label>
               <div>
                 <Select
                   placeholder={'请选择'}
@@ -975,9 +1024,7 @@ class AddDrugScreen extends Component {
         <div>
           <ul>
             <li>
-              <label>
-                效期预警
-              </label>
+              <label>效期预警</label>
               <div>
                 <input
                   type='number'

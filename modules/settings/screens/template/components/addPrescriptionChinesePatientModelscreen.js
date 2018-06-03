@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { ClinicDrugList, queryRouteAdministrationList, queryFrequencyList, queryDoseUnitList, PrescriptionChinesePatientModelCreate } from '../../../../../ducks'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../../components'
 const places = [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
 
 // 病历
@@ -321,7 +321,7 @@ class AddPrescriptionChinesePatientModelscreen extends Component {
                 <li key={index}>
                   <div>
                     <div>
-                      <Select
+                      {/* <Select
                         value={this.getSelectValue(item.clinic_drug_id, this.getCNameOptions())}
                         onChange={item => {
                           this.setCItemValues(item, index)
@@ -330,6 +330,42 @@ class AddPrescriptionChinesePatientModelscreen extends Component {
                         height={38}
                         options={this.getCNameOptions()}
                         onInputChange={keyword => this.ClinicDrugList(keyword)}
+                      /> */}
+                      <CustomSelect
+                        controlStyle={{ height: '38px' }}
+                        value={item.clinic_drug_id || ''}
+                        label={item.drug_name || ''}
+                        mustOptionValue={!false}
+                        valueKey='clinic_drug_id'
+                        labelKey='drug_name'
+                        placeholder='搜索'
+                        onChange={item => {
+                          this.setCItemValues(item, index)
+                        }}
+                        onInputChange={keyword => this.ClinicDrugList(keyword)}
+                        options={this.getCNameOptions()}
+                        renderTitle={(item, index) => {
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                            </div>
+                          )
+                        }}
+                        renderItem={(item, index) => {
+                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                          let packing_unit_name = item.packing_unit_name || ''
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                            </div>
+                          )
+                        }}
                       />
                     </div>
                   </div>
