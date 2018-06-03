@@ -177,6 +177,7 @@ class ScheduleListScreen extends Component {
     let { weekNum } = this.state
     const { scheduleDoctors, page_info, canOverride, needOpen } = this.props
     // console.log('scheduleDoctors====', scheduleDoctors)
+    let today = moment().format('YYYY-MM-DD')
     const weekTds = this.getWeekTds()
     return (
       <div className={''}>
@@ -260,7 +261,8 @@ class ScheduleListScreen extends Component {
                                   }}>
                                   <label>
                                     <input
-                                      readOnly={!!daySchedule.am.stop_flag}
+                                      disabled={visit_date < today}
+                                      readOnly={!!daySchedule.am.stop_flag || visit_date < today}
                                       type='checkbox'
                                       checked={!!daySchedule.am.doctor_visit_schedule_id && !daySchedule.am.stop_flag}
                                       onChange={e => {
@@ -296,7 +298,8 @@ class ScheduleListScreen extends Component {
                                   style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag ? '#2ACDC8' : '#999999' }}>
                                   <label>
                                     <input
-                                      readOnly={!!daySchedule.pm.stop_flag}
+                                      disabled={visit_date < today}
+                                      readOnly={!!daySchedule.pm.stop_flag || visit_date < today}
                                       type='checkbox'
                                       checked={!!daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag}
                                       onChange={e => {
