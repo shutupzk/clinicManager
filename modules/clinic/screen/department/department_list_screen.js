@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { queryDepartmentList, departmentCreate, DepartmentDelete, DepartmentUpdate } from '../../../../ducks'
 // import moment from 'moment'
 import { PageCard, Confirm } from '../../../../components'
+import { limitLetterAndNumber } from '../../../../utils'
 
 class DepartmentListScreen extends Component {
   constructor(props) {
@@ -405,9 +406,13 @@ class DepartmentListScreen extends Component {
     }
   }
 
-  setDeaprtInfo(e, key) {
+  setDeaprtInfo(e, key, type = 1) {
     let newDepart = this.state.departInfo
-    newDepart[key] = e.target.value
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    newDepart[key] = value
     this.setState({ departInfo: newDepart })
   }
   // 显示新增科室
@@ -430,7 +435,10 @@ class DepartmentListScreen extends Component {
                 <input
                   placeholder='请填写科室编码'
                   value={departInfo.code}
-                  onChange={e => this.setDeaprtInfo(e, 'code')}
+                  onChange={e => {
+                    let value = e.target.value
+                    this.setDeaprtInfo(limitLetterAndNumber(value), 'code', 2)
+                  }}
                 />
               </li>
               <li>
