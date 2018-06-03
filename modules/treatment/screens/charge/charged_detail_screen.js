@@ -144,6 +144,7 @@ class ChargedDetailScreen extends Component {
             <li>治疗费用：{typeMap[7] || '0.00'}元</li>
             <li>材料费用：{typeMap[5] || '0.00'}元</li>
             <li>其他费用：{typeMap[6] || '0.00'}元</li>
+            <li>诊疗费用：{typeMap[8] || '0.00'}元</li>
           </ul>
         </div>
         <div className={'feeScheduleBox'}>
