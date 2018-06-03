@@ -76,7 +76,7 @@ export const patientSelect = ({ patient_id }) => async dispatch => {
 export const MemberPateintList = ({ keyword = '', offset = 0, limit = 10, start_date, end_date }) => async dispatch => {
   console.log('keyword', { keyword, offset, limit, start_date, end_date })
   try {
-    const data = await request('/triage/MemberPateintList', { keyword, offset, limit, start_date, end_date })
+    const data = await request('/patient/MemberPateintList', { keyword, offset, limit, start_date, end_date })
     console.log(data)
     const docs = data.data || []
     const page_info = data.page_info || {}
