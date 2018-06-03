@@ -32,7 +32,7 @@ class PendingDetailDrugScreen extends Component {
       const { selectArray, remarks } = this.state
       let items = []
       for (let key of selectArray) {
-        items.push({ mz_paid_orders_id: key, remark: remarks[key] })
+        items.push({ mz_paid_orders_id: key, remark: remarks[key] || '' })
       }
       let error = await drugDeliveryCreate({ clinic_triage_patient_id: triagePatientSelectId, operation_id: personnel_id, items: JSON.stringify(items) })
       if (error) {
