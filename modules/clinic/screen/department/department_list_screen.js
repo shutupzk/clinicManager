@@ -468,9 +468,15 @@ class DepartmentListScreen extends Component {
                   <label>科室权重：</label>
                   <input
                     type='number'
+                    min={0}
+                    max={999999999}
                     placeholder='请填写科室权重'
                     value={departInfo.weight}
-                    onChange={e => this.setDeaprtInfo(e, 'weight')}
+                    onChange={e => {
+                      if (e.target.value < 999999999) {
+                        this.setDeaprtInfo(e, 'weight')
+                      }
+                    }}
                   />
                 </div>
                 {departInfo.weight === '' || !departInfo.weight ? <div className={'mustTips'}>此为必填项</div> : ''}

@@ -49,7 +49,7 @@ class RegistrationAddScreen extends Component {
     } else {
       patientInfo.birthday = moment(patientInfo.birthday).format('YYYYMMDD')
     }
-    if (!patientInfo.sex) {
+    if (patientInfo.sex * 1 !== 0 && patientInfo.sex * 1 !== 1) {
       return this.refs.myAlert.alert('提示', '请选择性别', null, 'Danger')
     }
     if (!patientInfo.phone) {
@@ -259,7 +259,7 @@ class RegistrationAddScreen extends Component {
               <input
                 type='text'
                 style={{ width: '120px' }}
-                value={patient.age}
+                value={patient.age || ''}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.age = e.target.value
