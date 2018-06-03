@@ -1,11 +1,14 @@
 import { request } from './request'
 const DIAGNOSIS_TREATMENT_ADD = 'DIAGNOSIS_TREATMENT_ADD'
 const DIAGNOSIS_TREATMENT_ARRAY = 'DIAGNOSIS_TREATMENT_ARRAY'
+const DICTIONARY_DIAGNOSIS_LIST = 'DICTIONARY_DIAGNOSIS_LIST'
 
 const initState = {
   data: {},
   array_data: [],
   page_info: {},
+  dic_diagnosis_data: {},
+  dic_diagnosis_page_info: {},
   selectId: null
 }
 
@@ -15,6 +18,8 @@ export function diagnosisTreatments(state = initState, action = {}) {
       return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
     case DIAGNOSIS_TREATMENT_ARRAY:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
+    case DICTIONARY_DIAGNOSIS_LIST:
+      return { ...state, dic_diagnosis_data: {...state.dic_diagnosis_data, ...action.dic_diagnosis_data}, dic_diagnosis_page_info: action.dic_diagnosis_page_info }
     default:
       return state
   }
@@ -73,6 +78,33 @@ export const diagnosisTreatmentCreate = (requestData) => async dispatch => {
     )
     if (data.code === '200') return null
     return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const queryDictDiagnosisList = ({ keyword, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    console.log('limit====', limit)
+    const data = await request('/dictionaries/DiagnosisList', {
+      keyword,
+      offset,
+      limit
+    })
+    console.log('诊疗费=======', data)
+    const docs = data.data || []
+    const dic_diagnosis_page_info = data.page_info || {}
+    let json = {}
+    for (let doc of docs) {
+      json[doc.id] = doc
+    }
+    dispatch({
+      type: DICTIONARY_DIAGNOSIS_LIST,
+      dic_diagnosis_data: docs,
+      dic_diagnosis_page_info
+    })
+    return null
   } catch (e) {
     console.log(e)
     return e.message

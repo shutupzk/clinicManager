@@ -66,7 +66,7 @@ import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate, queryLa
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
-import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate } from './diagnosisTreatment'
+import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate, queryDictDiagnosisList } from './diagnosisTreatment'
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList, LaboratoryPatientModelList } from './laboratory_model'
@@ -275,6 +275,7 @@ export {
   PrescriptionChinesePatientModelList,
   queryReceiveRecords,
   queryDiagnosisTreatmentList,
+  queryDictDiagnosisList,
   diagnosisTreatmentCreate,
   TreatmentPatientModelList,
   TreatmentPatientModelCreate,

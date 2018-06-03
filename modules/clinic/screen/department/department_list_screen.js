@@ -392,7 +392,7 @@ class DepartmentListScreen extends Component {
     const {departInfo} = this.state
     let requestData = {}
     requestData.clinic_id = clinic_id
-    requestData.departmentID = departInfo.id
+    requestData.department_id = departInfo.id
     requestData.code = departInfo.code
     requestData.name = departInfo.name
     requestData.weight = departInfo.weight
@@ -477,7 +477,7 @@ class DepartmentListScreen extends Component {
               </li>
             </ul>
             <div className={'buttonBtn'}>
-              <button>取消</button>
+              <button onClick={() => this.setState({ alertType: 0 })}>取消</button>
               <button
                 onClick={() => {
                   if (editType === 0) {

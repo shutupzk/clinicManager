@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints } from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList } from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
   constructor(props) {
@@ -30,7 +30,9 @@ class MedicalRecordScreen extends Component {
       choseHistoryId: '',
       showComplaint: false,
       selComplaint: [],
-      determineComplaint: []
+      determineComplaint: [],
+      chooseDiagnosticTemplate: false,
+      selDiagnosis: []
     }
   }
 
@@ -732,6 +734,142 @@ class MedicalRecordScreen extends Component {
     )
   }
 
+  // 选择诊断模板
+  chooseDiagnosticTemplate() {
+    let array = []
+    const { dic_diagnosis_data } = this.props
+    for (let key in dic_diagnosis_data) {
+      let {id, name} = dic_diagnosis_data[key]
+      array.push({id, name})
+    }
+    // console.log('诊断模板=====', array, dic_diagnosis_data)
+    const {diagnosis, selDiagnosis} = this.state
+    return (
+      <div className={'tempBox'}>
+        <ul>
+          {array.map((item, index) => {
+            let sel = false
+            if (selDiagnosis.indexOf(item.name) > -1) {
+              sel = true
+            }
+            return (
+              <li
+                key={index}
+                className={sel ? 'sel' : ''}
+                onClick={() => {
+                  let array = selDiagnosis
+                  if (sel) {
+                    for (let i = 0; i < array.length; i++) {
+                      if (array[i] === item.name) {
+                        array.splice(i, 1)
+                      }
+                    }
+                    this.setState({selDiagnosis: array})
+                  } else {
+                    array.push(item.name)
+                    this.setState({selDiagnosis: array})
+                  }
+                }}
+              >
+                {item.name}
+              </li>
+            )
+          })}
+        </ul>
+        <div className={'boxBottom'}>
+          <div>
+            <button
+              onClick={() => {
+                this.setState({chooseDiagnosticTemplate: false})
+              }}
+            >取消</button>
+            <button
+              onClick={() => {
+                let complaint = diagnosis
+                for (let i = 0; i < selDiagnosis.length; i++) {
+                  if (i < selDiagnosis.length - 1) {
+                    complaint += selDiagnosis[i] + ','
+                  } else {
+                    complaint += selDiagnosis[i]
+                  }
+                }
+                this.setState({chooseDiagnosticTemplate: false, diagnosis: complaint})
+              }}
+            >确定</button>
+          </div>
+        </div>
+        <style jsx>{`
+          .tempBox{
+            position:absolute;
+            width: 100%;
+            height: 300px;
+            top: 90px;
+            z-index: 1;
+            overflow: hidden;
+            display:flex;
+            flex-direction: column;
+            background: rgba(245,248,249,1);
+            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            border: 1px solid #d9d9d9;
+          }
+          .tempBox > ul{
+            flex: 4;
+            height: auto;
+            max-height: 280px;
+            overflow: auto;
+            width: 100%;
+            border-bottom: 1px solid #d8d8d8;
+            // display:flex;
+            // flex-direction: column;
+          }
+          .tempBox > ul > li{
+            margin: 0;
+            width: 100%;
+            // border-radius: 4px;
+            border-bottom: 1px solid #d8d8d8;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            height: 30px;
+            display: block;
+          }
+          .boxBottom{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .boxBottom > div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .boxBottom > div > button{
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            height: 32px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(0, 0, 0, 0.65);
+            padding: 0 15px;
+          }
+          .tempBox > ul > li.sel,
+          .tempBox > ul > li:hover,
+          .boxBottom > div > button:hover{
+            background: rgba(42,205,200,1);
+            color: #ffffff;
+          }
+        `}</style>
+      </div>
+    )
+  }
+  queryDictDiagnosisList(keyword) {
+    const {queryDictDiagnosisList} = this.props
+    queryDictDiagnosisList({keyword})
+  }
   render() {
     let {
       morbidity_date,
@@ -746,7 +884,8 @@ class MedicalRecordScreen extends Component {
       diagnosis,
       cure_suggestion,
       remark,
-      showComplaint
+      showComplaint,
+      chooseDiagnosticTemplate
     } = this.state
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
@@ -857,17 +996,28 @@ class MedicalRecordScreen extends Component {
                   <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
                 </div>
               </li>
-              <li>
+              <li style={{position: 'relative'}}>
                 <label>初步诊断</label>
                 <textarea
                   value={diagnosis}
+                  onFocus={e => {
+                    this.queryDictDiagnosisList(e.target.value)
+                    this.setState({ chooseDiagnosticTemplate: true, selDiagnosis: [] })
+                  }}
                   onChange={e => {
+                    this.queryDictDiagnosisList(e.target.value)
                     this.setState({ diagnosis: e.target.value })
                   }}
                 />
+                {chooseDiagnosticTemplate ? this.chooseDiagnosticTemplate() : ''}
               </li>
-              <li>
-                <a className={'chooseTemp'}>选择诊断模板</a>
+              <li style={{position: 'relative'}}>
+                <a
+                  className={'chooseTemp'}
+                  onClick={() => {
+                    this.setState({chooseDiagnosticTemplate: true})
+                  }}
+                >选择诊断模板</a>
               </li>
               <li>
                 <label>治疗意见</label>
@@ -1070,10 +1220,11 @@ const mapStateToProps = state => {
     medicalModelPage: state.medicalRecords.model_page,
     medicalHistory: state.medicalRecords.history_medicals,
     medicalHistoryPage: state.medicalRecords.history_page_info,
-    chief_complaints: state.medicalRecords.chief_complaints
+    chief_complaints: state.medicalRecords.chief_complaints,
+    dic_diagnosis_data: state.diagnosisTreatments.dic_diagnosis_data
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints })(
+export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList })(
   MedicalRecordScreen
 )
