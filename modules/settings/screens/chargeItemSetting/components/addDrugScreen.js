@@ -238,7 +238,10 @@ class AddDrugScreen extends Component {
     }
   }
   // 保存并入库
-  saveInStock() {}
+  saveInStock() {
+
+  }
+  // 药品入库
   // 设置字段值
   setItemValue(e, key, type = 1) {
     const { drugInfo } = this.state
@@ -527,19 +530,19 @@ class AddDrugScreen extends Component {
                 options={drugs}
                 renderTitle={(item, index) => {
                   return (
-                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
-                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', lineHeight: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}>药品名</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}>规格</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}>生产厂家</div>
                     </div>
                   )
                 }}
                 renderItem={(item, index) => {
                   return (
-                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.name}</div>
-                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', lineHeight: '40px', borderBottom: '1px solid #d9d9d9', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}>{item.name}</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}>{item.specification}</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '100%' }}>{item.manu_factory_name}</div>
                     </div>
                   )
                 }}
@@ -642,7 +645,7 @@ class AddDrugScreen extends Component {
             </li>
             <li>
               <label>
-                药品条形码<b style={{ color: 'red' }}>*</b>
+                药品条形码
               </label>
               <input
                 type='text'
