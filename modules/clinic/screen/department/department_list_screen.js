@@ -431,35 +431,50 @@ class DepartmentListScreen extends Component {
           <div className={'departList_content'}>
             <ul>
               <li>
-                <label>科室编码：</label>
-                <input
-                  placeholder='请填写科室编码'
-                  value={departInfo.code}
-                  onChange={e => {
-                    let value = e.target.value
-                    this.setDeaprtInfo(limitLetterAndNumber(value), 'code', 2)
-                  }}
-                />
+                <div>
+                  <label>科室编码：</label>
+                  <input
+                    placeholder='请填写科室编码'
+                    value={departInfo.code}
+                    onChange={e => {
+                      var reg = /^[0-9a-zA-Z]+$/
+                      let value = e.target.value
+                      if (reg.test(value) || value === '') {
+                        this.setDeaprtInfo(value, 'code', 2)
+                      }
+                    }}
+                  />
+                </div>
+                {departInfo.code === '' || !departInfo.code ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
               <li>
-                <label>科室名称：</label>
-                <input
-                  placeholder='请填写科室名称'
-                  value={departInfo.name}
-                  onChange={e => this.setDeaprtInfo(e, 'name')}
-                />
+                <div>
+                  <label>科室名称：</label>
+                  <input
+                    placeholder='请填写科室名称'
+                    value={departInfo.name}
+                    onChange={e => this.setDeaprtInfo(e, 'name')}
+                  />
+                </div>
+                {departInfo.name === '' || !departInfo.name ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
               <li>
-                <label>所属诊所：</label>
-                <input placeholder='请填写所属诊所' value='龙华诊所' />
+                <div>
+                  <label>所属诊所：</label>
+                  <input readOnly placeholder='请填写所属诊所' value='龙华诊所' />
+                </div>
               </li>
               <li>
-                <label>科室权重：</label>
-                <input
-                  placeholder='请填写科室权重'
-                  value={departInfo.weight}
-                  onChange={e => this.setDeaprtInfo(e, 'weight')}
-                />
+                <div>
+                  <label>科室权重：</label>
+                  <input
+                    type='number'
+                    placeholder='请填写科室权重'
+                    value={departInfo.weight}
+                    onChange={e => this.setDeaprtInfo(e, 'weight')}
+                  />
+                </div>
+                {departInfo.weight === '' || !departInfo.weight ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
             </ul>
             <div className={'buttonBtn'}>
@@ -515,6 +530,16 @@ class DepartmentListScreen extends Component {
               .departList_content ul li {
                 margin: 10px 0;
                 display: flex;
+                flex-direction: column;
+              }
+              .departList_content ul li > div {
+                display: flex;
+              }
+              .departList_content ul li > div.mustTips {
+                color: red;
+                font-size: 12px;
+                text-align: end;
+                display: block
               }
               .departList_content ul li label {
                 // width: 25%;
@@ -531,7 +556,7 @@ class DepartmentListScreen extends Component {
               }
               .buttonBtn {
                 display: block;
-                margin: 50px auto;
+                margin: 20px auto;
                 width: 150px;
               }
               .buttonBtn button {

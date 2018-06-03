@@ -126,7 +126,10 @@ export const cutdownStr = (str = '', len = 0) => {
 
 // 限制只能输入字母和数字
 export const limitLetterAndNumber = (str) => {
-  let value = ''
-  value = str.replace(/^[0-9a-zA-Z]+$/, '')
-  return value
+  var reg = /^[0-9a-zA-Z]+$/
+  if (reg.test(str) || str === '') {
+    return str
+  } else {
+    return ''
+  }
 }
