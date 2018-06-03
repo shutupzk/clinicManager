@@ -489,8 +489,14 @@ class DoctorListScreen extends Component {
                   <input
                     placeholder={'权重'}
                     type='number'
+                    min={0}
+                    max={999999999}
                     value={doctorInfo.weight}
-                    onChange={e => this.setDoctorInfo(e, 'weight')}
+                    onChange={e => {
+                      if (e.target.value < 999999999) {
+                        this.setDoctorInfo(e, 'weight')
+                      }
+                    }}
                   />
                 </div>
               </li>
