@@ -88,7 +88,6 @@ class ScheduleListScreen extends Component {
           if (obj.am_pm === 'p') {
             array[i].daySchedule.pm = { ...obj, visit_date: objVd }
           }
-          break
         }
       }
     }
