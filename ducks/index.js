@@ -125,6 +125,7 @@ import { clinicPermissions, queryClinicHassetPermissions, queryClinicUnsetPermis
 import { drugDeliveryPending, queryDrugPendingTraigeList, drugPendingTraigeSelect, queryDrugDeliveryList } from './drug_delivery_pending'
 import { drugDeliveryIssued, queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from './drug_delivery_issued'
 import { drugDeliveryRefund, queryDrugRefundTraigeList, drugRefundTraigeSelect } from './drug_delivery_refund'
+import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
 
 // keys
 export {
@@ -348,5 +349,6 @@ export {
   drugRefundTraigeSelect,
   drugIssuedTraigeSelect,
   queryDrugIssuedTraigeList,
-  queryDrugDeliveryList
+  queryDrugDeliveryList,
+  DiagnosisTreatmentPatientCreate
 }
