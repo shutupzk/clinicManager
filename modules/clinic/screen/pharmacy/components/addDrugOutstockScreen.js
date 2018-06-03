@@ -11,7 +11,7 @@ import {
   queryDoctorList,
   queryDrugStockList
 } from '../../../../../ducks'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { formatMoney } from '../../../../../utils'
 import moment from 'moment'
 
@@ -306,6 +306,7 @@ class AddDrugOutstockScreen extends Component {
             {showWay === 1 || showWay === 4 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
+                  placeholder={'department_id'}
                   value={this.getSelectValue(department_id, this.getDepartmentOptions())}
                   onChange={({value}) => {
                     this.setState({ department_id: value })
@@ -326,6 +327,7 @@ class AddDrugOutstockScreen extends Component {
             {showWay === 1 || showWay === 4 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
+                  placeholder={'personnel_id'}
                   value={this.getSelectValue(personnel_id, this.getPersonsOptions())}
                   onChange={({value}) => {
                     this.setState({ personnel_id: value })
@@ -389,7 +391,7 @@ class AddDrugOutstockScreen extends Component {
   // 药筛选项
   getDrugStockOptions() {
     const { drug_stock, clinic_id, queryDrugStockList } = this.props
-    console.log('drug_stock====', drug_stock)
+    // console.log('drug_stock====', drug_stock)
     let array = []
     for (let key in drug_stock) {
       let {
@@ -409,6 +411,8 @@ class AddDrugOutstockScreen extends Component {
       array.push({
         value: drug_stock_id,
         label: name + '—' + specification,
+        name,
+        drug_stock_id,
         manu_factory_name,
         packing_unit_name,
         ret_price,
@@ -464,9 +468,15 @@ class AddDrugOutstockScreen extends Component {
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
-                      <Select
-                        value={this.getSelectValue(item.drug_stock_id, this.getDrugStockOptions())}
+                    {showWay === 1 || showWay === 4 ? <div>
+                      <CustomSelect
+                        controlStyle={{ height: '38px', width: '100%' }}
+                        value={item.drug_stock_id || ''}
+                        label={item.name || ''}
+                        mustOptionValue={!false}
+                        valueKey='drug_stock_id'
+                        labelKey='name'
+                        placeholder='搜索'
                         onChange={({
                           value,
                           label,
@@ -492,10 +502,32 @@ class AddDrugOutstockScreen extends Component {
                           this.setItemValue(specification, index, 'specification', 2)
                           this.setItemValue(supplier_name, index, 'supplier_name', 2)
                         }}
-                        placeholder='搜索'
-                        height={38}
                         onInputChange={keyword => this.queryDrugStockList(keyword)}
                         options={this.getDrugStockOptions()}
+                        renderTitle={(item, index) => {
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>批号</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                            </div>
+                          )
+                        }}
+                        renderItem={(item, index) => {
+                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                          let packing_unit_name = item.packing_unit_name || ''
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', borderBottom: '1px solid #d9d9d9', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.serial}</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                            </div>
+                          )
+                        }}
                       />
                     </div> : item.drug_name }
                   </div>

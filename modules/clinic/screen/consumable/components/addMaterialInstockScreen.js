@@ -9,7 +9,7 @@ import {
   MaterialInstockCheck,
   MaterialInstockUpdate
 } from '../../../../../ducks'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { formatMoney, limitMoney } from '../../../../../utils'
 import moment from 'moment'
 
@@ -280,6 +280,7 @@ class AddMaterialInstockScreen extends Component {
             {showWay === 1 || showWay === 4 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
+                  placeholder={'supplier_name'}
                   value={this.getSelectValue(supplier_name, this.getSupplierOptions())}
                   onChange={({value}) => {
                     this.setState({ supplier_name: value })
@@ -361,8 +362,12 @@ class AddMaterialInstockScreen extends Component {
         value: clinic_material_id,
         label: name + '—' + specification,
         manu_factory_name,
+        clinic_material_id,
+        specification,
+        name,
         unit_name,
         ret_price,
+        stock_amount,
         instock_amount: stock_amount,
         buy_price: formatMoney(buy_price)
       })
@@ -410,7 +415,7 @@ class AddMaterialInstockScreen extends Component {
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
+                    {/* {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
                       <Select
                         value={this.getSelectValue(item.clinic_material_id, this.getMaterialOptions())}
                         onChange={({
@@ -434,6 +439,59 @@ class AddMaterialInstockScreen extends Component {
                         height={38}
                         onInputChange={keyword => this.queryMaterialList(keyword)}
                         options={this.getMaterialOptions()}
+                      />
+                    </div> : item.material_name } */}
+                    {showWay === 1 || showWay === 4 ? <div>
+                      <CustomSelect
+                        controlStyle={{ height: '38px', width: '100%' }}
+                        value={item.clinic_material_id || ''}
+                        label={item.name || ''}
+                        mustOptionValue={!false}
+                        valueKey='clinic_material_id'
+                        labelKey='name'
+                        placeholder='搜索'
+                        onChange={({
+                          value,
+                          label,
+                          manu_factory_name,
+                          unit_name,
+                          ret_price,
+                          instock_amount,
+                          buy_price
+                        }) => {
+                          // let data = {}
+                          this.setItemValue(value, index, 'clinic_material_id', 2)
+                          this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
+                          this.setItemValue(unit_name, index, 'unit_name', 2)
+                          this.setItemValue(ret_price, index, 'ret_price', 2)
+                          this.setItemValue(instock_amount, index, 'instock_amount', 2)
+                          this.setItemValue(buy_price, index, 'buy_price', 2)
+                        }}
+                        onInputChange={keyword => this.queryMaterialList(keyword)}
+                        options={this.getMaterialOptions()}
+                        renderTitle={(item, index) => {
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>材料名</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                            </div>
+                          )
+                        }}
+                        renderItem={(item, index) => {
+                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                          let unit_name = item.unit_name || ''
+                          let manu_factory_name = !item.manu_factory_name || item.manu_factory_name === 'null' ? '无' : item.manu_factory_name
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', borderBottom: '1px solid #d9d9d9', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{manu_factory_name}</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + unit_name}</div>
+                            </div>
+                          )
+                        }}
                       />
                     </div> : item.material_name }
                   </div>

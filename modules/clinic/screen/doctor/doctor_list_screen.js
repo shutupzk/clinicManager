@@ -171,8 +171,8 @@ class DoctorListScreen extends Component {
                           this.setState({ showAddPersonnel: true, editType: 1, doctorInfo: doctor })
                         }}
                       >编辑</span>
-                      |
-                      <span>删除</span>
+                      {/* |
+                      <span>删除</span> */}
                     </div>
                   </div>
                 </li>
@@ -476,6 +476,7 @@ class DoctorListScreen extends Component {
               <li>
                 <label>设置密码</label>
                 <input
+                  type='password'
                   value={doctorInfo.password}
                   onChange={e => this.setDoctorInfo(e, 'password')}
                 />
@@ -483,6 +484,7 @@ class DoctorListScreen extends Component {
               <li>
                 <label>确认密码</label>
                 <input
+                  type='password'
                   value={doctorInfo.passwordConfirm}
                   onChange={e => this.setDoctorInfo(e, 'passwordConfirm')}
                 />

@@ -362,6 +362,7 @@ class AddDrugInstockScreen extends Component {
         value: clinic_drug_id,
         label: drug_name + '—' + specification,
         manu_factory_name,
+        clinic_drug_id,
         drug_name,
         specification,
         packing_unit_name,
@@ -431,10 +432,12 @@ class AddDrugInstockScreen extends Component {
                           packing_unit_name,
                           ret_price,
                           instock_amount,
+                          drug_name,
                           buy_price
                         }) => {
                           // let data = {}
                           this.setItemValue(value, index, 'clinic_drug_id', 2)
+                          // this.setItemValue(drug_name, index, 'drug_name', 2)
                           this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
                           this.setItemValue(packing_unit_name, index, 'packing_unit_name', 2)
                           this.setItemValue(ret_price, index, 'ret_price', 2)
