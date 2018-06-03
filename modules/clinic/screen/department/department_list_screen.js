@@ -43,7 +43,7 @@ class DepartmentListScreen extends Component {
   DepartmentDelete(id) {
     const {DepartmentDelete, page_info, departments} = this.props
     this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
-      let error = await DepartmentDelete({departmentID: id})
+      let error = await DepartmentDelete({department_id: id})
       if (error) {
         return this.refs.myAlert.alert('删除失败', error)
       } else {
