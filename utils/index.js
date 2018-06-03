@@ -123,3 +123,9 @@ export const cutdownStr = (str = '', len = 0) => {
   }
   return str
 }
+
+// 检查是否是字母和数字
+export const checkLetterAndNumber = (str) => {
+  let reg = /^[0-9a-zA-Z]+$/g
+  return reg.test(str)
+}

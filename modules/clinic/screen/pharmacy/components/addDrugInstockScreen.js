@@ -102,12 +102,23 @@ class AddDrugInstockScreen extends Component {
     const { createDrugInstock, clinic_id, instock_operation_id } = this.props
     const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
     let array = []
+    console.log('items===', items)
     for (let key of items) {
       let value = {}
       value.clinic_drug_id = key.clinic_drug_id + ''
       value.buy_price = key.buy_price * 100 + ''
-      value.instock_amount = key.instock_amount + ''
-      value.serial = key.serial
+      if (key.instock_amount > 0) {
+        value.instock_amount = key.instock_amount + ''
+      } else {
+        this.refs.myAlert.alert('提示', '入库数量必须大于0')
+        return
+      }
+      if (key.serial !== '' && key.serial) {
+        value.serial = key.serial
+      } else {
+        this.refs.myAlert.alert('提示', '请填写批号')
+        return
+      }
       value.eff_date = key.eff_date
       array.push(value)
     }
@@ -253,6 +264,7 @@ class AddDrugInstockScreen extends Component {
                 this.setState({ instock_date })
               }}
             />
+            {instock_date === '' || !instock_date ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
           </li>
           <li>
             <label>入库方式</label>
@@ -274,6 +286,7 @@ class AddDrugInstockScreen extends Component {
               type='text'
               value={instock_way_name}
             />}
+            {instock_way_name === '' || !instock_way_name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
           </li>
           <li>
             <label>供应商</label>
@@ -295,6 +308,7 @@ class AddDrugInstockScreen extends Component {
               type='text'
               value={supplier_name}
             />}
+            {supplier_name === '' || !supplier_name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
           </li>
           <li>
             <label>备注</label>
@@ -362,6 +376,7 @@ class AddDrugInstockScreen extends Component {
         value: clinic_drug_id,
         label: drug_name + '—' + specification,
         manu_factory_name,
+        clinic_drug_id,
         drug_name,
         specification,
         packing_unit_name,
@@ -431,10 +446,12 @@ class AddDrugInstockScreen extends Component {
                           packing_unit_name,
                           ret_price,
                           instock_amount,
+                          drug_name,
                           buy_price
                         }) => {
                           // let data = {}
                           this.setItemValue(value, index, 'clinic_drug_id', 2)
+                          // this.setItemValue(drug_name, index, 'drug_name', 2)
                           this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
                           this.setItemValue(packing_unit_name, index, 'packing_unit_name', 2)
                           this.setItemValue(ret_price, index, 'ret_price', 2)
@@ -479,7 +496,8 @@ class AddDrugInstockScreen extends Component {
                       readOnly={readOnly}
                       placeholder={'入库数量'}
                       type='number'
-                      value={item.instock_amount}
+                      min={0}
+                      value={item.instock_amount || 0}
                       onChange={e => {
                         this.setItemValue(e, index, 'instock_amount')
                       }}
@@ -498,6 +516,7 @@ class AddDrugInstockScreen extends Component {
                       }}
                     />
                   </div>
+                  {/* {console.log('item.instock_amount', item.instock_amount)} */}
                   <div>
                     <input
                       readOnly

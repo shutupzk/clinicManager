@@ -126,6 +126,7 @@ import { drugDeliveryPending, queryDrugPendingTraigeList, drugPendingTraigeSelec
 import { drugDeliveryIssued, queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from './drug_delivery_issued'
 import { drugDeliveryRefund, queryDrugRefundTraigeList, drugRefundTraigeSelect } from './drug_delivery_refund'
 import { drugDelivery, queryDrugDeliveryRecordList, drugDeliverySelect, drugDeliveryCreate } from './drug_delivery'
+import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
 
 // keys
 export {
@@ -353,5 +354,6 @@ export {
   queryDrugDeliveryList,
   queryDrugDeliveryRecordList,
   drugDeliverySelect,
-  drugDeliveryCreate
+  drugDeliveryCreate,
+  DiagnosisTreatmentPatientCreate
 }

@@ -38,18 +38,6 @@ class ScheduleListScreen extends Component {
 
   queryListData({ offset = 0, limit = 10, weekNum, department_id, personnel_id }) {
     weekNum = weekNum || this.state.weekNum
-    if (department_id === '-1') {
-      department_id = null
-    } else {
-      department_id = department_id || this.state.department_id
-    }
-
-    if (personnel_id === '-1') {
-      personnel_id = null
-    } else {
-      personnel_id = personnel_id || this.state.personnel_id
-    }
-
     let start_date = moment()
       .day(weekNum)
       .format('YYYY-MM-DD')
@@ -57,7 +45,19 @@ class ScheduleListScreen extends Component {
       .day(weekNum + 6)
       .format('YYYY-MM-DD')
     const { queryDoctorsWithSchedule, clinic_id } = this.props
-    queryDoctorsWithSchedule({ clinic_id, start_date, end_date, offset, limit, department_id, personnel_id })
+
+    let param = {
+      clinic_id, start_date, end_date, offset, limit
+    }
+    department_id = department_id || this.state.department_id
+    personnel_id = personnel_id || this.state.personnel_id
+    if (department_id && department_id !== '-1') {
+      param.department_id = department_id
+    }
+    if (personnel_id && personnel_id !== '-1') {
+      param.personnel_id = personnel_id
+    }
+    queryDoctorsWithSchedule(param)
   }
 
   queryDepartmentList({ keyword, limit = 10 }) {
@@ -67,8 +67,14 @@ class ScheduleListScreen extends Component {
 
   queryDoctorList({ keyword, limit = 10, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
-    // console.log('department_id ========', department_id)
-    queryDoctorList({ clinic_id, keyword, limit: 1000, personnel_type: 2, department_id })
+    console.log('department_id ========', department_id)
+    let param = {
+      clinic_id, keyword, limit: 1000, personnel_type: 2
+    }
+    if (department_id && department_id !== '-1') {
+      param.department_id = department_id
+    }
+    queryDoctorList(param)
   }
 
   formatDoctorWeekScheduleData(schedules = []) {
@@ -109,7 +115,7 @@ class ScheduleListScreen extends Component {
   }
 
   async copyScheduleByDate() {
-    this.refs.myConfirm.confirm('确定复制上周排版？', '', 'Success', async () => {
+    this.refs.myAlert.confirm('确定复制上周排版？', '', 'Success', async () => {
       const { copyScheduleByDate, clinic_id } = this.props
       const { weekNum } = this.state
       const copy_start_date = moment()
@@ -133,7 +139,7 @@ class ScheduleListScreen extends Component {
     const start_date = moment()
       .day(weekNum)
       .format('YYYY-MM-DD')
-    this.refs.myConfirm.confirm('确定开放号源？', '开放号源后将不能删除，更改，确定开放？', 'Warning', async () => {
+    this.refs.myAlert.confirm('确定开放号源？', '开放号源后将不能删除，更改，确定开放？', 'Warning', async () => {
       let err = await openScheduleByDate({ clinic_id, start_date })
       if (err) {
         return this.refs.myAlert.alert('开放号源失败', err)
@@ -162,7 +168,7 @@ class ScheduleListScreen extends Component {
   async stopScheduleByID({doctor_visit_schedule_id}) {
     const {stopScheduleByID} = this.props
     console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
-    this.refs.myConfirm.confirm('提示', '是否停诊该号源？', 'Warning', async () => {
+    this.refs.myAlert.confirm('提示', '是否停诊该号源？', 'Warning', async () => {
       let err = await stopScheduleByID({doctor_visit_schedule_id})
       if (err) {
         return this.refs.myAlert.alert('停诊号源失败', err)
@@ -450,8 +456,7 @@ class ScheduleListScreen extends Component {
           </div>
         </div>
         {this.showCalendarList()}
-        <Confirm ref='myConfirm' />
-        <Confirm ref='myAlert' isAlert />
+        <Confirm ref='myAlert' />
       </div>
     )
   }

@@ -110,12 +110,14 @@ export default class CustomSelect extends Component {
     const { onInputChange, controlStyle, placeholder, mustOptionValue } = this.props
     const { onMouseOver, showOptions, label } = this.state
     console.log('label ===========', label)
+    let marginTop = controlStyle.marginTop || '0px'
     return (
       <div
         style={{
           position: 'relative',
           display: 'flex',
           flexDirection: 'column',
+          marginTop: marginTop,
           flex: 1
         }}
       >
@@ -125,7 +127,8 @@ export default class CustomSelect extends Component {
             background: 'rgba(245, 248, 249, 1)',
             borderRadius: '4px',
             border: '1px solid #d9d9d9',
-            ...controlStyle
+            ...controlStyle,
+            marginTop: '0px'
           }}
           placeholder={placeholder || ''}
           value={label || ''}

@@ -1,22 +1,22 @@
 import { request } from './request'
-const MATERIAL_PATIENT_ADD = 'MATERIAL_PATIENT_ADD'
+const LABORATORY_PATIENT_ADD = 'LABORATORY_PATIENT_ADD'
 
 const initState = {
   data: []
 }
 
-export function materialPatients(state = initState, action = {}) {
+export function laboratoryPatients(state = initState, action = {}) {
   switch (action.type) {
-    case MATERIAL_PATIENT_ADD:
+    case LABORATORY_PATIENT_ADD:
       return { ...state, data: action.data }
     default:
       return state
   }
 }
 
-export const MaterialPatientCreate = ({ clinic_triage_patient_id, personnel_id, items }) => async dispatch => {
+export const DiagnosisTreatmentPatientCreate = ({ clinic_triage_patient_id, personnel_id, items }) => async dispatch => {
   try {
-    const data = await request('/triage/MaterialPatientCreate', {
+    const data = await request('/triage/DiagnosisTreatmentPatientCreate', {
       clinic_triage_patient_id, personnel_id, items: JSON.stringify(items)
     })
     console.log(clinic_triage_patient_id, personnel_id, items)
@@ -29,9 +29,9 @@ export const MaterialPatientCreate = ({ clinic_triage_patient_id, personnel_id, 
   }
 }
 
-export const MaterialPatientGet = ({ clinic_triage_patient_id }) => async dispatch => {
+export const LaboratoryPatientGet = ({ clinic_triage_patient_id }) => async dispatch => {
   try {
-    const data = await request('/triage/MaterialPatientGet', {
+    const data = await request('/triage/LaboratoryPatientGet', {
       clinic_triage_patient_id
     })
     console.log(clinic_triage_patient_id)
@@ -40,15 +40,15 @@ export const MaterialPatientGet = ({ clinic_triage_patient_id }) => async dispat
     let docs = data.data || []
     let json = {}
     for (let doc of docs) {
-      const { clinic_material_id, name, specification, unit_id, unit_name, stock_amount } = doc
-      json[clinic_material_id] = { clinic_material_id, name, specification, unit_id, unit_name, stock_amount }
+      const { clinic_laboratory_id, laboratory_name } = doc
+      json[clinic_laboratory_id] = { clinic_laboratory_id, laboratory_name }
     }
     dispatch({
-      type: MATERIAL_PATIENT_ADD,
+      type: LABORATORY_PATIENT_ADD,
       data: docs
     })
     dispatch({
-      type: 'MATERIAL_PROJECT_ADD',
+      type: 'LABORATORY_PROJECT_ADD',
       data: json
     })
     return docs

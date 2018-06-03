@@ -3,7 +3,7 @@ const DIAGNOSIS_TREATMENT_ADD = 'DIAGNOSIS_TREATMENT_ADD'
 const DIAGNOSIS_TREATMENT_ARRAY = 'DIAGNOSIS_TREATMENT_ARRAY'
 
 const initState = {
-  data: [],
+  data: {},
   array_data: [],
   page_info: {},
   selectId: null
