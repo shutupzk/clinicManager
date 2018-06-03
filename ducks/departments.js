@@ -80,10 +80,10 @@ export const DepartmentUpdate = (departInfo) => async dispatch => {
   }
 }
 
-export const DepartmentDelete = ({ departmentID }) => async dispatch => {
+export const DepartmentDelete = ({ department_id }) => async dispatch => {
   try {
-    // console.log('departmentID', departmentID)
-    const data = await request('/department/delete', {departmentID})
+    console.log('departmentID', department_id)
+    const data = await request('/department/delete', {department_id})
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
