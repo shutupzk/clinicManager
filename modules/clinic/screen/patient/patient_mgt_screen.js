@@ -3,20 +3,20 @@ import { connect } from 'react-redux'
 import { PageCard, Confirm } from '../../../../components'
 // import moment from 'moment'
 import {
-  queryDrugInstockRecord,
-  DrugInstockRecordDelete
+  MemberPateintList
 } from '../../../../ducks'
+import {getAgeByBirthday} from '../../../../utils'
 import AddDrugInstockScreen from './components/addDrugInstockScreen'
 import moment from 'moment'
 
 // 病历
-class StorageMgtScreen extends Component {
+class PatientMgtScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       start_date: '',
       end_date: '',
-      order_number: '',
+      keyword: '',
       showType: 1,
       showWay: 1,
       drug_instock_record_id: ''
@@ -27,10 +27,9 @@ class StorageMgtScreen extends Component {
     this.getDataList({offset: 0, limit: 10})
   }
   getDataList({ offset = 0, limit = 10 }) {
-    const {clinic_id, queryDrugInstockRecord} = this.props
-    const {start_date, end_date, order_number} = this.state
+    const {MemberPateintList} = this.props
+    const {start_date, end_date, keyword} = this.state
     let requestData = {
-      clinic_id,
       offset,
       limit
     }
@@ -40,30 +39,14 @@ class StorageMgtScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    if (order_number !== '') {
-      requestData.order_number = order_number
+    if (keyword !== '') {
+      requestData.keyword = keyword
     }
-    queryDrugInstockRecord(requestData)
-  }
-  async DrugInstockRecordDelete(drug_instock_record_id) {
-    const { DrugInstockRecordDelete, pageInfo, drugStocks } = this.props
-    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
-      let error = await DrugInstockRecordDelete({drug_instock_record_id})
-      if (error) {
-        return this.refs.myAlert.alert('删除失败', error)
-      } else {
-        this.refs.myAlert.alert('删除成功')
-        if (drugStocks.length > 1) {
-          this.getDataList({ offset: pageInfo.offset, limit: 10 })
-        } else if (pageInfo.offset > 0) {
-          this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
-        }
-      }
-    })
+    MemberPateintList(requestData)
   }
   renderTable() {
-    const { drugStocks, pageInfo } = this.props
-    // console.log('drugStocks=====', drugStocks)
+    const { patients, pageInfo } = this.props
+    console.log('patients=====', patients)
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'contentTable'}>
@@ -71,56 +54,45 @@ class StorageMgtScreen extends Component {
             <table>
               <thead>
                 <tr>
-                  <td style={{flex: 2}}>入库日期</td>
-                  <td style={{flex: 2}}>入库单号</td>
-                  <td>入库方式</td>
-                  <td style={{flex: 2}}>供应商</td>
-                  <td>操作员</td>
-                  <td>状态</td>
+                  <td>姓名</td>
+                  <td>病人ID</td>
+                  <td>手机号码</td>
+                  <td>年龄</td>
+                  <td>性别</td>
+                  <td>登记时间</td>
+                  <td>最近就诊时间</td>
+                  {/* <td>就诊类型</td>
+                  <td>是否为会员</td> */}
                   <td style={{flex: 2}}>操作</td>
                 </tr>
               </thead>
               <tbody>
-                {drugStocks.map((item, index) => {
+                {patients.map((item, index) => {
                   return (
                     <tr key={index}>
-                      <td style={{flex: 2}}>{moment(item.instock_date).format('YYYY-MM-DD')}</td>
-                      <td style={{flex: 2}}>{item.order_number}</td>
-                      <td>{item.instock_way_name}</td>
-                      <td style={{flex: 2}}>{item.supplier_name}</td>
-                      <td>{item.instock_operation_name}</td>
-                      <td>{item.verify_status === '01' ? '未审核' : '已审核'}</td>
+                      <td>{item.name}</td>
+                      <td>{item.id}</td>
+                      <td>{item.phone}</td>
+                      <td>{getAgeByBirthday(item.birthday)}</td>
+                      <td>{item.sex === 0 ? '女' : '男'}</td>
+                      <td>{moment(item.created_time).format('YYYY-MM-DD hh:mm')}</td>
+                      <td>{moment(item.visited_time).format('YYYY-MM-DD hh:mm') === 'Invalid date' ? '' : moment(item.visited_time).format('YYYY-MM-DD hh:mm')}</td>
+                      {/* <td>{item.supplier_name}</td>
+                      <td>{item.instock_operation_name}</td> */}
                       <td style={{flex: 2}} className={'operTd'}>
-                        {item.verify_status === '01' ? <div>
-                          <div onClick={() => {
-                            this.setState({
-                              showType: 2,
-                              drug_instock_record_id: item.drug_instock_record_id,
-                              showWay: 4
-                            })
-                          }}>修改</div>
-                          <div className={'divideLine'}>|</div>
+                        <div>
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
                               drug_instock_record_id: item.drug_instock_record_id,
                               showWay: 2
                             })
-                          }}>审核</div>
+                          }}>预约</div>
                           <div className={'divideLine'}>|</div>
                           <div onClick={() => {
                             this.DrugInstockRecordDelete(item.drug_instock_record_id)
-                          }}>删除</div>
-                        </div> : <div>
-                          <div onClick={() => {
-                            this.setState({
-                              showType: 2,
-                              drug_instock_record_id: item.drug_instock_record_id,
-                              showWay: 3
-                            })
-                          }}>查看详情</div>
+                          }}>更多</div>
                         </div>
-                        }
                       </td>
                     </tr>
                   )
@@ -226,37 +198,43 @@ class StorageMgtScreen extends Component {
       <div className={'filterBox'}>
         <div className={'boxLeft'}>
           <input
-            placeholder={`入库开始日期`}
+            placeholder={`就诊开始日期`}
             type='date'
             onChange={e => {
               this.setState({start_date: e.target.value})
             }}
           />
           <input
-            placeholder={`入库结束日期`}
+            placeholder={`就诊结束日期`}
             type='date'
             onChange={e => {
               this.setState({end_date: e.target.value})
             }}
           />
           <input
+            style={{width: '300px'}}
             type='text'
-            placeholder={`入库单号`}
+            placeholder={`搜索就诊人姓名/门诊ID/身份证号码/手机号码`}
             onChange={(e) => {
-              this.setState({order_number: e.target.value})
+              this.setState({keyword: e.target.value})
             }}
           />
           <button onClick={() => {
             this.getDataList({offset: 0, limit: 10})
           }}>查询</button>
         </div>
-        <div className={'boxRight'}>
+        <div className={'boxRight'} style={{display: 'flex'}}>
           <button
             onClick={() => {
-              this.setState({showType: 2, showWay: 1, drug_instock_record_id: ''})
             }}
           >
-            新增入库
+            新增就诊人
+          </button>
+          <button
+            onClick={() => {
+            }}
+          >
+            导出数据
           </button>
         </div>
         <style jsx='true'>{`
@@ -381,12 +359,11 @@ class StorageMgtScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    drugStocks: state.drugStocks.data,
-    pageInfo: state.drugStocks.page_info
+    patients: state.patients.member_patient_data,
+    pageInfo: state.patients.page_info
   }
 }
 
 export default connect(mapStateToProps, {
-  queryDrugInstockRecord,
-  DrugInstockRecordDelete
-})(StorageMgtScreen)
+  MemberPateintList
+})(PatientMgtScreen)

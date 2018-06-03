@@ -122,8 +122,13 @@ class DoctorListScreen extends Component {
                             info.is_appointment = true
                             const { PersonnelUpdate, clinic_id } = this.props
                             const { personnel_type } = this.state
+                            let requestData = {}
+                            requestData.is_appointment = info.is_appointment
+                            requestData.personnel_id = info.id
+                            requestData.clinic_id = clinic_id
+                            requestData.personnel_type = personnel_type
                             // console.log('info=====', info)
-                            let error = await PersonnelUpdate({ ...info, clinic_id, personnel_type })
+                            let error = await PersonnelUpdate(requestData)
                             if (error) {
                               return alert('修改失败', error)
                             }
@@ -142,8 +147,13 @@ class DoctorListScreen extends Component {
                             info.is_appointment = false
                             const { PersonnelUpdate, clinic_id } = this.props
                             const { personnel_type } = this.state
+                            let requestData = {}
+                            requestData.is_appointment = info.is_appointment
+                            requestData.personnel_id = info.id
+                            requestData.clinic_id = clinic_id
+                            requestData.personnel_type = personnel_type
                             // console.log('info=====', info)
-                            let error = await PersonnelUpdate({ ...info, clinic_id, personnel_type })
+                            let error = await PersonnelUpdate(requestData)
                             if (error) {
                               return alert('修改失败', error)
                             }
@@ -372,7 +382,8 @@ class DoctorListScreen extends Component {
   async PersonnelUpdate() {
     const { PersonnelUpdate, clinic_id } = this.props
     const { doctorInfo, personnel_type } = this.state
-    let error = await PersonnelUpdate({ ...doctorInfo, clinic_id, personnel_type })
+    let personnel_id = doctorInfo.id
+    let error = await PersonnelUpdate({ ...doctorInfo, personnel_id, clinic_id, personnel_type })
     if (error) {
       return alert('添加失败', error)
     }

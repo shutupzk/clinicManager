@@ -102,10 +102,10 @@ export const doctorCreate = ({ clinic_id, department_id, code, name, weight, tit
     return e.message
   }
 }
-export const PersonnelUpdate = ({ id, clinic_id, is_appointment, department_id, code, name, weight, title, personnel_type, username, password }) => async dispatch => {
+export const PersonnelUpdate = ({ personnel_id, clinic_id, is_appointment, department_id, code, name, weight, title, personnel_type, username, password }) => async dispatch => {
   try {
     const data = await request('/personnel/update', {
-      id,
+      personnel_id,
       clinic_id,
       department_id,
       code,
@@ -116,10 +116,10 @@ export const PersonnelUpdate = ({ id, clinic_id, is_appointment, department_id, 
       username,
       password,
       is_appointment
-    })
+    }, true)
     console.log(
       {
-        id,
+        personnel_id,
         clinic_id,
         department_id,
         code,

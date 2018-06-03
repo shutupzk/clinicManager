@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import moment from 'moment'
 // import { PageCard, Select } from '../../../../components'
-import StorageMgtScreen from './storage_mgt_screen'
+import PatientMgtScreen from './patient_mgt_screen'
 import OutboundMgtScreen from './outbound_mgt_screen'
 
 class PatientScreen extends Component {
@@ -23,7 +23,7 @@ class PatientScreen extends Component {
   renderContent() {
     let { personnel_type } = this.state
     let map = {
-      1: <StorageMgtScreen />,
+      1: <PatientMgtScreen />,
       2: <OutboundMgtScreen />
     }
     return map[personnel_type] || null
@@ -41,14 +41,14 @@ class PatientScreen extends Component {
           >
             就诊人管理
           </span>
-          <span
+          {/* <span
             className={this.state.personnel_type === 2 ? 'sel' : ''}
             onClick={() => {
               this.changeContent({ personnel_type: 2 })
             }}
           >
             会员管理
-          </span>
+          </span> */}
         </div>
         {this.renderContent()}
         <style jsx='true'>{`

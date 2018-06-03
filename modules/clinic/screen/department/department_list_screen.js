@@ -59,8 +59,8 @@ class DepartmentListScreen extends Component {
   showDoctor() {
     if (this.state.pageType !== 1) return null
     let { departments, page_info, clinic_name } = this.props
-    let { items } = this.state
-    items = departments
+    // let { items } = this.state
+    // items = departments
     console.log('departments=====', departments)
     // this.setState({items: departments})
     return (
@@ -103,7 +103,7 @@ class DepartmentListScreen extends Component {
               <div>是否开放预约/挂号</div>
               <div>操作</div>
             </li>
-            {items.map((depart, index) => {
+            {departments.map((depart, index) => {
               return (
                 <li key={index}>
                   <div>{index + 1}</div>
@@ -117,10 +117,21 @@ class DepartmentListScreen extends Component {
                           // readOnly
                           type='radio'
                           checked={depart.is_appointment}
-                          onChange={e => {
-                            let array = items
-                            array[index].is_appointment = true
-                            this.setState({items: array})
+                          onChange={async e => {
+                            let info = {...depart}
+                            info.is_appointment = true
+                            const { DepartmentUpdate, clinic_id } = this.props
+                            let requestData = {}
+                            requestData.clinic_id = clinic_id
+                            requestData.department_id = info.id
+                            requestData.is_appointment = info.is_appointment
+                            let error = await DepartmentUpdate(requestData)
+                            if (error) {
+                              alert(error)
+                            } else {
+                              const { queryDepartmentList, clinic_id } = this.props
+                              queryDepartmentList({ clinic_id })
+                            }
                           }}
                         />
                         是
@@ -130,10 +141,21 @@ class DepartmentListScreen extends Component {
                           // readOnly
                           type='radio'
                           checked={!depart.is_appointment}
-                          onChange={e => {
-                            let array = items
-                            array[index].is_appointment = false
-                            this.setState({items: array})
+                          onChange={async e => {
+                            let info = {...depart}
+                            info.is_appointment = false
+                            const { DepartmentUpdate, clinic_id } = this.props
+                            let requestData = {}
+                            requestData.clinic_id = clinic_id
+                            requestData.department_id = info.id
+                            requestData.is_appointment = info.is_appointment
+                            let error = await DepartmentUpdate(requestData)
+                            if (error) {
+                              alert(error)
+                            } else {
+                              const { queryDepartmentList, clinic_id } = this.props
+                              queryDepartmentList({ clinic_id })
+                            }
                           }}
                         />
                         否
