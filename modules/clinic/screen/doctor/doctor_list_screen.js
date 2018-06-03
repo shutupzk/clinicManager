@@ -7,8 +7,8 @@ import {
   queryDepartmentList,
   PersonnelUpdate
 } from '../../../../ducks'
-// import moment from 'moment'
 import { PageCard, Select, Confirm } from '../../../../components'
+import { checkLetterAndNumber } from '../../../../utils'
 
 class DoctorListScreen extends Component {
   constructor(props) {
@@ -434,7 +434,11 @@ class DoctorListScreen extends Component {
                 <label>{keyName}编码：</label>
                 <input
                   value={doctorInfo.code}
-                  onChange={e => this.setDoctorInfo(e, 'code')}
+                  onChange={e => {
+                    if (checkLetterAndNumber(e.target.value)) {
+                      this.setDoctorInfo(e, 'code')
+                    }
+                  }}
                 />
               </li>
               <li>
