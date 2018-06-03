@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { queryDepartmentList, departmentCreate, DepartmentDelete, DepartmentUpdate } from '../../../../ducks'
 // import moment from 'moment'
 import { PageCard, Confirm } from '../../../../components'
-import { limitLetterAndNumber } from '../../../../utils'
+import { checkLetterAndNumber } from '../../../../utils'
 
 class DepartmentListScreen extends Component {
   constructor(props) {
@@ -437,9 +437,8 @@ class DepartmentListScreen extends Component {
                     placeholder='请填写科室编码'
                     value={departInfo.code}
                     onChange={e => {
-                      var reg = /^[0-9a-zA-Z]+$/
                       let value = e.target.value
-                      if (reg.test(value) || value === '') {
+                      if (checkLetterAndNumber(value) || value === '') {
                         this.setDeaprtInfo(value, 'code', 2)
                       }
                     }}
