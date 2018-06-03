@@ -370,9 +370,21 @@ class DoctorListScreen extends Component {
   async saveAdd() {
     const { doctorCreate, clinic_id } = this.props
     const { doctorInfo, personnel_type } = this.state
+    if (!doctorInfo.code) {
+      return this.refs.myAlert.alert('添加失败', '请填写医生编码', null, 'Warning')
+    }
+    if (!doctorInfo.name) {
+      return this.refs.myAlert.alert('添加失败', '请填写医生名称', null, 'Warning')
+    }
+    if (!doctorInfo.title) {
+      return this.refs.myAlert.alert('添加失败', '请填写医生职称', null, 'Warning')
+    }
+    if (!doctorInfo.department_id) {
+      return this.refs.myAlert.alert('添加失败', '请选择科室', null, 'Warning')
+    }
     let error = await doctorCreate({ ...doctorInfo, clinic_id, personnel_type })
     if (error) {
-      return this.refs.myAlert.alert('添加失败', error)
+      return this.refs.myAlert.alert('添加失败', error, null, 'Danger')
     }
     this.queryDoctorList({ personnel_type })
     this.refs.myAlert.alert('添加成功')
@@ -455,6 +467,7 @@ class DoctorListScreen extends Component {
               <li>
                 <label>{keyName}权重</label>
                 <input
+                  type='number'
                   value={doctorInfo.weight}
                   onChange={e => this.setDoctorInfo(e, 'weight')}
                 />
