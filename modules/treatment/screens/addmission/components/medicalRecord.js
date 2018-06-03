@@ -27,7 +27,10 @@ class MedicalRecordScreen extends Component {
       name: '',
       is_common: true,
       model_keyword: '',
-      choseHistoryId: ''
+      choseHistoryId: '',
+      showComplaint: false,
+      selComplaint: [],
+      determineComplaint: []
     }
   }
 
@@ -605,6 +608,130 @@ class MedicalRecordScreen extends Component {
     })
   }
 
+// 选择主述标签
+  showComplaint() {
+    const { chief_complaints } = this.props
+    const {selComplaint, chief_complaint} = this.state
+    return (
+      <div className={'complaintBox'}>
+        <ul>
+          {chief_complaints.map((item, index) => {
+            let sel = false
+            if (selComplaint.indexOf(item.name) > -1) {
+              sel = true
+            }
+            return (
+              <li
+                className={sel ? 'sel' : ''}
+                key={index}
+                onClick={() => {
+                  let array = selComplaint
+                  if (sel) {
+                    for (let i = 0; i < array.length; i++) {
+                      if (array[i] === item.name) {
+                        array.splice(i, 1)
+                      }
+                    }
+                    this.setState({selComplaint: array})
+                  } else {
+                    array.push(item.name)
+                    this.setState({selComplaint: array})
+                  }
+                }}
+              >
+                {item.name}
+              </li>
+            )
+          })}
+        </ul>
+        <div className={'boxBottom'}>
+          <div>
+            <button
+              onClick={() => {
+                this.setState({showComplaint: false})
+              }}
+            >取消</button>
+            <button
+              onClick={() => {
+                let complaint = chief_complaint
+                for (let i = 0; i < selComplaint.length; i++) {
+                  if (i < selComplaint.length - 1) {
+                    complaint += selComplaint[i] + ','
+                  } else {
+                    complaint += selComplaint[i]
+                  }
+                }
+                this.setState({showComplaint: false, determineComplaint: selComplaint, chief_complaint: complaint})
+              }}
+            >确定</button>
+          </div>
+        </div>
+        <style jsx>{`
+          .complaintBox{
+            position:absolute;
+            width: 100%;
+            height: 240px;
+            top: 91px;
+            z-index: 1;
+            overflow: hidden;
+            display:flex;
+            flex-direction: column;
+            background: rgba(245,248,249,1);
+            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            border: 1px solid #d9d9d9;
+          }
+          .complaintBox > ul{
+            flex: 4;
+            height: auto;
+            max-height: 180px;
+            overflow: auto;
+            width: 100%;
+            border-bottom: 1px solid #d8d8d8;
+          }
+          .complaintBox > ul > li{
+            margin: 5px;
+            width: auto;
+            border-radius: 4px;
+            border: 1px solid #2acdc8;
+            color: rgba(42,205,200,1);
+            font-size: 12px;
+            padding: 3px 5px;
+            cursor: pointer;
+          }
+          .boxBottom{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .boxBottom > div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .boxBottom > div > button{
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            height: 32px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(0, 0, 0, 0.65);
+            padding: 0 15px;
+          }
+          .complaintBox > ul > li.sel,
+          .complaintBox > ul > li:hover,
+          .boxBottom > div > button:hover{
+            background: rgba(42,205,200,1);
+            color: #ffffff;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   render() {
     let {
       morbidity_date,
@@ -618,10 +745,11 @@ class MedicalRecordScreen extends Component {
       immunizations,
       diagnosis,
       cure_suggestion,
-      remark
+      remark,
+      showComplaint
     } = this.state
-    const { chief_complaints } = this.props
-    console.log('chief_complaints', chief_complaints)
+    // const { chief_complaints } = this.props
+    // console.log('chief_complaints', chief_complaints)
     return (
       <div className='filterBox'>
         <div className='boxLeft'>
@@ -639,7 +767,7 @@ class MedicalRecordScreen extends Component {
         <div className={'formList'}>
           <div className={'formListBox'} style={{}}>
             <ul>
-              <li>
+              <li style={{position: 'relative'}}>
                 <label>
                   主述<b style={{ color: 'red' }}> *</b>
                 </label>
@@ -648,7 +776,11 @@ class MedicalRecordScreen extends Component {
                   onChange={e => {
                     this.setState({ chief_complaint: e.target.value })
                   }}
+                  onFocus={() => {
+                    this.setState({showComplaint: true, selComplaint: []})
+                  }}
                 />
+                {showComplaint ? this.showComplaint() : ''}
               </li>
               <li>
                 <label>现病史</label>

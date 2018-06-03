@@ -422,7 +422,7 @@ class DoctorListScreen extends Component {
     let keyName = personnel_type === 2 ? '医生' : '职员'
     return (
       <div className={'mask'}>
-        <div className={'doctorList'} style={{ width: '700px', height: '800px', left: '450px', top: '50px' }}>
+        <div className={'doctorList'} style={{ width: '700px', height: '810px', left: '450px', top: '50px' }}>
           <div className={'doctorList_top'}>
             <span>{editType === 0 ? '新增' : '编辑'}{keyName}</span>
             <div />
@@ -431,80 +431,113 @@ class DoctorListScreen extends Component {
           <div className={'newList_content'}>
             <ul>
               <li>
-                <label>{keyName}编码：</label>
-                <input
-                  value={doctorInfo.code}
-                  onChange={e => {
-                    if (checkLetterAndNumber(e.target.value)) {
-                      this.setDoctorInfo(e, 'code')
-                    }
-                  }}
-                />
+                <div>
+                  <label>{keyName}编码</label>
+                  <input
+                    placeholder={'编码'}
+                    type='text'
+                    value={doctorInfo.code}
+                    onChange={e => {
+                      if (checkLetterAndNumber(e.target.value) || e.target.value === '') {
+                        this.setDoctorInfo(e, 'code')
+                      }
+                    }}
+                  />
+                </div>
+                {doctorInfo.code === '' || !doctorInfo.code ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
               <li>
-                <label>{keyName}名称</label>
-                <input
-                  value={doctorInfo.name}
-                  onChange={e => this.setDoctorInfo(e, 'name')}
-                />
+                <div>
+                  <label>{keyName}名称</label>
+                  <input
+                    placeholder={'名称'}
+                    type='text'
+                    value={doctorInfo.name}
+                    onChange={e => this.setDoctorInfo(e, 'name')}
+                  />
+                </div>
+                {doctorInfo.name === '' || !doctorInfo.name ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
               <li>
-                <label>所属诊所</label>
-                <label>{this.props.clinic_name}</label>
-              </li>
-              <li>
-                <label>科室名称</label>
-                <div style={{flex: 6}}>
-                  <div>
-                    <Select
-                      placeholder={'请选择科室'}
-                      value={{value: doctorInfo.department_id, label: doctorInfo.department_name}}
-                      options={this.getDepartmentList()}
-                      onChange={({value, label}) => {
-                        this.setDoctorInfo(value, 'department_id', 2)
-                        this.setDoctorInfo(label, 'department_name', 2)
-                      }}
-                    />
-                  </div>
+                <div>
+                  <label>所属诊所</label>
+                  <label>{this.props.clinic_name}</label>
                 </div>
               </li>
               <li>
-                <label>{keyName}权重</label>
-                <input
-                  type='number'
-                  value={doctorInfo.weight}
-                  onChange={e => this.setDoctorInfo(e, 'weight')}
-                />
+                <div>
+                  <label>科室名称</label>
+                  <div style={{flex: 6}}>
+                    <div>
+                      <Select
+                        placeholder={'请选择科室'}
+                        value={{value: doctorInfo.department_id, label: doctorInfo.department_name}}
+                        options={this.getDepartmentList()}
+                        onChange={({value, label}) => {
+                          this.setDoctorInfo(value, 'department_id', 2)
+                          this.setDoctorInfo(label, 'department_name', 2)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {doctorInfo.department_id === '' || !doctorInfo.department_id ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
               <li>
-                <label>{keyName}职称</label>
-                <input
-                  value={doctorInfo.title}
-                  onChange={e => this.setDoctorInfo(e, 'title')}
-                />
+                <div>
+                  <label>{keyName}权重</label>
+                  <input
+                    placeholder={'权重'}
+                    type='number'
+                    value={doctorInfo.weight}
+                    onChange={e => this.setDoctorInfo(e, 'weight')}
+                  />
+                </div>
               </li>
               <li>
-                <label>登录账号</label>
-                <input
-                  value={doctorInfo.username}
-                  onChange={e => this.setDoctorInfo(e, 'username')}
-                />
+                <div>
+                  <label>{keyName}职称</label>
+                  <input
+                    placeholder={'职称'}
+                    type='text'
+                    value={doctorInfo.title}
+                    onChange={e => this.setDoctorInfo(e, 'title')}
+                  />
+                </div>
+                {doctorInfo.title === '' || !doctorInfo.title ? <div className={'mustTips'}>此为必填项</div> : ''}
               </li>
               <li>
-                <label>设置密码</label>
-                <input
-                  type='password'
-                  value={doctorInfo.password}
-                  onChange={e => this.setDoctorInfo(e, 'password')}
-                />
+                <div>
+                  <label>登录账号</label>
+                  <input
+                    placeholder={'登录账号'}
+                    type='text'
+                    value={doctorInfo.username}
+                    onChange={e => this.setDoctorInfo(e, 'username')}
+                  />
+                </div>
               </li>
               <li>
-                <label>确认密码</label>
-                <input
-                  type='password'
-                  value={doctorInfo.passwordConfirm}
-                  onChange={e => this.setDoctorInfo(e, 'passwordConfirm')}
-                />
+                <div>
+                  <label>设置密码</label>
+                  <input
+                    placeholder={'设置密码'}
+                    type='password'
+                    value={doctorInfo.password}
+                    onChange={e => this.setDoctorInfo(e, 'password')}
+                  />
+                </div>
+              </li>
+              <li>
+                <div>
+                  <label>确认密码</label>
+                  <input
+                    type='password'
+                    value={doctorInfo.passwordConfirm}
+                    onChange={e => this.setDoctorInfo(e, 'passwordConfirm')}
+                  />
+                </div>
+                {!doctorInfo.password || doctorInfo.password === '' ? '' : doctorInfo.passwordConfirm === doctorInfo.password ? '' : <div className={'mustTips'}>密码输入不一致</div>}
               </li>
             </ul>
             <div className={'buttonBtn'}>
@@ -560,12 +593,22 @@ class DoctorListScreen extends Component {
               .newList_content ul li {
                 margin: 10px 0;
                 display: flex;
+                flex-direction: column;
               }
               .newList_content ul li label {
                 // width: 25%;
                 vertical-align: middle;
                 line-height: 40px;
                 flex: 1;
+              }
+              .newList_content ul li > div {
+                display: flex;
+              }
+              .newList_content ul li > div.mustTips {
+                color: red;
+                font-size: 12px;
+                text-align: end;
+                display: block
               }
               .newList_content ul li input {
                 height: 40px;
@@ -583,7 +626,7 @@ class DoctorListScreen extends Component {
               }
               .buttonBtn {
                 display: block;
-                margin: 50px auto;
+                margin: 20px auto;
                 width: 150px;
               }
               .buttonBtn button {
