@@ -75,6 +75,7 @@ class LaboratoryScreen extends Component {
   async submit() {
     const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
     const { laboratories } = this.state
+    console.log('laboratories ========', laboratories)
     let items = []
     for (let item of laboratories) {
       let obj = {}
@@ -84,9 +85,10 @@ class LaboratoryScreen extends Component {
         } else {
           obj[key] = item[key] ? item[key] + '' : ''
         }
-        items.push(obj)
       }
+      items.push(obj)
     }
+    console.log('items ========', items)
     let error = await LaboratoryPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)

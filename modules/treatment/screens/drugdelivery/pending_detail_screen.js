@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { queryMedicalRecord, queryDrugDeliveryList } from '../../../../ducks'
+import Router from 'next/router'
+import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
 
@@ -11,7 +12,8 @@ class PendingDetailDrugScreen extends Component {
     this.state = {
       pageType: 1,
       allSelect: false,
-      selectArray: []
+      selectArray: [],
+      remarks: {}
     }
   }
 
@@ -25,7 +27,22 @@ class PendingDetailDrugScreen extends Component {
   commit() {
     let { selectArray } = this.state
     if (selectArray.length === 0) return this.refs.myAlert.alert('提示', '未勾选条目，请重新勾选！', null, 'Warning')
-    this.refs.myAlert.confirm('确定发药？', '', null, async () => {})
+    this.refs.myAlert.confirm('确定发药？', '', null, async () => {
+      const { triagePatientSelectId, personnel_id, drugDeliveryCreate } = this.props
+      const { selectArray, remarks } = this.state
+      let items = []
+      for (let key of selectArray) {
+        items.push({ mz_paid_orders_id: key, remark: remarks[key] || '' })
+      }
+      let error = await drugDeliveryCreate({ clinic_triage_patient_id: triagePatientSelectId, operation_id: personnel_id, items: JSON.stringify(items) })
+      if (error) {
+        return this.refs.myAlert.alert('提交失败', error, null, 'Warning')
+      } else {
+        this.refs.myAlert.alert('提交成功', '', () => {
+          Router.push('/treatment/drugdelivery')
+        })
+      }
+    })
   }
 
   changeAllSelect() {
@@ -58,6 +75,14 @@ class PendingDetailDrugScreen extends Component {
     const { selectArray } = this.state
     selectArray.push(itemId)
     this.setState({ selectArray })
+  }
+
+  // 设置每项的属性
+  setRemark(itemId, value) {
+    let { remarks } = this.state
+    if (!value) delete remarks[itemId]
+    else remarks[itemId] = value
+    this.setState({ remarks })
   }
 
   // 查看发药项目
@@ -115,10 +140,10 @@ class PendingDetailDrugScreen extends Component {
               <div>药品类别</div>
               <div>规格</div>
               <div style={{ flex: 5 }}>生产厂商</div>
-              <div>剂型</div>
               <div>药品库存</div>
               <div style={{ flex: 1 }}>数量</div>
-              <div>发药状态</div>
+              <div style={{ flex: 2 }}>发药状态</div>
+              <div>备注</div>
             </li>
             {drug_delivery_list.map((item, iKey) => {
               let checked = this.state.selectArray.indexOf(item.id + '') > -1
@@ -139,10 +164,18 @@ class PendingDetailDrugScreen extends Component {
                   <div>{item.charge_project_type_id === 1 ? '西/成药' : '中药'}</div>
                   <div>{item.specification}</div>
                   <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
-                  <div>{item.dose_form_name}</div>
                   <div>{stock_amount}</div>
                   <div style={{ flex: 1 }}>{amount}</div>
-                  <div>待发药</div>
+                  <div style={{ flex: 2 }}>待发药</div>
+                  <div>
+                    <textarea
+                      style={{ width: '90%', resize: 'none', border: 'none' }}
+                      value={this.state.remarks[item.id]}
+                      onChange={e => {
+                        this.setRemark(item.id, e.target.value)
+                      }}
+                    />
+                  </div>
                 </li>
               )
             })}
@@ -316,6 +349,7 @@ class PendingDetailDrugScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    personnel_id: state.user.data.id,
     triagePatients: state.drugDeliveryPending.traige_list,
     triagePatientSelectId: state.drugDeliveryPending.traige_selectId,
     medicalRecord: state.medicalRecords.data,
@@ -325,4 +359,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryMedicalRecord, queryDrugDeliveryList })(PendingDetailDrugScreen)
+export default connect(mapStateToProps, { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate })(PendingDetailDrugScreen)
