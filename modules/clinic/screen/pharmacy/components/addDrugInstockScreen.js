@@ -9,7 +9,7 @@ import {
   DrugInstockCheck,
   DrugInstockUpdate
 } from '../../../../../ducks'
-import { Select, Confirm } from '../../../../../components'
+import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { formatMoney, limitMoney } from '../../../../../utils'
 import moment from 'moment'
 
@@ -280,6 +280,7 @@ class AddDrugInstockScreen extends Component {
             {showWay === 1 || showWay === 4 ? <div>
               <div style={{ width: '100%' }}>
                 <Select
+                  placeholder={'supplier_name'}
                   value={this.getSelectValue(supplier_name, this.getSupplierOptions())}
                   onChange={({value}) => {
                     this.setState({ supplier_name: value })
@@ -361,8 +362,11 @@ class AddDrugInstockScreen extends Component {
         value: clinic_drug_id,
         label: drug_name + '—' + specification,
         manu_factory_name,
+        drug_name,
+        specification,
         packing_unit_name,
         ret_price,
+        stock_amount,
         instock_amount: stock_amount,
         buy_price: formatMoney(buy_price)
       })
@@ -384,7 +388,7 @@ class AddDrugInstockScreen extends Component {
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    // console.log(items)
+    console.log(items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -411,9 +415,15 @@ class AddDrugInstockScreen extends Component {
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
-                      <Select
-                        value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions())}
+                    {showWay === 1 || showWay === 4 ? <div>
+                      <CustomSelect
+                        controlStyle={{ height: '38px', width: '100%' }}
+                        value={item.clinic_drug_id || ''}
+                        label={item.drug_name || ''}
+                        mustOptionValue={!false}
+                        valueKey='clinic_drug_id'
+                        labelKey='drug_name'
+                        placeholder='搜索'
                         onChange={({
                           value,
                           label,
@@ -431,10 +441,30 @@ class AddDrugInstockScreen extends Component {
                           this.setItemValue(instock_amount, index, 'instock_amount', 2)
                           this.setItemValue(buy_price, index, 'buy_price', 2)
                         }}
-                        placeholder='搜索'
-                        height={38}
                         onInputChange={keyword => this.ClinicDrugList(keyword)}
                         options={this.getDrugOptions()}
+                        renderTitle={(item, index) => {
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                            </div>
+                          )
+                        }}
+                        renderItem={(item, index) => {
+                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                          let packing_unit_name = item.packing_unit_name || ''
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', borderBottom: '1px solid #d9d9d9', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                            </div>
+                          )
+                        }}
                       />
                     </div> : item.drug_name }
                   </div>

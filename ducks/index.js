@@ -15,7 +15,7 @@ import {
   completePreDiagnosis,
   GetHealthRecord
 } from './triage_patients'
-import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword } from './patients'
+import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword, MemberPateintList } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
 import {
@@ -192,6 +192,7 @@ export {
   addTriagePatientsList,
   getPatientByCertNo,
   patientSelect,
+  MemberPateintList,
   queryDepartmentList,
   departmentSelect,
   DepartmentDelete,

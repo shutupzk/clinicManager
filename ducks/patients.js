@@ -1,9 +1,12 @@
 import { request } from './request'
 const PATIENT_ADD = 'PATIENT_ADD'
 const PATIENT_SELECT = 'PATIENT_SELECT'
+const MEMBER_PATIENT_LIST = 'MEMBER_PATIENT_LIST'
 
 const initState = {
   data: [],
+  member_patient_data: [],
+  page_info: {},
   selectId: null
 }
 
@@ -11,6 +14,8 @@ export function patients(state = initState, action = {}) {
   switch (action.type) {
     case PATIENT_ADD:
       return { ...state, data: action.data }
+    case MEMBER_PATIENT_LIST:
+      return { ...state, member_patient_data: action.member_patient_data, page_info: action.page_info }
     case PATIENT_SELECT:
       return Object.assign({}, state, { selectId: action.selectId })
     default:
@@ -65,5 +70,24 @@ export const patientSelect = ({ patient_id }) => async dispatch => {
     return null
   } catch (e) {
     return e.message
+  }
+}
+
+export const MemberPateintList = ({ keyword = '', offset = 0, limit = 10, start_date, end_date }) => async dispatch => {
+  console.log('keyword', { keyword, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/triage/MemberPateintList', { keyword, offset, limit, start_date, end_date })
+    console.log(data)
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    dispatch({
+      type: MEMBER_PATIENT_LIST,
+      member_patient_data: docs,
+      page_info
+    })
+    // return patient
+  } catch (e) {
+    console.log(e)
+    return null
   }
 }
