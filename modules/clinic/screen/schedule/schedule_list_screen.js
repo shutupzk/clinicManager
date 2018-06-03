@@ -71,7 +71,7 @@ class ScheduleListScreen extends Component {
     queryDoctorList({ clinic_id, keyword, limit: 1000, personnel_type: 2, department_id })
   }
 
-  formatDoctorWeekScheduleData(days = []) {
+  formatDoctorWeekScheduleData(schedules = []) {
     const { weekNum } = this.state
     let array = []
     for (let i = 0; i < 7; i++) {
@@ -79,22 +79,15 @@ class ScheduleListScreen extends Component {
         .day(weekNum + i)
         .format('YYYY-MM-DD')
       array[i] = { visit_date, daySchedule: { am: {}, pm: {} } }
-      for (let obj of days) {
-        if (obj.visit_date === visit_date) {
-          let schedules = obj.schedules || []
-          let daySchedule = {
-            am: {},
-            pm: {}
+      for (let obj of schedules) {
+        let objVd = moment(obj.visit_date).format('YYYY-MM-DD')
+        if (objVd === visit_date) {
+          if (obj.am_pm === 'a') {
+            array[i].daySchedule.am = { ...obj, visit_date: objVd }
           }
-          for (let { doctor_visit_schedule_id, am_pm, open_flag, stop_flag } of schedules) {
-            if (am_pm === 'a') {
-              daySchedule.am = { doctor_visit_schedule_id, open_flag, stop_flag }
-            } else if (am_pm === 'p') {
-              daySchedule.pm = { doctor_visit_schedule_id, open_flag, stop_flag }
-            }
+          if (obj.am_pm === 'p') {
+            array[i].daySchedule.pm = { ...obj, visit_date: objVd }
           }
-          array[i].daySchedule = daySchedule
-          break
         }
       }
     }
@@ -184,6 +177,7 @@ class ScheduleListScreen extends Component {
     let { weekNum } = this.state
     const { scheduleDoctors, page_info, canOverride, needOpen } = this.props
     // console.log('scheduleDoctors====', scheduleDoctors)
+    let today = moment().format('YYYY-MM-DD')
     const weekTds = this.getWeekTds()
     return (
       <div className={''}>
@@ -252,8 +246,7 @@ class ScheduleListScreen extends Component {
                   </thead>
                   <tbody>
                     {scheduleDoctors.map((item, index) => {
-                      let array = this.formatDoctorWeekScheduleData(item.date || []) || []
-                      // console.log('array====', scheduleDoctors, array)
+                      let array = this.formatDoctorWeekScheduleData(item.schedules || []) || []
                       return (
                         <tr style={{ height: '58px' }} key={index}>
                           <td>{item.personnel_name}</td>
@@ -268,7 +261,8 @@ class ScheduleListScreen extends Component {
                                   }}>
                                   <label>
                                     <input
-                                      readOnly={!!daySchedule.am.stop_flag}
+                                      disabled={visit_date < today}
+                                      readOnly={!!daySchedule.am.stop_flag || visit_date < today}
                                       type='checkbox'
                                       checked={!!daySchedule.am.doctor_visit_schedule_id && !daySchedule.am.stop_flag}
                                       onChange={e => {
@@ -304,7 +298,8 @@ class ScheduleListScreen extends Component {
                                   style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag ? '#2ACDC8' : '#999999' }}>
                                   <label>
                                     <input
-                                      readOnly={!!daySchedule.pm.stop_flag}
+                                      disabled={visit_date < today}
+                                      readOnly={!!daySchedule.pm.stop_flag || visit_date < today}
                                       type='checkbox'
                                       checked={!!daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag}
                                       onChange={e => {
