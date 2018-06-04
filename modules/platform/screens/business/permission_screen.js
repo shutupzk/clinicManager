@@ -32,14 +32,14 @@ class BusinessClinicPermissionScreen extends Component {
 
   cancel() {
     const { has_set_permissions, un_set_permissions } = this.props
-    this.setState({ array1: [...un_set_permissions], array2: [...has_set_permissions] })
+    this.setState({ array1: JSON.parse(JSON.stringify(un_set_permissions)), array2: JSON.parse(JSON.stringify(has_set_permissions)) })
   }
 
   async componentDidMount() {
     let { queryClinicHassetPermissions, queryClinicUnsetPermissions, clinic_selectId } = this.props
     let unSet = await queryClinicUnsetPermissions(clinic_selectId)
     let hasSet = await queryClinicHassetPermissions(clinic_selectId)
-    this.setState({ array1: [...unSet], array2: [...hasSet] })
+    this.setState({ array1: JSON.parse(JSON.stringify(unSet)), array2: JSON.parse(JSON.stringify(hasSet)) })
   }
 
   // 添加功能
