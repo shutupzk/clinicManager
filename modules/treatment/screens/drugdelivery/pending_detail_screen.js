@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import Router from 'next/router'
-import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate } from '../../../../ducks'
+import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
 
@@ -13,7 +13,8 @@ class PendingDetailDrugScreen extends Component {
       pageType: 1,
       allSelect: false,
       selectArray: [],
-      remarks: {}
+      remarks: {},
+      selectRecordId: ''
     }
   }
 
@@ -77,6 +78,19 @@ class PendingDetailDrugScreen extends Component {
     this.setState({ selectArray })
   }
 
+  // 展示历史列表
+  async renderRecord() {
+    const { triagePatientSelectId, queryDrugDeliveryRecordList } = this.props
+    await queryDrugDeliveryRecordList({ clinic_triage_patient_id: triagePatientSelectId })
+    this.setState({ pageType: 3 })
+  }
+
+  // 展示历史详情
+  async showRecordDetail(drug_delivery_record_id) {
+    await this.props.queryDrugDeliveryRecordDetail({ drug_delivery_record_id })
+    this.setState({ pageType: 4, selectRecordId: drug_delivery_record_id })
+  }
+
   // 设置每项的属性
   setRemark(itemId, value) {
     let { remarks } = this.state
@@ -87,7 +101,6 @@ class PendingDetailDrugScreen extends Component {
 
   // 查看发药项目
   renderDrugDeliveryList() {
-    if (this.state.pageType !== 1) return null
     const { triagePatients, triagePatientSelectId, medicalRecord, drug_delivery_list, drug_delivery_list_page } = this.props
     const { allSelect } = this.state
     let triagePatient = {}
@@ -115,7 +128,7 @@ class PendingDetailDrugScreen extends Component {
               <a onClick={() => this.setState({ pageType: 2 })}>查看病历</a>
             </button>
             <button>
-              <a>发药记录</a>
+              <a onClick={() => this.renderRecord()}>发药记录</a>
             </button>
           </div>
         </div>
@@ -335,11 +348,195 @@ class PendingDetailDrugScreen extends Component {
     )
   }
 
+  // 查看历史开药记录
+  renderDrugDeliveryRecord() {
+    if (this.state.pageType !== 3) return null
+    const { drug_delivery_record_list, drug_delivery_record_list_page, triagePatientSelectId } = this.props
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
+          <div className='doctorList_top'>
+            <span>历史发药记录</span>
+            <span onClick={() => this.setState({ pageType: 1 })}>x</span>
+          </div>
+          <div className={'meical_nodel_item'}>
+            <div style={{ margin: '20px 0 20px 0' }}>
+              <ul style={{ background: '#efeaea' }}>
+                <li>就诊日期</li>
+                <li>发药时间</li>
+                <li>接诊医生</li>
+                <li>发药医生</li>
+                <li>药品名称</li>
+                <li>操 作</li>
+              </ul>
+            </div>
+            {drug_delivery_record_list.map((item, iKey) => {
+              if (!item) return null
+              const { doctor_name, opration_name, created_time, project_name, visit_date } = item
+              return (
+                <div key={iKey}>
+                  <ul>
+                    <li style={{ flex: 2 }}>{moment(visit_date).format('YYYY-MM-DD')}</li>
+                    <li>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</li>
+                    <li>{doctor_name}</li>
+                    <li>{opration_name}</li>
+                    <li>{project_name} ...</li>
+                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.showRecordDetail(item.drug_delivery_record_id)}>
+                      查看详情
+                    </li>
+                  </ul>
+                </div>
+              )
+            })}
+          </div>
+          <PageCard
+            style={{ width: '90%' }}
+            offset={drug_delivery_record_list_page.offset}
+            limit={drug_delivery_record_list_page.limit}
+            total={drug_delivery_record_list_page.total}
+            onItemClick={({ offset, limit }) => {
+              this.props.queryDrugDeliveryRecordList({ offset, limit, clinic_triage_patient_id: triagePatientSelectId })
+            }}
+          />
+        </div>
+        <style jsx='true'>{`
+          .meical_nodel_item {
+            width: 90%;
+            margin: 22px 5% 0 5%;
+            padding: 0;
+          }
+          .meical_nodel_item div {
+            width: 100%;
+            height: 20px;
+            border: 1px solid #d8d8d8;
+            margin-top: 10px;
+          }
+
+          .meical_nodel_item ul {
+            display: flex;
+          }
+
+          .meical_nodel_item ul li {
+            margin:0;
+            border-right: 1px solid #d8d8d8;
+            float: left;
+            flex:2
+            height: 20px;
+            text-align: center;
+          }
+
+          .meical_nodel_item ul li:nth-child(6){
+            float: left;
+            flex:1
+            border-right: none
+            text-align: center;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // 查看历史开药详情
+  renderDrugDeliveryDetail() {
+    if (this.state.pageType !== 4) return null
+    const { items, item_page } = this.props
+    const { selectRecordId } = this.state
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
+          <div className='doctorList_top'>
+            <span>发药详情</span>
+            <div style={{ float: 'left', marginLeft: '20%' }}>
+              <button style={{ float: 'none', width: '100px', marginLeft: '400px' }} onClick={() => this.setState({ pageType: 3 })}>
+                返回列表
+              </button>
+            </div>
+            <span onClick={() => this.setState({ pageType: 1 })}>x</span>
+          </div>
+          <div className={'feeScheduleBox'} style={{ width: '850px', margin: '40px 0 0 25px' }}>
+            <ul>
+              <li>
+                <div style={{ flex: 1 }}>序号</div>
+                <div style={{ flex: 3 }}>药品名称</div>
+                <div>药品类别</div>
+                <div>规格</div>
+                <div style={{ flex: 5 }}>生产厂商</div>
+                <div style={{ flex: 1 }}>数量</div>
+                <div style={{ flex: 2 }}>发药状态</div>
+                <div>备注</div>
+              </li>
+              {items.map((item, iKey) => {
+                return (
+                  <li key={iKey}>
+                    <div style={{ flex: 1 }}>{iKey + 1}</div>
+                    <div style={{ flex: 3 }}>{item.name}</div>
+                    <div>{item.charge_project_type_id === 1 ? '西/成药' : '中药'}</div>
+                    <div>{item.specification}</div>
+                    <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
+                    <div style={{ flex: 1 }}>{item.amount}</div>
+                    <div style={{ flex: 2 }}>已发药</div>
+                    <div>
+                      <textarea style={{ width: '90%', resize: 'none', border: 'none' }} value={item.remark} />
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <PageCard
+            style={{ width: '90%' }}
+            offset={item_page.offset}
+            limit={item_page.limit}
+            total={item_page.total}
+            onItemClick={({ offset, limit }) => {
+              this.props.queryDrugDeliveryRecordDetail({ offset, limit, drug_delivery_record_id: selectRecordId })
+            }}
+          />
+        </div>
+        <style jsx='true'>{`
+          .meical_nodel_item {
+            width: 90%;
+            margin: 22px 5% 0 5%;
+            padding: 0;
+          }
+          .meical_nodel_item div {
+            width: 100%;
+            height: 20px;
+            border: 1px solid #d8d8d8;
+            margin-top: 10px;
+          }
+
+          .meical_nodel_item ul {
+            display: flex;
+          }
+
+          .meical_nodel_item ul li {
+            margin:0;
+            border-right: 1px solid #d8d8d8;
+            float: left;
+            flex:2
+            height: 20px;
+            text-align: center;
+          }
+
+          .meical_nodel_item ul li:nth-child(6){
+            float: left;
+            flex:1
+            border-right: none
+            text-align: center;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   // 加载
   render() {
     return (
       <div>
         {this.renderDrugDeliveryList()}
+        {this.renderDrugDeliveryRecord()}
+        {this.renderDrugDeliveryDetail()}
         {this.renderMedicalRecord()}
         <Confirm ref='myAlert' />
       </div>
@@ -355,8 +552,15 @@ const mapStateToProps = state => {
     medicalRecord: state.medicalRecords.data,
     drug_delivery_list_page: state.drugDeliveryPending.drug_delivery_list_page,
     drug_delivery_ids: state.drugDeliveryPending.drug_delivery_list_page.ids || [],
-    drug_delivery_list: state.drugDeliveryPending.drug_delivery_list
+    drug_delivery_list: state.drugDeliveryPending.drug_delivery_list,
+    drug_delivery_record_list: state.drugDelivery.data,
+    drug_delivery_record_list_page: state.drugDelivery.data_page,
+    items: state.drugDelivery.data_item,
+    item_page: state.drugDelivery.data_item_page
   }
 }
 
-export default connect(mapStateToProps, { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate })(PendingDetailDrugScreen)
+export default connect(
+  mapStateToProps,
+  { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail }
+)(PendingDetailDrugScreen)
