@@ -1,5 +1,5 @@
 import { user, signin, signout } from './user'
-import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate } from './doctors'
+import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete } from './doctors'
 import {
   triagePatients,
   triagePatientsList,
@@ -190,6 +190,7 @@ export {
   queryDoctorList,
   doctorSelect,
   PersonnelUpdate,
+  PersonnelDelete,
   triagePatientsList,
   triagePatientsSelect,
   addTriagePatientsList,

@@ -5,7 +5,8 @@ import {
   queryDoctorList,
   doctorCreate,
   queryDepartmentList,
-  PersonnelUpdate
+  PersonnelUpdate,
+  PersonnelDelete
 } from '../../../../ducks'
 import { PageCard, Select, Confirm } from '../../../../components'
 import { checkLetterAndNumber } from '../../../../utils'
@@ -171,8 +172,12 @@ class DoctorListScreen extends Component {
                           this.setState({ showAddPersonnel: true, editType: 1, doctorInfo: doctor })
                         }}
                       >编辑</span>
-                      {/* |
-                      <span>删除</span> */}
+                      |
+                      <span
+                        onClick={() => {
+                          this.PersonnelDelete(doctor.id)
+                        }}
+                      >删除</span>
                     </div>
                   </div>
                 </li>
@@ -364,6 +369,23 @@ class DoctorListScreen extends Component {
         `}</style>
       </div>
     )
+  }
+  // 删除医生
+  PersonnelDelete(id) {
+    const {PersonnelDelete, page_info, doctors} = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await PersonnelDelete({personnel_id: id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (doctors.length > 1) {
+          this.queryDoctorList({ offset: page_info.offset, limit: 10 })
+        } else if (page_info.offset > 0) {
+          this.queryDoctorList({ offset: page_info.offset - 1, limit: 10 })
+        }
+      }
+    })
   }
 
   // 保存添加
@@ -753,5 +775,6 @@ export default connect(mapStateToProps, {
   queryDoctorList,
   doctorCreate,
   queryDepartmentList,
-  PersonnelUpdate
+  PersonnelUpdate,
+  PersonnelDelete
 })(DoctorListScreen)
