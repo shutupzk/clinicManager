@@ -57,7 +57,9 @@ class MedicalRecordScreen extends Component {
         data
       })
     }
-    this.setState({ wPrescItemArray, cPrescItemArray })
+    let wPrescItemArrayStr = JSON.stringify(wPrescItemArray)
+    let cPrescItemArrayStr = JSON.stringify(cPrescItemArray)
+    this.setState({ wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr })
   }
 
   ClinicDrugList(keyword, type = 0) {
@@ -289,6 +291,7 @@ class MedicalRecordScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
+      this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray) })
       return this.refs.myAlert.alert('保存成功')
     }
   }
@@ -510,6 +513,7 @@ class MedicalRecordScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
+      this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray) })
       return this.refs.myAlert.alert('保存成功')
     }
   }
@@ -1321,9 +1325,13 @@ class MedicalRecordScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-      // this.save()
-    })
+    const { changePage } = this.props
+    const { wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr } = this.state
+    if (wPrescItemArrayStr !== JSON.stringify(wPrescItemArray) || cPrescItemArrayStr !== JSON.stringify(cPrescItemArray)) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        // this.save()
+      })
+    }
   }
   render() {
     const { selItem, cPrescItemArray, selPage } = this.state
@@ -1352,7 +1360,7 @@ class MedicalRecordScreen extends Component {
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
               this.setState({selPage: 3})
-              this.tipsToSave(3)
+              // this.tipsToSave(3)
             }}
           >
             治疗
