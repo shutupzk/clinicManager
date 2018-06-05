@@ -10,7 +10,8 @@ class LaboratoryScreen extends Component {
     super(props)
     this.state = {
       laboratories: [],
-      selPage: 4
+      selPage: 4,
+      laboratoriesStr: ''
     }
   }
 
@@ -18,7 +19,7 @@ class LaboratoryScreen extends Component {
     const { LaboratoryPatientGet, clinic_triage_patient_id } = this.props
     const laboratories = await LaboratoryPatientGet({ clinic_triage_patient_id })
     console.log('laboratories =====', laboratories)
-    this.setState({ laboratories })
+    this.setState({ laboratories, laboratoriesStr: JSON.stringify(laboratories) })
   }
 
   queryLaboratoryList(keyword) {
@@ -109,6 +110,7 @@ class LaboratoryScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
+        this.setState({laboratoriesStr: JSON.stringify(laboratories)})
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -453,9 +455,16 @@ class LaboratoryScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-      this.submit()
-    })
+    const {changePage} = this.props
+    const {laboratories, laboratoriesStr} = this.state
+    // console.log('othercostsStr==', othercostsStr)
+    if (JSON.stringify(laboratories) !== laboratoriesStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.submit()
+      })
+    } else {
+      changePage(pageType)
+    }
   }
   render() {
     const { laboratories, selPage } = this.state
@@ -561,7 +570,7 @@ class LaboratoryScreen extends Component {
                   </div>
                 </li>
                 {laboratories.map((item, index) => {
-                  let nameOptions = this.getNameOptions(laboratories[index])
+                  let nameOptions = this.getNameOptions(index)
                   return (
                     <li key={index}>
                       <div>

@@ -10,14 +10,15 @@ class TreatmentScreen extends Component {
     super(props)
     this.state = {
       treatments: [],
-      selPage: 3
+      selPage: 3,
+      treatmentsStr: ''
     }
   }
 
   async componentDidMount() {
     const { TreatmentPatientGet, clinic_triage_patient_id } = this.props
     const treatments = await TreatmentPatientGet({ clinic_triage_patient_id })
-    this.setState({ treatments })
+    this.setState({ treatments, treatmentsStr: JSON.stringify(treatments) })
   }
 
   queryTreatmentList(keyword) {
@@ -122,6 +123,7 @@ class TreatmentScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
+        this.setState({treatmentsStr: JSON.stringify(treatments)})
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -447,9 +449,16 @@ class TreatmentScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-      this.submit()
-    })
+    const {changePage} = this.props
+    const {treatments, treatmentsStr} = this.state
+    // console.log('othercostsStr==', othercostsStr)
+    if (JSON.stringify(treatments) !== treatmentsStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.submit()
+      })
+    } else {
+      changePage(pageType)
+    }
   }
   render() {
     const { treatments, selPage } = this.state
@@ -551,7 +560,7 @@ class TreatmentScreen extends Component {
                   </div>
                 </li>
                 {treatments.map((item, index) => {
-                  let nameOptions = this.getNameOptions(treatments[index])
+                  let nameOptions = this.getNameOptions(index)
                   return (
                     <li key={index}>
                       <div>

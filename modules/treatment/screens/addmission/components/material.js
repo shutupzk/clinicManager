@@ -9,14 +9,15 @@ class MaterialScreen extends Component {
     super(props)
     this.state = {
       eaterials: [],
-      selPage: 6
+      selPage: 6,
+      eaterialsStr: ''
     }
   }
 
   async componentDidMount() {
     const { MaterialPatientGet, clinic_triage_patient_id } = this.props
     const eaterials = await MaterialPatientGet({ clinic_triage_patient_id })
-    this.setState({ eaterials })
+    this.setState({ eaterials, eaterialsStr: JSON.stringify(eaterials) })
   }
 
   queryMaterialList(keyword) {
@@ -112,6 +113,7 @@ class MaterialScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
+        this.setState({eaterialsStr: JSON.stringify(eaterials)})
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -119,9 +121,15 @@ class MaterialScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-      this.submit()
-    })
+    const {changePage} = this.props
+    const {eaterials, eaterialsStr} = this.state
+    if (JSON.stringify(eaterials) !== eaterialsStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.submit()
+      })
+    } else {
+      changePage(pageType)
+    }
   }
   render() {
     const { eaterials, selPage } = this.state
@@ -221,7 +229,7 @@ class MaterialScreen extends Component {
                   </div>
                 </li>
                 {eaterials.map((item, index) => {
-                  let nameOptions = this.getNameOptions()
+                  let nameOptions = this.getNameOptions(index)
                   return (
                     <li key={index}>
                       <div>

@@ -117,6 +117,7 @@ class OtherScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
+        this.setState({othercostsStr: JSON.stringify(othercosts)})
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -125,13 +126,14 @@ class OtherScreen extends Component {
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
     const {changePage} = this.props
-    const {othercosts, othercostsStr, selPage} = this.state
+    const {othercosts, othercostsStr} = this.state
+    // console.log('othercostsStr==', othercostsStr)
     if (JSON.stringify(othercosts) !== othercostsStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
         this.submit()
       })
     } else {
-      changePage(selPage)
+      changePage(pageType)
     }
   }
   render() {
@@ -230,7 +232,7 @@ class OtherScreen extends Component {
                   </div>
                 </li>
                 {othercosts.map((item, index) => {
-                  let nameOptions = this.getNameOptions()
+                  let nameOptions = this.getNameOptions(index)
                   return (
                     <li key={index}>
                       <div>
