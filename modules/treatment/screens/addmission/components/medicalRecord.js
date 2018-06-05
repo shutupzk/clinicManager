@@ -3,7 +3,15 @@ import { connect } from 'react-redux'
 import { Confirm, PageCard, MyCreatableSelect } from '../../../../../components'
 // import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList } from '../../../../../ducks'
+import {
+  createMedicalRecord,
+  queryMedicalRecord,
+  createMedicalRecordAsModel,
+  queryMedicalModelsByDoctor,
+  queryMedicalsByPatient,
+  queryChiefComplaints,
+  queryDictDiagnosisList
+} from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
   constructor(props) {
@@ -615,10 +623,10 @@ class MedicalRecordScreen extends Component {
     })
   }
 
-// 选择主述标签
+  // 选择主述标签
   showComplaint() {
     const { chief_complaints } = this.props
-    const {selComplaint, chief_complaint} = this.state
+    const { selComplaint, chief_complaint } = this.state
     return (
       <div className={'complaintBox'}>
         <ul>
@@ -639,10 +647,10 @@ class MedicalRecordScreen extends Component {
                         array.splice(i, 1)
                       }
                     }
-                    this.setState({selComplaint: array})
+                    this.setState({ selComplaint: array })
                   } else {
                     array.push(item.name)
-                    this.setState({selComplaint: array})
+                    this.setState({ selComplaint: array })
                   }
                 }}
               >
@@ -655,9 +663,11 @@ class MedicalRecordScreen extends Component {
           <div>
             <button
               onClick={() => {
-                this.setState({showComplaint: false})
+                this.setState({ showComplaint: false })
               }}
-            >取消</button>
+            >
+              取消
+            </button>
             <button
               onClick={() => {
                 let complaint = chief_complaint
@@ -668,26 +678,28 @@ class MedicalRecordScreen extends Component {
                     complaint += selComplaint[i]
                   }
                 }
-                this.setState({showComplaint: false, determineComplaint: selComplaint, chief_complaint: complaint})
+                this.setState({ showComplaint: false, determineComplaint: selComplaint, chief_complaint: complaint })
               }}
-            >确定</button>
+            >
+              确定
+            </button>
           </div>
         </div>
         <style jsx>{`
-          .complaintBox{
-            position:absolute;
+          .complaintBox {
+            position: absolute;
             width: 100%;
             height: 240px;
             top: 91px;
             z-index: 1;
             overflow: hidden;
-            display:flex;
+            display: flex;
             flex-direction: column;
-            background: rgba(245,248,249,1);
-            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            background: rgba(245, 248, 249, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
             border: 1px solid #d9d9d9;
           }
-          .complaintBox > ul{
+          .complaintBox > ul {
             flex: 4;
             height: auto;
             max-height: 180px;
@@ -695,28 +707,28 @@ class MedicalRecordScreen extends Component {
             width: 100%;
             border-bottom: 1px solid #d8d8d8;
           }
-          .complaintBox > ul > li{
+          .complaintBox > ul > li {
             margin: 5px;
             width: auto;
             border-radius: 4px;
             border: 1px solid #2acdc8;
-            color: rgba(42,205,200,1);
+            color: rgba(42, 205, 200, 1);
             font-size: 12px;
             padding: 3px 5px;
             cursor: pointer;
           }
-          .boxBottom{
+          .boxBottom {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
           }
-          .boxBottom > div{
+          .boxBottom > div {
             display: flex;
             justify-content: center;
             align-items: center;
           }
-          .boxBottom > div > button{
+          .boxBottom > div > button {
             background: rgba(255, 255, 255, 1);
             border-radius: 4px;
             border: 1px solid #d9d9d9;
@@ -730,8 +742,8 @@ class MedicalRecordScreen extends Component {
           }
           .complaintBox > ul > li.sel,
           .complaintBox > ul > li:hover,
-          .boxBottom > div > button:hover{
-            background: rgba(42,205,200,1);
+          .boxBottom > div > button:hover {
+            background: rgba(42, 205, 200, 1);
             color: #ffffff;
           }
         `}</style>
@@ -744,11 +756,11 @@ class MedicalRecordScreen extends Component {
     let array = []
     const { dic_diagnosis_data } = this.props
     for (let key in dic_diagnosis_data) {
-      let {id, name} = dic_diagnosis_data[key]
-      array.push({id, name})
+      let { id, name } = dic_diagnosis_data[key]
+      array.push({ id, name })
     }
     // console.log('诊断模板=====', array, dic_diagnosis_data)
-    const {diagnosis, selDiagnosis} = this.state
+    const { diagnosis, selDiagnosis } = this.state
     return (
       <div className={'tempBox'}>
         <ul>
@@ -769,10 +781,10 @@ class MedicalRecordScreen extends Component {
                         array.splice(i, 1)
                       }
                     }
-                    this.setState({selDiagnosis: array})
+                    this.setState({ selDiagnosis: array })
                   } else {
                     array.push(item.name)
-                    this.setState({selDiagnosis: array})
+                    this.setState({ selDiagnosis: array })
                   }
                 }}
               >
@@ -785,9 +797,11 @@ class MedicalRecordScreen extends Component {
           <div>
             <button
               onClick={() => {
-                this.setState({chooseDiagnosticTemplate: false})
+                this.setState({ chooseDiagnosticTemplate: false })
               }}
-            >取消</button>
+            >
+              取消
+            </button>
             <button
               onClick={() => {
                 let complaint = diagnosis
@@ -798,26 +812,28 @@ class MedicalRecordScreen extends Component {
                     complaint += selDiagnosis[i]
                   }
                 }
-                this.setState({chooseDiagnosticTemplate: false, diagnosis: complaint})
+                this.setState({ chooseDiagnosticTemplate: false, diagnosis: complaint })
               }}
-            >确定</button>
+            >
+              确定
+            </button>
           </div>
         </div>
         <style jsx>{`
-          .tempBox{
-            position:absolute;
+          .tempBox {
+            position: absolute;
             width: 100%;
             height: 300px;
             top: 90px;
             z-index: 1;
             overflow: hidden;
-            display:flex;
+            display: flex;
             flex-direction: column;
-            background: rgba(245,248,249,1);
-            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            background: rgba(245, 248, 249, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
             border: 1px solid #d9d9d9;
           }
-          .tempBox > ul{
+          .tempBox > ul {
             flex: 4;
             height: auto;
             max-height: 280px;
@@ -827,7 +843,7 @@ class MedicalRecordScreen extends Component {
             // display:flex;
             // flex-direction: column;
           }
-          .tempBox > ul > li{
+          .tempBox > ul > li {
             margin: 0;
             width: 100%;
             // border-radius: 4px;
@@ -838,18 +854,18 @@ class MedicalRecordScreen extends Component {
             height: 30px;
             display: block;
           }
-          .boxBottom{
+          .boxBottom {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
           }
-          .boxBottom > div{
+          .boxBottom > div {
             display: flex;
             justify-content: center;
             align-items: center;
           }
-          .boxBottom > div > button{
+          .boxBottom > div > button {
             background: rgba(255, 255, 255, 1);
             border-radius: 4px;
             border: 1px solid #d9d9d9;
@@ -863,8 +879,8 @@ class MedicalRecordScreen extends Component {
           }
           .tempBox > ul > li.sel,
           .tempBox > ul > li:hover,
-          .boxBottom > div > button:hover{
-            background: rgba(42,205,200,1);
+          .boxBottom > div > button:hover {
+            background: rgba(42, 205, 200, 1);
             color: #ffffff;
           }
         `}</style>
@@ -876,7 +892,7 @@ class MedicalRecordScreen extends Component {
     // console.log('dic_diagnosis_data==', dic_diagnosis_data)
     let array = []
     for (let key in dic_diagnosis_data) {
-      let {name} = dic_diagnosis_data[key]
+      let { name } = dic_diagnosis_data[key]
       // if (type !== 0) continue
       array.push({
         value: name,
@@ -886,9 +902,9 @@ class MedicalRecordScreen extends Component {
     return array
   }
   queryDictDiagnosisList(keyword) {
-    const {queryDictDiagnosisList} = this.props
+    const { queryDictDiagnosisList } = this.props
     if (keyword) {
-      queryDictDiagnosisList({keyword})
+      queryDictDiagnosisList({ keyword })
     }
   }
   // 提示是否保存当前页
@@ -1365,6 +1381,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList })(
-  MedicalRecordScreen
-)
+export default connect(
+  mapStateToProps,
+  { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList }
+)(MedicalRecordScreen)

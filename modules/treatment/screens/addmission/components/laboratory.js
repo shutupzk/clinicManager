@@ -27,14 +27,25 @@ class LaboratoryScreen extends Component {
     }
   }
 
-  getNameOptions(defaultOption) {
+  getNameOptions(index) {
     const { laboratories } = this.props
+    let datas = this.state.laboratories || []
     let array = []
     for (let key in laboratories) {
       const { clinic_laboratory_id, laboratory_name } = laboratories[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_laboratory_id === clinic_laboratory_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_laboratory_id,
-        label: laboratory_name
+        label: laboratory_name,
+        ...laboratories[key]
       })
     }
     return array

@@ -27,17 +27,25 @@ class TreatmentScreen extends Component {
     }
   }
 
-  getNameOptions(data) {
+  getNameOptions(index) {
     const { treatments } = this.props
-    console.log('===treatments =====', treatments)
+    let datas = this.state.treatments || []
     let array = []
     for (let key in treatments) {
-      const { clinic_treatment_id, treatment_name, unit_id, unit_name } = treatments[key]
+      const { clinic_treatment_id, treatment_name } = treatments[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_treatment_id === clinic_treatment_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_treatment_id,
         label: treatment_name,
-        unit_id,
-        unit_name
+        ...treatments[key]
       })
     }
     return array
@@ -119,7 +127,7 @@ class TreatmentScreen extends Component {
     }
   }
 
-  async TreatmentPatientModelCreate () {
+  async TreatmentPatientModelCreate() {
     const { TreatmentPatientModelCreate, personnel_id } = this.props
     const { treatments, model_name, is_common } = this.state
     let items = []
@@ -221,7 +229,7 @@ class TreatmentScreen extends Component {
     )
   }
 
-  TreatmentPatientModelList ({ keyword, offset, limit }) {
+  TreatmentPatientModelList({ keyword, offset, limit }) {
     const { TreatmentPatientModelList } = this.props
     TreatmentPatientModelList({ keyword, offset, limit })
   }
@@ -654,4 +662,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet, TreatmentPatientModelCreate, TreatmentPatientModelList })(TreatmentScreen)
+export default connect(
+  mapStateToProps,
+  { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet, TreatmentPatientModelCreate, TreatmentPatientModelList }
+)(TreatmentScreen)
