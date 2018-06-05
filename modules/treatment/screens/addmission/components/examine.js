@@ -10,7 +10,8 @@ class ExamineScreen extends Component {
     super(props)
     this.state = {
       examines: [],
-      selOrgans: []
+      selOrgans: [],
+      selPage: 5
     }
   }
 
@@ -93,8 +94,8 @@ class ExamineScreen extends Component {
   }
 
   async submit() {
-    const { ExaminationPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
-    const { examines } = this.state
+    const { ExaminationPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { examines, selPage } = this.state
     let items = []
     for (let item of examines) {
       let obj = {}
@@ -111,7 +112,12 @@ class ExamineScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
-      return this.refs.myAlert.alert('保存成功')
+      if (selPage !== 5) {
+        this.refs.myAlert.alert('保存成功')
+        changePage(selPage)
+      } else {
+        return this.refs.myAlert.alert('保存成功')
+      }
     }
   }
 
@@ -315,16 +321,23 @@ class ExamineScreen extends Component {
       </div>
     )
   }
-
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+      this.submit()
+    })
+  }
   render() {
-    const { examines } = this.state
+    const { examines, selPage } = this.state
     const { medicalRecord, changePage } = this.props
     return (
       <div>
         <div className={'childTopBar'}>
           <span
             onClick={() => {
-              changePage(1)
+              this.setState({selPage: 1})
+              this.tipsToSave(1)
             }}
           >
             病历
@@ -332,7 +345,8 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              changePage(2)
+              this.setState({selPage: 2})
+              this.tipsToSave(2)
             }}
           >
             处方
@@ -340,7 +354,8 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              changePage(3)
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
             }}
           >
             治疗
@@ -348,7 +363,8 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              changePage(4)
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
             }}
           >
             检验
@@ -364,7 +380,8 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              changePage(6)
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
             }}
           >
             材料费
@@ -372,7 +389,8 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              changePage(7)
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
             }}
           >
             其他费用
@@ -482,7 +500,42 @@ class ExamineScreen extends Component {
           {this.renderModelList()}
           {this.chooseOrgan()}
           <Confirm ref='myAlert' />
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
+            </div>
+          </Confirm>
         </div>
+        <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+        `}</style>
       </div>
     )
   }
