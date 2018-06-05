@@ -290,143 +290,150 @@ class OtherScreen extends Component {
               <span className={`cancel`}>不保存</span>
             </div>
           </Confirm>
-          <style jsx='true'>
-            {`
-              .buttonDiv {
-                width: 63px;
-                height: 30px;
-                border-radius: 4px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-left: 8px;
-              }
-              .buttonDivCancel {
-                background: rgba(255, 255, 255, 1);
-                border: 1px solid #d9d9d9;
-              }
-              .buttonDiv span {
-                height: 22px;
-                font-size: 14px;
-                font-family: PingFangSC-Regular;
-                line-height: 22px;
-              }
-              .cancel {
-                color: rgba(0, 0, 0, 0.65);
-              }
-              .tableDIV {
-                display: flex;
-                width: 987px;
-                background: rgba(255, 255, 255, 1);
-                border-radius: 4px;
-                margin: 0 65px 65px 47px;
-              }
-              .tableDIV ul {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                border: 1px solid #e9e9e9;
-                border-bottom: none;
-              }
-              .tableDIV ul li {
-                display: flex;
-                height: 50px;
-                border-bottom: 1px solid #e9e9e9;
-                line-height: 40px;
-                text-align: center;
-              }
-              .tableDIV ul li:nth-child(1) {
-                background: rgba(247, 247, 247, 1);
-              }
-              .tableDIV ul li > div {
-                flex: 2;
-                border-left: 1px #e9e9e9 dashed;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-              }
-              .tableDIV ul li > div > input {
-                width: 90%;
-                height: 30px;
-                border-radius: 4px;
-                outline-style: none;
-                border: none;
-              }
-              .tableDIV ul li > div:nth-child(1) {
-                flex: 3;
-              }
-              .formListBottom {
-                width: 1000px;
-                margin: 30px auto;
-              }
-              .formListBottom .bottomCenter {
-                margin: 0 auto;
-                display: block;
-                width: 150px;
-              }
-              .formListBottom .bottomCenter button.cancel {
-                width: 70px;
-                height: 26px;
-                background: rgba(167, 167, 167, 1);
-                color: rgba(255, 255, 255, 1);
-                border-radius: 15px;
-                border: none;
-                float: left;
-                cursor: pointer;
-              }
-              .formListBottom .bottomCenter button.save {
-                width: 70px;
-                height: 26px;
-                background: rgba(49, 176, 179, 1);
-                color: rgba(255, 255, 255, 1);
-                border-radius: 15px;
-                border: none;
-                float: right;
-                cursor: pointer;
-              }
-              .formListBottom .bottomRight {
-                float: right;
-                margin-top: -23px;
-              }
-              .formListBottom .bottomRight button {
-                width: 80px;
-                height: 26px;
-                border-radius: 15px;
-                border: 1px solid #2acdc8;
-                font-size: 12px;
-                font-family: MicrosoftYaHei;
-                color: rgba(49, 176, 179, 1);
-                background: transparent;
-                margin-right: 10px;
-                cursor: pointer;
-              }
-              .alergyBlank {
-                display: flex;
-                flex-direction: row;
-                margin: 0 65px 20px 47px;
-              }
-              .alergyBlank div {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-              }
-              .alergyBlank div label {
-                width: 98%;
-              }
-              .alergyBlank div input {
-                width: 100%;
-                height: 30px;
-                background: rgba(245, 248, 249, 1);
-                border-radius: 4px;
-                border: 1px solid #d8d8d8;
-                margin-top: 15px;
-              }
-            `}
-          </style>
           <Confirm ref='myAlert' />
         </div>
+        <style jsx='true'>{`
+            .childTopBar{
+              display: flex;
+              margin-left: 65px;
+            }
+            .childTopBar>span {
+              flex:1;
+              margin-left: 0;
+            }
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+            .tableDIV {
+              display: flex;
+              width: 987px;
+              background: rgba(255, 255, 255, 1);
+              border-radius: 4px;
+              margin: 0 65px 65px 47px;
+            }
+            .tableDIV ul {
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              border: 1px solid #e9e9e9;
+              border-bottom: none;
+            }
+            .tableDIV ul li {
+              display: flex;
+              height: 50px;
+              border-bottom: 1px solid #e9e9e9;
+              line-height: 40px;
+              text-align: center;
+            }
+            .tableDIV ul li:nth-child(1) {
+              background: rgba(247, 247, 247, 1);
+            }
+            .tableDIV ul li > div {
+              flex: 2;
+              border-left: 1px #e9e9e9 dashed;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+            }
+            .tableDIV ul li > div > input {
+              width: 90%;
+              height: 30px;
+              border-radius: 4px;
+              outline-style: none;
+              border: none;
+            }
+            .tableDIV ul li > div:nth-child(1) {
+              flex: 3;
+            }
+            .formListBottom {
+              width: 1000px;
+              margin: 30px auto;
+            }
+            .formListBottom .bottomCenter {
+              margin: 0 auto;
+              display: block;
+              width: 150px;
+            }
+            .formListBottom .bottomCenter button.cancel {
+              width: 70px;
+              height: 26px;
+              background: rgba(167, 167, 167, 1);
+              color: rgba(255, 255, 255, 1);
+              border-radius: 15px;
+              border: none;
+              float: left;
+              cursor: pointer;
+            }
+            .formListBottom .bottomCenter button.save {
+              width: 70px;
+              height: 26px;
+              background: rgba(49, 176, 179, 1);
+              color: rgba(255, 255, 255, 1);
+              border-radius: 15px;
+              border: none;
+              float: right;
+              cursor: pointer;
+            }
+            .formListBottom .bottomRight {
+              float: right;
+              margin-top: -23px;
+            }
+            .formListBottom .bottomRight button {
+              width: 80px;
+              height: 26px;
+              border-radius: 15px;
+              border: 1px solid #2acdc8;
+              font-size: 12px;
+              font-family: MicrosoftYaHei;
+              color: rgba(49, 176, 179, 1);
+              background: transparent;
+              margin-right: 10px;
+              cursor: pointer;
+            }
+            .alergyBlank {
+              display: flex;
+              flex-direction: row;
+              margin: 0 65px 20px 47px;
+            }
+            .alergyBlank div {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+            }
+            .alergyBlank div label {
+              width: 98%;
+            }
+            .alergyBlank div input {
+              width: 100%;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              border: 1px solid #d8d8d8;
+              margin-top: 15px;
+            }
+          `}
+        </style>
       </div>
     )
   }

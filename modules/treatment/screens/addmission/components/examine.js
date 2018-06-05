@@ -521,6 +521,14 @@ class ExamineScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
+          .childTopBar{
+            display: flex;
+            margin-left: 65px;
+          }
+          .childTopBar>span {
+            flex:1;
+            margin-left: 0;
+          }
             .buttonDiv {
               width: 63px;
               height: 30px;

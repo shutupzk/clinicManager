@@ -1226,154 +1226,162 @@ class MedicalRecordScreen extends Component {
               <span className={`cancel`}>不保存</span>
             </div>
           </Confirm>
-          <style jsx='true'>{`
-            .buttonDiv {
-              width: 63px;
-              height: 30px;
-              border-radius: 4px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-left: 8px;
-            }
-            .buttonDivCancel {
-              background: rgba(255, 255, 255, 1);
-              border: 1px solid #d9d9d9;
-            }
-            .buttonDiv span {
-              height: 22px;
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              line-height: 22px;
-            }
-            .cancel {
-              color: rgba(0, 0, 0, 0.65);
-            }
-            .filterBox {
-              flex-direction: column;
-              // margin-top: -10px;
-              margin-bottom: 50px;
-            }
-            .filterBox .boxLeft {
-              border-bottom: 1px solid #dbdbdb;
-            }
-            .filterBox .boxLeft button {
-              width: auto;
-              margin-left: 15px;
-            }
-            .formList {
-              margin: 0;
-              box-shadow: none;
-            }
-            .formListBox {
-              display: flex;
-              flex-direction: column;
-            }
-            .formList ul li {
-              margin-top: 20px;
-            }
-            .formListBox textarea {
-              width: 479px;
-              height: 60px;
-              background: rgba(245, 248, 249, 1);
-              border-radius: 4px;
-              resize: none;
-              margin-top: 10px;
-              border: 1px solid #d8d8d8;
-            }
-            .formListBox input {
-              width: 479px;
-              height: 30px;
-              background: rgba(245, 248, 249, 1);
-              border-radius: 4px;
-              margin-top: 10px;
-            }
-            .chooseFile {
-              // height: 66px;
-              margin-top: 42px;
-              display: flex;
-              position: relative;
-            }
-            .chooseFile input {
-              opacity: 0;
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              margin: 0;
-            }
-            .chooseFile button {
-              height: 30px;
-              width: 200px;
-              border: 1px dashed #d9d9d9;
-              border-radius: 4px;
-              background: transparent;
-              cursor: pointer;
-              color: rgba(102, 102, 102, 1);
-            }
-            .chooseFile a {
-              width: 145px;
-              height: 34px;
-              font-size: 12px;
-              font-family: PingFangSC-Regular;
-              color: rgba(102, 102, 102, 1);
-              line-height: 15px;
-              display: block;
-            }
-            .chooseTemp {
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              color: rgba(49, 176, 179, 1);
-              margin-top: 71px;
-              cursor: pointer;
-            }
-            .formListBottom {
-              width: 1000px;
-              margin: 30px auto;
-            }
-            .formListBottom .bottomCenter {
-              margin: 0 auto;
-              display: block;
-              width: 150px;
-            }
-            .formListBottom .bottomCenter button.cancel {
-              width: 70px;
-              height: 26px;
-              background: rgba(167, 167, 167, 1);
-              color: rgba(255, 255, 255, 1);
-              border-radius: 15px;
-              border: none;
-              float: left;
-              cursor: pointer;
-            }
-            .formListBottom .bottomCenter button.save {
-              width: 70px;
-              height: 26px;
-              background: rgba(49, 176, 179, 1);
-              color: rgba(255, 255, 255, 1);
-              border-radius: 15px;
-              border: none;
-              float: right;
-              cursor: pointer;
-            }
-            .formListBottom .bottomRight {
-              float: right;
-              margin-top: -23px;
-            }
-            .formListBottom .bottomRight button {
-              width: 70px;
-              height: 26px;
-              border-radius: 15px;
-              border: 1px solid #2acdc8;
-              font-size: 12px;
-              font-family: MicrosoftYaHei;
-              color: rgba(49, 176, 179, 1);
-              background: transparent;
-              margin-right: 10px;
-              cursor: pointer;
-            }
-          `}</style>
         </div>
+        <style jsx='true'>{`
+          .childTopBar{
+            display: flex;
+            margin-left: 65px;
+          }
+          .childTopBar>span {
+            flex:1;
+            margin-left: 0;
+          }
+          .buttonDiv {
+            width: 63px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+          }
+          .buttonDivCancel {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #d9d9d9;
+          }
+          .buttonDiv span {
+            height: 22px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            line-height: 22px;
+          }
+          .cancel {
+            color: rgba(0, 0, 0, 0.65);
+          }
+          .filterBox {
+            flex-direction: column;
+            // margin-top: -10px;
+            margin-bottom: 50px;
+          }
+          .filterBox .boxLeft {
+            border-bottom: 1px solid #dbdbdb;
+          }
+          .filterBox .boxLeft button {
+            width: auto;
+            margin-left: 15px;
+          }
+          .formList {
+            margin: 0;
+            box-shadow: none;
+          }
+          .formListBox {
+            display: flex;
+            flex-direction: column;
+          }
+          .formList ul li {
+            margin-top: 20px;
+          }
+          .formListBox textarea {
+            width: 479px;
+            height: 60px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            resize: none;
+            margin-top: 10px;
+            border: 1px solid #d8d8d8;
+          }
+          .formListBox input {
+            width: 479px;
+            height: 30px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            margin-top: 10px;
+          }
+          .chooseFile {
+            // height: 66px;
+            margin-top: 42px;
+            display: flex;
+            position: relative;
+          }
+          .chooseFile input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+          }
+          .chooseFile button {
+            height: 30px;
+            width: 200px;
+            border: 1px dashed #d9d9d9;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            color: rgba(102, 102, 102, 1);
+          }
+          .chooseFile a {
+            width: 145px;
+            height: 34px;
+            font-size: 12px;
+            font-family: PingFangSC-Regular;
+            color: rgba(102, 102, 102, 1);
+            line-height: 15px;
+            display: block;
+          }
+          .chooseTemp {
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            color: rgba(49, 176, 179, 1);
+            margin-top: 71px;
+            cursor: pointer;
+          }
+          .formListBottom {
+            width: 1000px;
+            margin: 30px auto;
+          }
+          .formListBottom .bottomCenter {
+            margin: 0 auto;
+            display: block;
+            width: 150px;
+          }
+          .formListBottom .bottomCenter button.cancel {
+            width: 70px;
+            height: 26px;
+            background: rgba(167, 167, 167, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: left;
+            cursor: pointer;
+          }
+          .formListBottom .bottomCenter button.save {
+            width: 70px;
+            height: 26px;
+            background: rgba(49, 176, 179, 1);
+            color: rgba(255, 255, 255, 1);
+            border-radius: 15px;
+            border: none;
+            float: right;
+            cursor: pointer;
+          }
+          .formListBottom .bottomRight {
+            float: right;
+            margin-top: -23px;
+          }
+          .formListBottom .bottomRight button {
+            width: 70px;
+            height: 26px;
+            border-radius: 15px;
+            border: 1px solid #2acdc8;
+            font-size: 12px;
+            font-family: MicrosoftYaHei;
+            color: rgba(49, 176, 179, 1);
+            background: transparent;
+            margin-right: 10px;
+            cursor: pointer;
+          }
+        `}</style>
       </div>
     )
   }
