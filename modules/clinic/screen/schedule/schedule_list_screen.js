@@ -36,7 +36,7 @@ class ScheduleListScreen extends Component {
     this.queryDepartmentList({ limit: 100 })
   }
 
-  queryListData({ offset = 0, limit = 10, weekNum, department_id, personnel_id }) {
+  async queryListData({ offset = 0, limit = 10, weekNum, department_id, personnel_id }) {
     weekNum = weekNum || this.state.weekNum
     let start_date = moment()
       .day(weekNum)
@@ -57,7 +57,7 @@ class ScheduleListScreen extends Component {
     if (personnel_id && personnel_id !== '-1') {
       param.personnel_id = personnel_id
     }
-    queryDoctorsWithSchedule(param)
+    await queryDoctorsWithSchedule(param)
   }
 
   queryDepartmentList({ keyword, limit = 10 }) {
@@ -134,6 +134,8 @@ class ScheduleListScreen extends Component {
   }
 
   async openScheduleByDate() {
+    if (this.clicked) return
+    this.clicked = true
     const { openScheduleByDate, clinic_id } = this.props
     const { weekNum } = this.state
     const start_date = moment()
@@ -145,27 +147,42 @@ class ScheduleListScreen extends Component {
         return this.refs.myAlert.alert('开放号源失败', err)
       }
       this.refs.myAlert.alert('开放号源成功')
-      this.queryListData({})
+      await this.queryListData({})
+      setTimeout(() => {
+        this.clicked = false
+      }, 100)
     })
   }
   // 创建一个排班
   async createOneSchedule({department_id, personnel_id, visit_date, am_pm}) {
+    if (this.clicked) return
+    this.clicked = true
     const {createOneSchedule} = this.props
     console.log('{department_id, personnel_id, visit_date, am_pm}', {department_id, personnel_id, visit_date, am_pm})
     let error = await createOneSchedule({department_id, personnel_id, visit_date, am_pm})
     if (error) alert(error)
-    this.queryListData({})
+    await this.queryListData({})
+    setTimeout(() => {
+      this.clicked = false
+    }, 100)
   }
   // 删除一个排班
   async RemoveScheduleByID({doctor_visit_schedule_id}) {
+    if (this.clicked) return
+    this.clicked = true
     const {RemoveScheduleByID} = this.props
     console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
     let error = await RemoveScheduleByID({doctor_visit_schedule_id})
     if (error) alert(error)
-    this.queryListData({})
+    await this.queryListData({})
+    setTimeout(() => {
+      this.clicked = false
+    }, 100)
   }
   // 停止一个排班
   async stopScheduleByID({doctor_visit_schedule_id}) {
+    if (this.clicked) return
+    this.clicked = true
     const {stopScheduleByID} = this.props
     console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
     this.refs.myAlert.confirm('提示', '是否停诊该号源？', 'Warning', async () => {
@@ -174,7 +191,10 @@ class ScheduleListScreen extends Component {
         return this.refs.myAlert.alert('停诊号源失败', err)
       }
       this.refs.myAlert.alert('停诊号源成功')
-      this.queryListData({})
+      await this.queryListData({})
+      setTimeout(() => {
+        this.clicked = false
+      }, 100)
     })
   }
 
