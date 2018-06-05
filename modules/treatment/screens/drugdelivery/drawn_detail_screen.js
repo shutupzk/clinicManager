@@ -1,19 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import Router from 'next/router'
-import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail } from '../../../../ducks'
+import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryRecover, queryDrugDeliveryRefundRecordList, queryDrugDeliveryRefundRecordDetail } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
 
-class PendingDetailDrugScreen extends Component {
+class DrawnDetailDrugScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       pageType: 1,
       allSelect: false,
       selectArray: [],
-      remarks: {},
       selectRecordId: ''
     }
   }
@@ -26,91 +24,32 @@ class PendingDetailDrugScreen extends Component {
 
   queryCommonData({ offset, limit }) {
     const { triagePatientSelectId, queryDrugDeliveryList } = this.props
-    queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '10', offset, limit })
-  }
-
-  // 提交发药记录
-  commit() {
-    let { selectArray } = this.state
-    if (selectArray.length === 0) return this.refs.myAlert.alert('提示', '未勾选条目，请重新勾选！', null, 'Warning')
-    this.refs.myAlert.confirm('确定发药？', '', null, async () => {
-      const { triagePatientSelectId, personnel_id, drugDeliveryCreate } = this.props
-      const { selectArray, remarks } = this.state
-      let items = []
-      for (let key of selectArray) {
-        items.push({ mz_paid_orders_id: key, remark: remarks[key] || '' })
-      }
-      let error = await drugDeliveryCreate({ clinic_triage_patient_id: triagePatientSelectId, operation_id: personnel_id, items: JSON.stringify(items) })
-      if (error) {
-        return this.refs.myAlert.alert('提交失败', error, null, 'Warning')
-      } else {
-        this.refs.myAlert.alert('提交成功', '', () => {
-          Router.push('/treatment/drugdelivery')
-        })
-      }
-    })
-  }
-
-  changeAllSelect() {
-    const { allSelect } = this.state
-    const { allSelectStatus = true } = this.props.drug_delivery_list_page
-    if (!allSelectStatus) {
-      return this.refs.myAlert.alert('存在库存不足的条目', '请手动勾选！', null, 'Warning')
-    }
-    const selectArray = allSelect ? [] : this.props.drug_delivery_ids
-    this.setState({ allSelect: !allSelect, selectArray })
-  }
-
-  itemSelect(itemId, checked, overAmount) {
-    if (overAmount) this.refs.myAlert.alert('库存不足，无法发药！', '', null, 'Warning')
-    if (checked || overAmount) this.deleteItem(itemId)
-    else this.addItem(itemId)
-  }
-
-  deleteItem(itemId) {
-    const { selectArray } = this.state
-    for (let i = 0; i < selectArray.length; i++) {
-      if (selectArray[i] === itemId) selectArray.splice(i, 1)
-    }
-    this.setState({ selectArray })
-  }
-
-  addItem(itemId) {
-    const { selectArray } = this.state
-    selectArray.push(itemId)
-    this.setState({ selectArray })
+    queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '40', offset, limit })
   }
 
   // 展示历史列表
   async renderRecord() {
-    const { triagePatientSelectId, queryDrugDeliveryRecordList } = this.props
-    await queryDrugDeliveryRecordList({ clinic_triage_patient_id: triagePatientSelectId })
+    const { triagePatientSelectId, queryDrugDeliveryRefundRecordList } = this.props
+    await queryDrugDeliveryRefundRecordList({ clinic_triage_patient_id: triagePatientSelectId })
     this.setState({ pageType: 3 })
   }
 
   // 展示历史详情
-  async showRecordDetail(drug_delivery_record_id) {
-    await this.props.queryDrugDeliveryRecordDetail({ drug_delivery_record_id })
-    this.setState({ pageType: 4, selectRecordId: drug_delivery_record_id })
-  }
-
-  // 设置每项的属性
-  setRemark(itemId, value) {
-    let { remarks } = this.state
-    if (!value) delete remarks[itemId]
-    else remarks[itemId] = value
-    this.setState({ remarks })
+  async showRecordDetail(drug_delivery_refund_record_id) {
+    await this.props.queryDrugDeliveryRefundRecordDetail({ drug_delivery_refund_record_id })
+    this.setState({ pageType: 4, selectRecordId: drug_delivery_refund_record_id })
   }
 
   // 查看发药项目
   renderDrugDeliveryList() {
     const { triagePatients, triagePatientSelectId, medicalRecord, drug_delivery_list, drug_delivery_list_page } = this.props
-    const { allSelect } = this.state
     let triagePatient = {}
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === triagePatientSelectId) triagePatient = tp
     }
     const { birthday, patient_name, phone, visit_date, sex, department_name, doctor_name, updated_time } = triagePatient
+
+    const status_map = { '10': '待发药', '30': '已发药', '40': '已退药' }
 
     return (
       <div className={'detailBox'}>
@@ -131,7 +70,7 @@ class PendingDetailDrugScreen extends Component {
               <a onClick={() => this.setState({ pageType: 2 })}>查看病历</a>
             </button>
             <button>
-              <a onClick={() => this.renderRecord()}>发药记录</a>
+              <a onClick={() => this.renderRecord()}>退药记录</a>
             </button>
           </div>
         </div>
@@ -148,9 +87,6 @@ class PendingDetailDrugScreen extends Component {
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
-              <div style={{ flex: 1 }}>
-                <input type={'checkbox'} checked={allSelect} onChange={() => this.changeAllSelect()} />
-              </div>
               <div style={{ flex: 1 }}>序号</div>
               <div style={{ flex: 3 }}>药品名称</div>
               <div>药品类别</div>
@@ -159,22 +95,11 @@ class PendingDetailDrugScreen extends Component {
               <div>药品库存</div>
               <div style={{ flex: 1 }}>数量</div>
               <div style={{ flex: 2 }}>发药状态</div>
-              <div>备注</div>
             </li>
             {drug_delivery_list.map((item, iKey) => {
-              let checked = this.state.selectArray.indexOf(item.id + '') > -1
               let { stock_amount = 0, amount = 1 } = item
               return (
                 <li key={iKey}>
-                  <div>
-                    <input
-                      type={'checkbox'}
-                      checked={checked}
-                      onChange={() => {
-                        this.itemSelect(item.id + '', checked, amount > stock_amount)
-                      }}
-                    />
-                  </div>
                   <div style={{ flex: 1 }}>{iKey + 1}</div>
                   <div style={{ flex: 3 }}>{item.name}</div>
                   <div>{item.charge_project_type_id === 1 ? '西/成药' : '中药'}</div>
@@ -182,16 +107,7 @@ class PendingDetailDrugScreen extends Component {
                   <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
                   <div>{stock_amount}</div>
                   <div style={{ flex: 1 }}>{amount}</div>
-                  <div style={{ flex: 2 }}>待发药</div>
-                  <div>
-                    <textarea
-                      style={{ width: '90%', resize: 'none', border: 'none' }}
-                      value={this.state.remarks[item.id]}
-                      onChange={e => {
-                        this.setRemark(item.id, e.target.value)
-                      }}
-                    />
-                  </div>
+                  <div style={{ flex: 2 }}>{status_map[item.order_status]}</div>
                 </li>
               )
             })}
@@ -207,7 +123,6 @@ class PendingDetailDrugScreen extends Component {
         />
         <div className={'feeScheduleBottom'}>
           <button>打印</button>
-          <button onClick={() => this.commit()}>提交</button>
         </div>
         <style jsx='true'>{`
           .filterBox {
@@ -359,7 +274,7 @@ class PendingDetailDrugScreen extends Component {
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
           <div className='doctorList_top'>
-            <span>历史发药记录</span>
+            <span>历史退药记录</span>
             <span onClick={() => this.setState({ pageType: 1 })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
@@ -384,7 +299,7 @@ class PendingDetailDrugScreen extends Component {
                     <li>{doctor_name}</li>
                     <li>{opration_name}</li>
                     <li>{project_name} ...</li>
-                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.showRecordDetail(item.drug_delivery_record_id)}>
+                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.showRecordDetail(item.drug_delivery_refund_record_id)}>
                       查看详情
                     </li>
                   </ul>
@@ -398,7 +313,7 @@ class PendingDetailDrugScreen extends Component {
             limit={drug_delivery_record_list_page.limit}
             total={drug_delivery_record_list_page.total}
             onItemClick={({ offset, limit }) => {
-              this.props.queryDrugDeliveryRecordList({ offset, limit, clinic_triage_patient_id: triagePatientSelectId })
+              this.props.queryDrugDeliveryRefundRecordList({ offset, limit, clinic_triage_patient_id: triagePatientSelectId })
             }}
           />
         </div>
@@ -449,7 +364,7 @@ class PendingDetailDrugScreen extends Component {
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
           <div className='doctorList_top'>
-            <span>发药详情</span>
+            <span>退药详情</span>
             <div style={{ float: 'left', marginLeft: '20%' }}>
               <button style={{ float: 'none', width: '100px', marginLeft: '400px' }} onClick={() => this.setState({ pageType: 3 })}>
                 返回列表
@@ -467,7 +382,6 @@ class PendingDetailDrugScreen extends Component {
                 <div style={{ flex: 5 }}>生产厂商</div>
                 <div style={{ flex: 1 }}>数量</div>
                 <div style={{ flex: 2 }}>发药状态</div>
-                <div>备注</div>
               </li>
               {items.map((item, iKey) => {
                 return (
@@ -479,9 +393,6 @@ class PendingDetailDrugScreen extends Component {
                     <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
                     <div style={{ flex: 1 }}>{item.amount}</div>
                     <div style={{ flex: 2 }}>{status_map[item.order_status]}</div>
-                    <div>
-                      <textarea disabled style={{ width: '90%', resize: 'none', border: 'none' }} value={item.remark} />
-                    </div>
                   </li>
                 )
               })}
@@ -493,7 +404,7 @@ class PendingDetailDrugScreen extends Component {
             limit={item_page.limit}
             total={item_page.total}
             onItemClick={({ offset, limit }) => {
-              this.props.queryDrugDeliveryRecordDetail({ offset, limit, drug_delivery_record_id: selectRecordId })
+              this.props.queryDrugDeliveryRefundRecordDetail({ offset, limit, drug_delivery_refund_record_id: selectRecordId })
             }}
           />
         </div>
@@ -550,12 +461,10 @@ class PendingDetailDrugScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    personnel_id: state.user.data.id,
-    triagePatients: state.drugDeliveryPending.traige_list,
-    triagePatientSelectId: state.drugDeliveryPending.traige_selectId,
+    triagePatients: state.drugDeliveryRefund.traige_list,
+    triagePatientSelectId: state.drugDeliveryRefund.traige_selectId,
     medicalRecord: state.medicalRecords.data,
     drug_delivery_list_page: state.drugDeliveryPending.drug_delivery_list_page,
-    drug_delivery_ids: state.drugDeliveryPending.drug_delivery_list_page.ids || [],
     drug_delivery_list: state.drugDeliveryPending.drug_delivery_list,
     drug_delivery_record_list: state.drugDelivery.data,
     drug_delivery_record_list_page: state.drugDelivery.data_page,
@@ -566,5 +475,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail }
-)(PendingDetailDrugScreen)
+  { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryRecover, queryDrugDeliveryRefundRecordList, queryDrugDeliveryRefundRecordDetail }
+)(DrawnDetailDrugScreen)
