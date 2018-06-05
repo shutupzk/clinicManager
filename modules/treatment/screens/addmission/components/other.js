@@ -9,14 +9,15 @@ class OtherScreen extends Component {
     super(props)
     this.state = {
       othercosts: [],
-      selPage: 7
+      selPage: 7,
+      othercostsStr: ''
     }
   }
 
   async componentDidMount() {
     const { OtherCostPatientGet, clinic_triage_patient_id } = this.props
     const othercosts = await OtherCostPatientGet({ clinic_triage_patient_id })
-    this.setState({ othercosts })
+    this.setState({ othercosts, othercostsStr: JSON.stringify(othercosts) })
   }
 
   queryOtherCostLists(keyword) {
@@ -123,9 +124,15 @@ class OtherScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-      this.submit()
-    })
+    const {changePage} = this.props
+    const {othercosts, othercostsStr, selPage} = this.state
+    if (JSON.stringify(othercosts) !== othercostsStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.submit()
+      })
+    } else {
+      changePage(selPage)
+    }
   }
   render() {
     const { othercosts, selPage } = this.state
