@@ -8,7 +8,8 @@ class OtherScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      othercosts: []
+      othercosts: [],
+      selPage: 7
     }
   }
 
@@ -93,8 +94,8 @@ class OtherScreen extends Component {
   }
 
   async submit() {
-    const { OtherCostPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
-    const { othercosts } = this.state
+    const { OtherCostPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { othercosts, selPage } = this.state
     let items = []
     for (let item of othercosts) {
       let obj = {}
@@ -111,19 +112,31 @@ class OtherScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
-      return this.refs.myAlert.alert('保存成功')
+      if (selPage !== 5) {
+        this.refs.myAlert.alert('保存成功')
+        changePage(selPage)
+      } else {
+        return this.refs.myAlert.alert('保存成功')
+      }
     }
   }
-
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+      this.submit()
+    })
+  }
   render() {
-    const { othercosts } = this.state
+    const { othercosts, selPage } = this.state
     const { medicalRecord, changePage } = this.props
     return (
       <div>
         <div className={'childTopBar'}>
           <span
             onClick={() => {
-              changePage(1)
+              this.setState({selPage: 1})
+              this.tipsToSave(1)
             }}
           >
             病历
@@ -131,7 +144,8 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              changePage(2)
+              this.setState({selPage: 2})
+              this.tipsToSave(2)
             }}
           >
             处方
@@ -139,7 +153,8 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              changePage(3)
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
             }}
           >
             治疗
@@ -147,7 +162,8 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              changePage(4)
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
             }}
           >
             检验
@@ -155,7 +171,8 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              changePage(5)
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
             }}
           >
             检查
@@ -163,7 +180,8 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              changePage(6)
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
             }}
           >
             材料费
@@ -253,8 +271,41 @@ class OtherScreen extends Component {
               </div>
             </div>
           </div>
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
+            </div>
+          </Confirm>
           <style jsx='true'>
             {`
+              .buttonDiv {
+                width: 63px;
+                height: 30px;
+                border-radius: 4px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 8px;
+              }
+              .buttonDivCancel {
+                background: rgba(255, 255, 255, 1);
+                border: 1px solid #d9d9d9;
+              }
+              .buttonDiv span {
+                height: 22px;
+                font-size: 14px;
+                font-family: PingFangSC-Regular;
+                line-height: 22px;
+              }
+              .cancel {
+                color: rgba(0, 0, 0, 0.65);
+              }
               .tableDIV {
                 display: flex;
                 width: 987px;
