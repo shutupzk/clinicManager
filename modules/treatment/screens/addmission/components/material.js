@@ -103,93 +103,152 @@ class MaterialScreen extends Component {
 
   render() {
     const { eaterials } = this.state
-    const { medicalRecord } = this.props
+    const { medicalRecord, changePage } = this.props
     return (
-      <div className='filterBox'>
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} />
-          <div className={'alergyBlank'}>
-            <div>
-              <label>过敏史</label>
-              <input readOnly type='text' value={medicalRecord.allergic_history} />
-            </div>
-            <div style={{ marginLeft: '40px' }}>
-              <label>过敏反应</label>
-              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
-            </div>
-          </div>
-          <div className='tableDIV'>
-            <ul>
-              <li>
-                <div>名称</div>
-                <div>规格</div>
-                <div>单位</div>
-                <div>库存</div>
-                <div>次数</div>
-                <div>说明</div>
-                <div>
-                  <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
-                    新增
-                  </div>
-                </div>
-              </li>
-              {eaterials.map((item, index) => {
-                let nameOptions = this.getNameOptions()
-                return (
-                  <li key={index}>
-                    <div>
-                      <div style={{ width: '100%' }}>
-                        <Select
-                          value={this.getSelectValue(item.clinic_material_id, nameOptions)}
-                          onChange={(item) => {
-                            this.setItemValues(item, index)
-                          }}
-                          placeholder='搜索名称'
-                          height={38}
-                          onInputChange={keyword => this.queryMaterialList(keyword)}
-                          options={nameOptions}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <input readOnly value={item.specification || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
-                    </div>
-                    <div>
-                      <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
-                    </div>
-                    <div>
-                      <input readOnly value={item.stock_amount || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
-                    </div>
-                    <div>
-                      <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
-                    </div>
-                    <div>
-                      <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
-                    </div>
-                    <div>
-                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                        删除
-                      </div>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-          <div className='formListBottom'>
-            <div className={'bottomCenter'}>
-              <button className={'cancel'}>取消</button>
-              <button className={'save'} onClick={() => this.submit()}>
-                保存
-              </button>
-            </div>
-            <div className={'bottomRight'}>
-              <button>打印清单</button>
-            </div>
-          </div>
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            onClick={() => {
+              changePage(1)
+            }}
+          >
+            病历
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              changePage(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              changePage(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              changePage(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              changePage(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={'sel'}
+            onClick={() => {
+              // changePage(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              changePage(7)
+            }}
+          >
+            其他费用
+          </span>
         </div>
-        {this.getStyle()}
-        <Confirm ref='myAlert' />
+        <div className='filterBox'>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} />
+            <div className={'alergyBlank'}>
+              <div>
+                <label>过敏史</label>
+                <input readOnly type='text' value={medicalRecord.allergic_history} />
+              </div>
+              <div style={{ marginLeft: '40px' }}>
+                <label>过敏反应</label>
+                <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+              </div>
+            </div>
+            <div className='tableDIV'>
+              <ul>
+                <li>
+                  <div>名称</div>
+                  <div>规格</div>
+                  <div>单位</div>
+                  <div>库存</div>
+                  <div>次数</div>
+                  <div>说明</div>
+                  <div>
+                    <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
+                      新增
+                    </div>
+                  </div>
+                </li>
+                {eaterials.map((item, index) => {
+                  let nameOptions = this.getNameOptions()
+                  return (
+                    <li key={index}>
+                      <div>
+                        <div style={{ width: '100%' }}>
+                          <Select
+                            value={this.getSelectValue(item.clinic_material_id, nameOptions)}
+                            onChange={(item) => {
+                              this.setItemValues(item, index)
+                            }}
+                            placeholder='搜索名称'
+                            height={38}
+                            onInputChange={keyword => this.queryMaterialList(keyword)}
+                            options={nameOptions}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <input readOnly value={item.specification || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
+                      </div>
+                      <div>
+                        <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
+                      </div>
+                      <div>
+                        <input readOnly value={item.stock_amount || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
+                      </div>
+                      <div>
+                        <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
+                      </div>
+                      <div>
+                        <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                      </div>
+                      <div>
+                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                          删除
+                        </div>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+            <div className='formListBottom'>
+              <div className={'bottomCenter'}>
+                <button className={'cancel'}>取消</button>
+                <button className={'save'} onClick={() => this.submit()}>
+                  保存
+                </button>
+              </div>
+              <div className={'bottomRight'}>
+                <button>打印清单</button>
+              </div>
+            </div>
+          </div>
+          {this.getStyle()}
+          <Confirm ref='myAlert' />
+        </div>
       </div>
     )
   }

@@ -29,14 +29,29 @@ class RecptionScreen extends Component {
 
   showDataList() {
     let { pageType } = this.state
+    // console.log('pageType====', pageType)
     let map = {
-      1: <MedicalRecordScreen />,
-      2: <PrescriptionScreen />,
-      3: <TreatmentScreen />,
-      4: <LaboratoryScreen />,
-      5: <ExamineScreen />,
-      6: <MaterialScreen />,
-      7: <OtherScreen />
+      1: <MedicalRecordScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />,
+      2: <PrescriptionScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />,
+      3: <TreatmentScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />,
+      4: <LaboratoryScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />,
+      5: <ExamineScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />,
+      6: <MaterialScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />,
+      7: <OtherScreen changePage={(pageType) => {
+        this.setState({pageType})
+      }} />
     }
     return map[pageType] || null
   }
@@ -252,11 +267,15 @@ class RecptionScreen extends Component {
             </button>
           </div>
         </div>
-        <div className={'childTopBar'}>
+        {/* <div className={'childTopBar'}>
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 1 })
+              if (pageType !== 1) {
+                this.tipsToSave(pageType, 1)
+              } else {
+                this.setState({ pageType: 1 })
+              }
             }}
           >
             病历
@@ -264,7 +283,11 @@ class RecptionScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 2 })
+              if (pageType !== 2) {
+                this.tipsToSave(pageType, 2)
+              } else {
+                this.setState({ pageType: 2 })
+              }
             }}
           >
             处方
@@ -272,7 +295,11 @@ class RecptionScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 3 })
+              if (pageType !== 3) {
+                this.tipsToSave(pageType, 3)
+              } else {
+                this.setState({ pageType: 3 })
+              }
             }}
           >
             治疗
@@ -280,7 +307,11 @@ class RecptionScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 4 })
+              if (pageType !== 4) {
+                this.tipsToSave(pageType, 4)
+              } else {
+                this.setState({ pageType: 4 })
+              }
             }}
           >
             检验
@@ -288,7 +319,11 @@ class RecptionScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 5 })
+              if (pageType !== 5) {
+                this.tipsToSave(pageType, 5)
+              } else {
+                this.setState({ pageType: 5 })
+              }
             }}
           >
             检查
@@ -296,7 +331,11 @@ class RecptionScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 6 })
+              if (pageType !== 6) {
+                this.tipsToSave(pageType, 6)
+              } else {
+                this.setState({ pageType: 6 })
+              }
             }}
           >
             材料费
@@ -304,12 +343,16 @@ class RecptionScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              this.setState({ pageType: 7 })
+              if (pageType !== 7) {
+                this.tipsToSave(pageType, 7)
+              } else {
+                this.setState({ pageType: 7 })
+              }
             }}
           >
             其他费用
           </span>
-        </div>
+        </div> */}
         {this.showDataList()}
         {this.renderConfirmFinish()}
         <Confirm ref='myAlert' />

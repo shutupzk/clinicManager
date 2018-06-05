@@ -23,7 +23,7 @@ export default class MyCreatableSelect extends Component {
           ...base,
           height: height || 44,
           // minHeight: 20,
-          maxHeight: 60,
+          maxHeight: 100,
           borderColor: state.isFocused ? 'rgb(16,142,233)' : '#d9d9d9',
           overflow: 'hidden',
           boxShadow: state.isFocused ? `0 0 0 2px rgba(16,142,233,0.2)` : null
@@ -35,7 +35,7 @@ export default class MyCreatableSelect extends Component {
           ...base,
           // height: height || 44,
           // minHeight: 20,
-          maxHeight: 60
+          maxHeight: 100
         }
       },
       multiValue: (base, state) => {

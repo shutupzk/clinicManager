@@ -33,7 +33,8 @@ class MedicalRecordScreen extends Component {
       selComplaint: [],
       determineComplaint: [],
       chooseDiagnosticTemplate: false,
-      selDiagnosis: []
+      selDiagnosis: [],
+      selPage: 1
     }
   }
 
@@ -45,14 +46,17 @@ class MedicalRecordScreen extends Component {
   }
 
   save() {
-    let { chief_complaint } = this.state
-    let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id } = this.props
+    let { chief_complaint, selPage } = this.state
+    let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id, changePage } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
     this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
       let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
         this.refs.myAlert.alert('保存病历成功！')
+        if (selPage !== 1) {
+          changePage(selPage)
+        }
       }
     })
   }
@@ -887,6 +891,13 @@ class MedicalRecordScreen extends Component {
       queryDictDiagnosisList({keyword})
     }
   }
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+      this.save()
+    })
+  }
   render() {
     let {
       morbidity_date,
@@ -898,352 +909,441 @@ class MedicalRecordScreen extends Component {
       allergic_reaction,
       body_examination,
       immunizations,
-      diagnosis,
+      // diagnosis,
       cure_suggestion,
       remark,
       showComplaint,
-      chooseDiagnosticTemplate
+      selPage
+      // chooseDiagnosticTemplate
     } = this.state
+    const {changePage} = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
     return (
-      <div className='filterBox'>
-        <div className='boxLeft'>
-          <input
-            type='date'
-            placeholder='开始日期'
-            value={morbidity_date}
-            onChange={e => {
-              this.setState({ morbidity_date: e.target.value })
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            className={'sel'}
+            onClick={() => {
             }}
-          />
-          <button onClick={() => this.setMedicalModesl()}>选择模板</button>
-          <button onClick={() => this.setHistroyMedicals()}>复制病历</button>
+          >
+            病历
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 2})
+              this.tipsToSave(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={this.state.pageType === 6 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
+            }}
+          >
+            其他费用
+          </span>
         </div>
-        <div className={'formList'}>
-          <div className={'formListBox'} style={{}}>
-            <ul>
-              <li style={{position: 'relative'}}>
-                <label>
-                  主述<b style={{ color: 'red' }}> *</b>
-                </label>
-                <textarea
-                  value={chief_complaint}
-                  onChange={e => {
-                    this.setState({ chief_complaint: e.target.value })
-                  }}
-                  onFocus={() => {
-                    this.setState({showComplaint: true, selComplaint: []})
-                  }}
-                />
-                {showComplaint ? this.showComplaint() : ''}
-              </li>
-              <li>
-                <label>现病史</label>
-                <textarea
-                  value={history_of_present_illness}
-                  onChange={e => {
-                    this.setState({ history_of_present_illness: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>既往史</label>
-                <textarea
-                  value={history_of_past_illness}
-                  onChange={e => {
-                    this.setState({ history_of_past_illness: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>家族史</label>
-                <textarea
-                  value={family_medical_history}
-                  onChange={e => {
-                    this.setState({ family_medical_history: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>过敏史</label>
-                <input
-                  type='text'
-                  value={allergic_history}
-                  onChange={e => {
-                    this.setState({ allergic_history: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>过敏反应</label>
-                <input
-                  type='text'
-                  value={allergic_reaction}
-                  onChange={e => {
-                    this.setState({ allergic_reaction: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>疫苗接种史</label>
-                <input
-                  type='text'
-                  value={immunizations}
-                  onChange={e => {
-                    this.setState({ immunizations: e.target.value })
-                  }}
-                />
-              </li>
-              <li style={{ height: '58px' }} />
-              <li>
-                <label>体格检查</label>
-                <textarea
-                  value={body_examination}
-                  onChange={e => {
-                    this.setState({ body_examination: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>上传文件</label>
-                <div className={'chooseFile'}>
-                  <input type='file' />
-                  <button> + 添加文件</button>
-                  <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
-                </div>
-              </li>
-              <li style={{position: 'relative'}}>
-                <label>初步诊断</label>
-                {/* <textarea
-                  value={diagnosis}
-                  onFocus={e => {
-                    this.queryDictDiagnosisList(e.target.value)
-                    this.setState({ chooseDiagnosticTemplate: true, selDiagnosis: [] })
-                  }}
-                  onChange={e => {
-                    this.queryDictDiagnosisList(e.target.value)
-                    this.setState({ diagnosis: e.target.value })
-                  }}
-                />
-                {chooseDiagnosticTemplate ? this.chooseDiagnosticTemplate() : ''} */}
-                <div style={{marginTop: '15px', height: '60px'}}>
-                  <MyCreatableSelect
-                    options={this.getDiagnosisOptions()}
-                    height={60}
-                    // value={diagnosis}
-                    onChange={value => {
-                      console.log('value====', value)
-                      let str = ''
-                      for (let i = 0; i < value.length; i++) {
-                        if (i < value.length - 1) {
-                          str += value[i].value + ','
-                        } else {
-                          str += value[i].value
-                        }
-                      }
-                      this.setState({ diagnosis: str })
+        <div className='filterBox'>
+          <div className='boxLeft'>
+            <input
+              type='date'
+              placeholder='开始日期'
+              value={morbidity_date}
+              onChange={e => {
+                this.setState({ morbidity_date: e.target.value })
+              }}
+            />
+            <button onClick={() => this.setMedicalModesl()}>选择模板</button>
+            <button onClick={() => this.setHistroyMedicals()}>复制病历</button>
+          </div>
+          <div className={'formList'}>
+            <div className={'formListBox'} style={{}}>
+              <ul>
+                <li style={{position: 'relative'}}>
+                  <label>
+                    主述<b style={{ color: 'red' }}> *</b>
+                  </label>
+                  <textarea
+                    value={chief_complaint}
+                    onChange={e => {
+                      this.setState({ chief_complaint: e.target.value })
                     }}
-                    onInputChange={keyword => {
-                      // console.log('keyword=====', keyword)
-                      this.queryDictDiagnosisList(keyword)
+                    onFocus={() => {
+                      this.setState({showComplaint: true, selComplaint: []})
                     }}
                   />
+                  {showComplaint ? this.showComplaint() : ''}
+                </li>
+                <li>
+                  <label>现病史</label>
+                  <textarea
+                    value={history_of_present_illness}
+                    onChange={e => {
+                      this.setState({ history_of_present_illness: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>既往史</label>
+                  <textarea
+                    value={history_of_past_illness}
+                    onChange={e => {
+                      this.setState({ history_of_past_illness: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>家族史</label>
+                  <textarea
+                    value={family_medical_history}
+                    onChange={e => {
+                      this.setState({ family_medical_history: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>过敏史</label>
+                  <input
+                    type='text'
+                    value={allergic_history}
+                    onChange={e => {
+                      this.setState({ allergic_history: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>过敏反应</label>
+                  <input
+                    type='text'
+                    value={allergic_reaction}
+                    onChange={e => {
+                      this.setState({ allergic_reaction: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>疫苗接种史</label>
+                  <input
+                    type='text'
+                    value={immunizations}
+                    onChange={e => {
+                      this.setState({ immunizations: e.target.value })
+                    }}
+                  />
+                </li>
+                <li style={{ height: '58px' }} />
+                <li>
+                  <label>体格检查</label>
+                  <textarea
+                    value={body_examination}
+                    onChange={e => {
+                      this.setState({ body_examination: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>上传文件</label>
+                  <div className={'chooseFile'}>
+                    <input type='file' />
+                    <button> + 添加文件</button>
+                    <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
+                  </div>
+                </li>
+                <li style={{position: 'relative'}}>
+                  <label>初步诊断</label>
+                  <div style={{marginTop: '15px', height: '100px'}}>
+                    <MyCreatableSelect
+                      options={this.getDiagnosisOptions()}
+                      height={100}
+                      // value={diagnosis}
+                      onChange={value => {
+                        // console.log('value====', value)
+                        let str = ''
+                        for (let i = 0; i < value.length; i++) {
+                          if (i < value.length - 1) {
+                            str += value[i].value + ','
+                          } else {
+                            str += value[i].value
+                          }
+                        }
+                        this.setState({ diagnosis: str })
+                      }}
+                      onInputChange={keyword => {
+                        // console.log('keyword=====', keyword)
+                        this.queryDictDiagnosisList(keyword)
+                      }}
+                    />
+                  </div>
+                </li>
+                <li style={{position: 'relative'}}>
+                  <a
+                    className={'chooseTemp'}
+                    style={{marginTop: '110px'}}
+                    onClick={() => {
+                      this.setState({chooseDiagnosticTemplate: true})
+                    }}
+                  >选择诊断模板</a>
+                </li>
+                <li>
+                  <label>治疗意见</label>
+                  <textarea
+                    value={cure_suggestion}
+                    onChange={e => {
+                      this.setState({ cure_suggestion: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>备注</label>
+                  <textarea
+                    value={remark}
+                    onChange={e => {
+                      this.setState({ remark: e.target.value })
+                    }}
+                  />
+                </li>
+              </ul>
+              <div className={'formListBottom'}>
+                <div className={'bottomCenter'}>
+                  <button
+                    className={'cancel'}
+                    onClick={() => {
+                      this.cancel()
+                    }}
+                  >
+                    取消
+                  </button>
+                  <button
+                    className={'save'}
+                    onClick={() => {
+                      this.save()
+                    }}
+                  >
+                    保存
+                  </button>
                 </div>
-              </li>
-              <li style={{position: 'relative'}}>
-                <a
-                  className={'chooseTemp'}
-                  onClick={() => {
-                    this.setState({chooseDiagnosticTemplate: true})
-                  }}
-                >选择诊断模板</a>
-              </li>
-              <li>
-                <label>治疗意见</label>
-                <textarea
-                  value={cure_suggestion}
-                  onChange={e => {
-                    this.setState({ cure_suggestion: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>备注</label>
-                <textarea
-                  value={remark}
-                  onChange={e => {
-                    this.setState({ remark: e.target.value })
-                  }}
-                />
-              </li>
-            </ul>
-            <div className={'formListBottom'}>
-              <div className={'bottomCenter'}>
-                <button
-                  className={'cancel'}
-                  onClick={() => {
-                    this.cancel()
-                  }}
-                >
-                  取消
-                </button>
-                <button
-                  className={'save'}
-                  onClick={() => {
-                    this.save()
-                  }}
-                >
-                  保存
-                </button>
-              </div>
-              <div className={'bottomRight'}>
-                <button
-                  onClick={() => {
-                    this.setState({ saveAsModel: true })
-                  }}
-                >
-                  存为模板
-                </button>
-                <button
-                  onClick={() => {
-                    this.setState({ saveAsModel: true })
-                  }}
-                >
-                  打印病历
-                </button>
+                <div className={'bottomRight'}>
+                  <button
+                    onClick={() => {
+                      this.setState({ saveAsModel: true })
+                    }}
+                  >
+                    存为模板
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({ saveAsModel: true })
+                    }}
+                  >
+                    打印病历
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          {this.showSaveModel()}
+          {this.showMedicalModels()}
+          {this.showHistroyMedicals()}
+          <Confirm ref='myAlert' isAlert />
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
+            </div>
+          </Confirm>
+          <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+            .filterBox {
+              flex-direction: column;
+              // margin-top: -10px;
+              margin-bottom: 50px;
+            }
+            .filterBox .boxLeft {
+              border-bottom: 1px solid #dbdbdb;
+            }
+            .filterBox .boxLeft button {
+              width: auto;
+              margin-left: 15px;
+            }
+            .formList {
+              margin: 0;
+              box-shadow: none;
+            }
+            .formListBox {
+              display: flex;
+              flex-direction: column;
+            }
+            .formList ul li {
+              margin-top: 20px;
+            }
+            .formListBox textarea {
+              width: 479px;
+              height: 60px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              resize: none;
+              margin-top: 10px;
+              border: 1px solid #d8d8d8;
+            }
+            .formListBox input {
+              width: 479px;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              margin-top: 10px;
+            }
+            .chooseFile {
+              // height: 66px;
+              margin-top: 42px;
+              display: flex;
+              position: relative;
+            }
+            .chooseFile input {
+              opacity: 0;
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              margin: 0;
+            }
+            .chooseFile button {
+              height: 30px;
+              width: 200px;
+              border: 1px dashed #d9d9d9;
+              border-radius: 4px;
+              background: transparent;
+              cursor: pointer;
+              color: rgba(102, 102, 102, 1);
+            }
+            .chooseFile a {
+              width: 145px;
+              height: 34px;
+              font-size: 12px;
+              font-family: PingFangSC-Regular;
+              color: rgba(102, 102, 102, 1);
+              line-height: 15px;
+              display: block;
+            }
+            .chooseTemp {
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              color: rgba(49, 176, 179, 1);
+              margin-top: 71px;
+              cursor: pointer;
+            }
+            .formListBottom {
+              width: 1000px;
+              margin: 30px auto;
+            }
+            .formListBottom .bottomCenter {
+              margin: 0 auto;
+              display: block;
+              width: 150px;
+            }
+            .formListBottom .bottomCenter button.cancel {
+              width: 70px;
+              height: 26px;
+              background: rgba(167, 167, 167, 1);
+              color: rgba(255, 255, 255, 1);
+              border-radius: 15px;
+              border: none;
+              float: left;
+              cursor: pointer;
+            }
+            .formListBottom .bottomCenter button.save {
+              width: 70px;
+              height: 26px;
+              background: rgba(49, 176, 179, 1);
+              color: rgba(255, 255, 255, 1);
+              border-radius: 15px;
+              border: none;
+              float: right;
+              cursor: pointer;
+            }
+            .formListBottom .bottomRight {
+              float: right;
+              margin-top: -23px;
+            }
+            .formListBottom .bottomRight button {
+              width: 70px;
+              height: 26px;
+              border-radius: 15px;
+              border: 1px solid #2acdc8;
+              font-size: 12px;
+              font-family: MicrosoftYaHei;
+              color: rgba(49, 176, 179, 1);
+              background: transparent;
+              margin-right: 10px;
+              cursor: pointer;
+            }
+          `}</style>
         </div>
-        {this.showSaveModel()}
-        {this.showMedicalModels()}
-        {this.showHistroyMedicals()}
-        <Confirm ref='myAlert' isAlert />
-        <style jsx='true'>{`
-          .filterBox {
-            flex-direction: column;
-            // margin-top: -10px;
-            margin-bottom: 50px;
-          }
-          .filterBox .boxLeft {
-            border-bottom: 1px solid #dbdbdb;
-          }
-          .filterBox .boxLeft button {
-            width: auto;
-            margin-left: 15px;
-          }
-          .formList {
-            margin: 0;
-            box-shadow: none;
-          }
-          .formListBox {
-            display: flex;
-            flex-direction: column;
-          }
-          .formList ul li {
-            margin-top: 20px;
-          }
-          .formListBox textarea {
-            width: 479px;
-            height: 60px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            resize: none;
-            margin-top: 10px;
-            border: 1px solid #d8d8d8;
-          }
-          .formListBox input {
-            width: 479px;
-            height: 30px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            margin-top: 10px;
-          }
-          .chooseFile {
-            // height: 66px;
-            margin-top: 42px;
-            display: flex;
-            position: relative;
-          }
-          .chooseFile input {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-          }
-          .chooseFile button {
-            height: 30px;
-            width: 200px;
-            border: 1px dashed #d9d9d9;
-            border-radius: 4px;
-            background: transparent;
-            cursor: pointer;
-            color: rgba(102, 102, 102, 1);
-          }
-          .chooseFile a {
-            width: 145px;
-            height: 34px;
-            font-size: 12px;
-            font-family: PingFangSC-Regular;
-            color: rgba(102, 102, 102, 1);
-            line-height: 15px;
-            display: block;
-          }
-          .chooseTemp {
-            font-size: 14px;
-            font-family: PingFangSC-Regular;
-            color: rgba(49, 176, 179, 1);
-            margin-top: 71px;
-            cursor: pointer;
-          }
-          .formListBottom {
-            width: 1000px;
-            margin: 30px auto;
-          }
-          .formListBottom .bottomCenter {
-            margin: 0 auto;
-            display: block;
-            width: 150px;
-          }
-          .formListBottom .bottomCenter button.cancel {
-            width: 70px;
-            height: 26px;
-            background: rgba(167, 167, 167, 1);
-            color: rgba(255, 255, 255, 1);
-            border-radius: 15px;
-            border: none;
-            float: left;
-            cursor: pointer;
-          }
-          .formListBottom .bottomCenter button.save {
-            width: 70px;
-            height: 26px;
-            background: rgba(49, 176, 179, 1);
-            color: rgba(255, 255, 255, 1);
-            border-radius: 15px;
-            border: none;
-            float: right;
-            cursor: pointer;
-          }
-          .formListBottom .bottomRight {
-            float: right;
-            margin-top: -23px;
-          }
-          .formListBottom .bottomRight button {
-            width: 70px;
-            height: 26px;
-            border-radius: 15px;
-            border: 1px solid #2acdc8;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            background: transparent;
-            margin-right: 10px;
-            cursor: pointer;
-          }
-        `}</style>
       </div>
     )
   }

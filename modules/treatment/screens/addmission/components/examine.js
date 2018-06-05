@@ -308,112 +308,171 @@ class ExamineScreen extends Component {
 
   render() {
     const { examines } = this.state
-    const { medicalRecord } = this.props
+    const { medicalRecord, changePage } = this.props
     return (
-      <div className='filterBox'>
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <button
-              style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
-              onClick={() => {
-                this.examinationModelList({})
-                this.setState({ showModelList: true })
-              }}
-            >
-              选择模板
-            </button>
-          </div>
-          <div className={'alergyBlank'}>
-            <div>
-              <label>过敏史</label>
-              <input readOnly type='text' value={medicalRecord.allergic_history} />
-            </div>
-            <div style={{ marginLeft: '40px' }}>
-              <label>过敏反应</label>
-              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
-            </div>
-          </div>
-          <div className='tableDIV'>
-            <ul>
-              <li>
-                <div>名称</div>
-                <div>次数</div>
-                <div>部位</div>
-                <div>说明</div>
-                <div>
-                  <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
-                    新增
-                  </div>
-                </div>
-              </li>
-              {examines.map((item, index) => {
-                let nameOptions = this.getNameOptions()
-                return (
-                  <li key={index}>
-                    <div>
-                      <div style={{ width: '100%' }}>
-                        <Select
-                          value={this.getSelectValue(item.clinic_examination_id, nameOptions)}
-                          onChange={({ value, organ, label }) => {
-                            this.setItemValue(value, index, 'clinic_examination_id', 2)
-                            this.setItemValue(label, index, 'name', 2)
-                          }}
-                          placeholder='搜索名称'
-                          height={38}
-                          onInputChange={keyword => this.queryExaminationList(keyword)}
-                          options={nameOptions}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <input value={item.times || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                    </div>
-                    <div>
-                      <input value={item.organ || ''} type='text' readOnly />
-                      <div
-                        style={{ cursor: 'pointer', border: '1px solid rgba(42, 205, 200, 1)', borderRadius: '5px', height: '20px', width: '50px', textAlign: 'center', lineHeight: '20px', color: 'rgba(42, 205, 200, 1)' }}
-                        onClick={() => {
-                          let { organ } = item
-                          let selOrgans = []
-                          if (organ) {
-                            selOrgans = organ.split(',')
-                          }
-                          this.setState({ showChooseOrgan: true, index, selOrgans })
-                        }}
-                      >
-                        选择
-                      </div>
-                    </div>
-                    <div>
-                      <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
-                    </div>
-                    <div>
-                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                        删除
-                      </div>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-          <div className='formListBottom'>
-            <div className={'bottomCenter'}>
-              <button className={'cancel'}>取消</button>
-              <button className={'save'} onClick={() => this.submit()}>
-                保存
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            onClick={() => {
+              changePage(1)
+            }}
+          >
+            病历
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              changePage(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              changePage(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              changePage(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={'sel'}
+            onClick={() => {
+              // changePage(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={this.state.pageType === 6 ? 'sel' : ''}
+            onClick={() => {
+              changePage(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              changePage(7)
+            }}
+          >
+            其他费用
+          </span>
+        </div>
+        <div className='filterBox'>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <button
+                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
+                onClick={() => {
+                  this.examinationModelList({})
+                  this.setState({ showModelList: true })
+                }}
+              >
+                选择模板
               </button>
             </div>
-            <div className={'bottomRight'}>
-              {/* <button>存为模板</button> */}
-              <button>打印申请单</button>
+            <div className={'alergyBlank'}>
+              <div>
+                <label>过敏史</label>
+                <input readOnly type='text' value={medicalRecord.allergic_history} />
+              </div>
+              <div style={{ marginLeft: '40px' }}>
+                <label>过敏反应</label>
+                <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+              </div>
+            </div>
+            <div className='tableDIV'>
+              <ul>
+                <li>
+                  <div>名称</div>
+                  <div>次数</div>
+                  <div>部位</div>
+                  <div>说明</div>
+                  <div>
+                    <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
+                      新增
+                    </div>
+                  </div>
+                </li>
+                {examines.map((item, index) => {
+                  let nameOptions = this.getNameOptions()
+                  return (
+                    <li key={index}>
+                      <div>
+                        <div style={{ width: '100%' }}>
+                          <Select
+                            value={this.getSelectValue(item.clinic_examination_id, nameOptions)}
+                            onChange={({ value, organ, label }) => {
+                              this.setItemValue(value, index, 'clinic_examination_id', 2)
+                              this.setItemValue(label, index, 'name', 2)
+                            }}
+                            placeholder='搜索名称'
+                            height={38}
+                            onInputChange={keyword => this.queryExaminationList(keyword)}
+                            options={nameOptions}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <input value={item.times || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                      </div>
+                      <div>
+                        <input value={item.organ || ''} type='text' readOnly />
+                        <div
+                          style={{ cursor: 'pointer', border: '1px solid rgba(42, 205, 200, 1)', borderRadius: '5px', height: '20px', width: '50px', textAlign: 'center', lineHeight: '20px', color: 'rgba(42, 205, 200, 1)' }}
+                          onClick={() => {
+                            let { organ } = item
+                            let selOrgans = []
+                            if (organ) {
+                              selOrgans = organ.split(',')
+                            }
+                            this.setState({ showChooseOrgan: true, index, selOrgans })
+                          }}
+                        >
+                          选择
+                        </div>
+                      </div>
+                      <div>
+                        <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                      </div>
+                      <div>
+                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                          删除
+                        </div>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+            <div className='formListBottom'>
+              <div className={'bottomCenter'}>
+                <button className={'cancel'}>取消</button>
+                <button className={'save'} onClick={() => this.submit()}>
+                  保存
+                </button>
+              </div>
+              <div className={'bottomRight'}>
+                {/* <button>存为模板</button> */}
+                <button>打印申请单</button>
+              </div>
             </div>
           </div>
+          {this.getStyle()}
+          {this.renderModelList()}
+          {this.chooseOrgan()}
+          <Confirm ref='myAlert' />
         </div>
-        {this.getStyle()}
-        {this.renderModelList()}
-        {this.chooseOrgan()}
-        <Confirm ref='myAlert' />
       </div>
     )
   }
