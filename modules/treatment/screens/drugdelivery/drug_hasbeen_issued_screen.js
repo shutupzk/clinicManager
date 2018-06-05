@@ -27,7 +27,7 @@ class DrugHasBeenIssuedScreen extends Component {
   goToDetail(selectId) {
     const { drugIssuedTraigeSelect } = this.props
     drugIssuedTraigeSelect(selectId)
-    // Router.push('/treatment/charge/toll')
+    Router.push('/treatment/drugdelivery/drugIssuedDetail')
   }
 
   getTriagePatientListData({ offset, limit }) {

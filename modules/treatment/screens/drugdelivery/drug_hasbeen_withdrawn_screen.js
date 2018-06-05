@@ -33,7 +33,7 @@ class DrugHasBeenWithdrawnScreen extends Component {
   goToDetail(selectId) {
     const { drugRefundTraigeSelect } = this.props
     drugRefundTraigeSelect(selectId)
-    // Router.push('/treatment/charge/toll')
+    Router.push('/treatment/drugdelivery/drugDrawnDetail')
   }
 
   showTriageList() {
