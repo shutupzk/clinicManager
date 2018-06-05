@@ -92,7 +92,7 @@ export const queryDictDiagnosisList = ({ keyword, offset = 0, limit = 10 }) => a
       offset,
       limit
     })
-    console.log('诊疗费=======', data)
+    console.log('诊断模板=======', data)
     const docs = data.data || []
     const dic_diagnosis_page_info = data.page_info || {}
     let json = {}
@@ -101,7 +101,7 @@ export const queryDictDiagnosisList = ({ keyword, offset = 0, limit = 10 }) => a
     }
     dispatch({
       type: DICTIONARY_DIAGNOSIS_LIST,
-      dic_diagnosis_data: docs,
+      dic_diagnosis_data: json,
       dic_diagnosis_page_info
     })
     return null

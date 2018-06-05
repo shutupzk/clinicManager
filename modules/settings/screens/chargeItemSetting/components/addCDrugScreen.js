@@ -173,13 +173,13 @@ class AddCDrugScreen extends Component {
       this.setState({ dose_form_nameFailed: false })
     }
 
-    if (!data.barcode || data.barcode === '') {
-      this.setState({ barcodeFailed: true })
-      this.refs.myAlert.alert('提示', '请填写 药品条形码！', null, 'Danger')
-      return false
-    } else {
-      this.setState({ barcodeFailed: false })
-    }
+    // if (!data.barcode || data.barcode === '') {
+    //   this.setState({ barcodeFailed: true })
+    //   this.refs.myAlert.alert('提示', '请填写 药品条形码！', null, 'Danger')
+    //   return false
+    // } else {
+    //   this.setState({ barcodeFailed: false })
+    // }
 
     if (!data.packing_unit_name || data.packing_unit_name === '') {
       this.setState({ packing_unit_nameFailed: true })
@@ -391,18 +391,18 @@ class AddCDrugScreen extends Component {
                 renderTitle={(item, index) => {
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
-                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '40px', lineHeight: '40px' }}>药品名</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '40px', lineHeight: '40px' }}>规格</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '40px', lineHeight: '40px' }}>生产厂家</div>
                     </div>
                   )
                 }}
                 renderItem={(item, index) => {
                   return (
-                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.name}</div>
-                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
-                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center', borderBottom: '1px solid #d9d9d9' }} key={index}>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '50px', lineHeight: '50px' }}>{item.name}</div>
+                      <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '50px', lineHeight: '50px' }}>{item.specification}</div>
+                      <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9', height: '50px', lineHeight: '50px' }}>{item.manu_factory_name}</div>
                     </div>
                   )
                 }}
@@ -517,7 +517,7 @@ class AddCDrugScreen extends Component {
             </li>
             <li>
               <label>
-                药品条形码<b style={{ color: 'red' }}>*</b>
+                药品条形码
               </label>
               <input
                 type='text'
@@ -527,7 +527,7 @@ class AddCDrugScreen extends Component {
                   this.setItemValue(e, 'barcode')
                 }}
               />
-              {this.state.barcodeFailed || drugInfo.barcode === '' || !drugInfo.barcode ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
+              {/* {this.state.barcodeFailed || drugInfo.barcode === '' || !drugInfo.barcode ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''} */}
             </li>
             <li>
               <label>状态</label>

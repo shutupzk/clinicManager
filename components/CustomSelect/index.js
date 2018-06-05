@@ -36,10 +36,14 @@ export default class CustomSelect extends Component {
       }
       array.push(option)
     }
+    let disp = 'none'
+    if (array.length > 0) {
+      disp = 'flex'
+    }
     return (
       <div
         style={{
-          display: 'flex',
+          display: disp,
           flexDirection: 'column',
           position: 'absolute',
           top: '50px',
@@ -78,7 +82,7 @@ export default class CustomSelect extends Component {
                 })
               }}
             >
-              {renderItem ? renderItem(item, index) : null}
+              {renderItem ? renderItem(item, index) : ''}
             </div>
           )
         })}

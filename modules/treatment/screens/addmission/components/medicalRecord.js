@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Confirm, PageCard } from '../../../../../components'
+import { Confirm, PageCard, MyCreatableSelect } from '../../../../../components'
+// import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
 import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList } from '../../../../../ducks'
 // 病历
@@ -866,9 +867,25 @@ class MedicalRecordScreen extends Component {
       </div>
     )
   }
+  getDiagnosisOptions() {
+    const { dic_diagnosis_data } = this.props
+    // console.log('dic_diagnosis_data==', dic_diagnosis_data)
+    let array = []
+    for (let key in dic_diagnosis_data) {
+      let {name} = dic_diagnosis_data[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    return array
+  }
   queryDictDiagnosisList(keyword) {
     const {queryDictDiagnosisList} = this.props
-    queryDictDiagnosisList({keyword})
+    if (keyword) {
+      queryDictDiagnosisList({keyword})
+    }
   }
   render() {
     let {
@@ -998,7 +1015,7 @@ class MedicalRecordScreen extends Component {
               </li>
               <li style={{position: 'relative'}}>
                 <label>初步诊断</label>
-                <textarea
+                {/* <textarea
                   value={diagnosis}
                   onFocus={e => {
                     this.queryDictDiagnosisList(e.target.value)
@@ -1009,7 +1026,30 @@ class MedicalRecordScreen extends Component {
                     this.setState({ diagnosis: e.target.value })
                   }}
                 />
-                {chooseDiagnosticTemplate ? this.chooseDiagnosticTemplate() : ''}
+                {chooseDiagnosticTemplate ? this.chooseDiagnosticTemplate() : ''} */}
+                <div style={{marginTop: '15px', height: '60px'}}>
+                  <MyCreatableSelect
+                    options={this.getDiagnosisOptions()}
+                    height={60}
+                    // value={diagnosis}
+                    onChange={value => {
+                      console.log('value====', value)
+                      let str = ''
+                      for (let i = 0; i < value.length; i++) {
+                        if (i < value.length - 1) {
+                          str += value[i].value + ','
+                        } else {
+                          str += value[i].value
+                        }
+                      }
+                      this.setState({ diagnosis: str })
+                    }}
+                    onInputChange={keyword => {
+                      // console.log('keyword=====', keyword)
+                      this.queryDictDiagnosisList(keyword)
+                    }}
+                  />
+                </div>
               </li>
               <li style={{position: 'relative'}}>
                 <a

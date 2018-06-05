@@ -1,5 +1,5 @@
 import { user, signin, signout } from './user'
-import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate } from './doctors'
+import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete } from './doctors'
 import {
   triagePatients,
   triagePatientsList,
@@ -125,7 +125,7 @@ import { clinicPermissions, queryClinicHassetPermissions, queryClinicUnsetPermis
 import { drugDeliveryPending, queryDrugPendingTraigeList, drugPendingTraigeSelect, queryDrugDeliveryList } from './drug_delivery_pending'
 import { drugDeliveryIssued, queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from './drug_delivery_issued'
 import { drugDeliveryRefund, queryDrugRefundTraigeList, drugRefundTraigeSelect } from './drug_delivery_refund'
-import { drugDelivery, queryDrugDeliveryRecordList, drugDeliverySelect, drugDeliveryCreate } from './drug_delivery'
+import { drugDelivery, queryDrugDeliveryRecordList, drugDeliverySelect, drugDeliveryCreate, queryDrugDeliveryRecordDetail } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
 
 // keys
@@ -190,6 +190,7 @@ export {
   queryDoctorList,
   doctorSelect,
   PersonnelUpdate,
+  PersonnelDelete,
   triagePatientsList,
   triagePatientsSelect,
   addTriagePatientsList,
@@ -354,6 +355,7 @@ export {
   queryDrugIssuedTraigeList,
   queryDrugDeliveryList,
   queryDrugDeliveryRecordList,
+  queryDrugDeliveryRecordDetail,
   drugDeliverySelect,
   drugDeliveryCreate,
   DiagnosisTreatmentPatientCreate

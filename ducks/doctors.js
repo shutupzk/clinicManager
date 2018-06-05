@@ -140,6 +140,24 @@ export const PersonnelUpdate = ({ personnel_id, clinic_id, is_appointment, depar
     return e.message
   }
 }
+export const PersonnelDelete = ({ personnel_id }) => async dispatch => {
+  try {
+    const data = await request('/personnel/delete', {
+      personnel_id
+    })
+    console.log(
+      {
+        personnel_id
+      },
+      data
+    )
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
 
 export const doctorSelect = ({ personnel_id }) => async dispatch => {
   try {
