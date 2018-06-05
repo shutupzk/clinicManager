@@ -68,6 +68,7 @@ export default class Confirm extends Component {
                 <span className='cancel'>取消</span>
               </div>
             )}
+            {this.props.children}
             <div
               className={`buttonDiv buttonDiv${type}`}
               onClick={() => {
@@ -77,7 +78,7 @@ export default class Confirm extends Component {
                 }
               }}
             >
-              <span className={`span${type}`}>确定</span>
+              <span className={`span${type}`}>{!this.props.sureText ? '确定' : this.props.sureText}</span>
             </div>
           </div>
         </div>

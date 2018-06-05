@@ -36,7 +36,8 @@ class MedicalRecordScreen extends Component {
       wPrescItemArray: [],
       selItem: 'wPresc',
       selIndex: 0,
-      showSaveWmodel: false
+      showSaveWmodel: false,
+      selPage: 2
     }
   }
 
@@ -1317,95 +1318,202 @@ class MedicalRecordScreen extends Component {
     }
     return {}
   }
-
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+      // this.save()
+    })
+  }
   render() {
-    const { selItem, cPrescItemArray } = this.state
-    const { medicalRecord } = this.props
+    const { selItem, cPrescItemArray, selPage } = this.state
+    const { medicalRecord, changePage } = this.props
     return (
-      <div className='filterBox' style={{ width: '1500px' }}>
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '67px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '0 65px 0px 47px' }}>
-            <div className='prescriptionLank'>
-              <div className={'prescItemParent ' + (selItem === 'wPresc' ? 'sel' : '')}>
-                <div
-                  className={'prescItem'}
-                  onClick={() => {
-                    this.setState({ selItem: 'wPresc' })
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            className={this.state.pageType === 1 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 1})
+              this.tipsToSave(1)
+            }}
+          >
+            病历
+          </span>
+          <span
+            className={'sel'}
+            onClick={() => {
+              // changePage(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={this.state.pageType === 6 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
+            }}
+          >
+            其他费用
+          </span>
+        </div>
+        <div className='filterBox' style={{ width: '1500px' }}>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '67px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '0 65px 0px 47px' }}>
+              <div className='prescriptionLank'>
+                <div className={'prescItemParent ' + (selItem === 'wPresc' ? 'sel' : '')}>
+                  <div
+                    className={'prescItem'}
+                    onClick={() => {
+                      this.setState({ selItem: 'wPresc' })
+                    }}
+                  >
+                    西/成药处方
+                  </div>
+                </div>
+                {cPrescItemArray.map((item, index) => {
+                  return (
+                    <div key={index} className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{ position: 'relative' }}>
+                      <div
+                        className={'prescItem'}
+                        onClick={() => {
+                          this.setState({ selItem: 'cPresc' + index, selIndex: index })
+                        }}
+                      >
+                        中药处方{index + 1}
+                      </div>
+                      <i onClick={() => this.removecPrescItem(index)}>×</i>
+                    </div>
+                  )
+                })}
+                <button
+                  style={{ height: '30px' }}
+                  onClick={e => {
+                    this.addChineseMedicinePres()
                   }}
                 >
-                  西/成药处方
-                </div>
+                  {' '}
+                  + 中药处方
+                </button>
               </div>
-              {cPrescItemArray.map((item, index) => {
-                return (
-                  <div key={index} className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{ position: 'relative' }}>
-                    <div
-                      className={'prescItem'}
-                      onClick={() => {
-                        this.setState({ selItem: 'cPresc' + index, selIndex: index })
-                      }}
-                    >
-                      中药处方{index + 1}
-                    </div>
-                    <i onClick={() => this.removecPrescItem(index)}>×</i>
-                  </div>
-                )
-              })}
-              <button
-                style={{ height: '30px' }}
-                onClick={e => {
-                  this.addChineseMedicinePres()
-                }}
-              >
-                {' '}
-                + 中药处方
-              </button>
+              <div style={{ height: '67px', width: '280px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '40px' }}>
+                <button
+                  style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '17px' }}
+                  onClick={() => {
+                    if (selItem === 'wPresc') {
+                      this.PrescriptionWesternPatientModelList({})
+                      this.setState({ showWmodelList: true })
+                    } else {
+                      this.PrescriptionChinesePatientModelList({})
+                      this.setState({ showCmodelList: true })
+                    }
+                  }}
+                >
+                  选择模板
+                </button>
+                <button
+                  style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
+                  onClick={() => {
+                    this.queryReceiveRecords({})
+                    this.setState({ showHistory: true })
+                  }}
+                >
+                  复制处方
+                </button>
+              </div>
             </div>
-            <div style={{ height: '67px', width: '280px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '40px' }}>
-              <button
-                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '17px' }}
-                onClick={() => {
-                  if (selItem === 'wPresc') {
-                    this.PrescriptionWesternPatientModelList({})
-                    this.setState({ showWmodelList: true })
-                  } else {
-                    this.PrescriptionChinesePatientModelList({})
-                    this.setState({ showCmodelList: true })
-                  }
-                }}
-              >
-                选择模板
-              </button>
-              <button
-                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
-                onClick={() => {
-                  this.queryReceiveRecords({})
-                  this.setState({ showHistory: true })
-                }}
-              >
-                复制处方
-              </button>
+            <div className={'alergyBlank'}>
+              <div>
+                <label>过敏史</label>
+                <input readOnly type='text' value={medicalRecord.allergic_history} />
+              </div>
+              <div style={{ marginLeft: '40px' }}>
+                <label>过敏反应</label>
+                <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+              </div>
             </div>
+            {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
           </div>
-          <div className={'alergyBlank'}>
-            <div>
-              <label>过敏史</label>
-              <input readOnly type='text' value={medicalRecord.allergic_history} />
+          {this.renderSaveWModel()}
+          {this.renderWModelList()}
+          {this.renderSaveCModel()}
+          {this.renderCModelList()}
+          {this.renderHistoryList()}
+          {this.getStyle()}
+          <Confirm ref='myAlert' />
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
             </div>
-            <div style={{ marginLeft: '40px' }}>
-              <label>过敏反应</label>
-              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
-            </div>
-          </div>
-          {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
+          </Confirm>
         </div>
-        {this.renderSaveWModel()}
-        {this.renderWModelList()}
-        {this.renderSaveCModel()}
-        {this.renderCModelList()}
-        {this.renderHistoryList()}
-        {this.getStyle()}
-        <Confirm ref='myAlert' />
+        <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+        `}</style>
       </div>
     )
   }
