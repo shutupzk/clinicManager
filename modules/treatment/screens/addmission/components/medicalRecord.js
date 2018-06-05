@@ -50,7 +50,8 @@ class MedicalRecordScreen extends Component {
     const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints } = this.props
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
-    this.setState({ ...this.state, ...record })
+    let recordStr = JSON.stringify(record)
+    this.setState({ ...this.state, ...record, recordStr })
   }
 
   save() {
@@ -908,11 +909,24 @@ class MedicalRecordScreen extends Component {
     }
   }
   // 提示是否保存当前页
-  tipsToSave(pageType) {
-    // console.log('pageType====', pageType)
-    this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-      this.save()
-    })
+  tipsToSave(selPage) {
+    const { recordStr } = this.state
+    let oldJson = JSON.parse(recordStr)
+    let newJSON = {}
+    for (let key in oldJson) {
+      newJSON[key] = this.state[key]
+    }
+    let jsonStr = JSON.stringify(newJSON)
+    console.log(recordStr)
+    console.log(jsonStr)
+    const { changePage } = this.props
+    if (jsonStr !== recordStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.save()
+      })
+    } else {
+      changePage(selPage)
+    }
   }
   render() {
     let {
