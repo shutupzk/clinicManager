@@ -1328,9 +1328,11 @@ class MedicalRecordScreen extends Component {
     const { changePage } = this.props
     const { wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr } = this.state
     if (wPrescItemArrayStr !== JSON.stringify(wPrescItemArray) || cPrescItemArrayStr !== JSON.stringify(cPrescItemArray)) {
-      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-        changePage(pageType)
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，请确认', 'Warning', () => {
+        // changePage(pageType)
       })
+    } else {
+      changePage(pageType)
     }
   }
   render() {
@@ -1342,7 +1344,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
-              // this.setState({selPage: 1})
+              this.setState({selPage: 1})
               this.tipsToSave(1)
             }}
           >
@@ -1359,7 +1361,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              // this.setState({selPage: 3})
+              this.setState({selPage: 3})
               this.tipsToSave(3)
             }}
           >
@@ -1368,7 +1370,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              // this.setState({selPage: 4})
+              this.setState({selPage: 4})
               this.tipsToSave(4)
             }}
           >
@@ -1377,7 +1379,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              // this.setState({selPage: 5})
+              this.setState({selPage: 5})
               this.tipsToSave(5)
             }}
           >
@@ -1386,7 +1388,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              // this.setState({selPage: 6})
+              this.setState({selPage: 6})
               this.tipsToSave(6)
             }}
           >
@@ -1395,7 +1397,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              // this.setState({selPage: 7})
+              this.setState({selPage: 7})
               this.tipsToSave(7)
             }}
           >
@@ -1486,7 +1488,7 @@ class MedicalRecordScreen extends Component {
           {this.renderHistoryList()}
           {this.getStyle()}
           <Confirm ref='myAlert' />
-          <Confirm ref='myConfirm' sureText={'保存'}>
+          <Confirm ref='myConfirm' sureText={'查看'} >
             <div
               className={`buttonDiv buttonDivCancel`}
               onClick={() => {
