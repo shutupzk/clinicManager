@@ -453,11 +453,11 @@ class AppointmentAddScreen extends Component {
             </li>
             <li style={{ width: '30%', marginLeft: '3%' }}>
               <label>职业</label>
-              <input type='text' value={patient.profession} onChange={e => this.setPatientInfo(e, 'profession')} />
+              <input type='text' value={patient.profession || ''} onChange={e => this.setPatientInfo(e, 'profession')} />
             </li>
             <li style={{ width: '30%', marginLeft: '3%' }}>
               <label>备注</label>
-              <input type='text' value={patient.remark} onChange={e => this.setPatientInfo(e, 'remark')} />
+              <input type='text' value={patient.remark || ''} onChange={e => this.setPatientInfo(e, 'remark')} />
             </li>
           </ul>
         </div>

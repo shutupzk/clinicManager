@@ -1,8 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Confirm, PageCard } from '../../../../../components'
+import { Confirm, PageCard, MyCreatableSelect } from '../../../../../components'
+// import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList } from '../../../../../ducks'
+import {
+  createMedicalRecord,
+  queryMedicalRecord,
+  createMedicalRecordAsModel,
+  queryMedicalModelsByDoctor,
+  queryMedicalsByPatient,
+  queryChiefComplaints,
+  queryDictDiagnosisList
+} from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
   constructor(props) {
@@ -32,7 +41,8 @@ class MedicalRecordScreen extends Component {
       selComplaint: [],
       determineComplaint: [],
       chooseDiagnosticTemplate: false,
-      selDiagnosis: []
+      selDiagnosis: [],
+      selPage: 1
     }
   }
 
@@ -40,18 +50,22 @@ class MedicalRecordScreen extends Component {
     const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints } = this.props
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
-    this.setState({ ...this.state, ...record })
+    let recordStr = JSON.stringify(record)
+    this.setState({ ...this.state, ...record, recordStr })
   }
 
   save() {
-    let { chief_complaint } = this.state
-    let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id } = this.props
+    let { chief_complaint, selPage } = this.state
+    let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id, changePage } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
     this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
       let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
         this.refs.myAlert.alert('保存病历成功！')
+        if (selPage !== 1) {
+          changePage(selPage)
+        }
       }
     })
   }
@@ -610,10 +624,10 @@ class MedicalRecordScreen extends Component {
     })
   }
 
-// 选择主述标签
+  // 选择主述标签
   showComplaint() {
     const { chief_complaints } = this.props
-    const {selComplaint, chief_complaint} = this.state
+    const { selComplaint, chief_complaint } = this.state
     return (
       <div className={'complaintBox'}>
         <ul>
@@ -634,10 +648,10 @@ class MedicalRecordScreen extends Component {
                         array.splice(i, 1)
                       }
                     }
-                    this.setState({selComplaint: array})
+                    this.setState({ selComplaint: array })
                   } else {
                     array.push(item.name)
-                    this.setState({selComplaint: array})
+                    this.setState({ selComplaint: array })
                   }
                 }}
               >
@@ -650,9 +664,11 @@ class MedicalRecordScreen extends Component {
           <div>
             <button
               onClick={() => {
-                this.setState({showComplaint: false})
+                this.setState({ showComplaint: false })
               }}
-            >取消</button>
+            >
+              取消
+            </button>
             <button
               onClick={() => {
                 let complaint = chief_complaint
@@ -663,26 +679,28 @@ class MedicalRecordScreen extends Component {
                     complaint += selComplaint[i]
                   }
                 }
-                this.setState({showComplaint: false, determineComplaint: selComplaint, chief_complaint: complaint})
+                this.setState({ showComplaint: false, determineComplaint: selComplaint, chief_complaint: complaint })
               }}
-            >确定</button>
+            >
+              确定
+            </button>
           </div>
         </div>
         <style jsx>{`
-          .complaintBox{
-            position:absolute;
+          .complaintBox {
+            position: absolute;
             width: 100%;
             height: 240px;
             top: 91px;
             z-index: 1;
             overflow: hidden;
-            display:flex;
+            display: flex;
             flex-direction: column;
-            background: rgba(245,248,249,1);
-            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            background: rgba(245, 248, 249, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
             border: 1px solid #d9d9d9;
           }
-          .complaintBox > ul{
+          .complaintBox > ul {
             flex: 4;
             height: auto;
             max-height: 180px;
@@ -690,28 +708,28 @@ class MedicalRecordScreen extends Component {
             width: 100%;
             border-bottom: 1px solid #d8d8d8;
           }
-          .complaintBox > ul > li{
+          .complaintBox > ul > li {
             margin: 5px;
             width: auto;
             border-radius: 4px;
             border: 1px solid #2acdc8;
-            color: rgba(42,205,200,1);
+            color: rgba(42, 205, 200, 1);
             font-size: 12px;
             padding: 3px 5px;
             cursor: pointer;
           }
-          .boxBottom{
+          .boxBottom {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
           }
-          .boxBottom > div{
+          .boxBottom > div {
             display: flex;
             justify-content: center;
             align-items: center;
           }
-          .boxBottom > div > button{
+          .boxBottom > div > button {
             background: rgba(255, 255, 255, 1);
             border-radius: 4px;
             border: 1px solid #d9d9d9;
@@ -725,8 +743,8 @@ class MedicalRecordScreen extends Component {
           }
           .complaintBox > ul > li.sel,
           .complaintBox > ul > li:hover,
-          .boxBottom > div > button:hover{
-            background: rgba(42,205,200,1);
+          .boxBottom > div > button:hover {
+            background: rgba(42, 205, 200, 1);
             color: #ffffff;
           }
         `}</style>
@@ -739,11 +757,11 @@ class MedicalRecordScreen extends Component {
     let array = []
     const { dic_diagnosis_data } = this.props
     for (let key in dic_diagnosis_data) {
-      let {id, name} = dic_diagnosis_data[key]
-      array.push({id, name})
+      let { id, name } = dic_diagnosis_data[key]
+      array.push({ id, name })
     }
     // console.log('诊断模板=====', array, dic_diagnosis_data)
-    const {diagnosis, selDiagnosis} = this.state
+    const { diagnosis, selDiagnosis } = this.state
     return (
       <div className={'tempBox'}>
         <ul>
@@ -764,10 +782,10 @@ class MedicalRecordScreen extends Component {
                         array.splice(i, 1)
                       }
                     }
-                    this.setState({selDiagnosis: array})
+                    this.setState({ selDiagnosis: array })
                   } else {
                     array.push(item.name)
-                    this.setState({selDiagnosis: array})
+                    this.setState({ selDiagnosis: array })
                   }
                 }}
               >
@@ -780,9 +798,11 @@ class MedicalRecordScreen extends Component {
           <div>
             <button
               onClick={() => {
-                this.setState({chooseDiagnosticTemplate: false})
+                this.setState({ chooseDiagnosticTemplate: false })
               }}
-            >取消</button>
+            >
+              取消
+            </button>
             <button
               onClick={() => {
                 let complaint = diagnosis
@@ -793,26 +813,28 @@ class MedicalRecordScreen extends Component {
                     complaint += selDiagnosis[i]
                   }
                 }
-                this.setState({chooseDiagnosticTemplate: false, diagnosis: complaint})
+                this.setState({ chooseDiagnosticTemplate: false, diagnosis: complaint })
               }}
-            >确定</button>
+            >
+              确定
+            </button>
           </div>
         </div>
         <style jsx>{`
-          .tempBox{
-            position:absolute;
+          .tempBox {
+            position: absolute;
             width: 100%;
             height: 300px;
             top: 90px;
             z-index: 1;
             overflow: hidden;
-            display:flex;
+            display: flex;
             flex-direction: column;
-            background: rgba(245,248,249,1);
-            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            background: rgba(245, 248, 249, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
             border: 1px solid #d9d9d9;
           }
-          .tempBox > ul{
+          .tempBox > ul {
             flex: 4;
             height: auto;
             max-height: 280px;
@@ -822,7 +844,7 @@ class MedicalRecordScreen extends Component {
             // display:flex;
             // flex-direction: column;
           }
-          .tempBox > ul > li{
+          .tempBox > ul > li {
             margin: 0;
             width: 100%;
             // border-radius: 4px;
@@ -833,18 +855,18 @@ class MedicalRecordScreen extends Component {
             height: 30px;
             display: block;
           }
-          .boxBottom{
+          .boxBottom {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
           }
-          .boxBottom > div{
+          .boxBottom > div {
             display: flex;
             justify-content: center;
             align-items: center;
           }
-          .boxBottom > div > button{
+          .boxBottom > div > button {
             background: rgba(255, 255, 255, 1);
             border-radius: 4px;
             border: 1px solid #d9d9d9;
@@ -858,17 +880,53 @@ class MedicalRecordScreen extends Component {
           }
           .tempBox > ul > li.sel,
           .tempBox > ul > li:hover,
-          .boxBottom > div > button:hover{
-            background: rgba(42,205,200,1);
+          .boxBottom > div > button:hover {
+            background: rgba(42, 205, 200, 1);
             color: #ffffff;
           }
         `}</style>
       </div>
     )
   }
+  getDiagnosisOptions() {
+    const { dic_diagnosis_data } = this.props
+    // console.log('dic_diagnosis_data==', dic_diagnosis_data)
+    let array = []
+    for (let key in dic_diagnosis_data) {
+      let { name } = dic_diagnosis_data[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    return array
+  }
   queryDictDiagnosisList(keyword) {
-    const {queryDictDiagnosisList} = this.props
-    queryDictDiagnosisList({keyword})
+    const { queryDictDiagnosisList } = this.props
+    if (keyword) {
+      queryDictDiagnosisList({ keyword })
+    }
+  }
+  // 提示是否保存当前页
+  tipsToSave(selPage) {
+    const { recordStr } = this.state
+    let oldJson = JSON.parse(recordStr)
+    let newJSON = {}
+    for (let key in oldJson) {
+      newJSON[key] = this.state[key]
+    }
+    let jsonStr = JSON.stringify(newJSON)
+    console.log(recordStr)
+    console.log(jsonStr)
+    const { changePage } = this.props
+    if (jsonStr !== recordStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.save()
+      })
+    } else {
+      changePage(selPage)
+    }
   }
   render() {
     let {
@@ -881,329 +939,441 @@ class MedicalRecordScreen extends Component {
       allergic_reaction,
       body_examination,
       immunizations,
-      diagnosis,
+      // diagnosis,
       cure_suggestion,
       remark,
       showComplaint,
-      chooseDiagnosticTemplate
+      selPage
+      // chooseDiagnosticTemplate
     } = this.state
+    const {changePage} = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
     return (
-      <div className='filterBox'>
-        <div className='boxLeft'>
-          <input
-            type='date'
-            placeholder='开始日期'
-            value={morbidity_date}
-            onChange={e => {
-              this.setState({ morbidity_date: e.target.value })
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            className={'sel'}
+            onClick={() => {
             }}
-          />
-          <button onClick={() => this.setMedicalModesl()}>选择模板</button>
-          <button onClick={() => this.setHistroyMedicals()}>复制病历</button>
+          >
+            病历
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 2})
+              this.tipsToSave(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={this.state.pageType === 6 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
+            }}
+          >
+            其他费用
+          </span>
         </div>
-        <div className={'formList'}>
-          <div className={'formListBox'} style={{}}>
-            <ul>
-              <li style={{position: 'relative'}}>
-                <label>
-                  主述<b style={{ color: 'red' }}> *</b>
-                </label>
-                <textarea
-                  value={chief_complaint}
-                  onChange={e => {
-                    this.setState({ chief_complaint: e.target.value })
-                  }}
-                  onFocus={() => {
-                    this.setState({showComplaint: true, selComplaint: []})
-                  }}
-                />
-                {showComplaint ? this.showComplaint() : ''}
-              </li>
-              <li>
-                <label>现病史</label>
-                <textarea
-                  value={history_of_present_illness}
-                  onChange={e => {
-                    this.setState({ history_of_present_illness: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>既往史</label>
-                <textarea
-                  value={history_of_past_illness}
-                  onChange={e => {
-                    this.setState({ history_of_past_illness: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>家族史</label>
-                <textarea
-                  value={family_medical_history}
-                  onChange={e => {
-                    this.setState({ family_medical_history: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>过敏史</label>
-                <input
-                  type='text'
-                  value={allergic_history}
-                  onChange={e => {
-                    this.setState({ allergic_history: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>过敏反应</label>
-                <input
-                  type='text'
-                  value={allergic_reaction}
-                  onChange={e => {
-                    this.setState({ allergic_reaction: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>疫苗接种史</label>
-                <input
-                  type='text'
-                  value={immunizations}
-                  onChange={e => {
-                    this.setState({ immunizations: e.target.value })
-                  }}
-                />
-              </li>
-              <li style={{ height: '58px' }} />
-              <li>
-                <label>体格检查</label>
-                <textarea
-                  value={body_examination}
-                  onChange={e => {
-                    this.setState({ body_examination: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>上传文件</label>
-                <div className={'chooseFile'}>
-                  <input type='file' />
-                  <button> + 添加文件</button>
-                  <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
+        <div className='filterBox'>
+          <div className='boxLeft'>
+            <input
+              type='date'
+              placeholder='开始日期'
+              value={morbidity_date}
+              onChange={e => {
+                this.setState({ morbidity_date: e.target.value })
+              }}
+            />
+            <button onClick={() => this.setMedicalModesl()}>选择模板</button>
+            <button onClick={() => this.setHistroyMedicals()}>复制病历</button>
+          </div>
+          <div className={'formList'}>
+            <div className={'formListBox'} style={{}}>
+              <ul>
+                <li style={{position: 'relative'}}>
+                  <label>
+                    主述<b style={{ color: 'red' }}> *</b>
+                  </label>
+                  <textarea
+                    value={chief_complaint}
+                    onChange={e => {
+                      this.setState({ chief_complaint: e.target.value })
+                    }}
+                    onFocus={() => {
+                      this.setState({showComplaint: true, selComplaint: []})
+                    }}
+                  />
+                  {showComplaint ? this.showComplaint() : ''}
+                </li>
+                <li>
+                  <label>现病史</label>
+                  <textarea
+                    value={history_of_present_illness}
+                    onChange={e => {
+                      this.setState({ history_of_present_illness: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>既往史</label>
+                  <textarea
+                    value={history_of_past_illness}
+                    onChange={e => {
+                      this.setState({ history_of_past_illness: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>家族史</label>
+                  <textarea
+                    value={family_medical_history}
+                    onChange={e => {
+                      this.setState({ family_medical_history: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>过敏史</label>
+                  <input
+                    type='text'
+                    value={allergic_history}
+                    onChange={e => {
+                      this.setState({ allergic_history: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>过敏反应</label>
+                  <input
+                    type='text'
+                    value={allergic_reaction}
+                    onChange={e => {
+                      this.setState({ allergic_reaction: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>疫苗接种史</label>
+                  <input
+                    type='text'
+                    value={immunizations}
+                    onChange={e => {
+                      this.setState({ immunizations: e.target.value })
+                    }}
+                  />
+                </li>
+                <li style={{ height: '58px' }} />
+                <li>
+                  <label>体格检查</label>
+                  <textarea
+                    value={body_examination}
+                    onChange={e => {
+                      this.setState({ body_examination: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>上传文件</label>
+                  <div className={'chooseFile'}>
+                    <input type='file' />
+                    <button> + 添加文件</button>
+                    <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
+                  </div>
+                </li>
+                <li style={{position: 'relative'}}>
+                  <label>初步诊断</label>
+                  <div style={{marginTop: '15px', height: '100px'}}>
+                    <MyCreatableSelect
+                      options={this.getDiagnosisOptions()}
+                      height={100}
+                      // value={diagnosis}
+                      onChange={value => {
+                        // console.log('value====', value)
+                        let str = ''
+                        for (let i = 0; i < value.length; i++) {
+                          if (i < value.length - 1) {
+                            str += value[i].value + ','
+                          } else {
+                            str += value[i].value
+                          }
+                        }
+                        this.setState({ diagnosis: str })
+                      }}
+                      onInputChange={keyword => {
+                        // console.log('keyword=====', keyword)
+                        this.queryDictDiagnosisList(keyword)
+                      }}
+                    />
+                  </div>
+                </li>
+                <li style={{position: 'relative'}}>
+                  <a
+                    className={'chooseTemp'}
+                    style={{marginTop: '110px'}}
+                    onClick={() => {
+                      this.setState({chooseDiagnosticTemplate: true})
+                    }}
+                  >选择诊断模板</a>
+                </li>
+                <li>
+                  <label>治疗意见</label>
+                  <textarea
+                    value={cure_suggestion}
+                    onChange={e => {
+                      this.setState({ cure_suggestion: e.target.value })
+                    }}
+                  />
+                </li>
+                <li>
+                  <label>备注</label>
+                  <textarea
+                    value={remark}
+                    onChange={e => {
+                      this.setState({ remark: e.target.value })
+                    }}
+                  />
+                </li>
+              </ul>
+              <div className={'formListBottom'}>
+                <div className={'bottomCenter'}>
+                  <button
+                    className={'cancel'}
+                    onClick={() => {
+                      this.cancel()
+                    }}
+                  >
+                    取消
+                  </button>
+                  <button
+                    className={'save'}
+                    onClick={() => {
+                      this.save()
+                    }}
+                  >
+                    保存
+                  </button>
                 </div>
-              </li>
-              <li style={{position: 'relative'}}>
-                <label>初步诊断</label>
-                <textarea
-                  value={diagnosis}
-                  onFocus={e => {
-                    this.queryDictDiagnosisList(e.target.value)
-                    this.setState({ chooseDiagnosticTemplate: true, selDiagnosis: [] })
-                  }}
-                  onChange={e => {
-                    this.queryDictDiagnosisList(e.target.value)
-                    this.setState({ diagnosis: e.target.value })
-                  }}
-                />
-                {chooseDiagnosticTemplate ? this.chooseDiagnosticTemplate() : ''}
-              </li>
-              <li style={{position: 'relative'}}>
-                <a
-                  className={'chooseTemp'}
-                  onClick={() => {
-                    this.setState({chooseDiagnosticTemplate: true})
-                  }}
-                >选择诊断模板</a>
-              </li>
-              <li>
-                <label>治疗意见</label>
-                <textarea
-                  value={cure_suggestion}
-                  onChange={e => {
-                    this.setState({ cure_suggestion: e.target.value })
-                  }}
-                />
-              </li>
-              <li>
-                <label>备注</label>
-                <textarea
-                  value={remark}
-                  onChange={e => {
-                    this.setState({ remark: e.target.value })
-                  }}
-                />
-              </li>
-            </ul>
-            <div className={'formListBottom'}>
-              <div className={'bottomCenter'}>
-                <button
-                  className={'cancel'}
-                  onClick={() => {
-                    this.cancel()
-                  }}
-                >
-                  取消
-                </button>
-                <button
-                  className={'save'}
-                  onClick={() => {
-                    this.save()
-                  }}
-                >
-                  保存
-                </button>
-              </div>
-              <div className={'bottomRight'}>
-                <button
-                  onClick={() => {
-                    this.setState({ saveAsModel: true })
-                  }}
-                >
-                  存为模板
-                </button>
-                <button
-                  onClick={() => {
-                    this.setState({ saveAsModel: true })
-                  }}
-                >
-                  打印病历
-                </button>
+                <div className={'bottomRight'}>
+                  <button
+                    onClick={() => {
+                      this.setState({ saveAsModel: true })
+                    }}
+                  >
+                    存为模板
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({ saveAsModel: true })
+                    }}
+                  >
+                    打印病历
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          {this.showSaveModel()}
+          {this.showMedicalModels()}
+          {this.showHistroyMedicals()}
+          <Confirm ref='myAlert' isAlert />
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
+            </div>
+          </Confirm>
+          <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+            .filterBox {
+              flex-direction: column;
+              // margin-top: -10px;
+              margin-bottom: 50px;
+            }
+            .filterBox .boxLeft {
+              border-bottom: 1px solid #dbdbdb;
+            }
+            .filterBox .boxLeft button {
+              width: auto;
+              margin-left: 15px;
+            }
+            .formList {
+              margin: 0;
+              box-shadow: none;
+            }
+            .formListBox {
+              display: flex;
+              flex-direction: column;
+            }
+            .formList ul li {
+              margin-top: 20px;
+            }
+            .formListBox textarea {
+              width: 479px;
+              height: 60px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              resize: none;
+              margin-top: 10px;
+              border: 1px solid #d8d8d8;
+            }
+            .formListBox input {
+              width: 479px;
+              height: 30px;
+              background: rgba(245, 248, 249, 1);
+              border-radius: 4px;
+              margin-top: 10px;
+            }
+            .chooseFile {
+              // height: 66px;
+              margin-top: 42px;
+              display: flex;
+              position: relative;
+            }
+            .chooseFile input {
+              opacity: 0;
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              margin: 0;
+            }
+            .chooseFile button {
+              height: 30px;
+              width: 200px;
+              border: 1px dashed #d9d9d9;
+              border-radius: 4px;
+              background: transparent;
+              cursor: pointer;
+              color: rgba(102, 102, 102, 1);
+            }
+            .chooseFile a {
+              width: 145px;
+              height: 34px;
+              font-size: 12px;
+              font-family: PingFangSC-Regular;
+              color: rgba(102, 102, 102, 1);
+              line-height: 15px;
+              display: block;
+            }
+            .chooseTemp {
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              color: rgba(49, 176, 179, 1);
+              margin-top: 71px;
+              cursor: pointer;
+            }
+            .formListBottom {
+              width: 1000px;
+              margin: 30px auto;
+            }
+            .formListBottom .bottomCenter {
+              margin: 0 auto;
+              display: block;
+              width: 150px;
+            }
+            .formListBottom .bottomCenter button.cancel {
+              width: 70px;
+              height: 26px;
+              background: rgba(167, 167, 167, 1);
+              color: rgba(255, 255, 255, 1);
+              border-radius: 15px;
+              border: none;
+              float: left;
+              cursor: pointer;
+            }
+            .formListBottom .bottomCenter button.save {
+              width: 70px;
+              height: 26px;
+              background: rgba(49, 176, 179, 1);
+              color: rgba(255, 255, 255, 1);
+              border-radius: 15px;
+              border: none;
+              float: right;
+              cursor: pointer;
+            }
+            .formListBottom .bottomRight {
+              float: right;
+              margin-top: -23px;
+            }
+            .formListBottom .bottomRight button {
+              width: 70px;
+              height: 26px;
+              border-radius: 15px;
+              border: 1px solid #2acdc8;
+              font-size: 12px;
+              font-family: MicrosoftYaHei;
+              color: rgba(49, 176, 179, 1);
+              background: transparent;
+              margin-right: 10px;
+              cursor: pointer;
+            }
+          `}</style>
         </div>
-        {this.showSaveModel()}
-        {this.showMedicalModels()}
-        {this.showHistroyMedicals()}
-        <Confirm ref='myAlert' isAlert />
-        <style jsx='true'>{`
-          .filterBox {
-            flex-direction: column;
-            // margin-top: -10px;
-            margin-bottom: 50px;
-          }
-          .filterBox .boxLeft {
-            border-bottom: 1px solid #dbdbdb;
-          }
-          .filterBox .boxLeft button {
-            width: auto;
-            margin-left: 15px;
-          }
-          .formList {
-            margin: 0;
-            box-shadow: none;
-          }
-          .formListBox {
-            display: flex;
-            flex-direction: column;
-          }
-          .formList ul li {
-            margin-top: 20px;
-          }
-          .formListBox textarea {
-            width: 479px;
-            height: 60px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            resize: none;
-            margin-top: 10px;
-            border: 1px solid #d8d8d8;
-          }
-          .formListBox input {
-            width: 479px;
-            height: 30px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            margin-top: 10px;
-          }
-          .chooseFile {
-            // height: 66px;
-            margin-top: 42px;
-            display: flex;
-            position: relative;
-          }
-          .chooseFile input {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-          }
-          .chooseFile button {
-            height: 30px;
-            width: 200px;
-            border: 1px dashed #d9d9d9;
-            border-radius: 4px;
-            background: transparent;
-            cursor: pointer;
-            color: rgba(102, 102, 102, 1);
-          }
-          .chooseFile a {
-            width: 145px;
-            height: 34px;
-            font-size: 12px;
-            font-family: PingFangSC-Regular;
-            color: rgba(102, 102, 102, 1);
-            line-height: 15px;
-            display: block;
-          }
-          .chooseTemp {
-            font-size: 14px;
-            font-family: PingFangSC-Regular;
-            color: rgba(49, 176, 179, 1);
-            margin-top: 71px;
-            cursor: pointer;
-          }
-          .formListBottom {
-            width: 1000px;
-            margin: 30px auto;
-          }
-          .formListBottom .bottomCenter {
-            margin: 0 auto;
-            display: block;
-            width: 150px;
-          }
-          .formListBottom .bottomCenter button.cancel {
-            width: 70px;
-            height: 26px;
-            background: rgba(167, 167, 167, 1);
-            color: rgba(255, 255, 255, 1);
-            border-radius: 15px;
-            border: none;
-            float: left;
-            cursor: pointer;
-          }
-          .formListBottom .bottomCenter button.save {
-            width: 70px;
-            height: 26px;
-            background: rgba(49, 176, 179, 1);
-            color: rgba(255, 255, 255, 1);
-            border-radius: 15px;
-            border: none;
-            float: right;
-            cursor: pointer;
-          }
-          .formListBottom .bottomRight {
-            float: right;
-            margin-top: -23px;
-          }
-          .formListBottom .bottomRight button {
-            width: 70px;
-            height: 26px;
-            border-radius: 15px;
-            border: 1px solid #2acdc8;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(49, 176, 179, 1);
-            background: transparent;
-            margin-right: 10px;
-            cursor: pointer;
-          }
-        `}</style>
       </div>
     )
   }
@@ -1225,6 +1395,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList })(
-  MedicalRecordScreen
-)
+export default connect(
+  mapStateToProps,
+  { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList }
+)(MedicalRecordScreen)

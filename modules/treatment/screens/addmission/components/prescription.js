@@ -36,7 +36,8 @@ class MedicalRecordScreen extends Component {
       wPrescItemArray: [],
       selItem: 'wPresc',
       selIndex: 0,
-      showSaveWmodel: false
+      showSaveWmodel: false,
+      selPage: 2
     }
   }
 
@@ -56,7 +57,9 @@ class MedicalRecordScreen extends Component {
         data
       })
     }
-    this.setState({ wPrescItemArray, cPrescItemArray })
+    let wPrescItemArrayStr = JSON.stringify(wPrescItemArray)
+    let cPrescItemArrayStr = JSON.stringify(cPrescItemArray)
+    this.setState({ wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr })
   }
 
   ClinicDrugList(keyword, type = 0) {
@@ -288,6 +291,7 @@ class MedicalRecordScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
+      this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray) })
       return this.refs.myAlert.alert('保存成功')
     }
   }
@@ -352,11 +356,20 @@ class MedicalRecordScreen extends Component {
                           </div>
                         )
                       }}
-                      renderItem={(item, index) => {
+                      renderItem={(item, sindex) => {
                         let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
                         let packing_unit_name = item.packing_unit_name || ''
+                        let has = false
+                        for (let i = 0; i < wPrescItemArray.length; i++) {
+                          let obj = wPrescItemArray[i]
+                          if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
+                            has = true
+                            break
+                          }
+                        }
+                        if (has) return null
                         return (
-                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
                             <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
                             <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
                             <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
@@ -500,6 +513,7 @@ class MedicalRecordScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
+      this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray) })
       return this.refs.myAlert.alert('保存成功')
     }
   }
@@ -509,8 +523,8 @@ class MedicalRecordScreen extends Component {
     let array = []
     let info = {}
     if (cPrescItemArray[selIndex] !== undefined) {
-      array = cPrescItemArray[selIndex].data
-      info = cPrescItemArray[selIndex].info
+      array = cPrescItemArray[selIndex].data || []
+      info = cPrescItemArray[selIndex].info || {}
     }
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -539,16 +553,6 @@ class MedicalRecordScreen extends Component {
                 <li key={index}>
                   <div>
                     <div>
-                      {/* <Select
-                        value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions(1))}
-                        onChange={item => {
-                          this.setCItemValues(item, index)
-                        }}
-                        placeholder='名称'
-                        height={38}
-                        options={this.getDrugOptions(1)}
-                        onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
-                      /> */}
                       <CustomSelect
                         controlStyle={{ height: '38px' }}
                         value={item.clinic_drug_id || ''}
@@ -562,9 +566,9 @@ class MedicalRecordScreen extends Component {
                         }}
                         onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
                         options={this.getDrugOptions(1)}
-                        renderTitle={(item, index) => {
+                        renderTitle={(item, sindex) => {
                           return (
-                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={sindex}>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
                               <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
@@ -572,11 +576,20 @@ class MedicalRecordScreen extends Component {
                             </div>
                           )
                         }}
-                        renderItem={(item, index) => {
+                        renderItem={(item, sindex) => {
                           let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
                           let packing_unit_name = item.packing_unit_name || ''
+                          let has = false
+                          for (let i = 0; i < array.length; i++) {
+                            let obj = array[i]
+                            if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
+                              has = true
+                              break
+                            }
+                          }
+                          if (has) return null
                           return (
-                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
                               <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
@@ -1309,95 +1322,208 @@ class MedicalRecordScreen extends Component {
     }
     return {}
   }
-
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    const { changePage } = this.props
+    const { wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr } = this.state
+    if (wPrescItemArrayStr !== JSON.stringify(wPrescItemArray) || cPrescItemArrayStr !== JSON.stringify(cPrescItemArray)) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，请确认', 'Warning', () => {
+        // changePage(pageType)
+      })
+    } else {
+      changePage(pageType)
+    }
+  }
   render() {
-    const { selItem, cPrescItemArray } = this.state
-    const { medicalRecord } = this.props
+    const { selItem, cPrescItemArray, selPage } = this.state
+    const { medicalRecord, changePage } = this.props
     return (
-      <div className='filterBox' style={{ width: '1500px' }}>
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '67px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '0 65px 0px 47px' }}>
-            <div className='prescriptionLank'>
-              <div className={'prescItemParent ' + (selItem === 'wPresc' ? 'sel' : '')}>
-                <div
-                  className={'prescItem'}
-                  onClick={() => {
-                    this.setState({ selItem: 'wPresc' })
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            className={this.state.pageType === 1 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 1})
+              this.tipsToSave(1)
+            }}
+          >
+            病历
+          </span>
+          <span
+            className={'sel'}
+            onClick={() => {
+              // changePage(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={this.state.pageType === 6 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
+            }}
+          >
+            其他费用
+          </span>
+        </div>
+        <div className='filterBox' style={{ width: '1500px' }}>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '67px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '0 65px 0px 47px' }}>
+              <div className='prescriptionLank'>
+                <div className={'prescItemParent ' + (selItem === 'wPresc' ? 'sel' : '')}>
+                  <div
+                    className={'prescItem'}
+                    onClick={() => {
+                      this.setState({ selItem: 'wPresc' })
+                    }}
+                  >
+                    西/成药处方
+                  </div>
+                </div>
+                {cPrescItemArray.map((item, index) => {
+                  return (
+                    <div key={index} className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{ position: 'relative' }}>
+                      <div
+                        className={'prescItem'}
+                        onClick={() => {
+                          this.setState({ selItem: 'cPresc' + index, selIndex: index })
+                        }}
+                      >
+                        中药处方{index + 1}
+                      </div>
+                      <i onClick={() => this.removecPrescItem(index)}>×</i>
+                    </div>
+                  )
+                })}
+                <button
+                  style={{ height: '30px' }}
+                  onClick={e => {
+                    this.addChineseMedicinePres()
                   }}
                 >
-                  西/成药处方
-                </div>
+                  {' '}
+                  + 中药处方
+                </button>
               </div>
-              {cPrescItemArray.map((item, index) => {
-                return (
-                  <div key={index} className={'prescItemParent ' + (selItem === 'cPresc' + index ? 'sel' : '')} style={{ position: 'relative' }}>
-                    <div
-                      className={'prescItem'}
-                      onClick={() => {
-                        this.setState({ selItem: 'cPresc' + index, selIndex: index })
-                      }}
-                    >
-                      中药处方{index + 1}
-                    </div>
-                    <i onClick={() => this.removecPrescItem(index)}>×</i>
-                  </div>
-                )
-              })}
-              <button
-                style={{ height: '30px' }}
-                onClick={e => {
-                  this.addChineseMedicinePres()
-                }}
-              >
-                {' '}
-                + 中药处方
-              </button>
+              <div style={{ height: '67px', width: '280px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '40px' }}>
+                <button
+                  style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '17px' }}
+                  onClick={() => {
+                    if (selItem === 'wPresc') {
+                      this.PrescriptionWesternPatientModelList({})
+                      this.setState({ showWmodelList: true })
+                    } else {
+                      this.PrescriptionChinesePatientModelList({})
+                      this.setState({ showCmodelList: true })
+                    }
+                  }}
+                >
+                  选择模板
+                </button>
+                <button
+                  style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
+                  onClick={() => {
+                    this.queryReceiveRecords({})
+                    this.setState({ showHistory: true })
+                  }}
+                >
+                  复制处方
+                </button>
+              </div>
             </div>
-            <div style={{ height: '67px', width: '280px', display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '40px' }}>
-              <button
-                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '17px' }}
-                onClick={() => {
-                  if (selItem === 'wPresc') {
-                    this.PrescriptionWesternPatientModelList({})
-                    this.setState({ showWmodelList: true })
-                  } else {
-                    this.PrescriptionChinesePatientModelList({})
-                    this.setState({ showCmodelList: true })
-                  }
-                }}
-              >
-                选择模板
-              </button>
-              <button
-                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
-                onClick={() => {
-                  this.queryReceiveRecords({})
-                  this.setState({ showHistory: true })
-                }}
-              >
-                复制处方
-              </button>
+            <div className={'alergyBlank'}>
+              <div>
+                <label>过敏史</label>
+                <input readOnly type='text' value={medicalRecord.allergic_history} />
+              </div>
+              <div style={{ marginLeft: '40px' }}>
+                <label>过敏反应</label>
+                <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+              </div>
             </div>
+            {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
           </div>
-          <div className={'alergyBlank'}>
-            <div>
-              <label>过敏史</label>
-              <input readOnly type='text' value={medicalRecord.allergic_history} />
+          {this.renderSaveWModel()}
+          {this.renderWModelList()}
+          {this.renderSaveCModel()}
+          {this.renderCModelList()}
+          {this.renderHistoryList()}
+          {this.getStyle()}
+          <Confirm ref='myAlert' />
+          <Confirm ref='myConfirm' sureText={'查看'} >
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
             </div>
-            <div style={{ marginLeft: '40px' }}>
-              <label>过敏反应</label>
-              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
-            </div>
-          </div>
-          {selItem === 'wPresc' ? this.renderPrescriptionDetail() : this.renderCPrescDetail()}
+          </Confirm>
         </div>
-        {this.renderSaveWModel()}
-        {this.renderWModelList()}
-        {this.renderSaveCModel()}
-        {this.renderCModelList()}
-        {this.renderHistoryList()}
-        {this.getStyle()}
-        <Confirm ref='myAlert' />
+        <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+        `}</style>
       </div>
     )
   }
@@ -1585,18 +1711,21 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {
-  ClinicDrugList,
-  PrescriptionWesternPatientCreate,
-  PrescriptionWesternPatientGet,
-  queryRouteAdministrationList,
-  queryFrequencyList,
-  queryDoseUnitList,
-  PrescriptionChinesePatientCreate,
-  PrescriptionChinesePatientGet,
-  PrescriptionWesternPatientModelCreate,
-  PrescriptionWesternPatientModelList,
-  PrescriptionChinesePatientModelCreate,
-  PrescriptionChinesePatientModelList,
-  queryReceiveRecords
-})(MedicalRecordScreen)
+export default connect(
+  mapStateToProps,
+  {
+    ClinicDrugList,
+    PrescriptionWesternPatientCreate,
+    PrescriptionWesternPatientGet,
+    queryRouteAdministrationList,
+    queryFrequencyList,
+    queryDoseUnitList,
+    PrescriptionChinesePatientCreate,
+    PrescriptionChinesePatientGet,
+    PrescriptionWesternPatientModelCreate,
+    PrescriptionWesternPatientModelList,
+    PrescriptionChinesePatientModelCreate,
+    PrescriptionChinesePatientModelList,
+    queryReceiveRecords
+  }
+)(MedicalRecordScreen)

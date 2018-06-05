@@ -9,7 +9,9 @@ class LaboratoryScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      laboratories: []
+      laboratories: [],
+      selPage: 4,
+      laboratoriesStr: ''
     }
   }
 
@@ -17,7 +19,7 @@ class LaboratoryScreen extends Component {
     const { LaboratoryPatientGet, clinic_triage_patient_id } = this.props
     const laboratories = await LaboratoryPatientGet({ clinic_triage_patient_id })
     console.log('laboratories =====', laboratories)
-    this.setState({ laboratories })
+    this.setState({ laboratories, laboratoriesStr: JSON.stringify(laboratories) })
   }
 
   queryLaboratoryList(keyword) {
@@ -27,14 +29,25 @@ class LaboratoryScreen extends Component {
     }
   }
 
-  getNameOptions(defaultOption) {
+  getNameOptions(index) {
     const { laboratories } = this.props
+    let datas = this.state.laboratories || []
     let array = []
     for (let key in laboratories) {
       const { clinic_laboratory_id, laboratory_name } = laboratories[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_laboratory_id === clinic_laboratory_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_laboratory_id,
-        label: laboratory_name
+        label: laboratory_name,
+        ...laboratories[key]
       })
     }
     return array
@@ -73,8 +86,8 @@ class LaboratoryScreen extends Component {
   }
 
   async submit() {
-    const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
-    const { laboratories } = this.state
+    const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { laboratories, selPage } = this.state
     console.log('laboratories ========', laboratories)
     let items = []
     for (let item of laboratories) {
@@ -93,7 +106,13 @@ class LaboratoryScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
-      return this.refs.myAlert.alert('保存成功')
+      if (selPage !== 4) {
+        this.refs.myAlert.alert('保存成功')
+        changePage(selPage)
+      } else {
+        this.setState({laboratoriesStr: JSON.stringify(laboratories)})
+        return this.refs.myAlert.alert('保存成功')
+      }
     }
   }
 
@@ -433,98 +452,211 @@ class LaboratoryScreen extends Component {
       </style>
     )
   }
-
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    const {changePage} = this.props
+    const {laboratories, laboratoriesStr} = this.state
+    // console.log('othercostsStr==', othercostsStr)
+    if (JSON.stringify(laboratories) !== laboratoriesStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.submit()
+      })
+    } else {
+      changePage(pageType)
+    }
+  }
   render() {
-    const { laboratories } = this.state
-    const { medicalRecord } = this.props
+    const { laboratories, selPage } = this.state
+    const { medicalRecord, changePage } = this.props
     return (
-      <div className='filterBox'>
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <button
-              style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
-              onClick={() => {
-                this.LaboratoryPatientModelList({})
-                this.setState({ showModelList: true })
-              }}
-            >
-              选择模板
-            </button>
-          </div>
-          <div className={'alergyBlank'}>
-            <div>
-              <label>过敏史</label>
-              <input readOnly type='text' value={medicalRecord.allergic_history} />
-            </div>
-            <div style={{ marginLeft: '40px' }}>
-              <label>过敏反应</label>
-              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
-            </div>
-          </div>
-          <div className='tableDIV'>
-            <ul>
-              <li>
-                <div>名称</div>
-                <div>次数</div>
-                <div>说明</div>
-                <div>
-                  <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
-                    新增
-                  </div>
-                </div>
-              </li>
-              {laboratories.map((item, index) => {
-                let nameOptions = this.getNameOptions(laboratories[index])
-                return (
-                  <li key={index}>
-                    <div>
-                      <div style={{ width: '100%' }}>
-                        <Select
-                          value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
-                          onChange={({ value, label }) => {
-                            this.setItemValue(value, index, 'clinic_laboratory_id', 2)
-                            this.setItemValue(label, index, 'name', 2)
-                          }}
-                          placeholder='搜索名称'
-                          height={38}
-                          onInputChange={keyword => this.queryLaboratoryList(keyword)}
-                          options={nameOptions}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
-                    </div>
-                    <div>
-                      <input value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
-                    </div>
-                    <div>
-                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                        删除
-                      </div>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-          <div className='formListBottom'>
-            <div className={'bottomCenter'}>
-              <button className={'cancel'}>取消</button>
-              <button className={'save'} onClick={() => this.submit()}>
-                保存
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            onClick={() => {
+              this.setState({selPage: 1})
+              this.tipsToSave(1)
+            }}
+          >
+            病历
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 2})
+              this.tipsToSave(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={'sel'}
+            onClick={() => {
+              // changePage(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={this.state.pageType === 6 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
+            }}
+          >
+            其他费用
+          </span>
+        </div>
+        <div className='filterBox'>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <button
+                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
+                onClick={() => {
+                  this.LaboratoryPatientModelList({})
+                  this.setState({ showModelList: true })
+                }}
+              >
+                选择模板
               </button>
             </div>
-            <div className={'bottomRight'}>
-              {/* <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button> */}
-              <button>打印申请单</button>
+            <div className={'alergyBlank'}>
+              <div>
+                <label>过敏史</label>
+                <input readOnly type='text' value={medicalRecord.allergic_history} />
+              </div>
+              <div style={{ marginLeft: '40px' }}>
+                <label>过敏反应</label>
+                <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+              </div>
+            </div>
+            <div className='tableDIV'>
+              <ul>
+                <li>
+                  <div>名称</div>
+                  <div>次数</div>
+                  <div>说明</div>
+                  <div>
+                    <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
+                      新增
+                    </div>
+                  </div>
+                </li>
+                {laboratories.map((item, index) => {
+                  let nameOptions = this.getNameOptions(index)
+                  return (
+                    <li key={index}>
+                      <div>
+                        <div style={{ width: '100%' }}>
+                          <Select
+                            value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
+                            onChange={({ value, label }) => {
+                              this.setItemValue(value, index, 'clinic_laboratory_id', 2)
+                              this.setItemValue(label, index, 'name', 2)
+                            }}
+                            placeholder='搜索名称'
+                            height={38}
+                            onInputChange={keyword => this.queryLaboratoryList(keyword)}
+                            options={nameOptions}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                      </div>
+                      <div>
+                        <input value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                      </div>
+                      <div>
+                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                          删除
+                        </div>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+            <div className='formListBottom'>
+              <div className={'bottomCenter'}>
+                <button className={'cancel'}>取消</button>
+                <button className={'save'} onClick={() => this.submit()}>
+                  保存
+                </button>
+              </div>
+              <div className={'bottomRight'}>
+                {/* <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button> */}
+                <button>打印申请单</button>
+              </div>
             </div>
           </div>
+          {this.getStyle()}
+          {this.renderSaveModel()}
+          {this.renderModelList()}
+          <Confirm ref='myAlert' />
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
+            </div>
+          </Confirm>
         </div>
-        {this.getStyle()}
-        {this.renderSaveModel()}
-        {this.renderModelList()}
-        <Confirm ref='myAlert' />
+        <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+        `}</style>
       </div>
     )
   }

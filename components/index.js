@@ -8,6 +8,7 @@ import Select from './Select'
 import Confirm from './Confirm'
 import MyTree from './Tree'
 import CustomSelect from './CustomSelect'
+import MyCreatableSelect from './CreatableSelect'
 
 export {
   Loading,
@@ -19,5 +20,6 @@ export {
   Select,
   Confirm,
   MyTree,
-  CustomSelect
+  CustomSelect,
+  MyCreatableSelect
 }

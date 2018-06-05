@@ -8,14 +8,16 @@ class MaterialScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      eaterials: []
+      eaterials: [],
+      selPage: 6,
+      eaterialsStr: ''
     }
   }
 
   async componentDidMount() {
     const { MaterialPatientGet, clinic_triage_patient_id } = this.props
     const eaterials = await MaterialPatientGet({ clinic_triage_patient_id })
-    this.setState({ eaterials })
+    this.setState({ eaterials, eaterialsStr: JSON.stringify(eaterials) })
   }
 
   queryMaterialList(keyword) {
@@ -25,11 +27,21 @@ class MaterialScreen extends Component {
     }
   }
 
-  getNameOptions() {
+  getNameOptions(index) {
     const { materials } = this.props
+    let datas = this.state.eaterials || []
     let array = []
     for (let key in materials) {
       const { clinic_material_id, name } = materials[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_material_id === clinic_material_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_material_id,
         label: name,
@@ -79,8 +91,8 @@ class MaterialScreen extends Component {
   }
 
   async submit() {
-    const { MaterialPatientCreate, personnel_id, clinic_triage_patient_id } = this.props
-    const { eaterials } = this.state
+    const { MaterialPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { eaterials, selPage } = this.state
     let items = []
     for (let item of eaterials) {
       let obj = {}
@@ -97,99 +109,218 @@ class MaterialScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
-      return this.refs.myAlert.alert('保存成功')
+      if (selPage !== 6) {
+        this.refs.myAlert.alert('保存成功')
+        changePage(selPage)
+      } else {
+        this.setState({eaterialsStr: JSON.stringify(eaterials)})
+        return this.refs.myAlert.alert('保存成功')
+      }
     }
   }
-
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    // console.log('pageType====', pageType)
+    const {changePage} = this.props
+    const {eaterials, eaterialsStr} = this.state
+    if (JSON.stringify(eaterials) !== eaterialsStr) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+        this.submit()
+      })
+    } else {
+      changePage(pageType)
+    }
+  }
   render() {
-    const { eaterials } = this.state
-    const { medicalRecord } = this.props
+    const { eaterials, selPage } = this.state
+    const { medicalRecord, changePage } = this.props
     return (
-      <div className='filterBox'>
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} />
-          <div className={'alergyBlank'}>
-            <div>
-              <label>过敏史</label>
-              <input readOnly type='text' value={medicalRecord.allergic_history} />
-            </div>
-            <div style={{ marginLeft: '40px' }}>
-              <label>过敏反应</label>
-              <input readOnly type='text' value={medicalRecord.allergic_reaction} />
-            </div>
-          </div>
-          <div className='tableDIV'>
-            <ul>
-              <li>
-                <div>名称</div>
-                <div>规格</div>
-                <div>单位</div>
-                <div>库存</div>
-                <div>次数</div>
-                <div>说明</div>
-                <div>
-                  <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
-                    新增
-                  </div>
-                </div>
-              </li>
-              {eaterials.map((item, index) => {
-                let nameOptions = this.getNameOptions()
-                return (
-                  <li key={index}>
-                    <div>
-                      <div style={{ width: '100%' }}>
-                        <Select
-                          value={this.getSelectValue(item.clinic_material_id, nameOptions)}
-                          onChange={(item) => {
-                            this.setItemValues(item, index)
-                          }}
-                          placeholder='搜索名称'
-                          height={38}
-                          onInputChange={keyword => this.queryMaterialList(keyword)}
-                          options={nameOptions}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <input readOnly value={item.specification || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
-                    </div>
-                    <div>
-                      <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
-                    </div>
-                    <div>
-                      <input readOnly value={item.stock_amount || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
-                    </div>
-                    <div>
-                      <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
-                    </div>
-                    <div>
-                      <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
-                    </div>
-                    <div>
-                      <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                        删除
-                      </div>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-          <div className='formListBottom'>
-            <div className={'bottomCenter'}>
-              <button className={'cancel'}>取消</button>
-              <button className={'save'} onClick={() => this.submit()}>
-                保存
-              </button>
-            </div>
-            <div className={'bottomRight'}>
-              <button>打印清单</button>
-            </div>
-          </div>
+      <div>
+        <div className={'childTopBar'}>
+          <span
+            onClick={() => {
+              this.setState({selPage: 1})
+              this.tipsToSave(1)
+            }}
+          >
+            病历
+          </span>
+          <span
+            className={this.state.pageType === 2 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 2})
+              this.tipsToSave(2)
+            }}
+          >
+            处方
+          </span>
+          <span
+            className={this.state.pageType === 3 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 3})
+              this.tipsToSave(3)
+            }}
+          >
+            治疗
+          </span>
+          <span
+            className={this.state.pageType === 4 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 4})
+              this.tipsToSave(4)
+            }}
+          >
+            检验
+          </span>
+          <span
+            className={this.state.pageType === 5 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 5})
+              this.tipsToSave(5)
+            }}
+          >
+            检查
+          </span>
+          <span
+            className={'sel'}
+            onClick={() => {
+              this.setState({selPage: 6})
+              this.tipsToSave(6)
+            }}
+          >
+            材料费
+          </span>
+          <span
+            className={this.state.pageType === 7 ? 'sel' : ''}
+            onClick={() => {
+              this.setState({selPage: 7})
+              this.tipsToSave(7)
+            }}
+          >
+            其他费用
+          </span>
         </div>
-        {this.getStyle()}
-        <Confirm ref='myAlert' />
+        <div className='filterBox'>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} />
+            <div className={'alergyBlank'}>
+              <div>
+                <label>过敏史</label>
+                <input readOnly type='text' value={medicalRecord.allergic_history} />
+              </div>
+              <div style={{ marginLeft: '40px' }}>
+                <label>过敏反应</label>
+                <input readOnly type='text' value={medicalRecord.allergic_reaction} />
+              </div>
+            </div>
+            <div className='tableDIV'>
+              <ul>
+                <li>
+                  <div>名称</div>
+                  <div>规格</div>
+                  <div>单位</div>
+                  <div>库存</div>
+                  <div>次数</div>
+                  <div>说明</div>
+                  <div>
+                    <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
+                      新增
+                    </div>
+                  </div>
+                </li>
+                {eaterials.map((item, index) => {
+                  let nameOptions = this.getNameOptions(index)
+                  return (
+                    <li key={index}>
+                      <div>
+                        <div style={{ width: '100%' }}>
+                          <Select
+                            value={this.getSelectValue(item.clinic_material_id, nameOptions)}
+                            onChange={(item) => {
+                              this.setItemValues(item, index)
+                            }}
+                            placeholder='搜索名称'
+                            height={38}
+                            onInputChange={keyword => this.queryMaterialList(keyword)}
+                            options={nameOptions}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <input readOnly value={item.specification || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'specification')} />
+                      </div>
+                      <div>
+                        <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
+                      </div>
+                      <div>
+                        <input readOnly value={item.stock_amount || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
+                      </div>
+                      <div>
+                        <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
+                      </div>
+                      <div>
+                        <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                      </div>
+                      <div>
+                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                          删除
+                        </div>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+            <div className='formListBottom'>
+              <div className={'bottomCenter'}>
+                <button className={'cancel'}>取消</button>
+                <button className={'save'} onClick={() => this.submit()}>
+                  保存
+                </button>
+              </div>
+              <div className={'bottomRight'}>
+                <button>打印清单</button>
+              </div>
+            </div>
+          </div>
+          {this.getStyle()}
+          <Confirm ref='myAlert' />
+          <Confirm ref='myConfirm' sureText={'保存'}>
+            <div
+              className={`buttonDiv buttonDivCancel`}
+              onClick={() => {
+                changePage(selPage)
+              }}
+            >
+              <span className={`cancel`}>不保存</span>
+            </div>
+          </Confirm>
+        </div>
+        <style jsx='true'>{`
+            .buttonDiv {
+              width: 63px;
+              height: 30px;
+              border-radius: 4px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-left: 8px;
+            }
+            .buttonDivCancel {
+              background: rgba(255, 255, 255, 1);
+              border: 1px solid #d9d9d9;
+            }
+            .buttonDiv span {
+              height: 22px;
+              font-size: 14px;
+              font-family: PingFangSC-Regular;
+              line-height: 22px;
+            }
+            .cancel {
+              color: rgba(0, 0, 0, 0.65);
+            }
+        `}</style>
       </div>
     )
   }
