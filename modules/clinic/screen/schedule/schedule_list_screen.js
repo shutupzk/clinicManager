@@ -184,6 +184,7 @@ class ScheduleListScreen extends Component {
     const { scheduleDoctors, page_info, canOverride, needOpen } = this.props
     // console.log('scheduleDoctors====', scheduleDoctors)
     let today = moment().format('YYYY-MM-DD')
+    let hh = moment().hours()
     const weekTds = this.getWeekTds()
     return (
       <div className={''}>
@@ -258,7 +259,7 @@ class ScheduleListScreen extends Component {
                           <td>{item.personnel_name}</td>
                           <td>{item.department_name}</td>
                           {array.map(({ daySchedule, visit_date }, index) => (
-                            <td key={index}>
+                            <td key={index} style={{ background: today === visit_date ? 'antiquewhite' : '#FFFFFF' }}>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span
                                   style={{
@@ -267,8 +268,7 @@ class ScheduleListScreen extends Component {
                                   }}>
                                   <label>
                                     <input
-                                      disabled={visit_date < today}
-                                      readOnly={!!daySchedule.am.stop_flag || visit_date < today}
+                                      disabled={visit_date < today || (today === visit_date && hh > 11)}
                                       type='checkbox'
                                       checked={!!daySchedule.am.doctor_visit_schedule_id && !daySchedule.am.stop_flag}
                                       onChange={e => {
@@ -304,8 +304,7 @@ class ScheduleListScreen extends Component {
                                   style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag ? '#2ACDC8' : '#999999' }}>
                                   <label>
                                     <input
-                                      disabled={visit_date < today}
-                                      readOnly={!!daySchedule.pm.stop_flag || visit_date < today}
+                                      disabled={visit_date < today || (today === visit_date && hh > 17)}
                                       type='checkbox'
                                       checked={!!daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag}
                                       onChange={e => {

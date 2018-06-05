@@ -29,15 +29,25 @@ class ExamineScreen extends Component {
     }
   }
 
-  getNameOptions() {
+  getNameOptions(index) {
     const { examinations } = this.props
     let array = []
+    let datas = this.state.examines || []
     for (let key in examinations) {
-      const { clinic_examination_id, name, organ } = examinations[key]
+      const { clinic_examination_id, name } = examinations[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_examination_id === clinic_examination_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_examination_id,
         label: name,
-        organ
+        ...examinations[key]
       })
     }
     return array
@@ -347,7 +357,7 @@ class ExamineScreen extends Component {
                 </div>
               </li>
               {examines.map((item, index) => {
-                let nameOptions = this.getNameOptions()
+                let nameOptions = this.getNameOptions(index)
                 return (
                   <li key={index}>
                     <div>

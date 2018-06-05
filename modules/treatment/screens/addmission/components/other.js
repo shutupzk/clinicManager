@@ -25,11 +25,21 @@ class OtherScreen extends Component {
     }
   }
 
-  getNameOptions() {
+  getNameOptions(index) {
     const { otherCostS } = this.props
     let array = []
+    let datas = this.state.othercosts || []
     for (let key in otherCostS) {
       const { name, clinic_other_cost_id } = otherCostS[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_other_cost_id === clinic_other_cost_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_other_cost_id,
         label: name,
@@ -137,7 +147,7 @@ class OtherScreen extends Component {
                 </div>
               </li>
               {othercosts.map((item, index) => {
-                let nameOptions = this.getNameOptions()
+                let nameOptions = this.getNameOptions(index)
                 return (
                   <li key={index}>
                     <div>

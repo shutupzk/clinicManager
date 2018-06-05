@@ -352,11 +352,20 @@ class MedicalRecordScreen extends Component {
                           </div>
                         )
                       }}
-                      renderItem={(item, index) => {
+                      renderItem={(item, sindex) => {
                         let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
                         let packing_unit_name = item.packing_unit_name || ''
+                        let has = false
+                        for (let i = 0; i < wPrescItemArray.length; i++) {
+                          let obj = wPrescItemArray[i]
+                          if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
+                            has = true
+                            break
+                          }
+                        }
+                        if (has) return null
                         return (
-                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
                             <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
                             <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
                             <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
@@ -509,8 +518,8 @@ class MedicalRecordScreen extends Component {
     let array = []
     let info = {}
     if (cPrescItemArray[selIndex] !== undefined) {
-      array = cPrescItemArray[selIndex].data
-      info = cPrescItemArray[selIndex].info
+      array = cPrescItemArray[selIndex].data || []
+      info = cPrescItemArray[selIndex].info || {}
     }
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -539,16 +548,6 @@ class MedicalRecordScreen extends Component {
                 <li key={index}>
                   <div>
                     <div>
-                      {/* <Select
-                        value={this.getSelectValue(item.clinic_drug_id, this.getDrugOptions(1))}
-                        onChange={item => {
-                          this.setCItemValues(item, index)
-                        }}
-                        placeholder='名称'
-                        height={38}
-                        options={this.getDrugOptions(1)}
-                        onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
-                      /> */}
                       <CustomSelect
                         controlStyle={{ height: '38px' }}
                         value={item.clinic_drug_id || ''}
@@ -562,9 +561,9 @@ class MedicalRecordScreen extends Component {
                         }}
                         onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
                         options={this.getDrugOptions(1)}
-                        renderTitle={(item, index) => {
+                        renderTitle={(item, sindex) => {
                           return (
-                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={sindex}>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
                               <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
@@ -572,11 +571,20 @@ class MedicalRecordScreen extends Component {
                             </div>
                           )
                         }}
-                        renderItem={(item, index) => {
+                        renderItem={(item, sindex) => {
                           let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
                           let packing_unit_name = item.packing_unit_name || ''
+                          let has = false
+                          for (let i = 0; i < array.length; i++) {
+                            let obj = array[i]
+                            if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
+                              has = true
+                              break
+                            }
+                          }
+                          if (has) return null
                           return (
-                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={index}>
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
                               <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
                               <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
@@ -1585,18 +1593,21 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {
-  ClinicDrugList,
-  PrescriptionWesternPatientCreate,
-  PrescriptionWesternPatientGet,
-  queryRouteAdministrationList,
-  queryFrequencyList,
-  queryDoseUnitList,
-  PrescriptionChinesePatientCreate,
-  PrescriptionChinesePatientGet,
-  PrescriptionWesternPatientModelCreate,
-  PrescriptionWesternPatientModelList,
-  PrescriptionChinesePatientModelCreate,
-  PrescriptionChinesePatientModelList,
-  queryReceiveRecords
-})(MedicalRecordScreen)
+export default connect(
+  mapStateToProps,
+  {
+    ClinicDrugList,
+    PrescriptionWesternPatientCreate,
+    PrescriptionWesternPatientGet,
+    queryRouteAdministrationList,
+    queryFrequencyList,
+    queryDoseUnitList,
+    PrescriptionChinesePatientCreate,
+    PrescriptionChinesePatientGet,
+    PrescriptionWesternPatientModelCreate,
+    PrescriptionWesternPatientModelList,
+    PrescriptionChinesePatientModelCreate,
+    PrescriptionChinesePatientModelList,
+    queryReceiveRecords
+  }
+)(MedicalRecordScreen)

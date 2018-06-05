@@ -25,11 +25,21 @@ class MaterialScreen extends Component {
     }
   }
 
-  getNameOptions() {
+  getNameOptions(index) {
     const { materials } = this.props
+    let datas = this.state.eaterials || []
     let array = []
     for (let key in materials) {
       const { clinic_material_id, name } = materials[key]
+      let has = false
+      for (let i = 0; i < datas.length; i++) {
+        let obj = datas[i]
+        if (obj.clinic_material_id === clinic_material_id && index !== i) {
+          has = true
+          break
+        }
+      }
+      if (has) continue
       array.push({
         value: clinic_material_id,
         label: name,
@@ -134,7 +144,7 @@ class MaterialScreen extends Component {
                 </div>
               </li>
               {eaterials.map((item, index) => {
-                let nameOptions = this.getNameOptions()
+                let nameOptions = this.getNameOptions(index)
                 return (
                   <li key={index}>
                     <div>
