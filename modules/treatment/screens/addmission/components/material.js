@@ -300,31 +300,6 @@ class MaterialScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-<<<<<<< HEAD
-          .buttonDiv {
-            width: 63px;
-            height: 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 8px;
-          }
-          .buttonDivCancel {
-            background: rgba(255, 255, 255, 1);
-            border: 1px solid #d9d9d9;
-          }
-          .buttonDiv span {
-            height: 22px;
-            font-size: 14px;
-            font-family: PingFangSC-Regular;
-            line-height: 22px;
-          }
-          .cancel {
-            color: rgba(0, 0, 0, 0.65);
-          }
-=======
           .childTopBar{
             display: flex;
             margin-left: 65px;
@@ -356,7 +331,6 @@ class MaterialScreen extends Component {
             .cancel {
               color: rgba(0, 0, 0, 0.65);
             }
->>>>>>> 21118ff4adbf00cd9a5209b59f6d543cf1d2df54
         `}</style>
       </div>
     )
