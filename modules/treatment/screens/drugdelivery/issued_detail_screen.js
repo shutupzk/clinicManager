@@ -349,8 +349,8 @@ class IssuedDetailDrugScreen extends Component {
             <span onClick={() => this.setState({ pageType: 1 })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
-            <div style={{ margin: '20px 0 20px 0' }}>
-              <ul style={{ background: '#efeaea' }}>
+            <div style={{ margin: '32px 0 0 0' }}>
+              <ul style={{ background: '#F7F7F7' }}>
                 <li>就诊日期</li>
                 <li>发药时间</li>
                 <li>接诊医生</li>
@@ -370,7 +370,7 @@ class IssuedDetailDrugScreen extends Component {
                     <li>{doctor_name}</li>
                     <li>{opration_name}</li>
                     <li>{project_name} ...</li>
-                    <li style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }} onClick={() => this.showRecordDetail(item.drug_delivery_record_id)}>
+                    <li style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }} onClick={() => this.showRecordDetail(item.drug_delivery_record_id)}>
                       查看详情
                     </li>
                   </ul>
@@ -391,26 +391,29 @@ class IssuedDetailDrugScreen extends Component {
         <style jsx='true'>{`
           .meical_nodel_item {
             width: 90%;
-            margin: 22px 5% 0 5%;
+            margin: 32px 5% 0 5%;
             padding: 0;
           }
           .meical_nodel_item div {
             width: 100%;
-            height: 20px;
-            border: 1px solid #d8d8d8;
-            margin-top: 10px;
+            border:1px solid rgba(233,233,233,1);
+            border-bottom: none;
           }
 
           .meical_nodel_item ul {
             display: flex;
+            height: 38px;
+            background:rgba(255,255,255,1);
+            align-items: center
           }
 
           .meical_nodel_item ul li {
+            height: 38px;
+            line-height: 40px;
             margin:0;
-            border-right: 1px solid #d8d8d8;
+            border-right: 1px dashed rgba(217,217,217,1);
             float: left;
             flex:2
-            height: 20px;
             text-align: center;
           }
 

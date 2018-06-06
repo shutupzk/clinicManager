@@ -56,11 +56,24 @@ class MedicalRecordScreen extends Component {
     this.setState({ ...this.state, ...record, recordStr })
   }
 
-  save() {
-    let { chief_complaint, selPage } = this.state
+  async save() {
+    let { chief_complaint, selPage, diagnosis } = this.state
     let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id, changePage } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
-    this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
+    // this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
+    // })
+    if (diagnosis === '') {
+      this.refs.myAlert.confirm('初步诊断为空，请确认是否保存？', '', 'Success', async () => {
+        let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+        if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
+        else {
+          this.refs.myAlert.alert('保存病历成功！')
+          if (selPage !== 1) {
+            changePage(selPage)
+          }
+        }
+      })
+    } else {
       let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
@@ -69,7 +82,7 @@ class MedicalRecordScreen extends Component {
           changePage(selPage)
         }
       }
-    })
+    }
   }
 
   saveAsModel() {
