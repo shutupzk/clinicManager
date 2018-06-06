@@ -276,7 +276,13 @@ class MedicalRecordScreen extends Component {
     const { PrescriptionWesternPatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { wPrescItemArray } = this.state
     let items = []
+    let hasNoStockAmount = false
     for (let item of wPrescItemArray) {
+      const { stock_amount, fetch_address } = item
+      if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
+        hasNoStockAmount = true
+        break
+      }
       let obj = {}
       for (let key in item) {
         if (item[key] === 0) {
@@ -286,6 +292,9 @@ class MedicalRecordScreen extends Component {
         }
       }
       items.push(obj)
+    }
+    if (hasNoStockAmount) {
+      return this.refs.myAlert.alert('保存失败', '库存为0的项目, 取药地点不能为本诊所')
     }
     let error = await PrescriptionWesternPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
@@ -383,7 +392,7 @@ class MedicalRecordScreen extends Component {
                 <div style={{ flex: 3 }}>{item.specification}</div>
                 <div style={{ flex: 2 }}>{stock_amount + ' ' + packing_unit_name}</div>
                 <div style={{ flex: 2 }}>
-                  <input value={item.once_dose === undefined ? '' : item.once_dose} type='number' onChange={e => this.setWItemValue(e, index, 'once_dose')} />
+                  <input value={item.once_dose || ''} type='number' onChange={e => this.setWItemValue(e, index, 'once_dose')} />
                 </div>
                 <div style={{ flex: 3 }}>
                   <Select
@@ -422,10 +431,10 @@ class MedicalRecordScreen extends Component {
                   </div>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <input value={item.eff_day === undefined ? '' : item.eff_day} type='number' onChange={e => this.setWItemValue(e, index, 'eff_day')} />
+                  <input value={item.eff_day || ''} type='number' onChange={e => this.setWItemValue(e, index, 'eff_day')} />
                 </div>
                 <div style={{ flex: 2 }}>
-                  <input value={item.amount === undefined ? '' : item.amount} type='number' onChange={e => this.setWItemValue(e, index, 'amount')} />
+                  <input value={item.amount || ''} type='number' onChange={e => this.setWItemValue(e, index, 'amount')} />
                 </div>
                 <div style={{ flex: 2 }}>{item.packing_unit_name}</div>
                 <div style={{ flex: 3 }}>
@@ -496,9 +505,17 @@ class MedicalRecordScreen extends Component {
     const { PrescriptionChinesePatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { selIndex, cPrescItemArray } = this.state
     let info = cPrescItemArray[selIndex].info
+    console.log(info)
+    const { fetch_address } = info
     let array = cPrescItemArray[selIndex].data
     let items = []
+    let hasNoStockAmount = false
     for (let item of array) {
+      const { stock_amount } = item
+      if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
+        hasNoStockAmount = true
+        break
+      }
       let obj = {}
       for (let key in item) {
         if (item[key] === 0) {
@@ -509,11 +526,16 @@ class MedicalRecordScreen extends Component {
       }
       items.push(obj)
     }
-    let error = await PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
+    if (hasNoStockAmount) {
+      return this.refs.myAlert.alert('保存失败', '库存为0的项目, 取药地点不能为本诊所')
+    }
+    let { error, id } = await PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
-      this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray) })
+      cPrescItemArray[selIndex].info.id = id
+      console.log('cPrescItemArray[selIndex].info =======', cPrescItemArray[selIndex].info)
+      this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray), cPrescItemArray })
       return this.refs.myAlert.alert('保存成功')
     }
   }
@@ -602,7 +624,7 @@ class MedicalRecordScreen extends Component {
                   </div>
                   <div>{stock_amount + ' ' + packing_unit_name}</div>
                   <div>
-                    <input value={item.once_dose === undefined ? '' : item.once_dose} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
+                    <input value={item.once_dose || ''} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
                   </div>
                   <div>
                     {item.once_dose_unit_id ? (
@@ -621,7 +643,7 @@ class MedicalRecordScreen extends Component {
                     )}
                   </div>
                   <div>
-                    <input value={item.special_illustration === undefined ? '' : item.special_illustration} type='text' onChange={e => this.setCItemValue(e, index, 'special_illustration')} />
+                    <input value={item.special_illustration || ''} type='text' onChange={e => this.setCItemValue(e, index, 'special_illustration')} />
                   </div>
                   <div>{item.amount}</div>
                   <div
@@ -663,7 +685,7 @@ class MedicalRecordScreen extends Component {
                 </div>
               </div>
               <div>
-                <input value={info.eff_day === undefined ? '' : info.eff_day} type='number' onChange={e => this.setCInfoValue(e, 'eff_day')} />
+                <input value={info.eff_day || ''} type='number' onChange={e => this.setCInfoValue(e, 'eff_day')} />
               </div>
               <div>
                 <input
@@ -700,7 +722,7 @@ class MedicalRecordScreen extends Component {
                 </div>
               </div>
               <div>
-                <input value={info.medicine_illustration === undefined ? '' : info.medicine_illustration} type='text' onChange={e => this.setCInfoValue(e, 'medicine_illustration')} />
+                <input value={info.medicine_illustration || ''} type='text' onChange={e => this.setCInfoValue(e, 'medicine_illustration')} />
               </div>
             </li>
           </ul>

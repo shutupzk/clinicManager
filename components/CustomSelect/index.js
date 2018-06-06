@@ -113,7 +113,6 @@ export default class CustomSelect extends Component {
   render() {
     const { onInputChange, controlStyle, placeholder, mustOptionValue } = this.props
     const { onMouseOver, showOptions, label } = this.state
-    console.log('label ===========', label)
     let marginTop = controlStyle.marginTop || '0px'
     return (
       <div
