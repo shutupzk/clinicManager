@@ -10,7 +10,8 @@ import {
   queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
   queryChiefComplaints,
-  queryDictDiagnosisList
+  queryDictDiagnosisList,
+  FileUpload
 } from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
@@ -42,7 +43,8 @@ class MedicalRecordScreen extends Component {
       determineComplaint: [],
       chooseDiagnosticTemplate: false,
       selDiagnosis: [],
-      selPage: 1
+      selPage: 1,
+      uploadedFiles: []
     }
   }
 
@@ -917,8 +919,8 @@ class MedicalRecordScreen extends Component {
       newJSON[key] = this.state[key]
     }
     let jsonStr = JSON.stringify(newJSON)
-    console.log(recordStr)
-    console.log(jsonStr)
+    // console.log(recordStr)
+    // console.log(jsonStr)
     const { changePage } = this.props
     if (jsonStr !== recordStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
@@ -926,6 +928,63 @@ class MedicalRecordScreen extends Component {
       })
     } else {
       changePage(selPage)
+    }
+  }
+  // 显示上传的文件
+  renderFiles() {
+    const {uploadedFiles} = this.state
+    console.log('uploadedFiles==', uploadedFiles)
+    if (uploadedFiles.length === 0) {
+      return null
+    } else {
+      return (
+        <div className={'filesBox'}>
+          <ul>
+            {uploadedFiles.map((item, index) => {
+              return (
+                <li key={index}>
+                  {item.docName}
+                  <span>×</span>
+                </li>
+              )
+            })}
+          </ul>
+          <style jsx>{`
+            .filesBox{
+
+            }
+            .filesBox ul{
+
+            }
+            .filesBox ul li {
+              position:relative;
+            }
+            .filesBox ul li span{
+
+            }
+          `}</style>
+        </div>
+      )
+    }
+  }
+  // 上传文件
+  async FileUpload(files) {
+    const {FileUpload} = this.props
+    const {uploadedFiles} = this.state
+    let array = uploadedFiles
+    if (files) {
+      let file = new FormData()
+      console.log('files===', files)
+      file.append('file', files[0])
+      let url = await FileUpload(file)
+      if (url) {
+        let item = {
+          docName: files[0].name,
+          url
+        }
+        array.push(item)
+        this.setState({uploadedFiles: array})
+      }
     }
   }
   render() {
@@ -1114,8 +1173,14 @@ class MedicalRecordScreen extends Component {
                 </li>
                 <li>
                   <label>上传文件</label>
+                  {this.renderFiles()}
                   <div className={'chooseFile'}>
-                    <input type='file' />
+                    <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
+                      <input type='file' onChange={e => {
+                        // console.log('文件=====', e.target.files)
+                        this.FileUpload(e.target.files)
+                      }} />
+                    </form>
                     <button> + 添加文件</button>
                     <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
                   </div>
@@ -1405,5 +1470,14 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList }
+  {
+    createMedicalRecord,
+    queryMedicalRecord,
+    createMedicalRecordAsModel,
+    queryMedicalModelsByDoctor,
+    queryMedicalsByPatient,
+    queryChiefComplaints,
+    queryDictDiagnosisList,
+    FileUpload
+  }
 )(MedicalRecordScreen)

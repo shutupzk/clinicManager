@@ -136,7 +136,7 @@ import {
   queryDrugDeliveryRefundRecordDetail
 } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
-
+import {FileUpload} from './files'
 // keys
 export {
   user,
@@ -370,5 +370,6 @@ export {
   DiagnosisTreatmentPatientCreate,
   drugDeliveryRecover,
   queryDrugDeliveryRefundRecordList,
-  queryDrugDeliveryRefundRecordDetail
+  queryDrugDeliveryRefundRecordDetail,
+  FileUpload
 }
