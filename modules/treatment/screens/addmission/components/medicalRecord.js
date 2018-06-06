@@ -10,7 +10,8 @@ import {
   queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
   queryChiefComplaints,
-  queryDictDiagnosisList
+  queryDictDiagnosisList,
+  FileUpload
 } from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
@@ -42,7 +43,8 @@ class MedicalRecordScreen extends Component {
       determineComplaint: [],
       chooseDiagnosticTemplate: false,
       selDiagnosis: [],
-      selPage: 1
+      selPage: 1,
+      uploadedFiles: []
     }
   }
 
@@ -301,6 +303,13 @@ class MedicalRecordScreen extends Component {
             <span>选择病历模板</span>
             <div style={{ float: 'left', marginLeft: '20%' }}>
               <input
+                style={{
+                  width: '140px',
+                  borderRadius: '4px',
+                  height: '28px',
+                  border: '1px solid rgba(217,217,217,1)',
+                  background: 'rgba(245,248,249,1)'
+                }}
                 type='text'
                 placeholder='模板名称'
                 value={this.state.model_keyword}
@@ -315,8 +324,8 @@ class MedicalRecordScreen extends Component {
             <span onClick={() => this.setState({ showMedicalModels: false })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
-            <div style={{ margin: '20px 0 20px 0' }}>
-              <ul style={{ background: '#efeaea' }}>
+            <div>
+              <ul style={{ background: '#F7F7F7' }}>
                 <li>模板名称</li>
                 <li>模板类型</li>
                 <li>更新时间</li>
@@ -333,7 +342,7 @@ class MedicalRecordScreen extends Component {
                     <li>{is_common ? '通用模板' : '非通用模板'}</li>
                     <li>{moment(created_time).format('YYYY-MM-DD')}</li>
                     <li
-                      style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }}
+                      style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }}
                       onClick={() => this.setState({ ...this.state, ...item, showMedicalModels: false })}
                     >
                       复 制
@@ -356,26 +365,29 @@ class MedicalRecordScreen extends Component {
         <style jsx='true'>{`
           .meical_nodel_item {
             width: 90%;
-            margin: 22px 5% 0 5%;
+            margin: 32px 5% 0 5%;
             padding: 0;
           }
           .meical_nodel_item div {
             width: 100%;
-            height: 20px;
-            border: 1px solid #d8d8d8;
-            margin-top: 10px;
+            border:1px solid rgba(233,233,233,1);
+            border-bottom: none;
           }
 
           .meical_nodel_item ul {
             display: flex;
+            height: 38px;
+            background:rgba(255,255,255,1);
+            align-items: center
           }
 
           .meical_nodel_item ul li {
+            height: 38px;
+            line-height: 40px;
             margin:0;
-            border-right: 1px solid #d8d8d8;
+            border-right: 1px dashed rgba(217,217,217,1);
             float: left;
             flex:3
-            height: 20px;
             text-align: center;
           }
 
@@ -398,7 +410,7 @@ class MedicalRecordScreen extends Component {
     this.setState({ showMedicalModels: true })
   }
 
-  // 展示历史处方
+  // 展示历史病历
   showHistroyMedicals() {
     if (!this.state.showHistroyMedicals) return null
     let triagePatient = {}
@@ -414,8 +426,8 @@ class MedicalRecordScreen extends Component {
             <span onClick={() => this.setState({ showHistroyMedicals: false })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
-            <div style={{ margin: '20px 0 20px 0' }}>
-              <ul style={{ background: '#efeaea' }}>
+            <div style={{ margin: '32px 0 0 0' }}>
+              <ul style={{ background: '#F7F7F7' }}>
                 <li>就诊时间</li>
                 <li>就诊类型</li>
                 <li>诊所名称</li>
@@ -436,7 +448,7 @@ class MedicalRecordScreen extends Component {
                     <li>{clinic_name}</li>
                     <li>{doctor_name}</li>
                     <li
-                      style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }}
+                      style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }}
                       onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}
                     >
                       {this.state.choseHistoryId === item.id ? '收 起' : '展 开'}
@@ -460,25 +472,29 @@ class MedicalRecordScreen extends Component {
         <style jsx global>{`
           .meical_nodel_item {
             width: 90%;
-            margin: 22px 5% 0 5%;
+            margin: 32px 5% 0 5%;
             padding: 0;
           }
           .meical_nodel_item div {
             width: 100%;
-            border: 1px solid #d8d8d8;
-            margin-top: 10px;
+            border:1px solid rgba(233,233,233,1);
+            border-bottom: none;
           }
 
           .meical_nodel_item ul {
             display: flex;
+            height: 38px;
+            background:rgba(255,255,255,1);
+            align-items: center
           }
 
           .meical_nodel_item ul li {
+            height: 38px;
+            line-height: 40px;
             margin:0;
-            border-right: 1px solid #d8d8d8;
+            border-right: 1px dashed rgba(217,217,217,1);
             float: left;
             flex:3
-            height: 20px;
             text-align: center;
           }
 
@@ -581,6 +597,8 @@ class MedicalRecordScreen extends Component {
 
           .medical_detail_item input {
             flex: 6;
+            background: #F7F7F7;
+            border: none;
           }
 
           .medical_detail_item button {
@@ -917,8 +935,8 @@ class MedicalRecordScreen extends Component {
       newJSON[key] = this.state[key]
     }
     let jsonStr = JSON.stringify(newJSON)
-    console.log(recordStr)
-    console.log(jsonStr)
+    // console.log(recordStr)
+    // console.log(jsonStr)
     const { changePage } = this.props
     if (jsonStr !== recordStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
@@ -926,6 +944,63 @@ class MedicalRecordScreen extends Component {
       })
     } else {
       changePage(selPage)
+    }
+  }
+  // 显示上传的文件
+  renderFiles() {
+    const {uploadedFiles} = this.state
+    console.log('uploadedFiles==', uploadedFiles)
+    if (uploadedFiles.length === 0) {
+      return null
+    } else {
+      return (
+        <div className={'filesBox'}>
+          <ul>
+            {uploadedFiles.map((item, index) => {
+              return (
+                <li key={index}>
+                  {item.docName}
+                  <span>×</span>
+                </li>
+              )
+            })}
+          </ul>
+          <style jsx>{`
+            .filesBox{
+
+            }
+            .filesBox ul{
+
+            }
+            .filesBox ul li {
+              position:relative;
+            }
+            .filesBox ul li span{
+
+            }
+          `}</style>
+        </div>
+      )
+    }
+  }
+  // 上传文件
+  async FileUpload(files) {
+    const {FileUpload} = this.props
+    const {uploadedFiles} = this.state
+    let array = uploadedFiles
+    if (files) {
+      let file = new FormData()
+      console.log('files===', files)
+      file.append('file', files[0])
+      let url = await FileUpload(file)
+      if (url) {
+        let item = {
+          docName: files[0].name,
+          url
+        }
+        array.push(item)
+        this.setState({uploadedFiles: array})
+      }
     }
   }
   render() {
@@ -946,23 +1021,19 @@ class MedicalRecordScreen extends Component {
       selPage
       // chooseDiagnosticTemplate
     } = this.state
-    const {changePage} = this.props
+    const { changePage } = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
     return (
       <div>
         <div className={'childTopBar'}>
-          <span
-            className={'sel'}
-            onClick={() => {
-            }}
-          >
+          <span className={'sel'} onClick={() => {}}>
             病历
           </span>
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 2})
+              this.setState({ selPage: 2 })
               this.tipsToSave(2)
             }}
           >
@@ -971,7 +1042,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 3})
+              this.setState({ selPage: 3 })
               this.tipsToSave(3)
             }}
           >
@@ -980,7 +1051,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 4})
+              this.setState({ selPage: 4 })
               this.tipsToSave(4)
             }}
           >
@@ -989,7 +1060,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 5})
+              this.setState({ selPage: 5 })
               this.tipsToSave(5)
             }}
           >
@@ -998,7 +1069,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 6})
+              this.setState({ selPage: 6 })
               this.tipsToSave(6)
             }}
           >
@@ -1007,7 +1078,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 7})
+              this.setState({ selPage: 7 })
               this.tipsToSave(7)
             }}
           >
@@ -1030,7 +1101,7 @@ class MedicalRecordScreen extends Component {
           <div className={'formList'}>
             <div className={'formListBox'} style={{}}>
               <ul>
-                <li style={{position: 'relative'}}>
+                <li style={{ position: 'relative' }}>
                   <label>
                     主述<b style={{ color: 'red' }}> *</b>
                   </label>
@@ -1040,7 +1111,7 @@ class MedicalRecordScreen extends Component {
                       this.setState({ chief_complaint: e.target.value })
                     }}
                     onFocus={() => {
-                      this.setState({showComplaint: true, selComplaint: []})
+                      this.setState({ showComplaint: true, selComplaint: [] })
                     }}
                   />
                   {showComplaint ? this.showComplaint() : ''}
@@ -1114,15 +1185,21 @@ class MedicalRecordScreen extends Component {
                 </li>
                 <li>
                   <label>上传文件</label>
+                  {this.renderFiles()}
                   <div className={'chooseFile'}>
-                    <input type='file' />
+                    <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
+                      <input type='file' onChange={e => {
+                        // console.log('文件=====', e.target.files)
+                        this.FileUpload(e.target.files)
+                      }} />
+                    </form>
                     <button> + 添加文件</button>
                     <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
                   </div>
                 </li>
-                <li style={{position: 'relative'}}>
+                <li style={{ position: 'relative' }}>
                   <label>初步诊断</label>
-                  <div style={{marginTop: '15px', height: '100px'}}>
+                  <div style={{ marginTop: '15px', height: '100px' }}>
                     <MyCreatableSelect
                       options={this.getDiagnosisOptions()}
                       height={100}
@@ -1146,14 +1223,16 @@ class MedicalRecordScreen extends Component {
                     />
                   </div>
                 </li>
-                <li style={{position: 'relative'}}>
+                <li style={{ position: 'relative' }}>
                   <a
                     className={'chooseTemp'}
-                    style={{marginTop: '110px'}}
+                    style={{ marginTop: '110px' }}
                     onClick={() => {
-                      this.setState({chooseDiagnosticTemplate: true})
+                      this.setState({ chooseDiagnosticTemplate: true })
                     }}
-                  >选择诊断模板</a>
+                  >
+                    选择诊断模板
+                  </a>
                 </li>
                 <li>
                   <label>治疗意见</label>
@@ -1228,12 +1307,12 @@ class MedicalRecordScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-          .childTopBar{
+          .childTopBar {
             display: flex;
             margin-left: 65px;
           }
-          .childTopBar>span {
-            flex:1;
+          .childTopBar > span {
+            flex: 1;
             margin-left: 0;
           }
           .buttonDiv {
@@ -1405,5 +1484,14 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList }
+  {
+    createMedicalRecord,
+    queryMedicalRecord,
+    createMedicalRecordAsModel,
+    queryMedicalModelsByDoctor,
+    queryMedicalsByPatient,
+    queryChiefComplaints,
+    queryDictDiagnosisList,
+    FileUpload
+  }
 )(MedicalRecordScreen)
