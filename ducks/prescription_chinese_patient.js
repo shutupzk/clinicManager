@@ -41,11 +41,11 @@ export const PrescriptionChinesePatientCreate = ({
     })
     console.log(id, clinic_triage_patient_id, route_administration_name, frequency_name, amount, medicine_illustration, fetch_address, eff_day, personnel_id, items)
     console.log('data ======', data)
-    if (data.code !== '200') return data.msg
-    return null
+    if (data.code !== '200') return { error: data.message }  
+    return { id: data.data }
   } catch (e) {
     console.log(e)
-    return e.message
+    return { error: e.message }
   }
 }
 
