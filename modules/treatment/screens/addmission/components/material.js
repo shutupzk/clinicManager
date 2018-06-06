@@ -113,7 +113,7 @@ class MaterialScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
-        this.setState({eaterialsStr: JSON.stringify(eaterials)})
+        this.setState({ eaterialsStr: JSON.stringify(eaterials) })
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -121,8 +121,8 @@ class MaterialScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    const {changePage} = this.props
-    const {eaterials, eaterialsStr} = this.state
+    const { changePage } = this.props
+    const { eaterials, eaterialsStr } = this.state
     if (JSON.stringify(eaterials) !== eaterialsStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
         this.submit()
@@ -139,7 +139,7 @@ class MaterialScreen extends Component {
         <div className={'childTopBar'}>
           <span
             onClick={() => {
-              this.setState({selPage: 1})
+              this.setState({ selPage: 1 })
               this.tipsToSave(1)
             }}
           >
@@ -148,7 +148,7 @@ class MaterialScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 2})
+              this.setState({ selPage: 2 })
               this.tipsToSave(2)
             }}
           >
@@ -157,7 +157,7 @@ class MaterialScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 3})
+              this.setState({ selPage: 3 })
               this.tipsToSave(3)
             }}
           >
@@ -166,7 +166,7 @@ class MaterialScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 4})
+              this.setState({ selPage: 4 })
               this.tipsToSave(4)
             }}
           >
@@ -175,7 +175,7 @@ class MaterialScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 5})
+              this.setState({ selPage: 5 })
               this.tipsToSave(5)
             }}
           >
@@ -184,7 +184,7 @@ class MaterialScreen extends Component {
           <span
             className={'sel'}
             onClick={() => {
-              this.setState({selPage: 6})
+              this.setState({ selPage: 6 })
               this.tipsToSave(6)
             }}
           >
@@ -193,7 +193,7 @@ class MaterialScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 7})
+              this.setState({ selPage: 7 })
               this.tipsToSave(7)
             }}
           >
@@ -236,7 +236,7 @@ class MaterialScreen extends Component {
                         <div style={{ width: '100%' }}>
                           <Select
                             value={this.getSelectValue(item.clinic_material_id, nameOptions)}
-                            onChange={(item) => {
+                            onChange={item => {
                               this.setItemValues(item, index)
                             }}
                             placeholder='搜索名称'
@@ -262,7 +262,10 @@ class MaterialScreen extends Component {
                         <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        <div
+                          onClick={() => this.removeColumn(index)}
+                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                        >
                           删除
                         </div>
                       </div>
@@ -297,29 +300,29 @@ class MaterialScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-            .buttonDiv {
-              width: 63px;
-              height: 30px;
-              border-radius: 4px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-left: 8px;
-            }
-            .buttonDivCancel {
-              background: rgba(255, 255, 255, 1);
-              border: 1px solid #d9d9d9;
-            }
-            .buttonDiv span {
-              height: 22px;
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              line-height: 22px;
-            }
-            .cancel {
-              color: rgba(0, 0, 0, 0.65);
-            }
+          .buttonDiv {
+            width: 63px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+          }
+          .buttonDivCancel {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #d9d9d9;
+          }
+          .buttonDiv span {
+            height: 22px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            line-height: 22px;
+          }
+          .cancel {
+            color: rgba(0, 0, 0, 0.65);
+          }
         `}</style>
       </div>
     )
@@ -455,4 +458,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryMaterialList, MaterialPatientCreate, MaterialPatientGet })(MaterialScreen)
+export default connect(
+  mapStateToProps,
+  { queryMaterialList, MaterialPatientCreate, MaterialPatientGet }
+)(MaterialScreen)

@@ -1,16 +1,7 @@
 import React, { Component } from 'react'
 // import Router from 'next/router'
 import { connect } from 'react-redux'
-import {
-  queryDoctorsWithSchedule,
-  queryDepartmentList,
-  queryDoctorList,
-  copyScheduleByDate,
-  openScheduleByDate,
-  createOneSchedule,
-  RemoveScheduleByID,
-  stopScheduleByID
-} from '../../../../ducks'
+import { queryDoctorsWithSchedule, queryDepartmentList, queryDoctorList, copyScheduleByDate, openScheduleByDate, createOneSchedule, RemoveScheduleByID, stopScheduleByID } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard, Select, Confirm } from '../../../../components'
 
@@ -36,8 +27,8 @@ class ScheduleListScreen extends Component {
     this.queryDepartmentList({ limit: 100 })
   }
 
-  async queryListData({ offset = 0, limit = 10, weekNum, department_id, personnel_id }) {
-    weekNum = weekNum || this.state.weekNum
+  async queryListData() {
+    let { offset = 0, limit = 10, weekNum, department_id, personnel_id } = this.state
     let start_date = moment()
       .day(weekNum)
       .format('YYYY-MM-DD')
@@ -47,10 +38,12 @@ class ScheduleListScreen extends Component {
     const { queryDoctorsWithSchedule, clinic_id } = this.props
 
     let param = {
-      clinic_id, start_date, end_date, offset, limit
+      clinic_id,
+      start_date,
+      end_date,
+      offset,
+      limit
     }
-    department_id = department_id || this.state.department_id
-    personnel_id = personnel_id || this.state.personnel_id
     if (department_id && department_id !== '-1') {
       param.department_id = department_id
     }
@@ -69,7 +62,10 @@ class ScheduleListScreen extends Component {
     const { queryDoctorList, clinic_id } = this.props
     console.log('department_id ========', department_id)
     let param = {
-      clinic_id, keyword, limit: 1000, personnel_type: 2
+      clinic_id,
+      keyword,
+      limit: 1000,
+      personnel_type: 2
     }
     if (department_id && department_id !== '-1') {
       param.department_id = department_id
@@ -129,7 +125,7 @@ class ScheduleListScreen extends Component {
         return this.refs.myAlert.alert('复制失败', err)
       }
       this.refs.myAlert.alert('复制成功')
-      this.queryListData({})
+      this.queryListData()
     })
   }
 
@@ -144,54 +140,62 @@ class ScheduleListScreen extends Component {
     this.refs.myAlert.confirm('确定开放号源？', '开放号源后将不能删除，更改，确定开放？', 'Warning', async () => {
       let err = await openScheduleByDate({ clinic_id, start_date })
       if (err) {
-        return this.refs.myAlert.alert('开放号源失败', err)
+        this.refs.myAlert.alert('开放号源失败', err)
+      } else {
+        this.refs.myAlert.alert('开放号源成功')
+        await this.queryListData()
       }
-      this.refs.myAlert.alert('开放号源成功')
-      await this.queryListData({})
       setTimeout(() => {
         this.clicked = false
       }, 100)
     })
   }
   // 创建一个排班
-  async createOneSchedule({department_id, personnel_id, visit_date, am_pm}) {
+  async createOneSchedule({ department_id, personnel_id, visit_date, am_pm }) {
     if (this.clicked) return
     this.clicked = true
-    const {createOneSchedule} = this.props
-    console.log('{department_id, personnel_id, visit_date, am_pm}', {department_id, personnel_id, visit_date, am_pm})
-    let error = await createOneSchedule({department_id, personnel_id, visit_date, am_pm})
-    if (error) alert(error)
-    await this.queryListData({})
+    const { createOneSchedule } = this.props
+    console.log('{department_id, personnel_id, visit_date, am_pm}', { department_id, personnel_id, visit_date, am_pm })
+    let error = await createOneSchedule({ department_id, personnel_id, visit_date, am_pm })
+    if (error) {
+      this.refs.myAlert.alert('新增号源失败', error)
+    } else {
+      await this.queryListData()
+    }
     setTimeout(() => {
       this.clicked = false
     }, 100)
   }
   // 删除一个排班
-  async RemoveScheduleByID({doctor_visit_schedule_id}) {
+  async RemoveScheduleByID({ doctor_visit_schedule_id }) {
     if (this.clicked) return
     this.clicked = true
-    const {RemoveScheduleByID} = this.props
-    console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
-    let error = await RemoveScheduleByID({doctor_visit_schedule_id})
-    if (error) alert(error)
-    await this.queryListData({})
+    const { RemoveScheduleByID } = this.props
+    console.log('{doctor_visit_schedule_id}', { doctor_visit_schedule_id })
+    let error = await RemoveScheduleByID({ doctor_visit_schedule_id })
+    if (error) {
+      this.refs.myAlert.alert('删除号源失败', error)
+    } else {
+      await this.queryListData()
+    }
     setTimeout(() => {
       this.clicked = false
     }, 100)
   }
   // 停止一个排班
-  async stopScheduleByID({doctor_visit_schedule_id}) {
+  async stopScheduleByID({ doctor_visit_schedule_id }) {
     if (this.clicked) return
     this.clicked = true
-    const {stopScheduleByID} = this.props
-    console.log('{doctor_visit_schedule_id}', {doctor_visit_schedule_id})
+    const { stopScheduleByID } = this.props
+    console.log('{doctor_visit_schedule_id}', { doctor_visit_schedule_id })
     this.refs.myAlert.confirm('提示', '是否停诊该号源？', 'Warning', async () => {
-      let err = await stopScheduleByID({doctor_visit_schedule_id})
+      let err = await stopScheduleByID({ doctor_visit_schedule_id })
       if (err) {
-        return this.refs.myAlert.alert('停诊号源失败', err)
+        this.refs.myAlert.alert('停诊号源失败', err)
+      } else {
+        this.refs.myAlert.alert('停诊号源成功')
+        await this.queryListData()
       }
-      this.refs.myAlert.alert('停诊号源成功')
-      await this.queryListData({})
       setTimeout(() => {
         this.clicked = false
       }, 100)
@@ -215,8 +219,9 @@ class ScheduleListScreen extends Component {
                 <span
                   style={{ flex: 3 }}
                   onClick={() => {
-                    this.setState({ weekNum: weekNum - 7 })
-                    this.queryListData({ weekNum: weekNum - 7 })
+                    this.setState({ weekNum: weekNum - 7, offset: 0, limit: 10 }, () => {
+                      this.queryListData()
+                    })
                   }}
                 >
                   {'上一周'}
@@ -226,8 +231,9 @@ class ScheduleListScreen extends Component {
                 <span
                   style={{ flex: 11 }}
                   onClick={() => {
-                    this.setState({ weekNum: 1 })
-                    this.queryListData({ weekNum: 1 })
+                    this.setState({ weekNum: 1, offset: 0, limit: 10 }, () => {
+                      this.queryListData({})
+                    })
                   }}
                 >
                   本周（{moment()
@@ -241,8 +247,9 @@ class ScheduleListScreen extends Component {
                 <span
                   style={{ flex: 3 }}
                   onClick={() => {
-                    this.setState({ weekNum: weekNum + 7 })
-                    this.queryListData({ weekNum: weekNum + 7 })
+                    this.setState({ weekNum: weekNum + 7, offset: 0, limit: 10 }, () => {
+                      this.queryListData({})
+                    })
                   }}
                 >
                   下一周
@@ -285,7 +292,8 @@ class ScheduleListScreen extends Component {
                                   style={{
                                     flex: 1,
                                     color: daySchedule.am.doctor_visit_schedule_id && !daySchedule.am.stop_flag ? '#2ACDC8' : '#999999'
-                                  }}>
+                                  }}
+                                >
                                   <label>
                                     <input
                                       disabled={visit_date < today || (today === visit_date && hh > 11)}
@@ -317,11 +325,10 @@ class ScheduleListScreen extends Component {
                                       }}
                                     />
                                     {daySchedule.am.doctor_visit_schedule_id ? '上午' : '上午'}
-                                    {daySchedule.am.stop_flag ? <a style={{color: 'red', fontSize: '12px'}}> (已停诊)</a> : ''}
+                                    {daySchedule.am.stop_flag ? <a style={{ color: 'red', fontSize: '12px' }}> (已停诊)</a> : ''}
                                   </label>
                                 </span>
-                                <span
-                                  style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag ? '#2ACDC8' : '#999999' }}>
+                                <span style={{ flex: 1, color: daySchedule.pm.doctor_visit_schedule_id && !daySchedule.pm.stop_flag ? '#2ACDC8' : '#999999' }}>
                                   <label>
                                     <input
                                       disabled={visit_date < today || (today === visit_date && hh > 17)}
@@ -353,7 +360,7 @@ class ScheduleListScreen extends Component {
                                       }}
                                     />
                                     {daySchedule.pm.doctor_visit_schedule_id ? '下午' : '下午'}
-                                    {daySchedule.pm.stop_flag ? <a style={{color: 'red', fontSize: '12px'}}> (已停诊)</a> : ''}
+                                    {daySchedule.pm.stop_flag ? <a style={{ color: 'red', fontSize: '12px' }}> (已停诊)</a> : ''}
                                   </label>
                                 </span>
                               </div>
@@ -373,7 +380,9 @@ class ScheduleListScreen extends Component {
           limit={page_info.limit}
           total={page_info.total}
           onItemClick={({ offset, limit }) => {
-            this.queryListData({ offset, limit })
+            this.setState({ offset, limit }, () => {
+              this.queryListData({})
+            })
           }}
         />
       </div>
@@ -417,10 +426,10 @@ class ScheduleListScreen extends Component {
                     options={this.getDepartmentOptions()}
                     onChange={e => {
                       let id = e.value
-                      console.log('id ========', id)
-                      this.setState({ department_id: id })
-                      this.queryDoctorList({ department_id: id, limit: 100 })
-                      this.queryListData({ department_id: id })
+                      this.setState({ department_id: id, offset: 0, limit: 10 }, () => {
+                        this.queryDoctorList({ department_id: id, limit: 100 })
+                        this.queryListData()
+                      })
                     }}
                   />
                 </div>
@@ -430,47 +439,13 @@ class ScheduleListScreen extends Component {
                     options={this.getDoctorOptions()}
                     onChange={e => {
                       let id = e.value
-                      this.setState({ personnel_id: id })
-                      this.queryListData({ personnel_id: id })
+                      this.setState({ personnel_id: id, offset: 0, limit: 10 }, () => {
+                        this.queryListData()
+                      })
                     }}
                   />
                 </div>
-                {/* <select
-                  onChange={e => {
-                    let id = e.target.value
-                    console.log('id ========', id)
-                    this.setState({ department_id: id })
-                    this.queryDoctorList({ department_id: id, limit: 100 })
-                    this.queryListData({ department_id: id })
-                  }}
-                >
-                  <option value={-1}>选择科室</option>
-                  {departments.map(({ id, name }, index) => {
-                    return (
-                      <option key={index} value={id}>
-                        {name}
-                      </option>
-                    )
-                  })}
-                </select>
-                <select
-                  onChange={e => {
-                    let id = e.target.value
-                    this.setState({ personnel_id: id })
-                    this.queryListData({ personnel_id: id })
-                  }}
-                >
-                  <option value={-1}>选择医生</option>
-                  {doctors.map(({ id, name }, index) => {
-                    return (
-                      <option key={index} value={id}>
-                        {name}
-                      </option>
-                    )
-                  })}
-                </select> */}
               </div>
-              {/* <button>查询</button> */}
             </div>
           </div>
         </div>
@@ -494,13 +469,16 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {
-  queryDoctorsWithSchedule,
-  queryDepartmentList,
-  queryDoctorList,
-  copyScheduleByDate,
-  openScheduleByDate,
-  createOneSchedule,
-  RemoveScheduleByID,
-  stopScheduleByID
-})(ScheduleListScreen)
+export default connect(
+  mapStateToProps,
+  {
+    queryDoctorsWithSchedule,
+    queryDepartmentList,
+    queryDoctorList,
+    copyScheduleByDate,
+    openScheduleByDate,
+    createOneSchedule,
+    RemoveScheduleByID,
+    stopScheduleByID
+  }
+)(ScheduleListScreen)
