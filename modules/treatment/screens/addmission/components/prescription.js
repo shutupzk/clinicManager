@@ -277,10 +277,12 @@ class MedicalRecordScreen extends Component {
     const { wPrescItemArray } = this.state
     let items = []
     let hasNoStockAmount = false
+    let hasNoStockName = ''
     for (let item of wPrescItemArray) {
-      const { stock_amount, fetch_address } = item
+      const { stock_amount, fetch_address, drug_name } = item
       if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
         hasNoStockAmount = true
+        hasNoStockName = drug_name
         break
       }
       let obj = {}
@@ -294,11 +296,11 @@ class MedicalRecordScreen extends Component {
       items.push(obj)
     }
     if (hasNoStockAmount) {
-      return this.refs.myAlert.alert('保存失败', '库存为0的项目, 取药地点不能为本诊所')
+      return this.refs.myAlert.alert('保存失败', hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。', null, 'Danger')
     }
     let error = await PrescriptionWesternPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
-      return this.refs.myAlert.alert('保存失败', error)
+      return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
     } else {
       this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray) })
       return this.refs.myAlert.alert('保存成功')
@@ -510,10 +512,12 @@ class MedicalRecordScreen extends Component {
     let array = cPrescItemArray[selIndex].data
     let items = []
     let hasNoStockAmount = false
+    let hasNoStockName = ''
     for (let item of array) {
-      const { stock_amount } = item
+      const { stock_amount, drug_name } = item
       if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
         hasNoStockAmount = true
+        hasNoStockName = drug_name
         break
       }
       let obj = {}
@@ -527,7 +531,7 @@ class MedicalRecordScreen extends Component {
       items.push(obj)
     }
     if (hasNoStockAmount) {
-      return this.refs.myAlert.alert('保存失败', '库存为0的项目, 取药地点不能为本诊所')
+      return this.refs.myAlert.alert('保存失败', hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。', null, 'Danger')
     }
     let { error, id } = await PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
     if (error) {
@@ -1366,7 +1370,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 1 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 1})
+              this.setState({ selPage: 1 })
               this.tipsToSave(1)
             }}
           >
@@ -1383,7 +1387,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 3})
+              this.setState({ selPage: 3 })
               this.tipsToSave(3)
             }}
           >
@@ -1392,7 +1396,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 4})
+              this.setState({ selPage: 4 })
               this.tipsToSave(4)
             }}
           >
@@ -1401,7 +1405,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 5})
+              this.setState({ selPage: 5 })
               this.tipsToSave(5)
             }}
           >
@@ -1410,7 +1414,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 6})
+              this.setState({ selPage: 6 })
               this.tipsToSave(6)
             }}
           >
@@ -1419,7 +1423,7 @@ class MedicalRecordScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 7})
+              this.setState({ selPage: 7 })
               this.tipsToSave(7)
             }}
           >
@@ -1510,7 +1514,7 @@ class MedicalRecordScreen extends Component {
           {this.renderHistoryList()}
           {this.getStyle()}
           <Confirm ref='myAlert' />
-          <Confirm ref='myConfirm' sureText={'查看'} >
+          <Confirm ref='myConfirm' sureText={'查看'}>
             <div
               className={`buttonDiv buttonDivCancel`}
               onClick={() => {
@@ -1522,37 +1526,37 @@ class MedicalRecordScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-          .childTopBar{
+          .childTopBar {
             display: flex;
             margin-left: 65px;
           }
-          .childTopBar>span {
-            flex:1;
+          .childTopBar > span {
+            flex: 1;
             margin-left: 0;
           }
-            .buttonDiv {
-              width: 63px;
-              height: 30px;
-              border-radius: 4px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-left: 8px;
-            }
-            .buttonDivCancel {
-              background: rgba(255, 255, 255, 1);
-              border: 1px solid #d9d9d9;
-            }
-            .buttonDiv span {
-              height: 22px;
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              line-height: 22px;
-            }
-            .cancel {
-              color: rgba(0, 0, 0, 0.65);
-            }
+          .buttonDiv {
+            width: 63px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+          }
+          .buttonDivCancel {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #d9d9d9;
+          }
+          .buttonDiv span {
+            height: 22px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            line-height: 22px;
+          }
+          .cancel {
+            color: rgba(0, 0, 0, 0.65);
+          }
         `}</style>
       </div>
     )

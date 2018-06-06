@@ -92,7 +92,7 @@ export default class ChooseDoctor extends Component {
                 return (
                   <li key={index} onClick={async () => this.triagePatient(doctor.doctor_visit_schedule_id)}>
                     <div>
-                      <img src={'/static/login/u49.png'} />
+                      <img src={'/static/icons/doctor.png'} />
                       <span>医生</span>
                       <span>{doctor.doctor_name}</span>
                     </div>
