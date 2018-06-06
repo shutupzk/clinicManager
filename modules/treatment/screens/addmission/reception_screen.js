@@ -8,6 +8,7 @@ import LaboratoryScreen from './components/laboratory'
 import ExamineScreen from './components/examine'
 import MaterialScreen from './components/material'
 import OtherScreen from './components/other'
+import TollScreen from './components/toll'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
 import { Confirm, Select } from '../../../../components'
 import { triageFinish, queryDiagnosisTreatmentList, DiagnosisTreatmentPatientCreate } from '../../../../ducks'
@@ -231,6 +232,22 @@ class RecptionScreen extends Component {
     )
   }
 
+  renderFeeModel() {
+    const { showFeeModel } = this.state
+    if (!showFeeModel) return
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1215px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>费用预览</span>
+            <span onClick={() => this.setState({ showFeeModel: false })}>x</span>
+          </div>
+          <TollScreen />
+        </div>
+      </div>
+    )
+  }
+
   render() {
     let { triagePatients, clinic_triage_patient_id } = this.props
     const { pageType } = this.state
@@ -262,99 +279,14 @@ class RecptionScreen extends Component {
             <button onClick={() => this.setState({ showConfirm: true })}>
               <a>结束就诊</a>
             </button>
-            <button>
+            <button onClick={() => this.setState({ showFeeModel: true })}>
               <a>费用预览</a>
             </button>
           </div>
         </div>
-        {/* <div className={'childTopBar'}>
-          <span
-            className={this.state.pageType === 1 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 1) {
-                this.tipsToSave(pageType, 1)
-              } else {
-                this.setState({ pageType: 1 })
-              }
-            }}
-          >
-            病历
-          </span>
-          <span
-            className={this.state.pageType === 2 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 2) {
-                this.tipsToSave(pageType, 2)
-              } else {
-                this.setState({ pageType: 2 })
-              }
-            }}
-          >
-            处方
-          </span>
-          <span
-            className={this.state.pageType === 3 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 3) {
-                this.tipsToSave(pageType, 3)
-              } else {
-                this.setState({ pageType: 3 })
-              }
-            }}
-          >
-            治疗
-          </span>
-          <span
-            className={this.state.pageType === 4 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 4) {
-                this.tipsToSave(pageType, 4)
-              } else {
-                this.setState({ pageType: 4 })
-              }
-            }}
-          >
-            检验
-          </span>
-          <span
-            className={this.state.pageType === 5 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 5) {
-                this.tipsToSave(pageType, 5)
-              } else {
-                this.setState({ pageType: 5 })
-              }
-            }}
-          >
-            检查
-          </span>
-          <span
-            className={this.state.pageType === 6 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 6) {
-                this.tipsToSave(pageType, 6)
-              } else {
-                this.setState({ pageType: 6 })
-              }
-            }}
-          >
-            材料费
-          </span>
-          <span
-            className={this.state.pageType === 7 ? 'sel' : ''}
-            onClick={() => {
-              if (pageType !== 7) {
-                this.tipsToSave(pageType, 7)
-              } else {
-                this.setState({ pageType: 7 })
-              }
-            }}
-          >
-            其他费用
-          </span>
-        </div> */}
         {this.showDataList()}
         {this.renderConfirmFinish()}
+        {this.renderFeeModel()}
         <Confirm ref='myAlert' />
         <style jsx='true'>
           {`
