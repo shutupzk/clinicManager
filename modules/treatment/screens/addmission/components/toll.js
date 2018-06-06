@@ -40,9 +40,9 @@ class TollScreen extends Component {
   renderFeeDetails() {
     if (this.state.pageType !== 1) return ''
 
-    const { charge_unpay, clinic_triage_patient_id, un_paid_orders, un_paid_orders_page, un_paid_orders_type } = this.props
+    const { triagePatients, clinic_triage_patient_id, un_paid_orders, un_paid_orders_page, un_paid_orders_type } = this.props
     let triagePatient = {}
-    for (let tp of charge_unpay) {
+    for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }
     const { birthday, patient_name, phone, visit_date, sex } = triagePatient
@@ -152,6 +152,7 @@ const mapStateToProps = state => {
   return {
     operation_id: state.user.data.id,
     clinic_triage_patient_id: state.triagePatients.selectId,
+    triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id,
     charge_unpay: state.charge.charge_unpay,
     un_paid_orders: state.charge.un_paid_orders,
