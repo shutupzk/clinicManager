@@ -57,14 +57,20 @@ class MedicalRecordScreen extends Component {
   }
 
   async save() {
-    let { chief_complaint, selPage, diagnosis } = this.state
+    let { chief_complaint, selPage, diagnosis, uploadedFiles } = this.state
     let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id, changePage } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
     // this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
     // })
+    // let files = ''
+    // if (uploadedFiles.length > 0) {
+    //   for (let i = 0; i < uploadedFiles.length; i++) {
+    //     files += uploadedFiles[i].url + ';'
+    //   }
+    // }
     if (diagnosis === '') {
       this.refs.myAlert.confirm('初步诊断为空，请确认是否保存？', '', 'Success', async () => {
-        let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+        let res = await createMedicalRecord({ ...this.state, files: JSON.stringify(uploadedFiles), clinic_triage_patient_id, operation_id: triage_personnel_id })
         if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
         else {
           this.refs.myAlert.alert('保存病历成功！')
@@ -74,7 +80,7 @@ class MedicalRecordScreen extends Component {
         }
       })
     } else {
-      let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+      let res = await createMedicalRecord({ ...this.state, files: JSON.stringify(uploadedFiles), clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
         this.refs.myAlert.alert('保存病历成功！')
