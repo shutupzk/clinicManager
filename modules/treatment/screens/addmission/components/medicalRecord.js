@@ -369,6 +369,7 @@ class MedicalRecordScreen extends Component {
           .meical_nodel_item div {
             width: 100%;
             border:1px solid rgba(233,233,233,1);
+            border-bottom: none;
           }
 
           .meical_nodel_item ul {
@@ -407,7 +408,7 @@ class MedicalRecordScreen extends Component {
     this.setState({ showMedicalModels: true })
   }
 
-  // 展示历史处方
+  // 展示历史病历
   showHistroyMedicals() {
     if (!this.state.showHistroyMedicals) return null
     let triagePatient = {}
@@ -423,8 +424,8 @@ class MedicalRecordScreen extends Component {
             <span onClick={() => this.setState({ showHistroyMedicals: false })}>x</span>
           </div>
           <div className={'meical_nodel_item'}>
-            <div style={{ margin: '20px 0 20px 0' }}>
-              <ul style={{ background: '#efeaea' }}>
+            <div style={{ margin: '32px 0 0 0' }}>
+              <ul style={{ background: '#F7F7F7' }}>
                 <li>就诊时间</li>
                 <li>就诊类型</li>
                 <li>诊所名称</li>
@@ -445,7 +446,7 @@ class MedicalRecordScreen extends Component {
                     <li>{clinic_name}</li>
                     <li>{doctor_name}</li>
                     <li
-                      style={{ cursor: 'pointer', background: 'rgba(42,205,200,1', color: 'rgba(255,255,255,1)' }}
+                      style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }}
                       onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}
                     >
                       {this.state.choseHistoryId === item.id ? '收 起' : '展 开'}
@@ -469,25 +470,29 @@ class MedicalRecordScreen extends Component {
         <style jsx global>{`
           .meical_nodel_item {
             width: 90%;
-            margin: 22px 5% 0 5%;
+            margin: 32px 5% 0 5%;
             padding: 0;
           }
           .meical_nodel_item div {
             width: 100%;
-            border: 1px solid #d8d8d8;
-            margin-top: 10px;
+            border:1px solid rgba(233,233,233,1);
+            border-bottom: none;
           }
 
           .meical_nodel_item ul {
             display: flex;
+            height: 38px;
+            background:rgba(255,255,255,1);
+            align-items: center
           }
 
           .meical_nodel_item ul li {
+            height: 38px;
+            line-height: 40px;
             margin:0;
-            border-right: 1px solid #d8d8d8;
+            border-right: 1px dashed rgba(217,217,217,1);
             float: left;
             flex:3
-            height: 20px;
             text-align: center;
           }
 
@@ -590,6 +595,8 @@ class MedicalRecordScreen extends Component {
 
           .medical_detail_item input {
             flex: 6;
+            background: #F7F7F7;
+            border: none;
           }
 
           .medical_detail_item button {
