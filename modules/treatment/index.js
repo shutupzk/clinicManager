@@ -23,6 +23,8 @@ import TobeCheckedScreen from './screens/exam/tobe_checked_screen'
 import InInspectionScreen from './screens/exam/in_inspection_screen'
 import CheckedScreen from './screens/exam/checked_screen'
 import AlreadyChargedDetailScreen from './screens/charge/alreadCharged_detail_screen'
+import IssuedDetailDrugScreen from './screens/drugdelivery/issued_detail_screen'
+import DrawnDetailDrugScreen from './screens/drugdelivery/drawn_detail_screen'
 
 export {
   RegistrationAddScreen,
@@ -49,5 +51,7 @@ export {
   TobeCheckedScreen,
   InInspectionScreen,
   CheckedScreen,
-  AlreadyChargedDetailScreen
+  AlreadyChargedDetailScreen,
+  IssuedDetailDrugScreen,
+  DrawnDetailDrugScreen
 }

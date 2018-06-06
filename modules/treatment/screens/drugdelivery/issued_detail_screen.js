@@ -2,18 +2,17 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import Router from 'next/router'
-import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail } from '../../../../ducks'
+import { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryRecover, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
 
-class PendingDetailDrugScreen extends Component {
+class IssuedDetailDrugScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       pageType: 1,
       allSelect: false,
       selectArray: [],
-      remarks: {},
       selectRecordId: ''
     }
   }
@@ -26,26 +25,26 @@ class PendingDetailDrugScreen extends Component {
 
   queryCommonData({ offset, limit }) {
     const { triagePatientSelectId, queryDrugDeliveryList } = this.props
-    queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '10', offset, limit })
+    queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '30', offset, limit })
   }
 
   // 提交发药记录
   commit() {
     let { selectArray } = this.state
     if (selectArray.length === 0) return this.refs.myAlert.alert('提示', '未勾选条目，请重新勾选！', null, 'Warning')
-    this.refs.myAlert.confirm('确定发药？', '', null, async () => {
-      const { triagePatientSelectId, personnel_id, drugDeliveryCreate } = this.props
-      const { selectArray, remarks } = this.state
+    this.refs.myAlert.confirm('确定退药？', '请谨慎选择！', 'Danger', async () => {
+      const { triagePatientSelectId, personnel_id, drugDeliveryRecover } = this.props
+      const { selectArray } = this.state
       let items = []
       for (let key of selectArray) {
-        items.push({ mz_paid_orders_id: key, remark: remarks[key] || '' })
+        items.push({ mz_paid_orders_id: key })
       }
-      let error = await drugDeliveryCreate({ clinic_triage_patient_id: triagePatientSelectId, operation_id: personnel_id, items: JSON.stringify(items) })
+      let error = await drugDeliveryRecover({ clinic_triage_patient_id: triagePatientSelectId, operation_id: personnel_id, items: JSON.stringify(items) })
       if (error) {
-        return this.refs.myAlert.alert('提交失败', error, null, 'Warning')
+        return this.refs.myAlert.alert('退药失败', error, null, 'Warning')
       } else {
-        this.refs.myAlert.alert('提交成功', '', () => {
-          Router.push('/treatment/drugdelivery')
+        this.refs.myAlert.alert('退药成功', '', () => {
+          Router.push('/treatment/drugdelivery/drugHasBeenIssued')
         })
       }
     })
@@ -53,17 +52,12 @@ class PendingDetailDrugScreen extends Component {
 
   changeAllSelect() {
     const { allSelect } = this.state
-    const { allSelectStatus = true } = this.props.drug_delivery_list_page
-    if (!allSelectStatus) {
-      return this.refs.myAlert.alert('存在库存不足的条目', '请手动勾选！', null, 'Warning')
-    }
-    const selectArray = allSelect ? [] : this.props.drug_delivery_ids
+    const selectArray = allSelect ? [] : [...this.props.drug_delivery_ids]
     this.setState({ allSelect: !allSelect, selectArray })
   }
 
-  itemSelect(itemId, checked, overAmount) {
-    if (overAmount) this.refs.myAlert.alert('库存不足，无法发药！', '', null, 'Warning')
-    if (checked || overAmount) this.deleteItem(itemId)
+  itemSelect(itemId, checked) {
+    if (checked) this.deleteItem(itemId)
     else this.addItem(itemId)
   }
 
@@ -94,14 +88,6 @@ class PendingDetailDrugScreen extends Component {
     this.setState({ pageType: 4, selectRecordId: drug_delivery_record_id })
   }
 
-  // 设置每项的属性
-  setRemark(itemId, value) {
-    let { remarks } = this.state
-    if (!value) delete remarks[itemId]
-    else remarks[itemId] = value
-    this.setState({ remarks })
-  }
-
   // 查看发药项目
   renderDrugDeliveryList() {
     const { triagePatients, triagePatientSelectId, medicalRecord, drug_delivery_list, drug_delivery_list_page } = this.props
@@ -111,6 +97,8 @@ class PendingDetailDrugScreen extends Component {
       if (tp.clinic_triage_patient_id === triagePatientSelectId) triagePatient = tp
     }
     const { birthday, patient_name, phone, visit_date, sex, department_name, doctor_name, updated_time } = triagePatient
+
+    const status_map = { '10': '待发药', '30': '已发药', '40': '已退药' }
 
     return (
       <div className={'detailBox'}>
@@ -182,14 +170,12 @@ class PendingDetailDrugScreen extends Component {
                   <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
                   <div>{stock_amount}</div>
                   <div style={{ flex: 1 }}>{amount}</div>
-                  <div style={{ flex: 2 }}>待发药</div>
+                  <div style={{ flex: 2 }}>{status_map[item.order_status]}</div>
                   <div>
                     <textarea
                       style={{ width: '90%', resize: 'none', border: 'none' }}
-                      value={this.state.remarks[item.id]}
-                      onChange={e => {
-                        this.setRemark(item.id, e.target.value)
-                      }}
+                      value={item.remark || ''}
+                      disabled
                     />
                   </div>
                 </li>
@@ -207,7 +193,7 @@ class PendingDetailDrugScreen extends Component {
         />
         <div className={'feeScheduleBottom'}>
           <button>打印</button>
-          <button onClick={() => this.commit()}>提交</button>
+          <button onClick={() => this.commit()}>退药</button>
         </div>
         <style jsx='true'>{`
           .filterBox {
@@ -551,8 +537,8 @@ class PendingDetailDrugScreen extends Component {
 const mapStateToProps = state => {
   return {
     personnel_id: state.user.data.id,
-    triagePatients: state.drugDeliveryPending.traige_list,
-    triagePatientSelectId: state.drugDeliveryPending.traige_selectId,
+    triagePatients: state.drugDeliveryIssued.traige_list,
+    triagePatientSelectId: state.drugDeliveryIssued.traige_selectId,
     medicalRecord: state.medicalRecords.data,
     drug_delivery_list_page: state.drugDeliveryPending.drug_delivery_list_page,
     drug_delivery_ids: state.drugDeliveryPending.drug_delivery_list_page.ids || [],
@@ -566,5 +552,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryCreate, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail }
-)(PendingDetailDrugScreen)
+  { queryMedicalRecord, queryDrugDeliveryList, drugDeliveryRecover, queryDrugDeliveryRecordList, queryDrugDeliveryRecordDetail }
+)(IssuedDetailDrugScreen)
