@@ -56,11 +56,24 @@ class MedicalRecordScreen extends Component {
     this.setState({ ...this.state, ...record, recordStr })
   }
 
-  save() {
-    let { chief_complaint, selPage } = this.state
+  async save() {
+    let { chief_complaint, selPage, diagnosis } = this.state
     let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id, changePage } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
-    this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
+    // this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
+    // })
+    if (diagnosis === '') {
+      this.refs.myAlert.confirm('初步诊断为空，请确认是否保存？', '', 'Success', async () => {
+        let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+        if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
+        else {
+          this.refs.myAlert.alert('保存病历成功！')
+          if (selPage !== 1) {
+            changePage(selPage)
+          }
+        }
+      })
+    } else {
       let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
@@ -69,7 +82,7 @@ class MedicalRecordScreen extends Component {
           changePage(selPage)
         }
       }
-    })
+    }
   }
 
   saveAsModel() {
@@ -958,25 +971,66 @@ class MedicalRecordScreen extends Component {
           <ul>
             {uploadedFiles.map((item, index) => {
               return (
-                <li key={index}>
+                <li key={index} title={item.docName}>
                   {item.docName}
-                  <span>×</span>
+                  <span
+                    onClick={() => {
+                      let array = uploadedFiles
+                      array.splice(index, 1)
+                      this.setState({uploadedFiles: array})
+                    }}
+                  >×</span>
                 </li>
               )
             })}
           </ul>
           <style jsx>{`
             .filesBox{
-
+              width: 100%;
+              position: absolute;
+              top: 20px;
             }
             .filesBox ul{
-
+              display: flex;
+              width: 100%;
             }
             .filesBox ul li {
               position:relative;
+              margin: 0 0 0 5px;
+              background: rgba(233,233,233,0.8);
+              border-radius: 4px;
+              overflow:hidden;
+              width: auto;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              padding: 3px 15px 3px 3px;
+              height: 20px;
+              text-align: left;
+              display: block;
+              cursor:default;
+            }
+            .filesBox ul li:first-child {
+              margin:0;
             }
             .filesBox ul li span{
-
+              position: absolute;
+              display: block;
+              top: 0;
+              cursor: pointer;
+              width: 12px;
+              height: 12px;
+              right: 0;
+              text-align: center;
+              background: rgba(100,100,100,0.3);
+              opacity: 0.7;
+              line-height: 12px;
+            }
+            .filesBox ul li span:hover {
+              opacity: 1;
+            }
+            .filesBox ul li:hover span{
+              display: block;
+              transition: 0.3s ease;
             }
           `}</style>
         </div>
