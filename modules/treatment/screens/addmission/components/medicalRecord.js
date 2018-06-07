@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm, PageCard, MyCreatableSelect } from '../../../../../components'
+import { API_SERVER } from '../../../../../config'
 // import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
 import {
@@ -44,7 +45,9 @@ class MedicalRecordScreen extends Component {
       chooseDiagnosticTemplate: false,
       selDiagnosis: [],
       selPage: 1,
-      uploadedFiles: []
+      uploadedFiles: [],
+      showBigImg: false,
+      bigImg: ''
     }
   }
 
@@ -965,29 +968,85 @@ class MedicalRecordScreen extends Component {
       changePage(selPage)
     }
   }
+  renderBigImg() {
+    const {bigImg} = this.state
+    return (
+      <div className={'mask'}>
+        <img src={bigImg} alt={'...'} />
+        <span
+          onClick={() => {
+            this.setState({showBigImg: false})
+          }}
+        >×</span>
+        <style jsx>{`
+          img{
+            max-width: 100%;
+            max-height:100%;
+          }
+          span{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            color: #d8d8d8;
+            right: 0;
+            top: 0;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 100%;
+            border: 1px solid #d8d8d8;
+            text-align: center;
+            line-height: 30px;
+          }
+          span:hover{
+            background:red;
+            transition:0.3s ease;
+          }
+        `}</style>
+      </div>
+    )
+  }
   // 显示上传的文件
   renderFiles() {
-    const {uploadedFiles} = this.state
+    const {uploadedFiles, showBigImg} = this.state
     console.log('uploadedFiles==', uploadedFiles)
     if (uploadedFiles.length === 0) {
       return null
     } else {
       return (
         <div className={'filesBox'}>
+          {showBigImg ? this.renderBigImg() : ''}
           <ul>
             {uploadedFiles.map((item, index) => {
-              return (
-                <li key={index} title={item.docName}>
-                  {item.docName}
-                  <span
-                    onClick={() => {
-                      let array = uploadedFiles
-                      array.splice(index, 1)
-                      this.setState({uploadedFiles: array})
-                    }}
-                  >×</span>
-                </li>
-              )
+              let suffix = item.docName.split('.')[1]
+              if (suffix === 'png' || suffix === 'jpg') {
+                return (
+                  <li className={'imgLi'} key={index} title={item.docName}>
+                    <img src={API_SERVER + item.url} onClick={() => {
+                      this.setState({showBigImg: true, bigImg: API_SERVER + item.url})
+                    }} />
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        this.setState({uploadedFiles: array})
+                      }}
+                    >×</span>
+                  </li>
+                )
+              } else {
+                return (
+                  <li key={index} title={item.docName}>
+                    {item.docName}
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        this.setState({uploadedFiles: array})
+                      }}
+                    >×</span>
+                  </li>
+                )
+              }
             })}
           </ul>
           <style jsx>{`
@@ -1017,6 +1076,15 @@ class MedicalRecordScreen extends Component {
             }
             .filesBox ul li:first-child {
               margin:0;
+            }
+            .filesBox ul li.imgLi {
+              width: 50px;
+              height:50px;
+            }
+            .filesBox ul li.imgLi img {
+              width: 100%;
+              height: 100%;
+              opacity:0.7;
             }
             .filesBox ul li span{
               position: absolute;
