@@ -117,7 +117,7 @@ class RecptionScreen extends Component {
                 <label>
                   本次的诊疗费为：<b style={{ color: 'red' }}>*</b>
                 </label>
-                <div style={{ width: '200px', marginLeft: '20px' }}>
+                <div style={{ width: '300px', marginLeft: '20px' }}>
                   <Select
                     value={this.getSelectValue(this.state.clinic_diagnosis_treatment_id, this.getTreatmentOption())}
                     onChange={item => {
