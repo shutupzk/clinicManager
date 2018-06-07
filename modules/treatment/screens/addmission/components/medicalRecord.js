@@ -1132,7 +1132,7 @@ class MedicalRecordScreen extends Component {
           url
         }
         array.push(item)
-        this.setState({uploadedFiles: array})
+        this.setState({uploadedFiles: array, files: JSON.stringify(array)})
       }
     }
   }
