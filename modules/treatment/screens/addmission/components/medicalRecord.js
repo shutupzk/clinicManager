@@ -56,7 +56,12 @@ class MedicalRecordScreen extends Component {
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
     let recordStr = JSON.stringify(record)
-    this.setState({ ...this.state, ...record, recordStr })
+    console.log('record===', record)
+    let files = []
+    if (record.files !== '') {
+      files = JSON.parse(record.files)
+    }
+    this.setState({ ...this.state, ...record, recordStr, uploadedFiles: files })
   }
 
   async save() {
