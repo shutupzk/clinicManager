@@ -1330,6 +1330,7 @@ class MedicalRecordScreen extends Component {
                   <label>初步诊断</label>
                   <div style={{ marginTop: '15px', height: '100px' }}>
                     <MyCreatableSelect
+                      placeholder={'请选择诊断'}
                       options={this.getDiagnosisOptions()}
                       height={100}
                       // value={diagnosis}
