@@ -15,7 +15,7 @@ const initState = {
 export function diagnosisTreatments(state = initState, action = {}) {
   switch (action.type) {
     case DIAGNOSIS_TREATMENT_ADD:
-      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
+      return { ...state, data: {...state.data, ...action.data} }
     case DIAGNOSIS_TREATMENT_ARRAY:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     case DICTIONARY_DIAGNOSIS_LIST:
@@ -47,13 +47,12 @@ export const queryDiagnosisTreatmentList = ({ clinic_id, keyword, status, offset
     } else {
       let json = {}
       for (let doc of docs) {
-        json[doc.clinic_other_cost_id] = doc
+        json[doc.clinic_diagnosis_treatment_id] = doc
         // json[doc.name] = doc
       }
       dispatch({
         type: DIAGNOSIS_TREATMENT_ADD,
-        data: json,
-        page_info
+        data: json
       })
     }
     return null
