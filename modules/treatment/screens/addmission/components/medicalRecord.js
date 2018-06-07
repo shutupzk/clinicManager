@@ -994,7 +994,7 @@ class MedicalRecordScreen extends Component {
             .filesBox{
               width: 100%;
               position: absolute;
-              top: 20px;
+              top: 60px;
             }
             .filesBox ul{
               display: flex;
@@ -1050,7 +1050,7 @@ class MedicalRecordScreen extends Component {
     let array = uploadedFiles
     if (files) {
       let file = new FormData()
-      console.log('files===', files)
+      // console.log('files===', files)
       file.append('file', files[0])
       let url = await FileUpload(file)
       if (url) {
@@ -1234,9 +1234,10 @@ class MedicalRecordScreen extends Component {
                   />
                 </li>
                 <li style={{ height: '58px' }} />
-                <li>
+                <li style={{width: '100%'}}>
                   <label>体格检查</label>
                   <textarea
+                    style={{width: '97%'}}
                     value={body_examination}
                     onChange={e => {
                       this.setState({ body_examination: e.target.value })
@@ -1283,7 +1284,7 @@ class MedicalRecordScreen extends Component {
                     />
                   </div>
                 </li>
-                <li style={{ position: 'relative' }}>
+                {/* <li style={{ position: 'relative' }}>
                   <a
                     className={'chooseTemp'}
                     style={{ marginTop: '110px' }}
@@ -1293,7 +1294,7 @@ class MedicalRecordScreen extends Component {
                   >
                     选择诊断模板
                   </a>
-                </li>
+                </li> */}
                 <li>
                   <label>治疗意见</label>
                   <textarea
@@ -1439,7 +1440,7 @@ class MedicalRecordScreen extends Component {
           }
           .chooseFile {
             // height: 66px;
-            margin-top: 42px;
+            margin-top: 10px;
             display: flex;
             position: relative;
           }
@@ -1460,13 +1461,14 @@ class MedicalRecordScreen extends Component {
             color: rgba(102, 102, 102, 1);
           }
           .chooseFile a {
-            width: 145px;
+            width: 280px;
             height: 34px;
             font-size: 12px;
             font-family: PingFangSC-Regular;
             color: rgba(102, 102, 102, 1);
             line-height: 15px;
             display: block;
+            line-height: 34px;
           }
           .chooseTemp {
             font-size: 14px;

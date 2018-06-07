@@ -20,7 +20,7 @@ export const FileUpload = (file) => async dispatch => {
     const data = await axios.request(option)
     console.log('data====', data)
     const result = data.data
-    if (result.code === 200) {
+    if (result.code === '200') {
       return result.url
     } else {
       return null
