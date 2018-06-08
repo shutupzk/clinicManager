@@ -47,7 +47,10 @@ class MedicalRecordScreen extends Component {
       selPage: 1,
       uploadedFiles: [],
       showBigImg: false,
-      bigImg: ''
+      bigImg: '',
+      diagnosisArray: [],
+      imgWidth: 0,
+      imgHeight: 0
     }
   }
 
@@ -61,7 +64,19 @@ class MedicalRecordScreen extends Component {
     if (record.files !== '') {
       files = JSON.parse(record.files)
     }
-    this.setState({ ...this.state, ...record, recordStr, uploadedFiles: files })
+    let diagnosisArray = []
+    if (record.diagnosis !== '') {
+      let array = record.diagnosis.split(',')
+      if (array.length > 0) {
+        for (let i = 0; i < array.length; i++) {
+          let item = {value: array[i], label: array[i]}
+          diagnosisArray.push(item)
+        }
+      } else {
+        diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
+      }
+    }
+    this.setState({ ...this.state, ...record, recordStr, uploadedFiles: files, diagnosisArray })
   }
 
   async save() {
@@ -92,6 +107,14 @@ class MedicalRecordScreen extends Component {
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
         this.refs.myAlert.alert('保存病历成功！')
+        const { recordStr } = this.state
+        let oldJson = JSON.parse(recordStr)
+        let newJSON = {}
+        for (let key in oldJson) {
+          newJSON[key] = this.state[key]
+        }
+        let jsonStr = JSON.stringify(newJSON)
+        this.setState({recordStr: jsonStr})
         if (selPage !== 1) {
           changePage(selPage)
         }
@@ -974,15 +997,78 @@ class MedicalRecordScreen extends Component {
     }
   }
   renderBigImg() {
-    const {bigImg} = this.state
+    const {bigImg, imgWidth, imgHeight, uploadedFiles} = this.state
+    // console.log('uploadedFiles===', uploadedFiles)
+    let nexImg = ''
+    let prevImg = ''
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      if (bigImg === API_SERVER + uploadedFiles[i].url) {
+        if (uploadedFiles.length > 1) {
+          if (i === 0) {
+            nexImg = API_SERVER + uploadedFiles[i + 1].url
+            prevImg = API_SERVER + uploadedFiles[uploadedFiles.length - 1].url
+          } else if (i === uploadedFiles.length - 1) {
+            nexImg = API_SERVER + uploadedFiles[0].url
+            prevImg = API_SERVER + uploadedFiles[i - 1].url
+          } else {
+            nexImg = API_SERVER + uploadedFiles[i + 1].url
+            prevImg = API_SERVER + uploadedFiles[i - 1].url
+          }
+        } else {
+          nexImg = bigImg
+          prevImg = bigImg
+        }
+      }
+    }
     return (
-      <div className={'mask'}>
-        <img src={bigImg} alt={'...'} />
+      <div
+        className={'mask'}
+        onWheel={e => {
+          // console.log('onWheel=====', e.deltaY, e.target.width, e.target.height)
+          let width = imgWidth - imgWidth * e.deltaY / 1000
+          let height = imgHeight - imgHeight * e.deltaY / 1000
+          this.setState({imgWidth: width, imgHeight: height})
+        }}
+      >
+        <img
+          style={{width: imgWidth, height: imgHeight}}
+          src={bigImg}
+          alt={'...'}
+          onWheel={e => {
+            // console.log('sadasdasd==', e)
+            let width = imgWidth - imgWidth * e.deltaY / 1000
+            let height = imgHeight - imgHeight * e.deltaY / 1000
+            // console.log('width==', imgWidth, width, height, e.deltaY)
+            this.setState({imgWidth: width, imgHeight: height})
+          }}
+        />
         <span
           onClick={() => {
             this.setState({showBigImg: false})
           }}
         >×</span>
+        <a
+          className={'prev'}
+          onClick={() => {
+            this.setState({
+              showBigImg: true,
+              bigImg: prevImg,
+              imgWidth: 640,
+              imgHeight: 360
+            })
+          }}
+        >{'《'}</a>
+        <a
+          className={'next'}
+          onClick={() => {
+            this.setState({
+              showBigImg: true,
+              bigImg: nexImg,
+              imgWidth: 640,
+              imgHeight: 360
+            })
+          }}
+        >{'》'}</a>
         <style jsx>{`
           img{
             max-width: 100%;
@@ -1006,6 +1092,29 @@ class MedicalRecordScreen extends Component {
             background:red;
             transition:0.3s ease;
           }
+          a{
+            position:absolute;
+            top: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 30px;
+            border-radius:100%;
+            cursor:pointer;
+            color: #d8d8d8;
+            line-height: 50px;
+          }
+          a:hover{
+            background: rgba(233,233,233,0.3);
+            transition: 0.3 ease;
+          }
+          .prev{
+            left: 10px;
+            text-align: left;
+          }
+          .next{
+            right:10px;
+            text-align: right;
+          }
         `}</style>
       </div>
     )
@@ -1013,7 +1122,7 @@ class MedicalRecordScreen extends Component {
   // 显示上传的文件
   renderFiles() {
     const {uploadedFiles, showBigImg} = this.state
-    console.log('uploadedFiles==', uploadedFiles)
+    // console.log('uploadedFiles==', uploadedFiles)
     if (uploadedFiles.length === 0) {
       return null
     } else {
@@ -1026,8 +1135,13 @@ class MedicalRecordScreen extends Component {
               if (suffix === 'png' || suffix === 'jpg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName}>
-                    <img src={API_SERVER + item.url} onClick={() => {
-                      this.setState({showBigImg: true, bigImg: API_SERVER + item.url})
+                    <img src={API_SERVER + item.url} onClick={e => {
+                      this.setState({
+                        showBigImg: true,
+                        bigImg: API_SERVER + item.url,
+                        imgWidth: e.target.width,
+                        imgHeight: e.target.height
+                      })
                     }} />
                     <span
                       onClick={() => {
@@ -1087,8 +1201,8 @@ class MedicalRecordScreen extends Component {
               height:50px;
             }
             .filesBox ul li.imgLi img {
-              width: 100%;
-              height: 100%;
+              // width: 100%;
+              // height: 100%;
               opacity:0.7;
             }
             .filesBox ul li span{
@@ -1151,7 +1265,8 @@ class MedicalRecordScreen extends Component {
       cure_suggestion,
       remark,
       showComplaint,
-      selPage
+      selPage,
+      diagnosisArray
       // chooseDiagnosticTemplate
     } = this.state
     const { changePage } = this.props
@@ -1338,7 +1453,7 @@ class MedicalRecordScreen extends Component {
                       placeholder={'请选择诊断'}
                       options={this.getDiagnosisOptions()}
                       height={100}
-                      // value={diagnosis}
+                      value={diagnosisArray}
                       onChange={value => {
                         // console.log('value====', value)
                         let str = ''
@@ -1349,7 +1464,7 @@ class MedicalRecordScreen extends Component {
                             str += value[i].value
                           }
                         }
-                        this.setState({ diagnosis: str })
+                        this.setState({ diagnosis: str, diagnosisArray: value })
                       }}
                       onInputChange={keyword => {
                         // console.log('keyword=====', keyword)
@@ -1430,7 +1545,12 @@ class MedicalRecordScreen extends Component {
           {this.showMedicalModels()}
           {this.showHistroyMedicals()}
           <Confirm ref='myAlert' isAlert />
-          <Confirm ref='myConfirm' sureText={'保存'}>
+          <Confirm ref='myConfirm'
+            setPage={() => {
+              this.setState({selPage: 1})
+            }}
+            sureText={'保存'}
+          >
             <div
               className={`buttonDiv buttonDivCancel`}
               onClick={() => {
