@@ -7,8 +7,7 @@ const initState = {
   traige_list: [],
   traige_list_page: {},
   traige_selectId: null,
-  drug_delivery_list: [],
-  drug_delivery_list_page: {}
+  drug_delivery_list: []
 }
 
 // 待发药
@@ -19,7 +18,7 @@ export function drugDeliveryPending(state = initState, action = {}) {
     case QUERY_DRUG_PENDING_TRIAGE_SELECT:
       return { ...state, traige_selectId: action.selectId }
     case QUERY_DRUG_DELIVERY_LIST:
-      return { ...state, drug_delivery_list: action.data, drug_delivery_list_page: action.page_info }
+      return { ...state, drug_delivery_list: action.data }
     default:
       return state
   }
@@ -57,22 +56,12 @@ export const queryDrugDeliveryList = ({ clinic_triage_patient_id, order_status, 
   try {
     const data = await request('/drugDelivery/list', {
       clinic_triage_patient_id,
-      offset,
-      limit,
       order_status
     })
     const docs = data.data || []
-    const page_info = data.page_info || {
-      offset,
-      limit,
-      total: 0,
-      ids: []
-    }
-    if (data.page_info && data.page_info.ids) data.page_info.ids = data.page_info.ids.split(',')
     dispatch({
       type: QUERY_DRUG_DELIVERY_LIST,
-      data: docs,
-      page_info
+      data: docs
     })
     return docs
   } catch (e) {

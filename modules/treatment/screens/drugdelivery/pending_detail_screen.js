@@ -11,7 +11,7 @@ class PendingDetailDrugScreen extends Component {
     super(props)
     this.state = {
       pageType: 1,
-      allSelect: false,
+      allSelect: true,
       selectArray: [],
       remarks: {},
       selectRecordId: ''
@@ -20,13 +20,24 @@ class PendingDetailDrugScreen extends Component {
 
   async componentDidMount() {
     const { queryMedicalRecord, triagePatientSelectId } = this.props
-    this.queryCommonData({})
     await queryMedicalRecord(triagePatientSelectId)
+    await this.queryCommonData({})
+    this.setState({ selectArray: this.getSelectIds() })
+  }
+
+  // 获取库存大于发药数的药品ID
+  getSelectIds() {
+    const { drug_delivery_list } = this.props
+    let arr = []
+    for (let item of drug_delivery_list) {
+      if (item.stock_amount > item.amount) arr.push(item.id)
+    }
+    return arr
   }
 
   queryCommonData({ offset, limit }) {
     const { triagePatientSelectId, queryDrugDeliveryList } = this.props
-    queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '10', offset, limit })
+    return queryDrugDeliveryList({ clinic_triage_patient_id: triagePatientSelectId, order_status: '10', offset, limit })
   }
 
   // 提交发药记录
@@ -53,11 +64,7 @@ class PendingDetailDrugScreen extends Component {
 
   changeAllSelect() {
     const { allSelect } = this.state
-    const { allSelectStatus = true } = this.props.drug_delivery_list_page
-    if (!allSelectStatus) {
-      return this.refs.myAlert.alert('存在库存不足的条目', '请手动勾选！', null, 'Warning')
-    }
-    const selectArray = allSelect ? [] : this.props.drug_delivery_ids
+    const selectArray = allSelect ? [] : this.getSelectIds()
     this.setState({ allSelect: !allSelect, selectArray })
   }
 
@@ -104,8 +111,7 @@ class PendingDetailDrugScreen extends Component {
 
   // 查看发药项目
   renderDrugDeliveryList() {
-    const { triagePatients, triagePatientSelectId, medicalRecord, drug_delivery_list, drug_delivery_list_page } = this.props
-    const { allSelect } = this.state
+    const { triagePatients, triagePatientSelectId, medicalRecord } = this.props
     let triagePatient = {}
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === triagePatientSelectId) triagePatient = tp
@@ -145,66 +151,8 @@ class PendingDetailDrugScreen extends Component {
             <textarea value={medicalRecord.allergic_history} disabled />
           </div>
         </div>
-        <div className={'feeScheduleBox'}>
-          <ul>
-            <li>
-              <div style={{ flex: 1 }}>
-                <input type={'checkbox'} checked={allSelect} onChange={() => this.changeAllSelect()} />
-              </div>
-              <div style={{ flex: 1 }}>序号</div>
-              <div style={{ flex: 3 }}>药品名称</div>
-              <div>药品类别</div>
-              <div>规格</div>
-              <div style={{ flex: 5 }}>生产厂商</div>
-              <div>药品库存</div>
-              <div style={{ flex: 1 }}>数量</div>
-              <div style={{ flex: 2 }}>发药状态</div>
-              <div>备注</div>
-            </li>
-            {drug_delivery_list.map((item, iKey) => {
-              let checked = this.state.selectArray.indexOf(item.id + '') > -1
-              let { stock_amount = 0, amount = 1 } = item
-              return (
-                <li key={iKey}>
-                  <div>
-                    <input
-                      type={'checkbox'}
-                      checked={checked}
-                      onChange={() => {
-                        this.itemSelect(item.id + '', checked, amount > stock_amount)
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>{iKey + 1}</div>
-                  <div style={{ flex: 3 }}>{item.name}</div>
-                  <div>{item.charge_project_type_id === 1 ? '西/成药' : '中药'}</div>
-                  <div>{item.specification}</div>
-                  <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
-                  <div>{stock_amount}</div>
-                  <div style={{ flex: 1 }}>{amount}</div>
-                  <div style={{ flex: 2 }}>待发药</div>
-                  <div>
-                    <textarea
-                      style={{ width: '90%', resize: 'none', border: 'none' }}
-                      value={this.state.remarks[item.id]}
-                      onChange={e => {
-                        this.setRemark(item.id, e.target.value)
-                      }}
-                    />
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <PageCard
-          offset={drug_delivery_list_page.offset}
-          limit={drug_delivery_list_page.limit}
-          total={drug_delivery_list_page.total}
-          onItemClick={({ offset, limit }) => {
-            this.queryCommonData({ offset, limit })
-          }}
-        />
+        {this.renderWesternMedicine()}
+        {this.renderTraditionalMedicine()}
         <div className={'feeScheduleBottom'}>
           <button>打印</button>
           <button onClick={() => this.commit()}>提交</button>
@@ -232,6 +180,114 @@ class PendingDetailDrugScreen extends Component {
             background: rgba(245, 248, 249, 1);
             border-radius: 4px;
             border: 1px solid #d8d8d8;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // 西药
+  renderWesternMedicine() {
+    const { drug_delivery_list } = this.props
+    let arr = []
+    for (let item of drug_delivery_list) {
+      if (item.charge_project_type_id === 1) arr.push({ ...item })
+    }
+    if (arr.length === 0) return null
+    return this.renderItem(arr, '西/成药')
+  }
+
+  // 中药
+  renderTraditionalMedicine() {
+    let traditionalMedicine = {}
+    const { drug_delivery_list } = this.props
+    for (let item of drug_delivery_list) {
+      if (item.charge_project_type_id !== 1) {
+        let { order_sn } = item
+        if (!traditionalMedicine[order_sn]) traditionalMedicine[order_sn] = []
+        traditionalMedicine[order_sn].push({ ...item })
+      }
+    }
+    let array = []
+    for (let key in traditionalMedicine) {
+      array.push({ key, value: traditionalMedicine[key] })
+    }
+    if (array.length === 0) return null
+    return (
+      <div>
+        {array.map((itemss, key) => {
+          let items = itemss.value
+          return this.renderItem(items, `中药 ${key + 1} (共X剂数)`)
+        })}
+      </div>
+    )
+  }
+
+  // 渲染item
+  renderItem(items, title) {
+    return (
+      <div>
+        <div className={'feeScheduleBox'}>
+          <span>{title}</span>
+          <ul>
+            <li>
+              <div style={{ flex: 1 }}>
+                <input type={'checkbox'} checked={this.state.allSelect} onChange={() => this.changeAllSelect()} />
+              </div>
+              <div style={{ flex: 1 }}>序号</div>
+              <div style={{ flex: 3 }}>药品名称</div>
+              <div>药品类别</div>
+              <div>规格</div>
+              <div style={{ flex: 5 }}>生产厂商</div>
+              <div>药品库存</div>
+              <div style={{ flex: 1 }}>数量</div>
+              <div style={{ flex: 2 }}>发药状态</div>
+              <div>备注</div>
+            </li>
+            {items.map((item, iKey) => {
+              let checked = this.state.selectArray.indexOf(item.id) > -1
+              let { stock_amount = 0, amount = 1 } = item
+              return (
+                <li key={iKey}>
+                  <div>
+                    <input
+                      type={'checkbox'}
+                      checked={checked}
+                      onChange={() => {
+                        this.itemSelect(item.id, checked, amount > stock_amount)
+                      }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>{iKey + 1}</div>
+                  <div style={{ flex: 3 }}>{item.name}</div>
+                  <div>{item.charge_project_type_id === 1 ? '西/成药' : '中药'}</div>
+                  <div>{item.specification}</div>
+                  <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
+                  <div>{stock_amount}</div>
+                  <div style={{ flex: 1 }}>{amount}</div>
+                  <div style={{ flex: 2 }}>待发药</div>
+                  <div>
+                    <textarea
+                      style={{ width: '90%', resize: 'none', border: 'none' }}
+                      value={this.state.remarks[item.id]}
+                      onChange={e => {
+                        this.setRemark(item.id, e.target.value)
+                      }}
+                    />
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+        <style jsx='true'>{`
+          .feeScheduleBox {
+            flex-direction: column;
+          }
+          .feeScheduleBox span {
+            font-size: 15px;
+            font-weight: bold;
+            margin: 10px 0 2px 10px;
           }
         `}</style>
       </div>
@@ -557,8 +613,6 @@ const mapStateToProps = state => {
     triagePatients: state.drugDeliveryPending.traige_list,
     triagePatientSelectId: state.drugDeliveryPending.traige_selectId,
     medicalRecord: state.medicalRecords.data,
-    drug_delivery_list_page: state.drugDeliveryPending.drug_delivery_list_page,
-    drug_delivery_ids: state.drugDeliveryPending.drug_delivery_list_page.ids || [],
     drug_delivery_list: state.drugDeliveryPending.drug_delivery_list,
     drug_delivery_record_list: state.drugDelivery.data,
     drug_delivery_record_list_page: state.drugDelivery.data_page,
