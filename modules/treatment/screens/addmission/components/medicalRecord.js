@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Confirm, PageCard, MyCreatableSelect } from '../../../../../components'
+import { API_SERVER } from '../../../../../config'
 // import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
 import {
@@ -44,7 +45,9 @@ class MedicalRecordScreen extends Component {
       chooseDiagnosticTemplate: false,
       selDiagnosis: [],
       selPage: 1,
-      uploadedFiles: []
+      uploadedFiles: [],
+      showBigImg: false,
+      bigImg: ''
     }
   }
 
@@ -53,18 +56,29 @@ class MedicalRecordScreen extends Component {
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
     let recordStr = JSON.stringify(record)
-    this.setState({ ...this.state, ...record, recordStr })
+    console.log('record===', record)
+    let files = []
+    if (record.files !== '') {
+      files = JSON.parse(record.files)
+    }
+    this.setState({ ...this.state, ...record, recordStr, uploadedFiles: files })
   }
 
   async save() {
-    let { chief_complaint, selPage, diagnosis } = this.state
+    let { chief_complaint, selPage, diagnosis, uploadedFiles } = this.state
     let { createMedicalRecord, triage_personnel_id, clinic_triage_patient_id, changePage } = this.props
     if (!chief_complaint) return this.refs.myAlert.alert('请填写主诉！')
     // this.refs.myAlert.confirm('确定提交病历？', '', 'Success', async () => {
     // })
+    // let files = ''
+    // if (uploadedFiles.length > 0) {
+    //   for (let i = 0; i < uploadedFiles.length; i++) {
+    //     files += uploadedFiles[i].url + ';'
+    //   }
+    // }
     if (diagnosis === '') {
       this.refs.myAlert.confirm('初步诊断为空，请确认是否保存？', '', 'Success', async () => {
-        let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+        let res = await createMedicalRecord({ ...this.state, files: JSON.stringify(uploadedFiles), clinic_triage_patient_id, operation_id: triage_personnel_id })
         if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
         else {
           this.refs.myAlert.alert('保存病历成功！')
@@ -74,7 +88,7 @@ class MedicalRecordScreen extends Component {
         }
       })
     } else {
-      let res = await createMedicalRecord({ ...this.state, clinic_triage_patient_id, operation_id: triage_personnel_id })
+      let res = await createMedicalRecord({ ...this.state, files: JSON.stringify(uploadedFiles), clinic_triage_patient_id, operation_id: triage_personnel_id })
       if (res) this.refs.myAlert.alert(`保存病历失败！【${res}】`)
       else {
         this.refs.myAlert.alert('保存病历成功！')
@@ -959,36 +973,92 @@ class MedicalRecordScreen extends Component {
       changePage(selPage)
     }
   }
+  renderBigImg() {
+    const {bigImg} = this.state
+    return (
+      <div className={'mask'}>
+        <img src={bigImg} alt={'...'} />
+        <span
+          onClick={() => {
+            this.setState({showBigImg: false})
+          }}
+        >×</span>
+        <style jsx>{`
+          img{
+            max-width: 100%;
+            max-height:100%;
+          }
+          span{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            color: #d8d8d8;
+            right: 0;
+            top: 0;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 100%;
+            border: 1px solid #d8d8d8;
+            text-align: center;
+            line-height: 30px;
+          }
+          span:hover{
+            background:red;
+            transition:0.3s ease;
+          }
+        `}</style>
+      </div>
+    )
+  }
   // 显示上传的文件
   renderFiles() {
-    const {uploadedFiles} = this.state
+    const {uploadedFiles, showBigImg} = this.state
     console.log('uploadedFiles==', uploadedFiles)
     if (uploadedFiles.length === 0) {
       return null
     } else {
       return (
         <div className={'filesBox'}>
+          {showBigImg ? this.renderBigImg() : ''}
           <ul>
             {uploadedFiles.map((item, index) => {
-              return (
-                <li key={index} title={item.docName}>
-                  {item.docName}
-                  <span
-                    onClick={() => {
-                      let array = uploadedFiles
-                      array.splice(index, 1)
-                      this.setState({uploadedFiles: array})
-                    }}
-                  >×</span>
-                </li>
-              )
+              let suffix = item.docName.split('.')[1]
+              if (suffix === 'png' || suffix === 'jpg') {
+                return (
+                  <li className={'imgLi'} key={index} title={item.docName}>
+                    <img src={API_SERVER + item.url} onClick={() => {
+                      this.setState({showBigImg: true, bigImg: API_SERVER + item.url})
+                    }} />
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        this.setState({uploadedFiles: array})
+                      }}
+                    >×</span>
+                  </li>
+                )
+              } else {
+                return (
+                  <li key={index} title={item.docName}>
+                    {item.docName}
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        this.setState({uploadedFiles: array})
+                      }}
+                    >×</span>
+                  </li>
+                )
+              }
             })}
           </ul>
           <style jsx>{`
             .filesBox{
               width: 100%;
               position: absolute;
-              top: 20px;
+              top: 60px;
             }
             .filesBox ul{
               display: flex;
@@ -1011,6 +1081,15 @@ class MedicalRecordScreen extends Component {
             }
             .filesBox ul li:first-child {
               margin:0;
+            }
+            .filesBox ul li.imgLi {
+              width: 50px;
+              height:50px;
+            }
+            .filesBox ul li.imgLi img {
+              width: 100%;
+              height: 100%;
+              opacity:0.7;
             }
             .filesBox ul li span{
               position: absolute;
@@ -1044,7 +1123,7 @@ class MedicalRecordScreen extends Component {
     let array = uploadedFiles
     if (files) {
       let file = new FormData()
-      console.log('files===', files)
+      // console.log('files===', files)
       file.append('file', files[0])
       let url = await FileUpload(file)
       if (url) {
@@ -1053,7 +1132,7 @@ class MedicalRecordScreen extends Component {
           url
         }
         array.push(item)
-        this.setState({uploadedFiles: array})
+        this.setState({uploadedFiles: array, files: JSON.stringify(array)})
       }
     }
   }
@@ -1228,9 +1307,10 @@ class MedicalRecordScreen extends Component {
                   />
                 </li>
                 <li style={{ height: '58px' }} />
-                <li>
+                <li style={{width: '100%'}}>
                   <label>体格检查</label>
                   <textarea
+                    style={{width: '97%'}}
                     value={body_examination}
                     onChange={e => {
                       this.setState({ body_examination: e.target.value })
@@ -1255,6 +1335,7 @@ class MedicalRecordScreen extends Component {
                   <label>初步诊断</label>
                   <div style={{ marginTop: '15px', height: '100px' }}>
                     <MyCreatableSelect
+                      placeholder={'请选择诊断'}
                       options={this.getDiagnosisOptions()}
                       height={100}
                       // value={diagnosis}
@@ -1277,7 +1358,7 @@ class MedicalRecordScreen extends Component {
                     />
                   </div>
                 </li>
-                <li style={{ position: 'relative' }}>
+                {/* <li style={{ position: 'relative' }}>
                   <a
                     className={'chooseTemp'}
                     style={{ marginTop: '110px' }}
@@ -1287,7 +1368,7 @@ class MedicalRecordScreen extends Component {
                   >
                     选择诊断模板
                   </a>
-                </li>
+                </li> */}
                 <li>
                   <label>治疗意见</label>
                   <textarea
@@ -1433,7 +1514,7 @@ class MedicalRecordScreen extends Component {
           }
           .chooseFile {
             // height: 66px;
-            margin-top: 42px;
+            margin-top: 10px;
             display: flex;
             position: relative;
           }
@@ -1454,13 +1535,14 @@ class MedicalRecordScreen extends Component {
             color: rgba(102, 102, 102, 1);
           }
           .chooseFile a {
-            width: 145px;
+            width: 280px;
             height: 34px;
             font-size: 12px;
             font-family: PingFangSC-Regular;
             color: rgba(102, 102, 102, 1);
             line-height: 15px;
             display: block;
+            line-height: 34px;
           }
           .chooseTemp {
             font-size: 14px;

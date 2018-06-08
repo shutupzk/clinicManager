@@ -273,6 +273,76 @@ class MedicalRecordScreen extends Component {
   }
 
   async prescriptionWesternPatientCreate() {
+    const { wPrescItemArray } = this.state
+    let err = this.checkPresW()
+    if (err) {
+      return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+    }
+    let error = await this.savePrescriptionWesternPatient()
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+    } else {
+      this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray) })
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
+  checkPresW() {
+    const { wPrescItemArray } = this.state
+    let hasNoStockAmount = false
+    let hasNoStockName = ''
+    let error = null
+    if (!wPrescItemArray || wPrescItemArray.length === 0) {
+      return '请选择药品'
+    }
+    for (let item of wPrescItemArray) {
+      const { clinic_drug_id, fetch_address, amount, once_dose, once_dose_unit_name, route_administration_name, eff_day, frequency_name, stock_amount, drug_name } = item
+      if (!clinic_drug_id) {
+        error = '药品不能为空'
+        break
+      }
+      if (!fetch_address && fetch_address * 1 !== 0) {
+        error = '取药地点不能为空'
+        break
+      }
+      if (!amount && amount * 1 !== 0) {
+        error = '总量不能为空'
+        break
+      }
+      if (!once_dose) {
+        error = '单次剂量不能为空'
+        break
+      }
+      if (!once_dose_unit_name) {
+        error = '剂量单位不能为空'
+        break
+      }
+      if (!route_administration_name) {
+        error = '用法不能为空'
+        break
+      }
+      if (!eff_day) {
+        error = '处方天数不能为空'
+        break
+      }
+      if (!frequency_name) {
+        error = '用药频次不能为空'
+        break
+      }
+
+      if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
+        hasNoStockAmount = true
+        hasNoStockName = drug_name
+        break
+      }
+    }
+    if (hasNoStockAmount) {
+      return hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。'
+    }
+    return error
+  }
+
+  async savePrescriptionWesternPatient() {
     const { PrescriptionWesternPatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { wPrescItemArray } = this.state
     let items = []
@@ -296,15 +366,9 @@ class MedicalRecordScreen extends Component {
       items.push(obj)
     }
     if (hasNoStockAmount) {
-      return this.refs.myAlert.alert('保存失败', hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。', null, 'Danger')
+      return hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。'
     }
-    let error = await PrescriptionWesternPatientCreate({ personnel_id, clinic_triage_patient_id, items })
-    if (error) {
-      return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
-    } else {
-      this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray) })
-      return this.refs.myAlert.alert('保存成功')
-    }
+    return PrescriptionWesternPatientCreate({ personnel_id, clinic_triage_patient_id, items })
   }
 
   // 显示西药处方详情
@@ -504,22 +568,82 @@ class MedicalRecordScreen extends Component {
   }
 
   async prescriptionChinesePatientCreate() {
-    const { PrescriptionChinesePatientCreate, clinic_triage_patient_id, personnel_id } = this.props
     const { selIndex, cPrescItemArray } = this.state
+    let err = this.checkPresC(selIndex)
+    if (err) return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+    let { error, id } = await this.saveOnePrescriptionChinesePatient(selIndex)
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+    } else {
+      cPrescItemArray[selIndex].info.id = id
+      this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray), cPrescItemArray })
+      return this.refs.myAlert.alert('保存成功')
+    }
+  }
+
+  checkPresC(selIndex) {
+    const { cPrescItemArray } = this.state
     let info = cPrescItemArray[selIndex].info
-    console.log(info)
-    const { fetch_address } = info
     let array = cPrescItemArray[selIndex].data
-    let items = []
+    if (!array || array.length === 0) {
+      return '请选择药品'
+    }
+    const { fetch_address, amount, route_administration_name, eff_day, frequency_name } = info
+    if (!fetch_address && fetch_address * 1 !== 0) {
+      return '取药地点不能为空'
+    }
+    if (!amount) {
+      return '付数不能为空'
+    }
+    if (!route_administration_name) {
+      return '用法不能为空'
+    }
+    if (!eff_day) {
+      return '处方天数不能为空'
+    }
+    if (!frequency_name) {
+      return '用药频次不能为空'
+    }
     let hasNoStockAmount = false
     let hasNoStockName = ''
+    let error = null
     for (let item of array) {
-      const { stock_amount, drug_name } = item
+      const { clinic_drug_id, amount, once_dose, once_dose_unit_name, stock_amount, drug_name } = item
+      if (!clinic_drug_id) {
+        error = '药品不能为空'
+        break
+      }
+      if (!amount) {
+        error = '总量不能为空'
+        break
+      }
+      if (!once_dose) {
+        error = '单次剂量不能为空'
+        break
+      }
+      if (!once_dose_unit_name) {
+        error = '剂量单位不能为空'
+        break
+      }
       if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
         hasNoStockAmount = true
         hasNoStockName = drug_name
         break
       }
+    }
+    if (hasNoStockAmount) {
+      return hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。'
+    }
+    return error
+  }
+
+  async saveOnePrescriptionChinesePatient(selIndex) {
+    const { PrescriptionChinesePatientCreate, clinic_triage_patient_id, personnel_id } = this.props
+    const { cPrescItemArray } = this.state
+    let info = cPrescItemArray[selIndex].info
+    let array = cPrescItemArray[selIndex].data
+    let items = []
+    for (let item of array) {
       let obj = {}
       for (let key in item) {
         if (item[key] === 0) {
@@ -530,19 +654,52 @@ class MedicalRecordScreen extends Component {
       }
       items.push(obj)
     }
-    if (hasNoStockAmount) {
-      return this.refs.myAlert.alert('保存失败', hasNoStockName + ' 库存为0 ，请您重新选择药品，或选择“代购”或“外购”。', null, 'Danger')
+    return PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
+  }
+
+  checkPresAll() {
+    let error = this.checkPresW()
+    if (error) return '西/成药处方  ' + error
+    const { cPrescItemArray } = this.state
+    for (let i = 0; i < cPrescItemArray.length; i++) {
+      error = this.checkPresC(i)
+      if (error) {
+        error = '中药处方 ' + (i + 1) + '  ' + error
+        break
+      }
     }
-    let { error, id } = await PrescriptionChinesePatientCreate({ ...info, items, clinic_triage_patient_id, personnel_id })
-    if (error) {
-      return this.refs.myAlert.alert('保存失败', error)
+    return error
+  }
+
+  // 提示是否保存当前页
+  tipsToSave(pageType) {
+    const { changePage } = this.props
+    const { wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr } = this.state
+    if (wPrescItemArrayStr !== JSON.stringify(wPrescItemArray) || cPrescItemArrayStr !== JSON.stringify(cPrescItemArray)) {
+      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，确认保存？', 'Warning', async () => {
+        let err = this.checkPresAll()
+        if (err) {
+          return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+        }
+        err = await this.savePrescriptionWesternPatient()
+        if (err) {
+          return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+        }
+        for (let i = 0; i < cPrescItemArray.length; i++) {
+          let { error, id } = await this.saveOnePrescriptionChinesePatient(i)
+          if (error) {
+            return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+          }
+          cPrescItemArray[i].info.id = id
+        }
+        this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray), cPrescItemArray })
+        changePage(pageType)
+      })
     } else {
-      cPrescItemArray[selIndex].info.id = id
-      console.log('cPrescItemArray[selIndex].info =======', cPrescItemArray[selIndex].info)
-      this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray), cPrescItemArray })
-      return this.refs.myAlert.alert('保存成功')
+      changePage(pageType)
     }
   }
+
   // 中药处方详情
   renderCPrescDetail() {
     const { selIndex, cPrescItemArray } = this.state
@@ -1348,19 +1505,7 @@ class MedicalRecordScreen extends Component {
     }
     return {}
   }
-  // 提示是否保存当前页
-  tipsToSave(pageType) {
-    // console.log('pageType====', pageType)
-    const { changePage } = this.props
-    const { wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr } = this.state
-    if (wPrescItemArrayStr !== JSON.stringify(wPrescItemArray) || cPrescItemArrayStr !== JSON.stringify(cPrescItemArray)) {
-      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，请确认', 'Warning', () => {
-        // changePage(pageType)
-      })
-    } else {
-      changePage(pageType)
-    }
-  }
+
   render() {
     const { selItem, cPrescItemArray, selPage } = this.state
     const { medicalRecord, changePage } = this.props
@@ -1514,7 +1659,7 @@ class MedicalRecordScreen extends Component {
           {this.renderHistoryList()}
           {this.getStyle()}
           <Confirm ref='myAlert' />
-          <Confirm ref='myConfirm' sureText={'查看'}>
+          <Confirm ref='myConfirm' sureText={'保存'}>
             <div
               className={`buttonDiv buttonDivCancel`}
               onClick={() => {

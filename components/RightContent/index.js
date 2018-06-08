@@ -119,7 +119,7 @@ class RightContent extends Component {
 					</div> */}
           <div className={'rightUserInfo'}>
             <span>
-              <img src='/static/login/u49.png' />
+              <img src='/static/icons/doctor.svg' />
               <a>你好，{this.props.name}</a>
             </span>
             <span>消息中心</span>
