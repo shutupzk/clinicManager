@@ -50,7 +50,8 @@ class MedicalRecordScreen extends Component {
       bigImg: '',
       diagnosisArray: [],
       imgWidth: 0,
-      imgHeight: 0
+      imgHeight: 0,
+      imgFiles: []
     }
   }
 
@@ -59,10 +60,17 @@ class MedicalRecordScreen extends Component {
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
     let recordStr = JSON.stringify(record)
-    console.log('record===', record)
+    // console.log('record===', record)
     let files = []
+    let imgArray = []
     if (record.files !== '') {
       files = JSON.parse(record.files)
+      for (let j = 0; j < files.length; j++) {
+        let url = files[j].url
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+          imgArray.push(files[j])
+        }
+      }
     }
     let diagnosisArray = []
     if (record.diagnosis !== '') {
@@ -76,7 +84,7 @@ class MedicalRecordScreen extends Component {
         diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
       }
     }
-    this.setState({ ...this.state, ...record, recordStr, uploadedFiles: files, diagnosisArray })
+    this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray })
   }
 
   async save() {
@@ -997,22 +1005,22 @@ class MedicalRecordScreen extends Component {
     }
   }
   renderBigImg() {
-    const {bigImg, imgWidth, imgHeight, uploadedFiles} = this.state
+    const {bigImg, imgWidth, imgHeight, imgFiles} = this.state
     // console.log('uploadedFiles===', uploadedFiles)
     let nexImg = ''
     let prevImg = ''
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      if (bigImg === API_SERVER + uploadedFiles[i].url) {
-        if (uploadedFiles.length > 1) {
+    for (let i = 0; i < imgFiles.length; i++) {
+      if (bigImg === API_SERVER + imgFiles[i].url) {
+        if (imgFiles.length > 1) {
           if (i === 0) {
-            nexImg = API_SERVER + uploadedFiles[i + 1].url
-            prevImg = API_SERVER + uploadedFiles[uploadedFiles.length - 1].url
-          } else if (i === uploadedFiles.length - 1) {
-            nexImg = API_SERVER + uploadedFiles[0].url
-            prevImg = API_SERVER + uploadedFiles[i - 1].url
+            nexImg = API_SERVER + imgFiles[i + 1].url
+            prevImg = API_SERVER + imgFiles[imgFiles.length - 1].url
+          } else if (i === imgFiles.length - 1) {
+            nexImg = API_SERVER + imgFiles[0].url
+            prevImg = API_SERVER + imgFiles[i - 1].url
           } else {
-            nexImg = API_SERVER + uploadedFiles[i + 1].url
-            prevImg = API_SERVER + uploadedFiles[i - 1].url
+            nexImg = API_SERVER + imgFiles[i + 1].url
+            prevImg = API_SERVER + imgFiles[i - 1].url
           }
         } else {
           nexImg = bigImg
@@ -1027,6 +1035,12 @@ class MedicalRecordScreen extends Component {
           // console.log('onWheel=====', e.deltaY, e.target.width, e.target.height)
           let width = imgWidth - imgWidth * e.deltaY / 1000
           let height = imgHeight - imgHeight * e.deltaY / 1000
+          if (width < 100) {
+            width = 100
+          }
+          if (height < 100) {
+            height = 100
+          }
           this.setState({imgWidth: width, imgHeight: height})
         }}
       >
@@ -1038,7 +1052,12 @@ class MedicalRecordScreen extends Component {
             // console.log('sadasdasd==', e)
             let width = imgWidth - imgWidth * e.deltaY / 1000
             let height = imgHeight - imgHeight * e.deltaY / 1000
-            // console.log('width==', imgWidth, width, height, e.deltaY)
+            if (width < 100) {
+              width = 100
+            }
+            if (height < 100) {
+              height = 100
+            }
             this.setState({imgWidth: width, imgHeight: height})
           }}
         />
@@ -1233,8 +1252,9 @@ class MedicalRecordScreen extends Component {
   // 上传文件
   async FileUpload(files) {
     const {FileUpload} = this.props
-    const {uploadedFiles} = this.state
+    const {uploadedFiles, imgFiles} = this.state
     let array = uploadedFiles
+    let imgArray = imgFiles
     if (files) {
       let file = new FormData()
       // console.log('files===', files)
@@ -1246,7 +1266,10 @@ class MedicalRecordScreen extends Component {
           url
         }
         array.push(item)
-        this.setState({uploadedFiles: array, files: JSON.stringify(array)})
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+          imgArray.push(item)
+        }
+        this.setState({uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array)})
       }
     }
   }
