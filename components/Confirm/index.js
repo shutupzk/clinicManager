@@ -64,7 +64,12 @@ export default class Confirm extends Component {
           <div style={{ width: '369px', display: 'flex', flexDirection: 'row', height: '32px', marginLeft: '32px', marginRight: '32px', marginBottom: '24px' }}>
             <div style={{ flex: 1 }} />
             {hideCancelButton || isAlert ? null : (
-              <div className='buttonDiv buttonDivCancel' onClick={() => this.closeConfirm()}>
+              <div className='buttonDiv buttonDivCancel' onClick={() => {
+                this.closeConfirm()
+                if (this.props.setPage) {
+                  this.props.setPage()
+                }
+              }}>
                 <span className='cancel'>取消</span>
               </div>
             )}
