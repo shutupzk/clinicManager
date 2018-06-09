@@ -11,10 +11,10 @@ class PendingDetailDrugScreen extends Component {
     super(props)
     this.state = {
       pageType: 1,
-      allSelect: true,
       selectArray: [],
       remarks: {},
-      selectRecordId: ''
+      selectRecordId: '',
+      check: {}
     }
   }
 
@@ -62,10 +62,25 @@ class PendingDetailDrugScreen extends Component {
     })
   }
 
-  changeAllSelect() {
-    const { allSelect } = this.state
-    const selectArray = allSelect ? [] : this.getSelectIds()
-    this.setState({ allSelect: !allSelect, selectArray })
+  changeAllSelect(itemIds, checked, key) {
+    let obj = {}
+    obj[key] = checked
+    const { selectArray } = this.state
+    const array = !checked ? this.arraySub(selectArray, itemIds) : [...itemIds, ...selectArray]
+    this.setState({ selectArray: array, check: { ...checked, ...obj } })
+  }
+
+  arraySub(arr1, arr2) {
+    let array = []
+    let m = {}
+    arr1.forEach(function(al) {
+      m[al] = al
+    })
+    arr2.forEach(function(bl) {
+      delete m[bl]
+    })
+    for (let key in m) array.push(m[key])
+    return array
   }
 
   itemSelect(itemId, checked, overAmount) {
@@ -225,6 +240,10 @@ class PendingDetailDrugScreen extends Component {
 
   // 渲染item
   renderItem(key, items, title, tradiition) {
+    let itemsIds = []
+    for (let item of items) {
+      if (item.amount < item.stock_amount) itemsIds.push(item.id)
+    }
     return (
       <div key={key}>
         <div className={'feeScheduleBox'}>
@@ -232,7 +251,7 @@ class PendingDetailDrugScreen extends Component {
           <ul>
             <li>
               <div style={{ flex: 1 }}>
-                <input type={'checkbox'} checked={this.state.allSelect} onChange={() => this.changeAllSelect()} />
+                <input type={'checkbox'} checked={this.state.check[key] === undefined ? true : this.state.check[key]} onChange={e => this.changeAllSelect(itemsIds, e.target.checked, key)} />
               </div>
               <div style={{ flex: 1 }}>序号</div>
               <div style={{ flex: 3 }}>药品名称</div>
