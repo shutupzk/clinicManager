@@ -194,7 +194,7 @@ class PendingDetailDrugScreen extends Component {
       if (item.charge_project_type_id === 1) arr.push({ ...item })
     }
     if (arr.length === 0) return null
-    return this.renderItem(arr, '西/成药')
+    return this.renderItem('west', arr, '西/成药')
   }
 
   // 中药
@@ -217,16 +217,16 @@ class PendingDetailDrugScreen extends Component {
       <div>
         {array.map((itemss, key) => {
           let items = itemss.value
-          return this.renderItem(items, `中药 ${key + 1} (共X剂数)`)
+          return this.renderItem(key, items, `中药 ${key + 1} (共${items[0].prescription_amount}剂数)`, true)
         })}
       </div>
     )
   }
 
   // 渲染item
-  renderItem(items, title) {
+  renderItem(key, items, title, tradiition) {
     return (
-      <div>
+      <div key={key}>
         <div className={'feeScheduleBox'}>
           <span>{title}</span>
           <ul>
@@ -240,7 +240,8 @@ class PendingDetailDrugScreen extends Component {
               <div>规格</div>
               <div style={{ flex: 5 }}>生产厂商</div>
               <div>药品库存</div>
-              <div style={{ flex: 1 }}>数量</div>
+              {tradiition ? <div>单次剂量</div> : null}
+              <div style={{ flex: 1 }}>总量</div>
               <div style={{ flex: 2 }}>发药状态</div>
               <div>备注</div>
             </li>
@@ -264,6 +265,7 @@ class PendingDetailDrugScreen extends Component {
                   <div>{item.specification}</div>
                   <div style={{ flex: 5 }}>{item.manu_factory_name}</div>
                   <div>{stock_amount}</div>
+                  {tradiition ? <div>{item.amount / item.prescription_amount}</div> : null}
                   <div style={{ flex: 1 }}>{amount}</div>
                   <div style={{ flex: 2 }}>待发药</div>
                   <div>
