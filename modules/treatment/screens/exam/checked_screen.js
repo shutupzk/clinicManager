@@ -1,86 +1,66 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList } from '../../../../ducks'
+import { ExaminationTriageChecked } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
+import { PageCard } from '../../../../components'
 
 class CheckedScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1,
-      showType: 1,
-      nowWeekNum: 1,
-      OrderType: 1
+      keyword: '',
+      start_date: moment()
+      .add(-7, 'd')
+      .format('YYYY-MM-DD'),
+      end_date: moment()
+      .add(1, 'd')
+      .format('YYYY-MM-DD'),
+      showMask: false,
+      selItem: {}
     }
   }
 
-  componentDidMount() {
-    const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
+  componentWillMount() {
+    this.getListData({offset: 0, limit: 6})
   }
-	// 改变显示内容
-  changeContent({ type }) {
-    this.setState({ pageType: type })
-  }
-
-  getTriagePatientListData(treat_status) {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (!patient.treat_status) continue
-      if (treat_status) {
-        if (!patient.reception_time) continue
-      } else {
-        if (patient.reception_time) continue
-      }
-      array.push(patient)
+	// 获取列表数据
+  getListData({offset = 0, limit = 6}) {
+    const {clinic_id, ExaminationTriageChecked} = this.props
+    const {keyword, start_date, end_date} = this.state
+    let requestData = {
+      clinic_id,
+      offset,
+      limit
     }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return 1
-      return -1
-    })
-  }
-  getUnTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (patient.treat_status) continue
-      array.push(patient)
+    if (keyword !== '') {
+      requestData.keyword = keyword
     }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
-      return 1
-    })
-  }
-
-	// 切换显示列表
-  changeShowType({ type }) {
-    this.setState({ showType: type })
+    if (start_date !== '') {
+      requestData.start_date = start_date
+    }
+    if (end_date !== '') {
+      requestData.end_date = end_date
+    }
+    ExaminationTriageChecked(requestData)
   }
 	// 显示待收费
   showTobeCharged() {
-    const array = this.getUnTriagePatientListData(false)
+    const {checked_data, pageInfo} = this.props
+    console.log('checked_data====', checked_data)
     return (
       <div>
         <div className={'listContent'}>
           <ul>
-            {array.map((patient, index) => {
-              // let statusColor = patient.treat_status === true ? '#F24A01' : '#31B0B3'
+            {checked_data.map((patient, index) => {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#F24A01', border: '1px solid #F24A01' }}>已检查</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>检查中</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -95,9 +75,22 @@ class CheckedScreen extends Component {
                       <a>接诊医生：</a>
                       <a>{patient.doctor_name}</a>
                     </span>
+                    <span>
+                      <a style={{ color: 'rgb(153, 153, 153)' }}>更新时间：</a>
+                      <a style={{ color: 'rgb(153, 153, 153)' }}>{moment(patient.updated_time).format('YYYY-MM-DD HH:mm:ss')}</a>
+                    </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span>已检查（2）</span>
+                    <span
+                      onClick={() => {
+                        // this.setState({showMask: true, selItem: patient})
+                      }}
+                    >检查中(10)</span>
+                    <span
+                      onClick={() => {
+                        // this.setState({showMask: true, selItem: patient})
+                      }}
+                    >已检查(10)</span>
                   </div>
                 </li>
               )
@@ -105,6 +98,14 @@ class CheckedScreen extends Component {
           </ul>
         </div>
         <div className={'pagination'} />
+        <PageCard
+          offset={pageInfo.offset}
+          limit={pageInfo.limit}
+          total={pageInfo.total}
+          onItemClick={({ offset, limit }) => {
+            this.getListData({ offset, limit })
+          }}
+        />
       </div>
     )
   }
@@ -128,10 +129,34 @@ class CheckedScreen extends Component {
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='date' placeholder='选择日期' />
-            <input type='date' placeholder='选择日期' />
-            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
-            <button>查询</button>
+            <input
+              type='date'
+              placeholder='选择开始日期'
+              value={this.state.start_date}
+              onChange={e => {
+                this.setState({start_date: e.target.value})
+              }}
+            />
+            <input
+              type='date'
+              placeholder='选择结束日期'
+              value={this.state.end_date}
+              onChange={e => {
+                this.setState({end_date: e.target.value})
+              }}
+            />
+            <input
+              type='text'
+              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+              onClick={e => {
+                this.setState({keyword: e.target.value})
+              }}
+            />
+            <button
+              onClick={() => {
+                this.getListData({offset: 0, limit: 6})
+              }}
+            >查询</button>
           </div>
         </div>
         {this.showTobeCharged()}
@@ -143,13 +168,10 @@ class CheckedScreen extends Component {
 const mapStateToProps = state => {
   console.log(state)
   return {
-    triage_personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
-    triagePatients: state.triagePatients.data,
-    patient_page_info: state.triagePatients.page_info,
-    triageDoctors: state.triageDoctors.data,
-    doctor_page_info: state.triageDoctors.page_info
+    checked_data: state.examinationTriages.checked_data,
+    pageInfo: state.examinationTriages.checked_page_info
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(CheckedScreen)
+export default connect(mapStateToProps, { ExaminationTriageChecked })(CheckedScreen)

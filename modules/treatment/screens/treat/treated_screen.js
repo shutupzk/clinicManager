@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageChecking } from '../../../../ducks'
+import { TreatmentTriageChecked } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
 
-class InInspectionScreen extends Component {
+class TreatedScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -27,7 +27,7 @@ class InInspectionScreen extends Component {
   }
 	// 获取列表数据
   getListData({offset = 0, limit = 6}) {
-    const {clinic_id, ExaminationTriageChecking} = this.props
+    const {clinic_id, TreatmentTriageChecked} = this.props
     const {keyword, start_date, end_date} = this.state
     let requestData = {
       clinic_id,
@@ -43,17 +43,17 @@ class InInspectionScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    ExaminationTriageChecking(requestData)
+    TreatmentTriageChecked(requestData)
   }
 	// 显示待收费
   showTobeCharged() {
-    const {checking_data, pageInfo} = this.props
-    console.log('checking_data====', checking_data)
+    const {checked_data, pageInfo} = this.props
+    console.log('checked_data====', checked_data)
     return (
       <div>
         <div className={'listContent'}>
           <ul>
-            {checking_data.map((patient, index) => {
+            {checked_data.map((patient, index) => {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
@@ -109,17 +109,18 @@ class InInspectionScreen extends Component {
       </div>
     )
   }
+
   // 加载
   render() {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
-          <span className={'sel'}>
-						检查中
+          <span onClick={() => Router.push('/treatment/treat')}>待治疗</span>
+          <span onClick={() => Router.push('/treatment/treat/inInspection')}>
+						治疗中
 					</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>
-						已检查
+          <span className={'sel'}>
+						已治疗
 					</span>
         </div>
         <div className={'filterBox'}>
@@ -164,9 +165,9 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
-    checking_data: state.examinationTriages.checking_data,
-    pageInfo: state.examinationTriages.checking_page_info
+    checked_data: state.treatmentTriages.checked_data,
+    pageInfo: state.treatmentTriages.checked_page_info
   }
 }
 
-export default connect(mapStateToProps, { ExaminationTriageChecking })(InInspectionScreen)
+export default connect(mapStateToProps, { TreatmentTriageChecked })(TreatedScreen)

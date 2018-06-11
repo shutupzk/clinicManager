@@ -137,6 +137,39 @@ import {
 } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
 import {FileUpload} from './files'
+import {
+  examinationTriages,
+  ExaminationTriageList,
+  ExaminationTriageWaiting,
+  ExaminationTriageChecked,
+  ExaminationTriageChecking,
+  ExaminationTriageRecordCreate,
+  ExaminationTriageUpdate,
+  ExaminationTriageRecordList
+} from './examination_triage'
+import {
+  laboratoryTriages,
+  LaboratoryTriageList,
+  LaboratoryTriageWaiting,
+  LaboratoryTriageChecked,
+  LaboratoryTriageChecking,
+  LaboratoryTriageRecordCreate,
+  LaboratoryTriageUpdate,
+  LaboratoryTriageRecordList,
+  LaboratoryTriageDetail,
+  LaboratoryTriageRecordDetail
+} from './laboratory_triage'
+import {
+  treatmentTriages,
+  TreatmentTriageList,
+  TreatmentTriageWaiting,
+  TreatmentTriageChecked,
+  TreatmentTriageChecking,
+  TreatmentTriageRecordCreate,
+  TreatmentTriageRecordList,
+  TreatmentTriageUpdate
+} from './treatment_triage'
+
 // keys
 export {
   user,
@@ -189,7 +222,10 @@ export {
   drugDeliveryPending,
   drugDeliveryIssued,
   drugDeliveryRefund,
-  drugDelivery
+  drugDelivery,
+  examinationTriages,
+  laboratoryTriages,
+  treatmentTriages
 }
 
 // actions
@@ -371,5 +407,28 @@ export {
   drugDeliveryRecover,
   queryDrugDeliveryRefundRecordList,
   queryDrugDeliveryRefundRecordDetail,
-  FileUpload
+  FileUpload,
+  ExaminationTriageList,
+  ExaminationTriageWaiting,
+  ExaminationTriageChecked,
+  ExaminationTriageChecking,
+  ExaminationTriageRecordCreate,
+  ExaminationTriageUpdate,
+  ExaminationTriageRecordList,
+  LaboratoryTriageList,
+  LaboratoryTriageWaiting,
+  LaboratoryTriageChecked,
+  LaboratoryTriageChecking,
+  LaboratoryTriageRecordCreate,
+  LaboratoryTriageUpdate,
+  LaboratoryTriageRecordList,
+  LaboratoryTriageDetail,
+  LaboratoryTriageRecordDetail,
+  TreatmentTriageList,
+  TreatmentTriageWaiting,
+  TreatmentTriageChecked,
+  TreatmentTriageChecking,
+  TreatmentTriageRecordCreate,
+  TreatmentTriageRecordList,
+  TreatmentTriageUpdate
 }

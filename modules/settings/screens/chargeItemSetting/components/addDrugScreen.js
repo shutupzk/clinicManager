@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { ClinicDrugCreate, ClinicDrugList, queryDoseUnitList, queryDoseFormList, queryFrequencyList, queryRouteAdministrationList, queryDicDrugsList } from '../../../../../ducks'
+import moment from 'moment'
 
 // 病历
 class AddDrugScreen extends Component {
@@ -15,7 +16,19 @@ class AddDrugScreen extends Component {
         status: true,
         drug_class_id: props.drug_class_id,
         is_discount: false
-      }
+      },
+      druginstockInfo: {
+        drugName: '',
+        items: [{}],
+        instock_operation_id: '',
+        clinic_id: '',
+        instock_way_name: '',
+        supplier_name: '',
+        remark: '',
+        instock_date: ''
+      },
+      isInstock: false,
+      showInstock: false
     }
   }
 
@@ -145,6 +158,7 @@ class AddDrugScreen extends Component {
     )
   }
   render() {
+    const {showInstock} = this.state
     return (
       <div className={'contentCenter'}>
         {this.renderSearchBlank()}
@@ -153,11 +167,16 @@ class AddDrugScreen extends Component {
         {this.renderUsageInfoBlank()}
         {this.renderAlertSettingBlank()}
         {this.renderOtherInfoBlank()}
+        {showInstock ? this.renderSaveAndInstock() : ''}
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => this.submit()}>保存</button>
-            <button onClick={() => this.saveInStock()}>保存并入库</button>
+            <button onClick={() => {
+              this.submit(false)
+            }}>保存</button>
+            <button onClick={() => {
+              this.submit(true)
+            }}>保存并入库</button>
           </div>
         </div>
         {this.style()}
@@ -165,6 +184,290 @@ class AddDrugScreen extends Component {
       </div>
     )
   }
+  // 保存并入库
+  renderSaveAndInstock() {
+    // let array = [{}]
+    const {drugInfo, druginstockInfo} = this.state
+    console.log('drugInfo====', drugInfo)
+    return (
+      <div className={'mask'}>
+        <div className={'maskBox'}>
+          <div className={'maskBox_top'}>
+            <span>药品入库</span>
+            <span />
+          </div>
+          <div className={'maskBox_center'}>
+            <div className={'center_top'}>
+              <ul>
+                <li>
+                  <label>药品名称</label>
+                  <div>
+                    <input readOnly type='text' value={drugInfo.name} />
+                  </div>
+                </li>
+                <li>
+                  <label>规格</label>
+                  <div>
+                    <input readOnly type='text' value={drugInfo.specification} />
+                  </div>
+                </li>
+                <li>
+                  <label>生产厂商</label>
+                  <div>
+                    <input readOnly type='text' value={drugInfo.manu_factory_name} />
+                  </div>
+                </li>
+                <li>
+                  <label>入库日期</label>
+                  <div>
+                    <input readOnly type='date' value={moment().format('YYYY-MM-DD')} />
+                  </div>
+                </li>
+                <li>
+                  <label>入库方式</label>
+                  <div>
+                    <Select
+                      height={34}
+                      options={[]}
+                    />
+                  </div>
+                </li>
+                <li>
+                  <label>供应商</label>
+                  <div>
+                    <Select
+                      height={34}
+                      options={[]}
+                    />
+                  </div>
+                </li>
+                <li>
+                  <label>备注</label>
+                  <div>
+                    <input type='text' value={''} />
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div className={'centerCotent'}>
+              <table>
+                <thead>
+                  <tr>
+                    <td>序号</td>
+                    <td>数量</td>
+                    <td>单位</td>
+                    <td>零售价</td>
+                    <td>成本价</td>
+                    <td>成本合计</td>
+                    <td>批号</td>
+                    <td>有效日期</td>
+                    <td>增加</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {druginstockInfo.items.map((item, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>
+                          <input type='number' />
+                        </td>
+                        <td>{drugInfo.packing_unit_name}</td>
+                        <td>{drugInfo.ret_price}</td>
+                        <td>
+                          <input
+                            type='text'
+                            value={''}
+                            onChange={e => {
+
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type='text'
+                            value={''}
+                            onChange={e => {
+
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type='text'
+                            value={''}
+                            onChange={e => {
+
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type='date'
+                            value={moment().format('YYYY-MM-DD')}
+                            onChange={e => {
+
+                            }}
+                          />
+                        </td>
+                        <td>删除</td>
+                      </tr>
+                    )
+                  })}
+                  <tr>
+                    <td>合计</td>
+                    <td>11</td>
+                    <td>单位</td>
+                    <td>100</td>
+                    <td>1000</td>
+                    <td>10000</td>
+                    <td>批号</td>
+                    <td>有效日期</td>
+                    <td>--</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className={'maskBox_bottom'}>
+            <div>
+              <button onClick={() => this.setState({showInstock: false})}>取消</button>
+              <button onClick={() => {
+                this.saveInStock()
+              }}>保存</button>
+            </div>
+          </div>
+        </div>
+        <style jsx>{`
+          .maskBox{
+            width: 950px;
+            height: 683px;
+            background: rgba(244,247,248,1);
+            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            position: absolute;
+            display:flex;
+            flex-direction:column;
+            align-items: center;
+          }
+          .maskBox_top {
+            border-bottom: 1px solid #d8d8d8;
+            width: 100%;
+            height: 93px;
+          }
+          .maskBox_top>span:nth-child(1) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102,102,102,1);
+            line-height: 17px;
+            height: 17px;
+            text-indent: 0;
+            margin: 40px 0 0 60px;
+            float: left;
+          }
+          .maskBox_top span:last-child {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,95,87,1);
+            float: right;
+            color: #ffffff;
+            font-size: 20px;
+            text-align: center;
+            text-indent: 10px;
+            line-height: 35px;
+            border-bottom-left-radius: 100%;
+            cursor: pointer;
+          }
+          .maskBox_center {
+            width: 90%;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            // background:#dddddd;
+          }
+          .center_top {
+            width:100%;
+            margin-top: 20px;
+          }
+          .center_top ul{
+            width:100%;
+          }
+          .center_top ul li{
+            float: left;
+            width: 24%;
+            margin-right: 1%;
+            margin-top: 10px;
+          }
+          .center_top ul li label{
+            width: 100%;
+          }
+          .center_top ul li>div{
+            width: 100%;
+          }
+          .center_top ul li>div>input{
+            width: 100%;
+            height: 30px;
+            background: rgb(245, 248, 249);
+            border-radius: 4px;
+            border: 1px solid rgb(217, 217, 217);
+            margin-top: 0px;
+          } 
+          .center_top ul li>div>input[type='date']{
+            height: 32px;
+          }
+          .centerCotent {
+            width: 100%;
+            margin: 20px 0;
+            height: 340px;
+            // background:#a0a0a0;
+            overflow-y: auto;
+            overflow-x: hidden;
+          }
+          .centerCotent table{
+            width: 99%;
+            border-collapse: collapse;
+            border: 1px solid #d8d8d8;
+            display: flex;
+            flex-direction: column;
+          }
+          .centerCotent table thead tr{
+            display: flex;
+            height: 40px;
+            border-bottom: 1px solid #d8d8d8;
+          }
+          .centerCotent table thead td{
+            flex:1;
+            border-right: 1px solid #d8d8d8;
+            height: 40px;
+            line-height:40px;
+            text-align: center;
+            font-weight:bold;
+          }
+          .centerCotent table tbody{
+            
+          }
+          .centerCotent table tbody tr{
+            display: flex;
+            border-bottom: 1px solid #d8d8d8;
+            height: 30px;
+          }
+          .centerCotent table tbody tr td{
+            flex:1;
+            border-right: 1px solid #d8d8d8;
+            text-align: center;
+            height: 30px;
+            line-height:30px;
+          }
+          .centerCotent table tbody tr td input{
+            width: 100%;
+            border:none;
+            background:transparent;
+            outline-style: none;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
@@ -221,10 +524,10 @@ class AddDrugScreen extends Component {
     return true
   }
   // 保存
-  async submit() {
+  async submit(isInstock) {
     let { drugInfo } = this.state
     const { clinic_id, ClinicDrugCreate } = this.props
-    console.log('drugInfo=======', drugInfo)
+    console.log('drugInfo=======', drugInfo, isInstock)
     if (drugInfo.drug_class_id) {
       if (this.validateData(drugInfo)) {
         let error = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 0 })
@@ -232,7 +535,11 @@ class AddDrugScreen extends Component {
           this.refs.myAlert.alert('添加药品失败', error, null, 'Danger')
         } else {
           this.refs.myAlert.alert('添加成功')
-          this.props.back2List()
+          if (isInstock) {
+            this.setState({showInstock: true})
+          } else {
+            this.props.back2List()
+          }
         }
       }
     }

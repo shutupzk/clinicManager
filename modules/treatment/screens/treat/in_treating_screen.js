@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageChecking } from '../../../../ducks'
+import { TreatmentTriageChecking } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
 
-class InInspectionScreen extends Component {
+class InTreatingScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -27,7 +27,7 @@ class InInspectionScreen extends Component {
   }
 	// 获取列表数据
   getListData({offset = 0, limit = 6}) {
-    const {clinic_id, ExaminationTriageChecking} = this.props
+    const {clinic_id, TreatmentTriageChecking} = this.props
     const {keyword, start_date, end_date} = this.state
     let requestData = {
       clinic_id,
@@ -43,7 +43,7 @@ class InInspectionScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    ExaminationTriageChecking(requestData)
+    TreatmentTriageChecking(requestData)
   }
 	// 显示待收费
   showTobeCharged() {
@@ -60,7 +60,7 @@ class InInspectionScreen extends Component {
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>检查中</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>治疗中</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -85,12 +85,12 @@ class InInspectionScreen extends Component {
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
                       }}
-                    >检查中(10)</span>
+                    >治疗中(10)</span>
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
                       }}
-                    >已检查(10)</span>
+                    >已治疗(10)</span>
                   </div>
                 </li>
               )
@@ -114,12 +114,12 @@ class InInspectionScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
+          <span onClick={() => Router.push('/treatment/treat')}>待治疗</span>
           <span className={'sel'}>
-						检查中
+						治疗中
 					</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>
-						已检查
+          <span onClick={() => Router.push('/treatment/treat/checked')}>
+						已治疗
 					</span>
         </div>
         <div className={'filterBox'}>
@@ -164,9 +164,9 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
-    checking_data: state.examinationTriages.checking_data,
-    pageInfo: state.examinationTriages.checking_page_info
+    checking_data: state.treatmentTriages.checking_data,
+    pageInfo: state.treatmentTriages.checking_page_info
   }
 }
 
-export default connect(mapStateToProps, { ExaminationTriageChecking })(InInspectionScreen)
+export default connect(mapStateToProps, { TreatmentTriageChecking })(InTreatingScreen)

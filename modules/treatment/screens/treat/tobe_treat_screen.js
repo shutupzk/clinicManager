@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageWaiting } from '../../../../ducks'
+import { TreatmentTriageWaiting } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
 
-class TobeCheckedScreen extends Component {
+class TobeTreatScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -27,7 +27,7 @@ class TobeCheckedScreen extends Component {
   }
   // 获取列表数据
   getListData({offset = 0, limit = 6}) {
-    const {clinic_id, ExaminationTriageWaiting} = this.props
+    const {clinic_id, TreatmentTriageWaiting} = this.props
     const {keyword, start_date, end_date} = this.state
     let requestData = {
       clinic_id,
@@ -43,7 +43,7 @@ class TobeCheckedScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    ExaminationTriageWaiting(requestData)
+    TreatmentTriageWaiting(requestData)
   }
 	// 显示待收费
   showTobeCharged() {
@@ -60,7 +60,7 @@ class TobeCheckedScreen extends Component {
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待检查</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待治疗</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -85,7 +85,7 @@ class TobeCheckedScreen extends Component {
                       onClick={() => {
                         this.setState({showMask: true, selItem: patient})
                       }}
-                    >待检查</span>
+                    >待治疗</span>
                   </div>
                 </li>
               )
@@ -271,12 +271,12 @@ class TobeCheckedScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={'sel'}>待检查</span>
-          <span onClick={() => Router.push('/treatment/exam/inInspection')}>
-						检查中
+          <span className={'sel'}>待治疗</span>
+          <span onClick={() => Router.push('/treatment/treat/inInspection')}>
+						治疗中
 					</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>
-						已检查
+          <span onClick={() => Router.push('/treatment/treat/checked')}>
+						已治疗
 					</span>
         </div>
         <div className={'filterBox'}>
@@ -322,9 +322,9 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
-    waiting_data: state.examinationTriages.waiting_data,
-    pageInfo: state.examinationTriages.waiting_page_info
+    waiting_data: state.treatmentTriages.waiting_data,
+    pageInfo: state.treatmentTriages.waiting_page_info
   }
 }
 
-export default connect(mapStateToProps, { ExaminationTriageWaiting })(TobeCheckedScreen)
+export default connect(mapStateToProps, { TreatmentTriageWaiting })(TobeTreatScreen)

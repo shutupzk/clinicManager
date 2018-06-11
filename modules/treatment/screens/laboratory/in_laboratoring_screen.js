@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageChecking } from '../../../../ducks'
+import { LaboratoryTriageChecking } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
 
-class InInspectionScreen extends Component {
+class InLaboratoringScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -27,7 +27,7 @@ class InInspectionScreen extends Component {
   }
 	// 获取列表数据
   getListData({offset = 0, limit = 6}) {
-    const {clinic_id, ExaminationTriageChecking} = this.props
+    const {clinic_id, LaboratoryTriageChecking} = this.props
     const {keyword, start_date, end_date} = this.state
     let requestData = {
       clinic_id,
@@ -43,7 +43,7 @@ class InInspectionScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    ExaminationTriageChecking(requestData)
+    LaboratoryTriageChecking(requestData)
   }
 	// 显示待收费
   showTobeCharged() {
@@ -114,12 +114,12 @@ class InInspectionScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
+          <span onClick={() => Router.push('/treatment/inspect')}>待检验</span>
           <span className={'sel'}>
-						检查中
+						检验中
 					</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>
-						已检查
+          <span onClick={() => Router.push('/treatment/inspect/checked')}>
+						已检验
 					</span>
         </div>
         <div className={'filterBox'}>
@@ -164,9 +164,9 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
-    checking_data: state.examinationTriages.checking_data,
-    pageInfo: state.examinationTriages.checking_page_info
+    checking_data: state.laboratoryTriages.checking_data,
+    pageInfo: state.laboratoryTriages.checking_page_info
   }
 }
 
-export default connect(mapStateToProps, { ExaminationTriageChecking })(InInspectionScreen)
+export default connect(mapStateToProps, { LaboratoryTriageChecking })(InLaboratoringScreen)

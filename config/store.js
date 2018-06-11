@@ -53,7 +53,10 @@ import {
   drugDeliveryPending,
   drugDeliveryIssued,
   drugDeliveryRefund,
-  drugDelivery
+  drugDelivery,
+  examinationTriages,
+  laboratoryTriages,
+  treatmentTriages
 } from '../ducks'
 import thunk from 'redux-thunk'
 
@@ -116,7 +119,10 @@ const appReducer = persistCombineReducers(persistConfig, {
   drugDeliveryPending,
   drugDeliveryIssued,
   drugDeliveryRefund,
-  drugDelivery
+  drugDelivery,
+  examinationTriages,
+  laboratoryTriages,
+  treatmentTriages
 })
 
 const rootReducer = (state, action) => {
