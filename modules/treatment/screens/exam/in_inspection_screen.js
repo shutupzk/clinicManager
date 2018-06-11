@@ -5,6 +5,7 @@ import { ExaminationTriageChecking } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
+import ExamDetailScreen from './components/exam_detail_screen'
 
 class InInspectionScreen extends Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class InInspectionScreen extends Component {
       .add(1, 'd')
       .format('YYYY-MM-DD'),
       showMask: false,
-      selItem: {}
+      selItem: {},
+      pageType: 0
     }
   }
 
@@ -47,8 +49,29 @@ class InInspectionScreen extends Component {
   }
 	// 显示待收费
   showTobeCharged() {
-    const {checking_data, pageInfo} = this.props
+    let {checking_data, pageInfo} = this.props
     console.log('checking_data====', checking_data)
+    if (checking_data.length === 0) {
+      checking_data = [
+        {
+          birthday: '20000603',
+          clinic_patient_id: 16,
+          clinic_triage_patient_id: 42,
+          department_name: '骨科',
+          doctor_name: '扁鹊',
+          patient_name: '倾世容颜',
+          phone: '15387556262',
+          register_personnel_name: '超级管理员',
+          register_time: '2018-06-05T00:00:00.695816+08:00',
+          register_type: 2,
+          sex: 0,
+          status: 40,
+          total_count: 1,
+          updated_time: '2018-06-07T00:43:53.315427+08:00',
+          visit_date: '2018-06-05T00:00:00Z'
+        }
+      ]
+    }
     return (
       <div>
         <div className={'listContent'}>
@@ -84,6 +107,7 @@ class InInspectionScreen extends Component {
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
+                        this.setState({pageType: 1})
                       }}
                     >检查中(10)</span>
                     <span
@@ -111,50 +135,56 @@ class InInspectionScreen extends Component {
   }
   // 加载
   render() {
+    const {pageType} = this.state
     return (
       <div>
-        <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
-          <span className={'sel'}>
-						检查中
-					</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>
-						已检查
-					</span>
-        </div>
-        <div className={'filterBox'}>
-          <div className={'boxLeft'}>
-            <input
-              type='date'
-              placeholder='选择开始日期'
-              value={this.state.start_date}
-              onChange={e => {
-                this.setState({start_date: e.target.value})
-              }}
-            />
-            <input
-              type='date'
-              placeholder='选择结束日期'
-              value={this.state.end_date}
-              onChange={e => {
-                this.setState({end_date: e.target.value})
-              }}
-            />
-            <input
-              type='text'
-              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
-              onClick={e => {
-                this.setState({keyword: e.target.value})
-              }}
-            />
-            <button
-              onClick={() => {
-                this.getListData({offset: 0, limit: 6})
-              }}
-            >查询</button>
-          </div>
-        </div>
-        {this.showTobeCharged()}
+        {pageType === 1 ? <ExamDetailScreen
+          back2List={() => {
+            this.setState({pageType: 0})
+          }} /> : <div>
+            <div className={'childTopBar'}>
+              <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
+              <span className={'sel'}>
+                检查中
+              </span>
+              <span onClick={() => Router.push('/treatment/exam/checked')}>
+                已检查
+              </span>
+            </div>
+            <div className={'filterBox'}>
+              <div className={'boxLeft'}>
+                <input
+                  type='date'
+                  placeholder='选择开始日期'
+                  value={this.state.start_date}
+                  onChange={e => {
+                    this.setState({start_date: e.target.value})
+                  }}
+                />
+                <input
+                  type='date'
+                  placeholder='选择结束日期'
+                  value={this.state.end_date}
+                  onChange={e => {
+                    this.setState({end_date: e.target.value})
+                  }}
+                />
+                <input
+                  type='text'
+                  placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+                  onClick={e => {
+                    this.setState({keyword: e.target.value})
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    this.getListData({offset: 0, limit: 6})
+                  }}
+                >查询</button>
+              </div>
+            </div>
+            {this.showTobeCharged()}
+          </div>}
       </div>
     )
   }

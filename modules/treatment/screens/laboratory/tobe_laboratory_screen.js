@@ -137,7 +137,7 @@ class TobeLaboratoryScreen extends Component {
                 <tbody>
                   {items.map((item, index) => {
                     return (
-                      <tr>
+                      <tr key={index}>
                         <td>
                           <input type='checkbox' />
                         </td>
