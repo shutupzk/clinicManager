@@ -41,7 +41,15 @@ import {
   queryMedicalModelsByDoctor,
   queryChiefComplaints
 } from './medicRecord'
-import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList } from './drug'
+import {
+  drugs,
+  ClinicDrugCreate,
+  ClinicDrugList,
+  queryDicDrugsList,
+  ClinicDrugUpdate,
+  ClinicDrugDetail,
+  ClinicDrugOnOff
+} from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
 import { materials, materialCreate, queryMaterialList } from './material'
@@ -136,7 +144,7 @@ import {
   queryDrugDeliveryRefundRecordDetail
 } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
-import {FileUpload} from './files'
+import {FileUpload, xhrFileUpload} from './files'
 import {
   examinationTriages,
   ExaminationTriageList,
@@ -275,6 +283,9 @@ export {
   queryMedicalModelsByDoctor,
   queryMedicalsByPatient,
   ClinicDrugCreate,
+  ClinicDrugUpdate,
+  ClinicDrugDetail,
+  ClinicDrugOnOff,
   ClinicDrugList,
   examinationCreate,
   laboratoryCreate,
@@ -408,6 +419,7 @@ export {
   queryDrugDeliveryRefundRecordList,
   queryDrugDeliveryRefundRecordDetail,
   FileUpload,
+  xhrFileUpload,
   ExaminationTriageList,
   ExaminationTriageWaiting,
   ExaminationTriageChecked,

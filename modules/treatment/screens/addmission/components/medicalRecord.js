@@ -12,7 +12,8 @@ import {
   queryMedicalsByPatient,
   queryChiefComplaints,
   queryDictDiagnosisList,
-  FileUpload
+  FileUpload,
+  xhrFileUpload
 } from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
@@ -1044,28 +1045,29 @@ class MedicalRecordScreen extends Component {
           this.setState({imgWidth: width, imgHeight: height})
         }}
       >
-        <img
-          style={{width: imgWidth, height: imgHeight}}
-          src={bigImg}
-          alt={'...'}
-          onWheel={e => {
-            // console.log('sadasdasd==', e)
-            let width = imgWidth - imgWidth * e.deltaY / 1000
-            let height = imgHeight - imgHeight * e.deltaY / 1000
-            if (width < 100) {
-              width = 100
-            }
-            if (height < 100) {
-              height = 100
-            }
-            this.setState({imgWidth: width, imgHeight: height})
-          }}
-        />
-        <span
-          onClick={() => {
-            this.setState({showBigImg: false})
-          }}
-        >×</span>
+        <div className={'imgDiv'} style={{width: imgWidth, height: imgHeight}}>
+          <img
+            src={bigImg}
+            alt={'...'}
+            onWheel={e => {
+              // console.log('sadasdasd==', e)
+              let width = imgWidth - imgWidth * e.deltaY / 1000
+              let height = imgHeight - imgHeight * e.deltaY / 1000
+              if (width < 100) {
+                width = 100
+              }
+              if (height < 100) {
+                height = 100
+              }
+              this.setState({imgWidth: width, imgHeight: height})
+            }}
+          />
+          <span
+            onClick={() => {
+              this.setState({showBigImg: false})
+            }}
+          >×</span>
+        </div>
         <a
           className={'prev'}
           onClick={() => {
@@ -1089,7 +1091,14 @@ class MedicalRecordScreen extends Component {
           }}
         >{'》'}</a>
         <style jsx>{`
+          .imgDiv {
+            position:relative;
+            max-width: 100%;
+            max-height:100%;
+          }
           img{
+            width:100%;
+            height:100%;
             max-width: 100%;
             max-height:100%;
           }
@@ -1251,15 +1260,32 @@ class MedicalRecordScreen extends Component {
   }
   // 上传文件
   async FileUpload(files) {
-    const {FileUpload} = this.props
+    const {FileUpload, xhrFileUpload} = this.props
     const {uploadedFiles, imgFiles} = this.state
     let array = uploadedFiles
     let imgArray = imgFiles
     if (files) {
       let file = new FormData()
       // console.log('files===', files)
+      // for (let i = 0; i < files.length; i++) {
+      //   file.append('file[' + i + ']', files[i]) // ++++++++++
+      // }
       file.append('file', files[0])
       let url = await FileUpload(file)
+      // xhrFileUpload(file, function (type, data) {
+      //   if (type === 'progress' || type === 'uploading') {
+      //     console.log('progress=====', data)
+      //   }
+      //   if (type === 'cancel') {
+      //     console.log('cancel=====', data)
+      //   }
+      //   if (type === 'error') {
+      //     console.log('error=====', data)
+      //   }
+      //   if (type === 'ok') {
+      //     console.log('ok=====', data)
+      //   }
+      // })
       if (url) {
         let item = {
           docName: files[0].name,
@@ -1460,7 +1486,7 @@ class MedicalRecordScreen extends Component {
                   {this.renderFiles()}
                   <div className={'chooseFile'}>
                     <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
-                      <input type='file' onChange={e => {
+                      <input multiple='multiple' type='file' onChange={e => {
                         // console.log('文件=====', e.target.files)
                         this.FileUpload(e.target.files)
                       }} />
@@ -1771,6 +1797,7 @@ export default connect(
     queryMedicalsByPatient,
     queryChiefComplaints,
     queryDictDiagnosisList,
-    FileUpload
+    FileUpload,
+    xhrFileUpload
   }
 )(MedicalRecordScreen)

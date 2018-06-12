@@ -2,7 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select, Confirm, CustomSelect } from '../../../../../components'
-import { ClinicDrugCreate, ClinicDrugList, queryDoseUnitList, queryDoseFormList, queryFrequencyList, queryRouteAdministrationList, queryDicDrugsList } from '../../../../../ducks'
+import {
+  ClinicDrugCreate,
+  ClinicDrugList,
+  queryDoseUnitList,
+  queryDoseFormList,
+  queryFrequencyList,
+  queryRouteAdministrationList,
+  queryDicDrugsList,
+  ClinicDrugDetail
+} from '../../../../../ducks'
 import moment from 'moment'
 
 // 病历
@@ -29,6 +38,16 @@ class AddDrugScreen extends Component {
       },
       isInstock: false,
       showInstock: false
+    }
+  }
+  async componentDidMount() {
+    const {showWay, clinic_drug_id, ClinicDrugDetail} = this.props
+    if (showWay === 2) {
+      let data = await ClinicDrugDetail({clinic_drug_id})
+      if (data) {
+        console.log('drugInfo=====', data)
+        this.setState({drugInfo: data})
+      }
     }
   }
 
@@ -267,7 +286,7 @@ class AddDrugScreen extends Component {
                 <tbody>
                   {druginstockInfo.items.map((item, index) => {
                     return (
-                      <tr>
+                      <tr key={index}>
                         <td>{index + 1}</td>
                         <td>
                           <input type='number' />
@@ -771,7 +790,7 @@ class AddDrugScreen extends Component {
   renderBaseInfoBlank() {
     const { drugInfo } = this.state
     const drugs = this.props.drugs || []
-    // console.log('drugInfo=======', drugInfo)
+    console.log('drugs=======', drugs)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span>药品基本信息</span>
@@ -1421,5 +1440,6 @@ export default connect(mapStateToProps, {
   queryDoseFormList,
   queryFrequencyList,
   queryRouteAdministrationList,
-  queryDicDrugsList
+  queryDicDrugsList,
+  ClinicDrugDetail
 })(AddDrugScreen)

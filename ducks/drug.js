@@ -49,6 +49,10 @@ export const ClinicDrugList = ({ clinic_id, type, drug_class_id = '', keyword, s
     dispatch({ type: 'FREQUENCY_ADD', data: frequencyJson })
     dispatch({ type: 'ROUTE_ADMINISTRATION_ADD', data: routeJson })
     dispatch({ type: 'DOSE_FORM_ADD', data: doseFormJson })
+    // dispatch({
+    //   type: DIC_DRUG_ARRAY_ADD,
+    //   drug_data: docs
+    // })
     if (isJson) {
       dispatch({
         type: DRUG_JSON_ADD,
@@ -81,12 +85,55 @@ export const ClinicDrugCreate = drugInfo => async dispatch => {
     if (drugInfo.buy_price) drugInfo.buy_price = drugInfo.buy_price * 100
     if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
     const data = await request('/clinic_drug/ClinicDrugCreate', drugInfo)
+    console.log('ClinicDrugCreate====', drugInfo, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const ClinicDrugUpdate = drugInfo => async dispatch => {
+  try {
+    if (drugInfo.ret_price) drugInfo.ret_price = drugInfo.ret_price * 100
+    if (drugInfo.buy_price) drugInfo.buy_price = drugInfo.buy_price * 100
+    if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
+    const data = await request('/clinic_drug/ClinicDrugUpdate', drugInfo)
     console.log(drugInfo, data)
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
     console.log(e)
     return e.message
+  }
+}
+export const ClinicDrugOnOff = drugInfo => async dispatch => {
+  try {
+    const data = await request('/clinic_drug/ClinicDrugOnOff', drugInfo)
+    console.log(drugInfo, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const ClinicDrugDetail = ({clinic_drug_id}) => async dispatch => {
+  try {
+    console.log('limit====', clinic_drug_id)
+    const data = await request('/clinic_drug/ClinicDrugDetail', {clinic_drug_id})
+    console.log('ClinicDrugDetail=======', data)
+    const docs = data.data || {}
+    let drug_data = []
+    drug_data.push(docs)
+    dispatch({
+      type: DIC_DRUG_ARRAY_ADD,
+      drug_data: drug_data
+    })
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
   }
 }
 
@@ -100,7 +147,7 @@ export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 10, type }
       limit
     })
     const docs = data.data || []
-    console.log('docs ==== ======= ', docs)
+    console.log('queryDicDrugsList ==== ======= ', docs)
     let unitJson = {}
     let frequencyJson = {}
     let routeJson = {}
