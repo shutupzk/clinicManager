@@ -1,26 +1,22 @@
 import React, { Component } from 'react'
 
-function getLable(value, valueKey, labelKey, options = [], mustOptionValue) {
-  if (mustOptionValue) {
-    if (!value || !valueKey || !labelKey) return ''
-    for (let option of options) {
-      if (option[valueKey] === value) {
-        return option[labelKey]
-      }
+function getLable(value, valueKey, labelKey, options = []) {
+  if (!value || !valueKey || !labelKey) return ''
+  for (let option of options) {
+    if (option[valueKey] === value) {
+      return option[labelKey]
     }
-    return ''
-  } else {
-    return labelKey || ''
   }
+  return ''
 }
 
 export default class CustomSelect extends Component {
   constructor(props) {
     super(props)
-    const { value, valueKey, labelKey, options, mustOptionValue } = props
+    const { value, valueKey, labelKey, options } = props
     this.state = {
       value: value || '',
-      label: getLable(value, valueKey, labelKey, options, mustOptionValue),
+      label: getLable(value, valueKey, labelKey, options),
       showOptions: false,
       onMouseOver: false
     }
