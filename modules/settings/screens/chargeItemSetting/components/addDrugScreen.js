@@ -804,6 +804,8 @@ class AddDrugScreen extends Component {
                 placeholder='搜索'
                 controlStyle={{ marginTop: '0px', height: '30px' }}
                 labelKey='name'
+                valueKey='name'
+                value={drugInfo.name}
                 withoutFitler={!false}
                 onChange={({
                   name,
