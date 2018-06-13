@@ -60,29 +60,34 @@ class MedicalRecordScreen extends Component {
     const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints } = this.props
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
-    let recordStr = JSON.stringify(record)
+    console.log('record====', record)
+    let recordStr = ''
+    // let
     // console.log('record===', record)
     let files = []
     let imgArray = []
-    if (record.files !== '') {
-      files = JSON.parse(record.files)
-      for (let j = 0; j < files.length; j++) {
-        let url = files[j].url
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
-          imgArray.push(files[j])
+    let diagnosisArray = []
+    if (record.id) {
+      recordStr = JSON.stringify(record)
+      if (record.files !== '') {
+        files = JSON.parse(record.files)
+        for (let j = 0; j < files.length; j++) {
+          let url = files[j].url
+          if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+            imgArray.push(files[j])
+          }
         }
       }
-    }
-    let diagnosisArray = []
-    if (record.diagnosis !== '') {
-      let array = record.diagnosis.split(',')
-      if (array.length > 0) {
-        for (let i = 0; i < array.length; i++) {
-          let item = {value: array[i], label: array[i]}
-          diagnosisArray.push(item)
+      if (record.diagnosis !== '') {
+        let array = record.diagnosis.split(',')
+        if (array.length > 0) {
+          for (let i = 0; i < array.length; i++) {
+            let item = {value: array[i], label: array[i]}
+            diagnosisArray.push(item)
+          }
+        } else {
+          diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
         }
-      } else {
-        diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
       }
     }
     this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray })
@@ -988,19 +993,23 @@ class MedicalRecordScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(selPage) {
     const { recordStr } = this.state
-    let oldJson = JSON.parse(recordStr)
-    let newJSON = {}
-    for (let key in oldJson) {
-      newJSON[key] = this.state[key]
-    }
-    let jsonStr = JSON.stringify(newJSON)
-    // console.log(recordStr)
-    // console.log(jsonStr)
     const { changePage } = this.props
-    if (jsonStr !== recordStr) {
-      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-        this.save()
-      })
+    if (recordStr !== '') {
+      let oldJson = JSON.parse(recordStr)
+      let newJSON = {}
+      for (let key in oldJson) {
+        newJSON[key] = this.state[key]
+      }
+      let jsonStr = JSON.stringify(newJSON)
+      // console.log(recordStr)
+      // console.log(jsonStr)
+      if (jsonStr !== recordStr) {
+        this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+          this.save()
+        })
+      } else {
+        changePage(selPage)
+      }
     } else {
       changePage(selPage)
     }
@@ -1260,7 +1269,7 @@ class MedicalRecordScreen extends Component {
   }
   // 上传文件
   async FileUpload(files) {
-    const {FileUpload, xhrFileUpload} = this.props
+    const {FileUpload} = this.props // xhrFileUpload
     const {uploadedFiles, imgFiles} = this.state
     let array = uploadedFiles
     let imgArray = imgFiles

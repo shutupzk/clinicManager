@@ -10,9 +10,11 @@ import {
   queryFrequencyList,
   queryRouteAdministrationList,
   queryDicDrugsList,
-  ClinicDrugDetail
+  ClinicDrugDetail,
+  ClinicDrugUpdate
 } from '../../../../../ducks'
 import moment from 'moment'
+import {formatMoney, limitMoney} from '../../../../../utils'
 
 // 病历
 class AddDrugScreen extends Component {
@@ -36,6 +38,7 @@ class AddDrugScreen extends Component {
         remark: '',
         instock_date: ''
       },
+      drugReturnInfo: {},
       isInstock: false,
       showInstock: false
     }
@@ -46,6 +49,13 @@ class AddDrugScreen extends Component {
       let data = await ClinicDrugDetail({clinic_drug_id})
       if (data) {
         console.log('drugInfo=====', data)
+        data.ret_price = formatMoney(data.ret_price)
+        if (data.buy_price !== null) {
+          data.buy_price = formatMoney(data.buy_price)
+        }
+        if (data.bulk_sales_price !== null) {
+          data.bulk_sales_price = formatMoney(data.bulk_sales_price)
+        }
         this.setState({drugInfo: data})
       }
     }
@@ -178,6 +188,7 @@ class AddDrugScreen extends Component {
   }
   render() {
     const {showInstock} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderSearchBlank()}
@@ -191,10 +202,18 @@ class AddDrugScreen extends Component {
           <div>
             <button>取消</button>
             <button onClick={() => {
-              this.submit(false)
+              if (showWay === 2) {
+                this.ClinicDrugUpdate(false)
+              } else {
+                this.submit(false)
+              }
             }}>保存</button>
             <button onClick={() => {
-              this.submit(true)
+              if (showWay === 2) {
+                this.ClinicDrugUpdate(true)
+              } else {
+                this.submit(true)
+              }
             }}>保存并入库</button>
           </div>
         </div>
@@ -206,8 +225,8 @@ class AddDrugScreen extends Component {
   // 保存并入库
   renderSaveAndInstock() {
     // let array = [{}]
-    const {drugInfo, druginstockInfo} = this.state
-    console.log('drugInfo====', drugInfo)
+    const {drugReturnInfo, druginstockInfo} = this.state
+    console.log('drugReturnInfo====', drugReturnInfo)
     return (
       <div className={'mask'}>
         <div className={'maskBox'}>
@@ -221,19 +240,19 @@ class AddDrugScreen extends Component {
                 <li>
                   <label>药品名称</label>
                   <div>
-                    <input readOnly type='text' value={drugInfo.name} />
+                    <input readOnly type='text' value={drugReturnInfo.drug_name} />
                   </div>
                 </li>
                 <li>
                   <label>规格</label>
                   <div>
-                    <input readOnly type='text' value={drugInfo.specification} />
+                    <input readOnly type='text' value={drugReturnInfo.specification} />
                   </div>
                 </li>
                 <li>
                   <label>生产厂商</label>
                   <div>
-                    <input readOnly type='text' value={drugInfo.manu_factory_name} />
+                    <input readOnly type='text' value={drugReturnInfo.manu_factory_name} />
                   </div>
                 </li>
                 <li>
@@ -291,8 +310,8 @@ class AddDrugScreen extends Component {
                         <td>
                           <input type='number' />
                         </td>
-                        <td>{drugInfo.packing_unit_name}</td>
-                        <td>{drugInfo.ret_price}</td>
+                        <td>{drugReturnInfo.packing_unit_name}</td>
+                        <td>{drugReturnInfo.ret_price}</td>
                         <td>
                           <input
                             type='text'
@@ -383,19 +402,19 @@ class AddDrugScreen extends Component {
             margin: 40px 0 0 60px;
             float: left;
           }
-          .maskBox_top span:last-child {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,95,87,1);
-            float: right;
-            color: #ffffff;
-            font-size: 20px;
-            text-align: center;
-            text-indent: 10px;
-            line-height: 35px;
-            border-bottom-left-radius: 100%;
-            cursor: pointer;
-          }
+          // .maskBox_top span:last-child {
+          //   width: 40px;
+          //   height: 40px;
+          //   background: rgba(255,95,87,1);
+          //   float: right;
+          //   color: #ffffff;
+          //   font-size: 20px;
+          //   text-align: center;
+          //   text-indent: 10px;
+          //   line-height: 35px;
+          //   border-bottom-left-radius: 100%;
+          //   cursor: pointer;
+          // }
           .maskBox_center {
             width: 90%;
             display:flex;
@@ -542,6 +561,28 @@ class AddDrugScreen extends Component {
     }
     return true
   }
+  // 修改
+  async ClinicDrugUpdate(isInstock) {
+    let { drugInfo } = this.state
+    const { clinic_id, ClinicDrugUpdate } = this.props
+    if (drugInfo.drug_class_id) {
+      if (this.validateData(drugInfo)) {
+        let clinic_drug_id = drugInfo.id
+        delete drugInfo.id
+        let error = await ClinicDrugUpdate({ ...drugInfo, clinic_drug_id, clinic_id, type: 0 })
+        if (error) {
+          this.refs.myAlert.alert('修改药品失败', error, null, 'Danger')
+        } else {
+          this.refs.myAlert.alert('修改成功')
+          if (isInstock) {
+            this.setState({showInstock: true})
+          } else {
+            this.props.back2List()
+          }
+        }
+      }
+    }
+  }
   // 保存
   async submit(isInstock) {
     let { drugInfo } = this.state
@@ -549,13 +590,13 @@ class AddDrugScreen extends Component {
     console.log('drugInfo=======', drugInfo, isInstock)
     if (drugInfo.drug_class_id) {
       if (this.validateData(drugInfo)) {
-        let error = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 0 })
-        if (error) {
-          this.refs.myAlert.alert('添加药品失败', error, null, 'Danger')
+        let data = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 0 })
+        if (data.code !== '200') {
+          this.refs.myAlert.alert('添加药品失败', data.msg, null, 'Danger')
         } else {
           this.refs.myAlert.alert('添加成功')
           if (isInstock) {
-            this.setState({showInstock: true})
+            this.setState({showInstock: true, drugReturnInfo: data.data})
           } else {
             this.props.back2List()
           }
@@ -790,7 +831,7 @@ class AddDrugScreen extends Component {
   renderBaseInfoBlank() {
     const { drugInfo } = this.state
     const drugs = this.props.drugs || []
-    console.log('drugs=======', drugs)
+    // console.log('drugs=======', drugs)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span>药品基本信息</span>
@@ -1112,7 +1153,7 @@ class AddDrugScreen extends Component {
                   placeholder={'ret_price'}
                   value={drugInfo.ret_price || ''}
                   onChange={e => {
-                    this.setItemValue(e, 'ret_price')
+                    this.setItemValue(limitMoney(e.target.value), 'ret_price', 2)
                   }}
                 />元
               </div>
@@ -1126,7 +1167,8 @@ class AddDrugScreen extends Component {
                   placeholder={'buy_price'}
                   value={drugInfo.buy_price || ''}
                   onChange={e => {
-                    this.setItemValue(e, 'buy_price')
+                    this.setItemValue(limitMoney(e.target.value), 'buy_price', 2)
+                    // this.setItemValue(e, 'buy_price')
                   }}
                 />元
               </div>
@@ -1200,7 +1242,8 @@ class AddDrugScreen extends Component {
                   value={drugInfo.is_bulk_sales ? drugInfo.bulk_sales_price : ''}
                   readOnly={!drugInfo.is_bulk_sales}
                   onChange={e => {
-                    this.setItemValue(e, 'bulk_sales_price')
+                    this.setItemValue(limitMoney(e.target.value), 'bulk_sales_price', 2)
+                    // this.setItemValue(e, 'bulk_sales_price')
                   }}
                 />元
               </div>
@@ -1443,5 +1486,6 @@ export default connect(mapStateToProps, {
   queryFrequencyList,
   queryRouteAdministrationList,
   queryDicDrugsList,
-  ClinicDrugDetail
+  ClinicDrugDetail,
+  ClinicDrugUpdate
 })(AddDrugScreen)

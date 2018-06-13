@@ -86,8 +86,8 @@ export const ClinicDrugCreate = drugInfo => async dispatch => {
     if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
     const data = await request('/clinic_drug/ClinicDrugCreate', drugInfo)
     console.log('ClinicDrugCreate====', drugInfo, data)
-    if (data.code === '200') return null
-    return data.msg
+    if (data.code === '200') return data
+    return data
   } catch (e) {
     console.log(e)
     return e.message
@@ -99,7 +99,7 @@ export const ClinicDrugUpdate = drugInfo => async dispatch => {
     if (drugInfo.buy_price) drugInfo.buy_price = drugInfo.buy_price * 100
     if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
     const data = await request('/clinic_drug/ClinicDrugUpdate', drugInfo)
-    console.log(drugInfo, data)
+    console.log('ClinicDrugUpdate', drugInfo, data)
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
@@ -130,6 +130,21 @@ export const ClinicDrugDetail = ({clinic_drug_id}) => async dispatch => {
       type: DIC_DRUG_ARRAY_ADD,
       drug_data: drug_data
     })
+    let unitJson = {}
+    let frequencyJson = {}
+    let routeJson = {}
+    let doseFormJson = {}
+    const { packing_unit_name, dose_count_unit_name, once_dose_unit_name, route_administration_name, frequency_name, dose_form_name } = docs
+    if (packing_unit_name) unitJson[packing_unit_name] = { name: packing_unit_name }
+    if (dose_count_unit_name) unitJson[dose_count_unit_name] = { name: dose_count_unit_name }
+    if (once_dose_unit_name) unitJson[once_dose_unit_name] = { name: once_dose_unit_name }
+    if (route_administration_name) routeJson[route_administration_name] = { name: route_administration_name }
+    if (frequency_name) frequencyJson[frequency_name] = { name: frequency_name }
+    if (dose_form_name) doseFormJson[dose_form_name] = { name: dose_form_name }
+    dispatch({ type: 'DOSE_UNIT_ADD', data: unitJson })
+    dispatch({ type: 'FREQUENCY_ADD', data: frequencyJson })
+    dispatch({ type: 'ROUTE_ADMINISTRATION_ADD', data: routeJson })
+    dispatch({ type: 'DOSE_FORM_ADD', data: doseFormJson })
     return docs
   } catch (e) {
     console.log(e)

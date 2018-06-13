@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, getPatientByKeyword } from '../../../../ducks'
 
-import { getAgeByBirthday } from '../../../../utils'
+import { getAgeByBirthday, checkIdCard, checkPhoneNumber } from '../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../config/provinces'
 import { Select, Confirm, CustomSelect } from '../../../../components'
@@ -26,7 +26,9 @@ class RegistrationAddScreen extends Component {
         .format('YYYYMMDD'),
       searchView: 0,
       candidatePatient: [],
-      toSearch: false
+      toSearch: false,
+      isPhone: false,
+      isIdCode: true
     }
   }
 
@@ -38,6 +40,7 @@ class RegistrationAddScreen extends Component {
   // 保存新增登记
   async submit() {
     const { addTriagePatientsList, clinic_id, personnel_id } = this.props
+    const {isPhone} = this.state
     let patientInfo = this.state.patientInfo
     patientInfo.clinic_id = clinic_id
     patientInfo.personnel_id = personnel_id
@@ -55,10 +58,13 @@ class RegistrationAddScreen extends Component {
     if (!patientInfo.phone) {
       return this.refs.myAlert.alert('提示', '请填写手机号', null, 'Danger')
     }
+    if (!isPhone) {
+      return this.refs.myAlert.alert('提示', '请填正确的手机号', null, 'Danger')
+    }
     if (!patientInfo.visit_type) {
       return this.refs.myAlert.alert('提示', '请选择出诊类型', null, 'Danger')
     }
-    console.log('patientInfo=====', patientInfo)
+    // console.log('patientInfo=====', patientInfo)
     let error = await addTriagePatientsList({ patientInfo })
     if (error) {
       this.refs.myAlert.alert('提交失败', error, null, 'Danger')
@@ -154,6 +160,7 @@ class RegistrationAddScreen extends Component {
     if (this.state.pageType !== 1) return null
     let patient = this.state.patientInfo
     const patients = this.props.patients || []
+    const {isPhone, isIdCode} = this.state
     return (
       <div className={'formList'}>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
@@ -191,6 +198,11 @@ class RegistrationAddScreen extends Component {
                   }
                   let birthday = moment(item.birthday).format('YYYY-MM-DD')
                   let age = getAgeByBirthday(birthday) || ''
+                  if (checkPhoneNumber(item.phone)) {
+                    this.setState({isPhone: true})
+                  } else {
+                    this.setState({isPhone: false})
+                  }
                   this.setState({
                     toSearch: false,
                     patientInfo: { ...this.state.patientInfo, ...item, birthday, age },
@@ -229,11 +241,12 @@ class RegistrationAddScreen extends Component {
                   if (e.target.value.length > 14) {
                     newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
                   }
-                  // console.log('newPatient.sex=====', newPatient.sex)
-                  this.setState({ patientInfo: newPatient })
+                  let validate = checkIdCard(e.target.value)
+                  this.setState({ patientInfo: newPatient, isIdCode: validate.pass })
                   this.setPatientInfo(e, 'cert_no')
                 }}
               />
+              {isIdCode || patient.cert_no === '' ? '' : <div style={{color: 'red', fontSize: '10px'}}>身份证号格式不正确</div>}
             </li>
             <li style={{ width: '24%' }}>
               <label>
@@ -282,7 +295,19 @@ class RegistrationAddScreen extends Component {
               <label>
                 手机号码：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input type='text' value={patient.phone} onChange={e => this.setPatientInfo(e, 'phone')} />
+              <input
+                type='text'
+                value={patient.phone}
+                onChange={e => {
+                  if (checkPhoneNumber(e.target.value)) {
+                    this.setState({isPhone: true})
+                  } else {
+                    this.setState({isPhone: false})
+                  }
+                  this.setPatientInfo(e, 'phone')
+                }}
+              />
+              {isPhone ? '' : <div style={{color: 'red', fontSize: '10px'}}>手机号码格式不正确</div>}
             </li>
             <li style={{ width: '100%' }}>
               <label>住址：</label>
