@@ -36,23 +36,14 @@ export function laboratoryTriages(state = initState, action = {}) {
 
 export const LaboratoryTriageList = (requestData) => async dispatch => {
   try {
-    console.log('limit====', requestData)
+    console.log('LaboratoryTriageList====', requestData)
     const data = await request('/laboratoryTriage/LaboratoryTriageList', requestData)
     console.log('data=====', data)
     const docs = data.data || []
-    // const page_info = data.page_info || {}
-    let json = {}
-    for (let doc of docs) {
-      json[doc.id] = doc
-    }
-    dispatch({
-      type: LABORATORY_TRIAGE_LIST,
-      list_data: json
-    })
-    return null
+    return docs
   } catch (e) {
     console.log(e)
-    return e.message
+    return []
   }
 }
 export const LaboratoryTriageWaiting = (requestData) => async dispatch => {

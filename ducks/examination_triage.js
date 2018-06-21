@@ -36,23 +36,23 @@ export function examinationTriages(state = initState, action = {}) {
 
 export const ExaminationTriageList = (requestData) => async dispatch => {
   try {
-    console.log('limit====', requestData)
+    console.log('requestData====', requestData)
     const data = await request('/examinationTriage/ExaminationTriageList', requestData)
     console.log('data=====', data)
     const docs = data.data || []
     // const page_info = data.page_info || {}
-    let json = {}
-    for (let doc of docs) {
-      json[doc.id] = doc
-    }
-    dispatch({
-      type: EXAM_TRIAGE_LIST,
-      list_data: json
-    })
-    return null
+    // let json = {}
+    // for (let doc of docs) {
+    //   json[doc.id] = doc
+    // }
+    // dispatch({
+    //   type: EXAM_TRIAGE_LIST,
+    //   list_data: json
+    // })
+    return docs
   } catch (e) {
     console.log(e)
-    return e.message
+    return []
   }
 }
 export const ExaminationTriageWaiting = (requestData) => async dispatch => {
