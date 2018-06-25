@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, Confirm } from '../../../../../components'
-import { queryMedicalRecord, ExaminationTriageList, ExaminationTriageRecordCreate } from '../../../../../ducks'
+import { Select, Confirm, PageCard } from '../../../../../components'
+import { queryMedicalRecord, ExaminationTriageList, ExaminationTriageRecordCreate, ExaminationTriagePatientRecordList } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import moment from 'moment'
 
@@ -12,7 +12,8 @@ class ExamDetailScreen extends Component {
     this.state = {
       record: {},
       exams: [],
-      selIndex: 0
+      selIndex: 0,
+      showExamHistory: false
     }
   }
 
@@ -37,13 +38,74 @@ class ExamDetailScreen extends Component {
         {this.renderItemTitle()}
         {this.renderContent()}
         {this.getStyle()}
+        {this.renderExamHistory()}
         <Confirm ref='myAlert' />
       </div>
     )
   }
+
+  ExaminationTriagePatientRecordList({ offset = 0, limit = 10 }) {
+    const { triagePatient, ExaminationTriagePatientRecordList } = this.props
+    const { clinic_triage_patient_id } = triagePatient
+    ExaminationTriagePatientRecordList({ clinic_triage_patient_id, offset, limit })
+  }
+
+  renderExamHistory() {
+    const { showExamHistory } = this.state
+    if (!showExamHistory) return
+    const { patient_record_data, patient_record_page_info } = this.props
+    console.log('patient_record_data ========', patient_record_data)
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>查看历史记录</span>
+            <span onClick={() => this.setState({ showExamHistory: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <ul style={{ flex: 1 }}>
+              <li>
+                <div style={{ flex: 2 }}>下单时间</div>
+                <div style={{ flex: 2 }}>检查诊所</div>
+                <div style={{ flex: 4 }}>项目名称</div>
+                <div style={{ flex: 1 }} />
+              </li>
+              {patient_record_data.map((item, index) => {
+                const { finish_time, clinic_examination_name, clinic_name } = item
+                return (
+                  <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
+                    <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                    <div style={{ flex: 2 }}>{clinic_name}</div>
+                    <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_examination_name}</div>
+                    <div
+                      style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                      onClick={() => {}}
+                    >
+                      查看报告
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <PageCard
+            style={{ margin: '0 50px 0 50px', width: '1000px', background: 'rgba(244, 247, 248, 1)' }}
+            offset={patient_record_page_info.offset}
+            limit={patient_record_page_info.limit}
+            total={patient_record_page_info.total}
+            onItemClick={({ offset, limit }) => {
+              const keyword = this.state.keyword
+              this.ExaminationTriagePatientRecordList({ offset, limit, keyword })
+            }}
+          />
+        </div>
+        {this.getStyle()}
+      </div>
+    )
+  }
+
   renderDoctorInfo() {
     const { triagePatient } = this.props
-    console.log('triagePatient ===', triagePatient)
     return (
       <div className={'filterBox'}>
         <div>
@@ -96,7 +158,6 @@ class ExamDetailScreen extends Component {
     )
   }
   renderItemTitle() {
-    // const array = [{name: '项目1'}, {name: '项目1'}, {name: '项目1'}]
     const { exams, selIndex } = this.state
     console.log(exams)
     return (
@@ -117,7 +178,14 @@ class ExamDetailScreen extends Component {
         </div>
         <div className={'rightBtn'}>
           <button>查看病历</button>
-          <button>检查记录</button>
+          <button
+            onClick={() => {
+              this.setState({ showExamHistory: true })
+              this.ExaminationTriagePatientRecordList({})
+            }}
+          >
+            检查记录
+          </button>
         </div>
       </div>
     )
@@ -303,6 +371,48 @@ class ExamDetailScreen extends Component {
             width: 100%;
             height: 100px;
           }
+          .tableDIV {
+            display: flex;
+            width: 987px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin: 0 65px 65px 47px;
+          }
+          .tableDIV ul {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9e9e9;
+            border-bottom: none;
+          }
+          .tableDIV ul li {
+            display: flex;
+            height: 50px;
+            border-bottom: 1px solid #e9e9e9;
+            line-height: 40px;
+            text-align: center;
+          }
+          .tableDIV ul li:nth-child(1) {
+            background: rgba(247, 247, 247, 1);
+          }
+          .tableDIV ul li > div {
+            flex: 2;
+            border-left: 1px #e9e9e9 dashed;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+          }
+          .tableDIV ul li > div > input {
+            width: 90%;
+            height: 30px;
+            border-radius: 4px;
+            outline-style: none;
+            border: none;
+          }
+          .tableDIV ul li > div:nth-child(1) {
+            flex: 3;
+          }
         `}
       </style>
     )
@@ -310,10 +420,12 @@ class ExamDetailScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state =======', state)
+  console.log('state =======', state.examinationTriages)
   return {
     operation_id: state.user.data.id,
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    patient_record_data: state.examinationTriages.patient_record_data,
+    patient_record_page_info: state.examinationTriages.patient_record_page_info
   }
 }
 
@@ -322,6 +434,7 @@ export default connect(
   {
     queryMedicalRecord,
     ExaminationTriageList,
-    ExaminationTriageRecordCreate
+    ExaminationTriageRecordCreate,
+    ExaminationTriagePatientRecordList
   }
 )(ExamDetailScreen)
