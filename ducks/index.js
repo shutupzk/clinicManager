@@ -50,7 +50,15 @@ import {
   ClinicDrugDetail,
   ClinicDrugOnOff
 } from './drug'
-import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList } from './laboratory'
+import {
+  laboratories,
+  laboratoryCreate,
+  queryLaboratoryList,
+  queryLaboList,
+  LaboratoryOnOff,
+  LaboratoryUpdate,
+  LaboratoryDetail
+} from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
 import { materials, materialCreate, queryMaterialList } from './material'
 import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
@@ -70,7 +78,15 @@ import { doseForms, queryDoseFormList } from './dose_form'
 import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet } from './prescription_chinese_patient'
 import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
 import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
-import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate, queryLaboItemsList } from './laboratory_item'
+import {
+  laboratoryItems,
+  queryLaboratoryItemList,
+  laboratoryItemCreate,
+  LaboratoryItemUpdate,
+  LaboratoryItemOnOff,
+  LaboratoryItemDetail,
+  queryLaboItemsList
+} from './laboratory_item'
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
@@ -304,6 +320,12 @@ export {
   TreatmentPatientGet,
   LaboratoryPatientCreate,
   LaboratoryPatientGet,
+  LaboratoryOnOff,
+  LaboratoryUpdate,
+  LaboratoryDetail,
+  LaboratoryItemUpdate,
+  LaboratoryItemOnOff,
+  LaboratoryItemDetail,
   ExaminationPatientCreate,
   ExaminationPatientGet,
   queryChargeUnpayList,

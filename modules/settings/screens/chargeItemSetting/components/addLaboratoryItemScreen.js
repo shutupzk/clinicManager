@@ -2,7 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select, Confirm } from '../../../../../components'
-import { laboratoryItemCreate, queryDoseUnitList, queryLaboItemsList } from '../../../../../ducks'
+import {
+  laboratoryItemCreate,
+  queryDoseUnitList,
+  queryLaboItemsList,
+  LaboratoryItemUpdate,
+  LaboratoryItemDetail
+} from '../../../../../ducks'
+import { limitMoney, formatMoney } from '../../../../../utils'
 
 // 病历
 class AddLaboratoryItemScreen extends Component {
@@ -22,7 +29,26 @@ class AddLaboratoryItemScreen extends Component {
     }
   }
 
-  async componentDidMount() {}
+  async componentDidMount() {
+    const {showWay, clinic_laboratory_item_id, LaboratoryItemDetail} = this.props
+    if (showWay === 2) {
+      let data = await LaboratoryItemDetail({clinic_laboratory_item_id})
+      if (data) {
+        console.log('LaboratoryItemDetail=====', data)
+        // data.price = formatMoney(data.price)
+        // if (data.cost !== null) {
+        //   data.cost = formatMoney(data.cost)
+        // }
+        let references = []
+        if (data[0].references) {
+          for (let i = 0; i < data[0].references.length; i++) {
+            references.push(data[0].references[i])
+          }
+        }
+        this.setState({laboratoryItemInfo: data[0], references})
+      }
+    }
+  }
   style() {
     return (
       <style jsx='true'>{`
@@ -794,5 +820,7 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   laboratoryItemCreate,
   queryDoseUnitList,
-  queryLaboItemsList
+  queryLaboItemsList,
+  LaboratoryItemUpdate,
+  LaboratoryItemDetail
 })(AddLaboratoryItemScreen)

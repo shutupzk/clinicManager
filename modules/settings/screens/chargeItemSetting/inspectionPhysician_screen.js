@@ -5,7 +5,8 @@ import {
   queryLaboratoryList,
   queryAssociationList,
   queryLaboratoryItemList,
-  LaboratoryAssociationCreate
+  LaboratoryAssociationCreate,
+  LaboratoryOnOff
 } from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddLaboratoryScreen from './components/addLaboratoryScreen'
@@ -23,20 +24,24 @@ class InspectionPhysicianScreen extends Component {
       type: 1,
       relateItem: {},
       alertType: 0,
-      associations: []
+      associations: [],
+      showWay: 1,
+      clinic_laboratory_id: ''
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, showWay, clinic_laboratory_id } = this.state
     let map = {
       // 1: <AddDrugScreen />,
       2: (
         <AddLaboratoryScreen
           drugType={1}
+          showWay={showWay}
+          clinic_laboratory_id={clinic_laboratory_id}
           back2List={() => {
             this.setState({ pageType: 1 })
             this.getDataList({ offset: 0, limit: 10 })
@@ -221,9 +226,23 @@ class InspectionPhysicianScreen extends Component {
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{ flex: 2.5 }} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          clinic_laboratory_id: item.clinic_laboratory_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>停用</div>
+                      <div onClick={() => {
+                        let status = item.status
+                        if (status) {
+                          status = false
+                        } else {
+                          status = true
+                        }
+                        this.LaboratoryOnOff(item.clinic_laboratory_id, status)
+                      }}>{item.status ? '停用' : '启用'}</div>
                       <div className={'divideLine'}>|</div>
                       <div
                         onClick={async () => {
@@ -301,6 +320,20 @@ class InspectionPhysicianScreen extends Component {
         `}</style>
       </div>
     )
+  }
+  async LaboratoryOnOff(clinic_laboratory_id, status) {
+    const {clinic_id, LaboratoryOnOff, pageInfo} = this.props
+    const requestData = {
+      clinic_laboratory_id,
+      clinic_id,
+      status
+    }
+    let error = await LaboratoryOnOff(requestData)
+    if (error) {
+      this.refs.myAlert.alert('更新失败', error)
+    } else {
+      this.getDataList({ offset: pageInfo.offset, limit: pageInfo.limit })
+    }
   }
   // 关联项目
   relatedItems() {
@@ -397,5 +430,6 @@ export default connect(mapStateToProps, {
   queryLaboratoryList,
   queryAssociationList,
   queryLaboratoryItemList,
-  LaboratoryAssociationCreate
+  LaboratoryAssociationCreate,
+  LaboratoryOnOff
 })(InspectionPhysicianScreen)

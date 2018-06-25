@@ -84,6 +84,67 @@ export const laboratoryItemCreate = ({requestData}) => async dispatch => {
     return e.message
   }
 }
+export const LaboratoryItemUpdate = ({requestData}) => async dispatch => {
+  try {
+    if (requestData.items) {
+      for (let i = 0; i < requestData.items.length; i++) {
+        if (requestData.items[i].is_pregnancy) {
+          requestData.items[i].is_pregnancy = requestData.items[i].is_pregnancy + ''
+        }
+      }
+      requestData.items = JSON.stringify(requestData.items)
+    }
+    console.log('requestData', requestData)
+    const data = await request('/laboratory/item/update', requestData)
+    console.log(
+      requestData,
+      data
+    )
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const LaboratoryItemOnOff = requestData => async dispatch => {
+  try {
+    const data = await request('/laboratory/item/onOff', requestData)
+    console.log(requestData, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const LaboratoryItemDetail = ({clinic_laboratory_item_id}) => async dispatch => {
+  try {
+    console.log('limit====', clinic_laboratory_item_id)
+    const data = await request('/laboratory/item/detail', {clinic_laboratory_item_id})
+    console.log('LaboratoryDetail=======', data)
+    const docs = data.data || {}
+    // let array_data = []
+    // array_data.push(docs)
+    dispatch({
+      type: LABORATORY_ITEM_ADD,
+      data: docs
+    })
+    // let sample_data = {}
+    // let color_data = {}
+    // const {laboratory_sample, cuvette_color_name} = docs
+    // if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
+    // if (cuvette_color_name) color_data[cuvette_color_name] = {name: cuvette_color_name}
+    // dispatch({ type: 'LABORATORY_SAMPLE_LIST', data: sample_data })
+    // dispatch({ type: 'CUVETTE_COLOR_LIST', data: color_data })
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
+
 export const queryLaboItemsList = ({ keyword = '', offset = 0, limit = 10 }) => async dispatch => {
   try {
     console.log('limit====', limit)
