@@ -11,7 +11,10 @@ import {
   queryRouteAdministrationList,
   queryDicDrugsList,
   ClinicDrugDetail,
-  ClinicDrugUpdate
+  ClinicDrugUpdate,
+  querySupplierList,
+  queryInstockWayList,
+  createDrugInstock
 } from '../../../../../ducks'
 import moment from 'moment'
 import {formatMoney, limitMoney} from '../../../../../utils'
@@ -29,7 +32,7 @@ class AddDrugScreen extends Component {
         is_discount: false
       },
       druginstockInfo: {
-        drugName: '',
+        // drugName: '',
         items: [{}],
         instock_operation_id: '',
         clinic_id: '',
@@ -226,7 +229,7 @@ class AddDrugScreen extends Component {
   renderSaveAndInstock() {
     // let array = [{}]
     const {drugReturnInfo, druginstockInfo} = this.state
-    console.log('drugReturnInfo====', drugReturnInfo)
+    console.log('drugReturnInfo====', drugReturnInfo, druginstockInfo)
     return (
       <div className={'mask'}>
         <div className={'maskBox'}>
@@ -258,7 +261,13 @@ class AddDrugScreen extends Component {
                 <li>
                   <label>入库日期</label>
                   <div>
-                    <input readOnly type='date' value={moment().format('YYYY-MM-DD')} />
+                    <input
+                      type='date'
+                      value={moment(druginstockInfo.instock_date || '').format('YYYY-MM-DD')}
+                      onChange={e => {
+                        this.setInstockData(e, 'instock_date')
+                      }}
+                    />
                   </div>
                 </li>
                 <li>
@@ -266,7 +275,14 @@ class AddDrugScreen extends Component {
                   <div>
                     <Select
                       height={34}
-                      options={[]}
+                      placeholder={'请选择'}
+                      value={this.getSelectValue(druginstockInfo.instock_way_name, this.getInstockWayNameOptions())}
+                      onChange={({value}) => {
+                        // this.setState({ instock_way_name: value })
+                        this.setInstockData(value, 'instock_way_name', 2)
+                      }}
+                      onInputChange={keyword => { this.queryInstockWayList(keyword) }}
+                      options={this.getInstockWayNameOptions()}
                     />
                   </div>
                 </li>
@@ -275,14 +291,26 @@ class AddDrugScreen extends Component {
                   <div>
                     <Select
                       height={34}
-                      options={[]}
+                      placeholder={'请选择'}
+                      value={this.getSelectValue(druginstockInfo.supplier_name, this.getSupplierOptions())}
+                      onChange={({value}) => {
+                        this.setInstockData(value, 'supplier_name', 2)
+                      }}
+                      onInputChange={keyword => { this.querySupplierList(keyword) }}
+                      options={this.getSupplierOptions()}
                     />
                   </div>
                 </li>
                 <li>
                   <label>备注</label>
                   <div>
-                    <input type='text' value={''} />
+                    <input
+                      type='text'
+                      value={druginstockInfo.remark}
+                      onChange={e => {
+                        this.setInstockData(e, 'remark')
+                      }}
+                    />
                   </div>
                 </li>
               </ul>
@@ -298,8 +326,8 @@ class AddDrugScreen extends Component {
                     <td>成本价</td>
                     <td>成本合计</td>
                     <td>批号</td>
-                    <td>有效日期</td>
-                    <td>增加</td>
+                    <td style={{flex: 2}}>有效日期</td>
+                    {/* <td>增加</td> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -308,51 +336,56 @@ class AddDrugScreen extends Component {
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>
-                          <input type='number' />
+                          <input
+                            type='number'
+                            value={item.instock_amount}
+                            onChange={e => {
+                              this.setInstockItemValue(e, index, 'instock_amount')
+                            }}
+                          />
                         </td>
                         <td>{drugReturnInfo.packing_unit_name}</td>
-                        <td>{drugReturnInfo.ret_price}</td>
+                        <td>{formatMoney(drugReturnInfo.ret_price)}</td>
                         <td>
                           <input
                             type='text'
-                            value={''}
+                            value={item.buy_price}
                             onChange={e => {
-
+                              let value = limitMoney(e.target.value)
+                              this.setInstockItemValue(value, index, 'buy_price', 2)
                             }}
                           />
                         </td>
                         <td>
                           <input
+                            readOnly
                             type='text'
-                            value={''}
-                            onChange={e => {
-
-                            }}
+                            value={item.buy_price * item.instock_amount || ''}
                           />
                         </td>
                         <td>
                           <input
                             type='text'
-                            value={''}
+                            value={item.serial}
                             onChange={e => {
-
+                              this.setInstockItemValue(e, index, 'serial')
                             }}
                           />
                         </td>
-                        <td>
+                        <td style={{flex: 2}}>
                           <input
                             type='date'
-                            value={moment().format('YYYY-MM-DD')}
+                            value={moment(item.eff_date || '').format('YYYY-MM-DD')}
                             onChange={e => {
-
+                              this.setInstockItemValue(e, index, 'eff_date')
                             }}
                           />
                         </td>
-                        <td>删除</td>
+                        {/* <td>删除</td> */}
                       </tr>
                     )
                   })}
-                  <tr>
+                  {/* <tr>
                     <td>合计</td>
                     <td>11</td>
                     <td>单位</td>
@@ -362,7 +395,7 @@ class AddDrugScreen extends Component {
                     <td>批号</td>
                     <td>有效日期</td>
                     <td>--</td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
             </div>
@@ -505,7 +538,77 @@ class AddDrugScreen extends Component {
       </div>
     )
   }
-
+  setInstockItemValue(e, index, key, type = 1) {
+    const { druginstockInfo } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = druginstockInfo.items
+    array[index][key] = value
+    druginstockInfo.items = array
+    this.setState({ druginstockInfo })
+  }
+  // 设置入库数据
+  setInstockData(e, key, type = 1) {
+    const { druginstockInfo } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    druginstockInfo[key] = value
+    this.setState({ druginstockInfo })
+  }
+  // 获取入库方式筛选
+  getInstockWayNameOptions() {
+    const { instock_way, queryInstockWayList } = this.props
+    // console.log('instock_way====', instock_way)
+    let array = []
+    for (let key in instock_way) {
+      let {name} = instock_way[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 0) {
+      queryInstockWayList({keyword: ''})
+    }
+    return array
+  }
+  // 获取供应商筛选
+  getSupplierOptions() {
+    const { supplier_data, querySupplierList } = this.props
+    // console.log('supplier_data====', supplier_data)
+    let array = []
+    for (let key in supplier_data) {
+      let {name} = supplier_data[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 0) {
+      querySupplierList({keyword: ''})
+    }
+    return array
+  }
+  // 获取供应商数据
+  querySupplierList(keyword) {
+    const {querySupplierList} = this.props
+    if (keyword) {
+      querySupplierList({keyword})
+    }
+  }
+  // 获取入库方式数据
+  queryInstockWayList(keyword) {
+    const {queryInstockWayList} = this.props
+    if (keyword) {
+      queryInstockWayList({keyword})
+    }
+  }
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
@@ -569,13 +672,13 @@ class AddDrugScreen extends Component {
       if (this.validateData(drugInfo)) {
         let clinic_drug_id = drugInfo.id
         delete drugInfo.id
-        let error = await ClinicDrugUpdate({ ...drugInfo, clinic_drug_id, clinic_id, type: 0 })
-        if (error) {
+        let data = await ClinicDrugUpdate({ ...drugInfo, clinic_drug_id, clinic_id, type: 0 })
+        if (data.code !== '200') {
           this.refs.myAlert.alert('修改药品失败', error, null, 'Danger')
         } else {
           this.refs.myAlert.alert('修改成功')
           if (isInstock) {
-            this.setState({showInstock: true})
+            this.setState({showInstock: true, drugReturnInfo: data.data})
           } else {
             this.props.back2List()
           }
@@ -605,8 +708,45 @@ class AddDrugScreen extends Component {
     }
   }
   // 保存并入库
-  saveInStock() {
-
+  async saveInStock() {
+    const { createDrugInstock, clinic_id, instock_operation_id } = this.props
+    let {druginstockInfo, drugReturnInfo} = this.state
+    druginstockInfo.clinic_id = clinic_id
+    druginstockInfo.instock_operation_id = instock_operation_id
+    let array = []
+    for (let key of druginstockInfo.items) {
+      let value = {}
+      value.clinic_drug_id = drugReturnInfo.clinic_drug_id + ''
+      value.buy_price = key.buy_price * 100 + ''
+      if (key.instock_amount > 0) {
+        value.instock_amount = key.instock_amount + ''
+      } else {
+        this.refs.myAlert.alert('提示', '入库数量必须大于0')
+        return
+      }
+      if (key.serial !== '' && key.serial) {
+        value.serial = key.serial
+      } else {
+        this.refs.myAlert.alert('提示', '请填写批号')
+        return
+      }
+      if (key.eff_date && key.eff_date !== '') {
+        value.eff_date = key.eff_date
+      } else {
+        this.refs.myAlert.alert('提示', '请选择有效期')
+        return
+      }
+      array.push(value)
+    }
+    druginstockInfo.items = JSON.stringify(array)
+    let error = await createDrugInstock(druginstockInfo)
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      // this.setState({ showSaveModel: false })
+      this.refs.myAlert.alert('保存成功')
+      this.props.back2List()
+    }
   }
   // 药品入库
   // 设置字段值
@@ -1469,12 +1609,15 @@ class AddDrugScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
+    instock_operation_id: state.user.data.id,
     doseUnits: state.doseUnits.data,
     doseForms: state.doseForms.data,
     routeAdministrationss: state.routeAdministrationss.data,
     frequencies: state.frequencies.data,
     drugs: state.drugs.drug_data,
-    drugClasses: state.drugClasses.data
+    drugClasses: state.drugClasses.data,
+    instock_way: state.drugStocks.instock_way,
+    supplier_data: state.drugStocks.supplier_data
   }
 }
 
@@ -1487,5 +1630,8 @@ export default connect(mapStateToProps, {
   queryRouteAdministrationList,
   queryDicDrugsList,
   ClinicDrugDetail,
-  ClinicDrugUpdate
+  ClinicDrugUpdate,
+  querySupplierList,
+  queryInstockWayList,
+  createDrugInstock
 })(AddDrugScreen)

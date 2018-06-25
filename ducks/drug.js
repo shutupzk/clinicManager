@@ -100,8 +100,8 @@ export const ClinicDrugUpdate = drugInfo => async dispatch => {
     if (drugInfo.bulk_sales_price) drugInfo.bulk_sales_price = drugInfo.bulk_sales_price * 100
     const data = await request('/clinic_drug/ClinicDrugUpdate', drugInfo)
     console.log('ClinicDrugUpdate', drugInfo, data)
-    if (data.code === '200') return null
-    return data.msg
+    if (data.code === '200') return data
+    return data
   } catch (e) {
     console.log(e)
     return e.message
