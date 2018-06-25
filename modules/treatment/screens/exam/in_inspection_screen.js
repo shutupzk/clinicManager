@@ -86,7 +86,7 @@ class InInspectionScreen extends Component {
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
-                        this.setState({ pageType: 1, selItem: patient })
+                        this.setState({ pageType: 1, selItem: patient, order_status: 20 })
                       }}
                     >
                       检查中({patient.checking_total_count})
@@ -94,6 +94,7 @@ class InInspectionScreen extends Component {
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
+                        this.setState({ pageType: 1, selItem: patient, order_status: 30 })
                       }}
                     >
                       已检查({patient.checked_total_count})
@@ -118,14 +119,16 @@ class InInspectionScreen extends Component {
   }
   // 加载
   render() {
-    const { pageType, selItem } = this.state
+    const { pageType, selItem, order_status } = this.state
     return (
       <div>
         {pageType === 1 ? (
           <ExamDetailScreen
             triagePatient={selItem}
+            order_status={order_status}
             back2List={() => {
               this.setState({ pageType: 0 })
+              this.getListData({ offset: 0, limit: 6 })
             }}
           />
         ) : (

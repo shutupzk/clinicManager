@@ -17,10 +17,10 @@ class ExamDetailScreen extends Component {
   }
 
   async componentDidMount() {
-    const { queryMedicalRecord, triagePatient, ExaminationTriageList } = this.props
+    let { queryMedicalRecord, triagePatient, ExaminationTriageList, order_status = '20' } = this.props
     const { clinic_triage_patient_id } = triagePatient
     let record = await queryMedicalRecord(clinic_triage_patient_id)
-    let exams = await ExaminationTriageList({ clinic_triage_patient_id, order_status: '20' })
+    let exams = await ExaminationTriageList({ clinic_triage_patient_id, order_status })
     this.setState({ record, exams })
   }
 
