@@ -13,11 +13,11 @@ class InInspectionScreen extends Component {
     this.state = {
       keyword: '',
       start_date: moment()
-      .add(-7, 'd')
-      .format('YYYY-MM-DD'),
+        .add(-7, 'd')
+        .format('YYYY-MM-DD'),
       end_date: moment()
-      .add(1, 'd')
-      .format('YYYY-MM-DD'),
+        .add(1, 'd')
+        .format('YYYY-MM-DD'),
       showMask: false,
       selItem: {},
       pageType: 0
@@ -25,12 +25,12 @@ class InInspectionScreen extends Component {
   }
 
   componentWillMount() {
-    this.getListData({offset: 0, limit: 6})
+    this.getListData({ offset: 0, limit: 6 })
   }
-	// 获取列表数据
-  getListData({offset = 0, limit = 6}) {
-    const {clinic_id, ExaminationTriageChecking} = this.props
-    const {keyword, start_date, end_date} = this.state
+  // 获取列表数据
+  getListData({ offset = 0, limit = 6 }) {
+    const { clinic_id, ExaminationTriageChecking } = this.props
+    const { keyword, start_date, end_date } = this.state
     let requestData = {
       clinic_id,
       offset,
@@ -47,31 +47,10 @@ class InInspectionScreen extends Component {
     }
     ExaminationTriageChecking(requestData)
   }
-	// 显示待收费
+  // 显示待收费
   showTobeCharged() {
-    let {checking_data, pageInfo} = this.props
+    let { checking_data = [], pageInfo } = this.props
     console.log('checking_data====', checking_data)
-    if (checking_data.length === 0) {
-      checking_data = [
-        {
-          birthday: '20000603',
-          clinic_patient_id: 16,
-          clinic_triage_patient_id: 42,
-          department_name: '骨科',
-          doctor_name: '扁鹊',
-          patient_name: '倾世容颜',
-          phone: '15387556262',
-          register_personnel_name: '超级管理员',
-          register_time: '2018-06-05T00:00:00.695816+08:00',
-          register_type: 2,
-          sex: 0,
-          status: 40,
-          total_count: 1,
-          updated_time: '2018-06-07T00:43:53.315427+08:00',
-          visit_date: '2018-06-05T00:00:00Z'
-        }
-      ]
-    }
     return (
       <div>
         <div className={'listContent'}>
@@ -107,14 +86,19 @@ class InInspectionScreen extends Component {
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
-                        this.setState({pageType: 1})
+                        this.setState({ pageType: 1, selItem: patient, order_status: 20 })
                       }}
-                    >检查中(10)</span>
+                    >
+                      检查中({patient.checking_total_count})
+                    </span>
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
+                        this.setState({ pageType: 1, selItem: patient, order_status: 30 })
                       }}
-                    >已检查(10)</span>
+                    >
+                      已检查({patient.checked_total_count})
+                    </span>
                   </div>
                 </li>
               )
@@ -135,21 +119,24 @@ class InInspectionScreen extends Component {
   }
   // 加载
   render() {
-    const {pageType} = this.state
+    const { pageType, selItem, order_status } = this.state
     return (
       <div>
-        {pageType === 1 ? <ExamDetailScreen
-          back2List={() => {
-            this.setState({pageType: 0})
-          }} /> : <div>
+        {pageType === 1 ? (
+          <ExamDetailScreen
+            triagePatient={selItem}
+            order_status={order_status}
+            back2List={() => {
+              this.setState({ pageType: 0 })
+              this.getListData({ offset: 0, limit: 6 })
+            }}
+          />
+        ) : (
+          <div>
             <div className={'childTopBar'}>
               <span onClick={() => Router.push('/treatment/exam')}>待检查</span>
-              <span className={'sel'}>
-                检查中
-              </span>
-              <span onClick={() => Router.push('/treatment/exam/checked')}>
-                已检查
-              </span>
+              <span className={'sel'}>检查中</span>
+              <span onClick={() => Router.push('/treatment/exam/checked')}>已检查</span>
             </div>
             <div className={'filterBox'}>
               <div className={'boxLeft'}>
@@ -158,7 +145,7 @@ class InInspectionScreen extends Component {
                   placeholder='选择开始日期'
                   value={this.state.start_date}
                   onChange={e => {
-                    this.setState({start_date: e.target.value})
+                    this.setState({ start_date: e.target.value })
                   }}
                 />
                 <input
@@ -166,25 +153,28 @@ class InInspectionScreen extends Component {
                   placeholder='选择结束日期'
                   value={this.state.end_date}
                   onChange={e => {
-                    this.setState({end_date: e.target.value})
+                    this.setState({ end_date: e.target.value })
                   }}
                 />
                 <input
                   type='text'
                   placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
                   onClick={e => {
-                    this.setState({keyword: e.target.value})
+                    this.setState({ keyword: e.target.value })
                   }}
                 />
                 <button
                   onClick={() => {
-                    this.getListData({offset: 0, limit: 6})
+                    this.getListData({ offset: 0, limit: 6 })
                   }}
-                >查询</button>
+                >
+                  查询
+                </button>
               </div>
             </div>
             {this.showTobeCharged()}
-          </div>}
+          </div>
+        )}
       </div>
     )
   }
@@ -199,4 +189,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { ExaminationTriageChecking })(InInspectionScreen)
+export default connect(
+  mapStateToProps,
+  { ExaminationTriageChecking }
+)(InInspectionScreen)

@@ -85,12 +85,12 @@ class InLaboratoringScreen extends Component {
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
                       }}
-                    >检查中(10)</span>
+                    >检验中({patient.checking_total_count})</span>
                     <span
                       onClick={() => {
                         // this.setState({showMask: true, selItem: patient})
                       }}
-                    >已检查(10)</span>
+                    >已检验({patient.checked_total_count})</span>
                   </div>
                 </li>
               )
