@@ -162,7 +162,6 @@ class LaboratoriedScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
     checked_data: state.laboratoryTriages.checked_data,

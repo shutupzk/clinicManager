@@ -152,7 +152,22 @@ export const LaboratoryTriageDetail = (requestData) => async dispatch => {
       requestData,
       data
     )
-    if (data.code === '200') return data
+    let json = {}
+    if (data.code === '200') {
+      let associationsData = data.associationsData || []
+      let resultsData = data.resultsData || []
+      for (let doc of associationsData) {
+        json[doc.clinic_laboratory_item_id] = doc
+      }
+      for (let doc of resultsData) {
+        json[doc.clinic_laboratory_item_id] = doc
+      }
+      dispatch({
+        type: 'LABORATORY_ITEM_ADD',
+        data: json
+      })
+      return data
+    }
     return null
   } catch (e) {
     console.log(e)
