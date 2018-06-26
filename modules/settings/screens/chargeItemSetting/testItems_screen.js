@@ -97,7 +97,12 @@ class TestItemsScreen extends Component {
             <button>批量导入</button>
             <button>导出</button>
             <button
-              onClick={() => { this.setState({pageType: 2}) }}
+              onClick={() => {
+                this.setState({
+                  pageType: 2,
+                  showWay: 1
+                })
+              }}
             >新建</button>
           </div>
         </div>
