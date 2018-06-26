@@ -60,26 +60,41 @@ class ReportDayScreen extends Component {
               <div>其他费用</div>
               <div>交易时间</div>
               <div>操作员</div>
-              <div>接诊科室</div>
+              <div style={{flex: 2}}>接诊科室</div>
               <div>接诊医生</div>
             </li>
             {finances.map((item, iKey) => {
               return (
                 <li key={iKey}>
-                  <div>{iKey + 1}</div>
-                  <div>{item.name}</div>
-                  <div>1</div>
-                  <div>{item.amount}</div>
-                  <div>2</div>
-                  <div>3</div>
-                  <div>4</div>
-                  <div>{item.department_name}</div>
-                  <div>{item.doctor_name}</div>
+                  <div>{item.patientname}</div>
+                  <div>{item.clinic_patient_id}</div>
+                  <div>{formatMoney(item.total_money)}</div>
+                  <div>{formatMoney(item.traditional_medical_fee)}</div>
+                  <div>{formatMoney(item.western_medicine_fee)}</div>
+                  <div>{formatMoney(item.examination_fee)}</div>
+                  <div>{formatMoney(item.labortory_fee)}</div>
+                  <div>{formatMoney(item.treatment_fee)}</div>
+                  <div>{formatMoney(item.diagnosis_treatment_fee)}</div>
+                  <div>{formatMoney(item.material_fee)}</div>
+                  <div>{formatMoney(item.retail_fee)}</div>
+                  <div>{formatMoney(item.other_fee)}</div>
+                  <div>{moment().format('YYYY-MM-DD')}</div>
+                  <div>{item.operation}</div>
+                  <div style={{flex: 2}}>{item.departmentname}</div>
+                  <div>{item.doctorname}</div>
                 </li>
               )
             })}
           </ul>
         </div>
+        <style jsx='true'>{`
+          .feeScheduleBox {
+            width: 1500px;
+          }
+          .feeScheduleBox ul li div {
+            flex: 1;
+          }
+        `}</style>
         <PageCard
           offset={finances_page.offset}
           limit={finances_page.limit}
