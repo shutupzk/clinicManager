@@ -4,7 +4,7 @@ const LABORATORY_ITEM_ARRAY_ADD = 'LABORATORY_ITEM_ARRAY_ADD'
 const LABO_ITEM_ARRAY_ADD = 'LABO_ITEM_ARRAY_ADD'
 
 const initState = {
-  data: [],
+  data: {},
   array_data: [],
   page_info: {},
   laboItem_data: [],
@@ -14,7 +14,7 @@ const initState = {
 export function laboratoryItems(state = initState, action = {}) {
   switch (action.type) {
     case LABORATORY_ITEM_ADD:
-      return { ...state, data: {...state.data, ...action.data}, page_info: action.page_info }
+      return { ...state, data: {...state.data, ...action.data} }
     case LABORATORY_ITEM_ARRAY_ADD:
       return { ...state, array_data: action.array_data, page_info: action.page_info }
     case LABO_ITEM_ARRAY_ADD:
@@ -129,11 +129,14 @@ export const LaboratoryItemDetail = ({clinic_laboratory_item_id}) => async dispa
     // array_data.push(docs)
     dispatch({
       type: LABORATORY_ITEM_ADD,
-      data: docs
+      data: docs[0]
     })
+    let unitJson = {}
     // let sample_data = {}
     // let color_data = {}
-    // const {laboratory_sample, cuvette_color_name} = docs
+    const {unit_name} = docs[0]
+    if (unit_name) unitJson[unit_name] = { name: unit_name }
+    dispatch({ type: 'DOSE_UNIT_ADD', data: unitJson })
     // if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
     // if (cuvette_color_name) color_data[cuvette_color_name] = {name: cuvette_color_name}
     // dispatch({ type: 'LABORATORY_SAMPLE_LIST', data: sample_data })

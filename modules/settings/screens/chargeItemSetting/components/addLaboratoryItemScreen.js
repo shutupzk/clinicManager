@@ -9,7 +9,7 @@ import {
   LaboratoryItemUpdate,
   LaboratoryItemDetail
 } from '../../../../../ducks'
-import { limitMoney, formatMoney } from '../../../../../utils'
+// import { limitMoney, formatMoney } from '../../../../../utils'
 
 // 病历
 class AddLaboratoryItemScreen extends Component {
@@ -41,8 +41,14 @@ class AddLaboratoryItemScreen extends Component {
         // }
         let references = []
         if (data[0].references) {
-          for (let i = 0; i < data[0].references.length; i++) {
-            references.push(data[0].references[i])
+          if (!data[0].is_special) {
+            data[0].reference_min = data[0].references[0].reference_min
+            data[0].reference_max = data[0].references[0].reference_max
+          } else {
+            data[0].items = []
+            for (let i = 0; i < data[0].references.length; i++) {
+              data[0].items.push(data[0].references[i])
+            }
           }
         }
         this.setState({laboratoryItemInfo: data[0], references})
@@ -242,6 +248,7 @@ class AddLaboratoryItemScreen extends Component {
     )
   }
   render() {
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -250,7 +257,11 @@ class AddLaboratoryItemScreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.submit()
+                if (showWay === 2) {
+                  this.LaboratoryItemDetail()
+                } else {
+                  this.submit()
+                }
               }}
             >
               保存
@@ -276,6 +287,19 @@ class AddLaboratoryItemScreen extends Component {
     const { clinic_id, laboratoryItemCreate } = this.props
     laboratoryItemInfo.clinic_id = clinic_id
     let error = await laboratoryItemCreate({ requestData: { ...laboratoryItemInfo, clinic_id } })
+    if (error) {
+      this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+      this.setState({ laboratoryItemInfo })
+    } else {
+      this.refs.myAlert.alert('保存成功')
+      this.props.back2List()
+    }
+  }
+  async LaboratoryItemDetail() {
+    let { laboratoryItemInfo } = this.state
+    const { clinic_id, LaboratoryItemDetail } = this.props
+    laboratoryItemInfo.clinic_id = clinic_id
+    let error = await LaboratoryItemDetail({ requestData: { ...laboratoryItemInfo, clinic_id } })
     if (error) {
       this.refs.myAlert.alert('保存失败', error, null, 'Danger')
       this.setState({ laboratoryItemInfo })
@@ -494,7 +518,7 @@ class AddLaboratoryItemScreen extends Component {
               <input
                 type='text'
                 placeholder={'en_name'}
-                value={laboratoryItemInfo.en_name}
+                value={laboratoryItemInfo.en_name || ''}
                 onChange={e => {
                   this.setItemValue(e, 'en_name')
                 }}
@@ -524,7 +548,7 @@ class AddLaboratoryItemScreen extends Component {
                 <input
                   type='text'
                   placeholder={'instrument_code'}
-                  value={laboratoryItemInfo.instrument_code}
+                  value={laboratoryItemInfo.instrument_code || ''}
                   onChange={e => {
                     this.setItemValue(e, 'instrument_code')
                   }}
