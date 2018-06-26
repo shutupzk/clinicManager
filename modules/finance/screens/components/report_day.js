@@ -13,9 +13,8 @@ class ReportDayScreen extends Component {
       patientName: '',
       oprationName: '',
       start_date: moment()
-        .add(-1, 'd')
         .format('YYYY-MM-DD'),
-      end_date: moment().format('YYYY-MM-DD'),
+      end_date: moment().add(1, 'd').format('YYYY-MM-DD'),
       selectType: 1
     }
   }
