@@ -353,7 +353,6 @@ class TobeLaboratoryScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
     waiting_data: state.laboratoryTriages.waiting_data,
