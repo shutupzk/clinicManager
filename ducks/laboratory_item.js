@@ -129,12 +129,12 @@ export const LaboratoryItemDetail = ({clinic_laboratory_item_id}) => async dispa
     // array_data.push(docs)
     dispatch({
       type: LABORATORY_ITEM_ADD,
-      data: docs[0]
+      data: docs
     })
     let unitJson = {}
     // let sample_data = {}
     // let color_data = {}
-    const {unit_name} = docs[0]
+    const {unit_name} = docs
     if (unit_name) unitJson[unit_name] = { name: unit_name }
     dispatch({ type: 'DOSE_UNIT_ADD', data: unitJson })
     // if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}

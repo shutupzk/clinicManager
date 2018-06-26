@@ -4,9 +4,11 @@ import { connect } from 'react-redux'
 import { Select, Confirm } from '../../../../../components'
 import {
   treatmentCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  TreatmentDetail,
+  TreatmentUpdate
 } from '../../../../../ducks'
-import {limitMoney} from '../../../../../utils'
+import {limitMoney, formatMoney} from '../../../../../utils'
 
 // 病历
 class AddTreatmentScreen extends Component {
@@ -21,6 +23,20 @@ class AddTreatmentScreen extends Component {
   }
 
   async componentWillMount() {
+  }
+  async componentDidMount() {
+    const {showWay, clinic_treatment_id, TreatmentDetail} = this.props
+    if (showWay === 2) {
+      let data = await TreatmentDetail({clinic_treatment_id})
+      if (data) {
+        console.log('TreatmentDetail=====', data)
+        data.price = formatMoney(data.price)
+        if (data.cost !== null) {
+          data.cost = formatMoney(data.cost)
+        }
+        this.setState({treatmentInfo: data})
+      }
+    }
   }
   style() {
     return (
@@ -219,6 +235,7 @@ class AddTreatmentScreen extends Component {
   }
   render() {
     const {showType} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -226,7 +243,13 @@ class AddTreatmentScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.TreatmentUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -263,6 +286,25 @@ class AddTreatmentScreen extends Component {
     // console.log('this.validateData(treatmentInfo)=====', this.validateData(treatmentInfo))
     if (this.validateData(treatmentInfo)) {
       let error = await treatmentCreate(treatmentInfo)
+      if (error) {
+        this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+        this.setState({treatmentInfo})
+      } else {
+        this.refs.myAlert.alert('保存成功')
+        this.props.back2List()
+      }
+    }
+    // alert(0)
+  }
+  async TreatmentUpdate() {
+    let {treatmentInfo} = this.state
+    const {clinic_id, TreatmentUpdate} = this.props
+    treatmentInfo.clinic_id = clinic_id
+    // let requestData = {...treatmentInfo}
+    // requestData.items = JSON.stringify(requestData.items)
+    // console.log('this.validateData(treatmentInfo)=====', this.validateData(treatmentInfo))
+    if (this.validateData(treatmentInfo)) {
+      let error = await TreatmentUpdate(treatmentInfo)
       if (error) {
         this.refs.myAlert.alert('保存失败', error, null, 'Danger')
         this.setState({treatmentInfo})
@@ -542,5 +584,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   treatmentCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  TreatmentDetail,
+  TreatmentUpdate
 })(AddTreatmentScreen)

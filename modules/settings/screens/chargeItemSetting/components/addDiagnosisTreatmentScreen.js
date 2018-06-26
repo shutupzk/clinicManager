@@ -3,9 +3,11 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 // import { Select } from '../../../../../components'
 import {
-  diagnosisTreatmentCreate
+  diagnosisTreatmentCreate,
+  DiagnosisTreatmentDetail,
+  DiagnosisTreatmentUpdate
 } from '../../../../../ducks'
-import {limitMoney} from '../../../../../utils'
+import {limitMoney, formatMoney} from '../../../../../utils'
 // 病历
 class AddDiagnosisTreatmentScreen extends Component {
   constructor(props) {
@@ -215,8 +217,23 @@ class AddDiagnosisTreatmentScreen extends Component {
       `}</style>
     )
   }
+  async componentDidMount() {
+    const {showWay, clinic_diagnosis_treatment_id, DiagnosisTreatmentDetail} = this.props
+    if (showWay === 2) {
+      let data = await DiagnosisTreatmentDetail({clinic_diagnosis_treatment_id})
+      if (data) {
+        console.log('DiagnosisTreatmentDetail=====', data)
+        data.price = formatMoney(data.price)
+        if (data.cost !== null) {
+          data.cost = formatMoney(data.cost)
+        }
+        this.setState({diagnosisTreatmentsInfo: data})
+      }
+    }
+  }
   render() {
     const {showType} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -224,7 +241,13 @@ class AddDiagnosisTreatmentScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.DiagnosisTreatmentUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -255,6 +278,21 @@ class AddDiagnosisTreatmentScreen extends Component {
       if (error) {
         alert(error)
         this.setState({diagnosisTreatmentsInfo})
+      } else {
+        this.props.back2List()
+      }
+    }
+    // alert(0)
+  }
+  async DiagnosisTreatmentUpdate() {
+    let {diagnosisTreatmentsInfo} = this.state
+    const {clinic_id, DiagnosisTreatmentUpdate} = this.props
+    diagnosisTreatmentsInfo.clinic_id = clinic_id
+    if (this.validateData(diagnosisTreatmentsInfo)) {
+      let error = await DiagnosisTreatmentUpdate(diagnosisTreatmentsInfo)
+      if (error) {
+        alert(error)
+        // this.setState({diagnosisTreatmentsInfo})
       } else {
         this.props.back2List()
       }
@@ -421,5 +459,7 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  diagnosisTreatmentCreate
+  diagnosisTreatmentCreate,
+  DiagnosisTreatmentDetail,
+  DiagnosisTreatmentUpdate
 })(AddDiagnosisTreatmentScreen)

@@ -1,8 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { examinationCreate, queryDoseUnitList, queryExaminationOrganList, queryExams } from '../../../../../ducks'
-import { limitMoney } from '../../../../../utils'
+import {
+  examinationCreate,
+  queryDoseUnitList,
+  queryExaminationOrganList,
+  queryExams,
+  ExaminationDetail,
+  ExaminationUpdate
+} from '../../../../../ducks'
+import { limitMoney, formatMoney } from '../../../../../utils'
 
 // 病历
 class AddExaminationScreen extends Component {
@@ -22,6 +29,20 @@ class AddExaminationScreen extends Component {
 
   async componentWillMount() {
     this.getExaminationOrgansList('')
+  }
+  async componentDidMount() {
+    const {showWay, clinic_examination_id, ExaminationDetail} = this.props
+    if (showWay === 2) {
+      let data = await ExaminationDetail({clinic_examination_id})
+      if (data) {
+        console.log('ExaminationDetail=====', data)
+        data.price = formatMoney(data.price)
+        if (data.cost !== null) {
+          data.cost = formatMoney(data.cost)
+        }
+        this.setState({examinationInfo: data})
+      }
+    }
   }
 
   style() {
@@ -219,6 +240,7 @@ class AddExaminationScreen extends Component {
 
   render() {
     const { showType } = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -228,7 +250,11 @@ class AddExaminationScreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.submit()
+                if (showWay === 2) {
+                  this.ExaminationUpdate()
+                } else {
+                  this.submit()
+                }
               }}
             >
               保存
@@ -268,6 +294,24 @@ class AddExaminationScreen extends Component {
     // console.log('this.validateData(examinationInfo)=====', this.validateData(examinationInfo))
     if (this.validateData(examinationInfo)) {
       let error = await examinationCreate(examinationInfo)
+      if (error) {
+        alert(error)
+        this.setState({ examinationInfo })
+      } else {
+        this.props.back2List()
+      }
+    }
+    // alert(0)
+  }
+  async ExaminationUpdate() {
+    let { examinationInfo } = this.state
+    const { clinic_id, ExaminationUpdate } = this.props
+    examinationInfo.clinic_id = clinic_id
+    // let requestData = {...examinationInfo}
+    // requestData.items = JSON.stringify(requestData.items)
+    // console.log('this.validateData(examinationInfo)=====', this.validateData(examinationInfo))
+    if (this.validateData(examinationInfo)) {
+      let error = await ExaminationUpdate(examinationInfo)
       if (error) {
         alert(error)
         this.setState({ examinationInfo })
@@ -416,7 +460,7 @@ class AddExaminationScreen extends Component {
               <input
                 type='text'
                 placeholder={'en_name'}
-                value={examinationInfo.en_name}
+                value={examinationInfo.en_name || ''}
                 onChange={e => {
                   this.setItemValue(e, 'en_name')
                 }}
@@ -695,5 +739,7 @@ export default connect(mapStateToProps, {
   examinationCreate,
   queryDoseUnitList,
   queryExaminationOrganList,
-  queryExams
+  queryExams,
+  ExaminationDetail,
+  ExaminationUpdate
 })(AddExaminationScreen)
