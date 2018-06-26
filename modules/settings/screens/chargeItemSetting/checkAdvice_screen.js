@@ -3,7 +3,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 // import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis } from '../../../../ducks'
-import { queryExaminationList } from '../../../../ducks'
+import {
+  queryExaminationList,
+  ExaminationOnOff
+} from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddExaminationScreen from './components/addExaminationScreen'
 import { formatMoney } from '../../../../utils'
@@ -20,7 +23,8 @@ class CheckAdviceScreen extends Component {
       status: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      showWay: 1
     }
   }
 
@@ -28,13 +32,17 @@ class CheckAdviceScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, showWay, clinic_examination_id } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddExaminationScreen drugType={1} back2List={() => {
-        this.setState({pageType: 1})
-        this.getDataList({offset: 0, limit: 10})
-      }} />
+      2: <AddExaminationScreen
+        drugType={1}
+        showWay={showWay}
+        clinic_examination_id={clinic_examination_id}
+        back2List={() => {
+          this.setState({pageType: 1})
+          this.getDataList({offset: 0, limit: 10})
+        }} />
     }
     return map[pageType] || null
   }
@@ -91,7 +99,7 @@ class CheckAdviceScreen extends Component {
             <button>批量导入</button>
             <button>导出</button>
             <button
-              onClick={() => { this.setState({pageType: 2}) }}
+              onClick={() => { this.setState({pageType: 2, showWay: 1}) }}
             >新建</button>
           </div>
         </div>
@@ -205,9 +213,23 @@ class CheckAdviceScreen extends Component {
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          clinic_examination_id: item.clinic_examination_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>停用</div>
+                      <div onClick={() => {
+                        let status = item.status
+                        if (status) {
+                          status = false
+                        } else {
+                          status = true
+                        }
+                        this.ExaminationOnOff(item.clinic_examination_id, status)
+                      }}>{item.status ? '停用' : '启用'}</div>
                     </div>
                   </td>
                 </tr>
@@ -277,6 +299,20 @@ class CheckAdviceScreen extends Component {
       </div>
     )
   }
+  async ExaminationOnOff(clinic_examination_id, status) {
+    const {clinic_id, ExaminationOnOff, pageInfo} = this.props
+    const requestData = {
+      clinic_examination_id,
+      clinic_id,
+      status
+    }
+    let error = await ExaminationOnOff(requestData)
+    if (error) {
+      this.refs.myAlert.alert('更新失败', error)
+    } else {
+      this.getDataList({ offset: pageInfo.offset, limit: pageInfo.limit })
+    }
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -340,4 +376,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {queryExaminationList})(CheckAdviceScreen)
+export default connect(mapStateToProps, {
+  queryExaminationList,
+  ExaminationOnOff
+})(CheckAdviceScreen)

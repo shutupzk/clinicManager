@@ -59,10 +59,38 @@ import {
   LaboratoryUpdate,
   LaboratoryDetail
 } from './laboratory'
-import { examinations, examinationCreate, queryExaminationList, queryExams } from './examination'
-import { materials, materialCreate, queryMaterialList } from './material'
-import { otherCostS, otherCostsCreate, queryOtherCostList } from './other_cost'
-import { treatments, treatmentCreate, queryTreatmentList } from './treatment'
+import {
+  examinations,
+  examinationCreate,
+  queryExaminationList,
+  ExaminationUpdate,
+  ExaminationOnOff,
+  ExaminationDetail,
+  queryExams } from './examination'
+import {
+  materials,
+  materialCreate,
+  MaterialUpdate,
+  MaterialOnOff,
+  MaterialDetail,
+  queryMaterialList
+} from './material'
+import {
+  otherCostS,
+  otherCostsCreate,
+  OtherCostUpdate,
+  OtherCostOnOff,
+  OtherCostDetail,
+  queryOtherCostList
+} from './other_cost'
+import {
+  treatments,
+  treatmentCreate,
+  TreatmentUpdate,
+  TreatmentOnOff,
+  TreatmentDetail,
+  queryTreatmentList
+} from './treatment'
 import { doseUnits, queryDoseUnitList } from './dose_unit'
 import { examinationOrgans, queryExaminationOrganList } from './examination_organs'
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
@@ -90,7 +118,15 @@ import {
 import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate } from './prescription_western_patient_model'
 import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
-import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate, queryDictDiagnosisList } from './diagnosisTreatment'
+import {
+  diagnosisTreatments,
+  queryDiagnosisTreatmentList,
+  diagnosisTreatmentCreate,
+  DiagnosisTreatmentUpdate,
+  DiagnosisTreatmentOnOff,
+  DiagnosisTreatmentDetail,
+  queryDictDiagnosisList
+} from './diagnosisTreatment'
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, examinationModelCreate } from './examination_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPersonalPatientModelList, LaboratoryPatientModelList } from './laboratory_model'
@@ -309,8 +345,17 @@ export {
   examinationCreate,
   laboratoryCreate,
   materialCreate,
+  MaterialUpdate,
+  MaterialOnOff,
+  MaterialDetail,
   otherCostsCreate,
+  OtherCostUpdate,
+  OtherCostOnOff,
+  OtherCostDetail,
   treatmentCreate,
+  TreatmentUpdate,
+  TreatmentOnOff,
+  TreatmentDetail,
   queryExaminationList,
   queryLaboratoryList,
   queryMaterialList,
@@ -361,6 +406,9 @@ export {
   queryDiagnosisTreatmentList,
   queryDictDiagnosisList,
   diagnosisTreatmentCreate,
+  DiagnosisTreatmentUpdate,
+  DiagnosisTreatmentOnOff,
+  DiagnosisTreatmentDetail,
   TreatmentPatientModelList,
   TreatmentPatientModelCreate,
   examinationModelList,
@@ -368,6 +416,9 @@ export {
   LaboratoryPatientModelCreate,
   LaboratoryPersonalPatientModelList,
   RemoveScheduleByID,
+  ExaminationUpdate,
+  ExaminationOnOff,
+  ExaminationDetail,
   queryExams,
   queryLaboList,
   queryCreditTriageList,

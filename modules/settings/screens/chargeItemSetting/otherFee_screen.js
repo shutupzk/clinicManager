@@ -2,7 +2,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryOtherCostList } from '../../../../ducks'
+import {
+  queryOtherCostList,
+  OtherCostOnOff
+} from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddOtherFeeScreen from './components/addOtherFeeScreen'
 import {formatMoney} from '../../../../utils'
@@ -17,7 +20,9 @@ class OtherFeeScreen extends Component {
       status: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      showWay: 1,
+      clinic_other_cost_id: ''
     }
   }
 
@@ -25,13 +30,17 @@ class OtherFeeScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, showWay, clinic_other_cost_id } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddOtherFeeScreen drugType={1} back2List={() => {
-        this.setState({pageType: 1})
-        this.getDataList({offset: 0, limit: 10})
-      }} />
+      2: <AddOtherFeeScreen
+        drugType={1}
+        showWay={showWay}
+        clinic_other_cost_id={clinic_other_cost_id}
+        back2List={() => {
+          this.setState({pageType: 1})
+          this.getDataList({offset: 0, limit: 10})
+        }} />
     }
     return map[pageType] || null
   }
@@ -88,7 +97,7 @@ class OtherFeeScreen extends Component {
             <button>批量导入</button>
             <button>导出</button>
             <button
-              onClick={() => { this.setState({pageType: 2}) }}
+              onClick={() => { this.setState({pageType: 2, showWay: 1}) }}
             >新建</button>
           </div>
         </div>
@@ -193,9 +202,23 @@ class OtherFeeScreen extends Component {
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          clinic_other_cost_id: item.clinic_other_cost_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>停用</div>
+                      <div onClick={() => {
+                        let status = item.status
+                        if (status) {
+                          status = false
+                        } else {
+                          status = true
+                        }
+                        this.OtherCostOnOff(item.clinic_other_cost_id, status)
+                      }}>{item.status ? '停用' : '启用'}</div>
                     </div>
                   </td>
                 </tr>
@@ -265,6 +288,20 @@ class OtherFeeScreen extends Component {
       </div>
     )
   }
+  async OtherCostOnOff(clinic_other_cost_id, status) {
+    const {clinic_id, OtherCostOnOff, pageInfo} = this.props
+    const requestData = {
+      clinic_other_cost_id,
+      clinic_id,
+      status
+    }
+    let error = await OtherCostOnOff(requestData)
+    if (error) {
+      this.refs.myAlert.alert('更新失败', error)
+    } else {
+      this.getDataList({ offset: pageInfo.offset, limit: pageInfo.limit })
+    }
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -329,5 +366,6 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, {
-  queryOtherCostList
+  queryOtherCostList,
+  OtherCostOnOff
 })(OtherFeeScreen)

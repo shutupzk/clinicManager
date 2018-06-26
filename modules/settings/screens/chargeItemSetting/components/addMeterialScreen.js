@@ -4,9 +4,11 @@ import { connect } from 'react-redux'
 import { Select, Confirm } from '../../../../../components'
 import {
   materialCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  MaterialDetail,
+  MaterialUpdate
 } from '../../../../../ducks'
-import {limitMoney} from '../../../../../utils'
+import {limitMoney, formatMoney} from '../../../../../utils'
 
 // 病历
 class AddMeterialScreen extends Component {
@@ -217,8 +219,23 @@ class AddMeterialScreen extends Component {
       `}</style>
     )
   }
+  async componentDidMount() {
+    const {showWay, clinic_material_id, MaterialDetail} = this.props
+    if (showWay === 2) {
+      let data = await MaterialDetail({clinic_material_id})
+      if (data) {
+        console.log('MaterialDetail=====', data)
+        data.ret_price = formatMoney(data.ret_price)
+        if (data.buy_price !== null) {
+          data.buy_price = formatMoney(data.buy_price)
+        }
+        this.setState({materialsInfo: data})
+      }
+    }
+  }
   render() {
     const {showType} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -226,7 +243,13 @@ class AddMeterialScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.MaterialUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -260,6 +283,23 @@ class AddMeterialScreen extends Component {
     materialsInfo.clinic_id = clinic_id
     if (this.validateData(materialsInfo)) {
       let error = await materialCreate(materialsInfo)
+      if (error) {
+        this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+        this.setState({materialsInfo})
+      } else {
+        this.refs.myAlert.alert('保存成功')
+        this.props.back2List()
+      }
+    }
+    // alert(0)
+  }
+  async MaterialUpdate() {
+    let {materialsInfo} = this.state
+    const {clinic_id, MaterialUpdate} = this.props
+    materialsInfo.clinic_id = clinic_id
+    materialsInfo.clinic_material_id = materialsInfo.id
+    if (this.validateData(materialsInfo)) {
+      let error = await MaterialUpdate(materialsInfo)
       if (error) {
         this.refs.myAlert.alert('保存失败', error, null, 'Danger')
         this.setState({materialsInfo})
@@ -363,7 +403,7 @@ class AddMeterialScreen extends Component {
               <input
                 type='text'
                 placeholder={'en_name'}
-                value={materialsInfo.en_name}
+                value={materialsInfo.en_name || ''}
                 onChange={e => {
                   this.setItemValue(e, 'en_name')
                 }}
@@ -552,7 +592,7 @@ class AddMeterialScreen extends Component {
                 <input
                   type='number'
                   placeholder={'eff_day'}
-                  value={materialsInfo.eff_day}
+                  value={materialsInfo.eff_day || ''}
                   onChange={e => {
                     this.setItemValue(e, 'eff_day')
                   }}
@@ -576,5 +616,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   materialCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  MaterialDetail,
+  MaterialUpdate
 })(AddMeterialScreen)
