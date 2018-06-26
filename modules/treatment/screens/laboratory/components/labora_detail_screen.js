@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
-import { queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail, ExaminationTriageRecordCreate, ExaminationTriagePatientRecordList, queryLaboratoryItemList } from '../../../../../ducks'
+import { queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail, LaboratoryTriageRecordCreate, ExaminationTriagePatientRecordList, queryLaboratoryItemList } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import moment from 'moment'
 
@@ -27,6 +27,7 @@ class LaboraDetailScreen extends Component {
     if (laboras && laboras.length) {
       this.LaboratoryTriageDetail(laboras, 0)
     }
+    console.log('laboras ======', laboras)
     this.setState({ record, laboras })
   }
 
@@ -259,10 +260,14 @@ class LaboraDetailScreen extends Component {
         <div className={'childTopBar'}>
           {laboras.map((item, index) => {
             return (
-              <span key={index} className={index === selIndex ? 'sel' : ''} onClick={() => {
-                this.setState({ selIndex: index })
-                this.LaboratoryTriageDetail(laboras, index)
-              }}>
+              <span
+                key={index}
+                className={index === selIndex ? 'sel' : ''}
+                onClick={() => {
+                  this.setState({ selIndex: index })
+                  this.LaboratoryTriageDetail(laboras, index)
+                }}
+              >
                 {item.clinic_laboratory_name}
               </span>
             )
@@ -284,12 +289,37 @@ class LaboraDetailScreen extends Component {
   }
 
   async save() {
-    const { ExaminationTriageRecordCreate, triagePatient, operation_id } = this.props
-    const { laboras, selIndex } = this.state
+    const { LaboratoryTriageRecordCreate, triagePatient, operation_id } = this.props
+    const { laboras, selIndex, laboraDetails } = this.state
     const { clinic_triage_patient_id } = triagePatient
-    let exam = laboras[selIndex]
-    const { examination_patient_id, picture_examination, result_examination, conclusion_examination } = exam
-    let error = await ExaminationTriageRecordCreate({ clinic_triage_patient_id, examination_patient_id, operation_id, picture_examination, result_examination, conclusion_examination })
+    let labora = laboras[selIndex]
+    const { laboratory_patient_id, remark } = labora
+    let items = []
+    let array = laboraDetails[selIndex]
+    for (let o of array) {
+      let obj = {}
+      let ref = this.getReference(o)
+      let item = { ...o, ...ref }
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      let is_normal = '正常'
+      if (ref.data_type === 2) {
+        if (item.result_inspection * 1 < ref.reference_min) {
+          is_normal = '正常'
+        } else if (item.result_inspection * 1 > ref.reference_max) {
+          is_normal = '偏高'
+        }
+      }
+      obj.is_normal = is_normal
+      items.push(obj)
+    }
+    console.log('items =======', items)
+    let error = await LaboratoryTriageRecordCreate({ clinic_triage_patient_id, laboratory_patient_id, operation_id, remark, items: JSON.stringify(items) })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
     } else {
@@ -351,95 +381,127 @@ class LaboraDetailScreen extends Component {
     this.setState({ laboraDetails })
   }
 
-  renderContent() {
-    const { selIndex, laboraDetails } = this.state
+  getReference(item) {
     const { triagePatient } = this.props
+    let reference = ''
+    let references = item.references || []
+    let age = getAgeByBirthday(triagePatient.birthday)
+    let sex = triagePatient.sex === 0 ? '女' : '男'
+    let data_type = item.data_type
+    let reference_min = 0
+    let reference_max = 0
+    for (let item of references) {
+      const { reference_sex, age_max, age_min, reference_value } = item
+      if (reference_sex === sex || reference_sex === '通用') {
+        if (age_max && age_min) {
+          if (age_max >= age && age >= age_min) {
+            if (data_type === 2) {
+              reference = item.reference_min + ' ~ ' + item.reference_max
+              reference_min = item.reference_min * 1
+              reference_max = item.reference_max * 1
+            } else {
+              reference = reference_value
+            }
+          }
+        } else {
+          if (data_type === 2) {
+            reference = item.reference_min + ' ~ ' + item.reference_max
+            reference_min = item.reference_min * 1
+            reference_max = item.reference_max * 1
+          } else {
+            reference = reference_value
+          }
+        }
+      }
+    }
+    return { reference, reference_min, reference_max, data_type }
+  }
+
+  renderContent() {
+    const { selIndex, laboraDetails, laboras } = this.state
     const array = laboraDetails[selIndex]
     if (!array || !array.length) return null
+    let data = laboras[selIndex]
     return (
-      <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
-        <ul>
-          <li>
-            <div style={{ flex: 1 }}>序号</div>
-            <div style={{ flex: 3 }}>项目</div>
-            <div style={{ flex: 2 }}>结果</div>
-            <div style={{ flex: 2 }}>单位</div>
-            <div style={{ flex: 2 }}>性质</div>
-            <div style={{ flex: 3 }}>参考值</div>
-            <div style={{ flex: 2 }}>
-              <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
-                新增
+      <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 40px 0', background: 'rgba(255, 255, 255, 1)' }}>
+        <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
+          <ul>
+            <li>
+              <div style={{ flex: 1 }}>序号</div>
+              <div style={{ flex: 3 }}>项目</div>
+              <div style={{ flex: 2 }}>结果</div>
+              <div style={{ flex: 2 }}>单位</div>
+              <div style={{ flex: 2 }}>性质</div>
+              <div style={{ flex: 3 }}>参考值</div>
+              <div style={{ flex: 2 }}>
+                <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
+                  新增
+                </div>
               </div>
-            </div>
-          </li>
-          {array.map((item, index) => {
-            let nameOptions = this.getNameOptions(index)
-            let reference = ''
-            let references = item.references || []
-            let age = getAgeByBirthday(triagePatient.birthday)
-            let sex = triagePatient.sex === 0 ? '女' : '男'
-            let data_type = item.data_type
-            for (let item of references) {
-              const { reference_sex, age_max, age_min, reference_value } = item
-              if (reference_sex === sex || reference_sex === '通用') {
-                if (age_max && age_min) {
-                  if (age_max >= age && age >= age_min) {
-                    if (data_type === 2) {
-                      reference = item.reference_min + ' ~ ' + item.reference_max
-                    } else {
-                      reference = reference_value
-                    }
-                  }
-                } else {
-                  if (data_type === 2) {
-                    reference = item.reference_min + ' ~ ' + item.reference_max
-                  } else {
-                    reference = reference_value
-                  }
-                }
-              }
-            }
-            return (
-              <li key={index}>
-                <div style={{ flex: 1 }}>{index + 1}</div>
-                <div style={{ flex: 3 }}>
-                  <div style={{ width: '100%' }}>
-                    <Select
-                      value={this.getSelectValue(item.clinic_laboratory_item_id, nameOptions)}
-                      onChange={(item) => {
-                        array[index] = item
+            </li>
+            {array.map((item, index) => {
+              let nameOptions = this.getNameOptions(index)
+              const { reference } = this.getReference(item)
+              return (
+                <li key={index}>
+                  <div style={{ flex: 1 }}>{index + 1}</div>
+                  <div style={{ flex: 3 }}>
+                    <div style={{ width: '100%' }}>
+                      <Select
+                        value={this.getSelectValue(item.clinic_laboratory_item_id, nameOptions)}
+                        onChange={item => {
+                          array[index] = item
+                          this.setState({ laboraDetails: { ...laboraDetails, [selIndex]: array } })
+                        }}
+                        placeholder='搜索名称'
+                        height={38}
+                        onInputChange={keyword => this.queryLaboratoryItemList(keyword)}
+                        options={nameOptions}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ flex: 2 }}>
+                    <input
+                      value={item.result_inspection || ''}
+                      type='text'
+                      onChange={e => {
+                        let value = e.target.value
+                        array[index].result_inspection = value
                         this.setState({ laboraDetails: { ...laboraDetails, [selIndex]: array } })
                       }}
-                      placeholder='搜索名称'
-                      height={38}
-                      onInputChange={keyword => this.queryLaboratoryItemList(keyword)}
-                      options={nameOptions}
                     />
                   </div>
-                </div>
-                <div style={{ flex: 2 }}>
-                  <input
-                    value={item.result_inspection || ''}
-                    type='text'
-                    onChange={e => {
-                      array[index].result_inspection = e.target.value
-                      this.setState({ laboraDetails: { ...laboraDetails, [selIndex]: array } })
-                    }}
-                  />
-                </div>
-                <div style={{ flex: 2 }}>{item.unit_name}</div>
-                <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
-                <div style={{ flex: 3 }}>{reference}</div>
-                <div style={{ flex: 2 }}>
-                  <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
-                    删除
+                  <div style={{ flex: 2 }}>{item.unit_name}</div>
+                  <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
+                  <div style={{ flex: 3 }}>{reference}</div>
+                  <div style={{ flex: 2 }}>
+                    <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                      删除
+                    </div>
                   </div>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
-        {this.getStyle()}
+                </li>
+              )
+            })}
+          </ul>
+          {this.getStyle()}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', margin: '10px 10px 10px 10px' }}>
+          <label>结论</label>
+          <textarea
+            style={{ resize: 'none', width: '100%', height: '100px', background: 'rgba(245, 248, 249, 1)', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+            value={data.remark || ''}
+            onChange={e => {
+              laboras[selIndex].remark = e.target.value
+              this.setState({ laboras })
+            }}
+          />
+        </div>
+        <div className={'bottomBtn'}>
+          <div>
+            <button onClick={() => this.save()}>保存</button>
+            <button>取消</button>
+          </div>
+        </div>
       </div>
     )
   }
@@ -631,7 +693,7 @@ export default connect(
     queryMedicalRecord,
     LaboratoryTriageList,
     LaboratoryTriageDetail,
-    ExaminationTriageRecordCreate,
+    LaboratoryTriageRecordCreate,
     ExaminationTriagePatientRecordList,
     queryLaboratoryItemList
   }
