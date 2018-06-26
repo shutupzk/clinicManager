@@ -151,7 +151,7 @@ class ChargedDetailScreen extends Component {
           <ul>
             <li>
               <div>序号</div>
-              <div>收费名称</div>
+              <div style={{flex: 3}}>收费名称</div>
               <div>单价</div>
               <div>数量</div>
               <div>金额</div>
@@ -164,7 +164,7 @@ class ChargedDetailScreen extends Component {
               return (
                 <li key={iKey}>
                   <div>{iKey + 1}</div>
-                  <div>{item.name}</div>
+                  <div style={{flex: 3}}>{item.name}</div>
                   <div>{formatMoney(item.price)}</div>
                   <div>{item.amount}</div>
                   <div>{formatMoney(item.total)}</div>

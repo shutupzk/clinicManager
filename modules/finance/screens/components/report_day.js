@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { queryFinanceList } from '../../../../ducks'
+import { PageCard } from '../../../../components'
+import { formatMoney } from '../../../../utils'
 
 // 其他收费
 class ReportDayScreen extends Component {
@@ -12,11 +15,13 @@ class ReportDayScreen extends Component {
       start_date: moment()
         .add(-1, 'd')
         .format('YYYY-MM-DD'),
-      end_date: moment()
-        .add(-1, 'd')
-        .format('YYYY-MM-DD'),
+      end_date: moment().format('YYYY-MM-DD'),
       selectType: 1
     }
+  }
+
+  componentDidMount() {
+    this.queryContentData({})
   }
 
   changeContent({ selectType }) {
@@ -24,8 +29,9 @@ class ReportDayScreen extends Component {
   }
 
   queryContentData({ skip = 0, limit = 10 }) {
+    const { queryFinanceList } = this.props
     const { start_date, end_date, patientName, oprationName } = this.state
-    console.log(start_date, end_date, patientName, oprationName, skip, limit)
+    queryFinanceList({ start_date, end_date, patientName, oprationName, skip, limit })
   }
 
   showContent() {
@@ -33,14 +39,135 @@ class ReportDayScreen extends Component {
     else return this.showMethodContent()
   }
 
-  showTypeContent() {}
+  showTypeContent() {
+    const { finances, finances_page } = this.props
+    return (
+      <div>
+        <div className={'feeScheduleBox'}>
+          <ul>
+            <li>
+              <div>姓名</div>
+              <div>就诊ID</div>
+              <div>费用合计</div>
+              <div>中药费</div>
+              <div>西/成药费</div>
+              <div>检查费</div>
+              <div>检验费</div>
+              <div>治疗费</div>
+              <div>诊疗费</div>
+              <div>材料费</div>
+              <div>药品零售</div>
+              <div>其他费用</div>
+              <div>交易时间</div>
+              <div>操作员</div>
+              <div>接诊科室</div>
+              <div>接诊医生</div>
+            </li>
+            {finances.map((item, iKey) => {
+              return (
+                <li key={iKey}>
+                  <div>{iKey + 1}</div>
+                  <div>{item.name}</div>
+                  <div>1</div>
+                  <div>{item.amount}</div>
+                  <div>2</div>
+                  <div>3</div>
+                  <div>4</div>
+                  <div>{item.department_name}</div>
+                  <div>{item.doctor_name}</div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+        <PageCard
+          offset={finances_page.offset}
+          limit={finances_page.limit}
+          total={finances_page.total}
+          onItemClick={({ offset, limit }) => {
+            this.queryContentData({ offset, limit })
+          }}
+        />
+      </div>
+    )
+  }
 
-  showMethodContent() {}
+  showMethodContent() {
+    const { finances, finances_page } = this.props
+    return (
+      <div>
+        <div className={'feeScheduleBox'}>
+          <ul>
+            <li>
+              <div>姓名</div>
+              <div>就诊ID</div>
+              <div>费用合计</div>
+              <div>实收金额</div>
+              <div>现金</div>
+              <div>银行卡</div>
+              <div>微信</div>
+              <div>支付宝</div>
+              <div>积分抵扣</div>
+              <div>余额支付</div>
+              <div>医保支付</div>
+              <div>挂账</div>
+              <div>卡券</div>
+              <div>减免</div>
+              <div>交易时间</div>
+              <div>操作员</div>
+              <div style={{flex: 2}}>接诊科室</div>
+              <div>接诊医生</div>
+            </li>
+            {finances.map((item, iKey) => {
+              return (
+                <li key={iKey}>
+                  <div>{item.patientname}</div>
+                  <div>{item.clinic_patient_id}</div>
+                  <div>{formatMoney(item.total_money)}</div>
+                  <div>{formatMoney(item.balance_money)}</div>
+                  <div>{formatMoney(item.cash)}</div>
+                  <div>{formatMoney(item.bank)}</div>
+                  <div>{formatMoney(item.wechat)}</div>
+                  <div>{formatMoney(item.alipay)}</div>
+                  <div>{formatMoney(item.bonus_points_money)}</div>
+                  <div>{formatMoney(0)}</div>
+                  <div>{formatMoney(item.medical_money)}</div>
+                  <div>{formatMoney(item.on_credit_money)}</div>
+                  <div>{formatMoney(item.discount_money + item.voucher_money)}</div>
+                  <div>{formatMoney(item.derate_money)}</div>
+                  <div>{moment().format('YYYY-MM-DD')}</div>
+                  <div>{item.operation}</div>
+                  <div style={{flex: 2}}>{item.departmentname}</div>
+                  <div>{item.doctorname}</div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+        <style jsx='true'>{`
+          .feeScheduleBox {
+            width: 1500px;
+          }
+          .feeScheduleBox ul li div {
+            flex: 1;
+          }
+        `}</style>
+        <PageCard
+          offset={finances_page.offset}
+          limit={finances_page.limit}
+          total={finances_page.total}
+          onItemClick={({ offset, limit }) => {
+            this.queryContentData({ offset, limit })
+          }}
+        />
+      </div>
+    )
+  }
 
   render() {
     return (
       <div>
-        <div className={'filterBox'}>
+        <div className={'filterBox'} style={{ marginBottom: '20px' }}>
           <div className={'boxLeft'}>
             <input
               type='date'
@@ -78,15 +205,18 @@ class ReportDayScreen extends Component {
             />
             <div style={{ float: 'left', margin: '19px 30px 0 0' }}>
               <label>
-                <input type='radio' name='radio' checked={this.state.selectType === 1} onClick={() => this.changeContent({ selectType: 1 })} />
+                <input type='radio' name='radio' checked={this.state.selectType === 1} onChange={() => this.changeContent({ selectType: 1 })} />
                 按收费方式
               </label>
               <label style={{ marginLeft: '10px' }}>
-                <input type='radio' name='radio' checked={this.state.selectType === 2} onClick={() => this.changeContent({ selectType: 2 })} />
+                <input type='radio' name='radio' checked={this.state.selectType === 2} onChange={() => this.changeContent({ selectType: 2 })} />
                 按业务类型
               </label>
             </div>
             <button onClick={() => this.queryContentData({})}>查询</button>
+            <button style={{ marginLeft: '20px' }} onClick={() => {}}>
+              导出
+            </button>
           </div>
         </div>
         {this.showContent()}
@@ -97,11 +227,12 @@ class ReportDayScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-     
+    finances: state.finances.data,
+    finances_page: state.finances.page_info
   }
 }
 
 export default connect(
   mapStateToProps,
-  {}
+  { queryFinanceList }
 )(ReportDayScreen)
