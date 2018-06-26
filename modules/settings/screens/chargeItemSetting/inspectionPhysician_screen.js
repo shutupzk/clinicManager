@@ -107,7 +107,7 @@ class InspectionPhysicianScreen extends Component {
             <button>导出</button>
             <button
               onClick={() => {
-                this.setState({ pageType: 2 })
+                this.setState({ pageType: 2, showWay: 1 })
               }}
             >
               新建
