@@ -1,35 +1,34 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate } from '../../../../ducks'
+import { TreatmentTriageWaiting } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-import { PageCard, Confirm } from '../../../../components'
+import { PageCard } from '../../../../components'
 
-class TobeCheckedScreen extends Component {
+class TobeTreatScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       keyword: '',
       start_date: moment()
-        .add(-7, 'd')
-        .format('YYYY-MM-DD'),
+      .add(-7, 'd')
+      .format('YYYY-MM-DD'),
       end_date: moment()
-        .add(1, 'd')
-        .format('YYYY-MM-DD'),
+      .add(1, 'd')
+      .format('YYYY-MM-DD'),
       showMask: false,
-      selItem: {},
-      items: {}
+      selItem: {}
     }
   }
 
   componentWillMount() {
-    this.getListData({ offset: 0, limit: 6 })
+    this.getListData({offset: 0, limit: 6})
   }
   // 获取列表数据
-  getListData({ offset = 0, limit = 6 }) {
-    const { clinic_id, ExaminationTriageWaiting } = this.props
-    const { keyword, start_date, end_date } = this.state
+  getListData({offset = 0, limit = 6}) {
+    const {clinic_id, TreatmentTriageWaiting} = this.props
+    const {keyword, start_date, end_date} = this.state
     let requestData = {
       clinic_id,
       offset,
@@ -44,11 +43,11 @@ class TobeCheckedScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    ExaminationTriageWaiting(requestData)
+    TreatmentTriageWaiting(requestData)
   }
-  // 显示待收费
+	// 显示待收费
   showTobeCharged() {
-    const { waiting_data, pageInfo, ExaminationTriageList } = this.props
+    const {waiting_data, pageInfo} = this.props
     console.log('waiting_data====', waiting_data)
     return (
       <div>
@@ -61,7 +60,7 @@ class TobeCheckedScreen extends Component {
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待检查</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待治疗</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -83,13 +82,10 @@ class TobeCheckedScreen extends Component {
                   </div>
                   <div className={'itemBottom'}>
                     <span
-                      onClick={async () => {
-                        let exams = await ExaminationTriageList({ clinic_triage_patient_id: patient.clinic_triage_patient_id, order_status: '10' })
-                        this.setState({ showMask: true, selItem: patient, exams })
+                      onClick={() => {
+                        this.setState({showMask: true, selItem: patient})
                       }}
-                    >
-                      待检查
-                    </span>
+                    >待治疗</span>
                   </div>
                 </li>
               )
@@ -109,28 +105,13 @@ class TobeCheckedScreen extends Component {
     )
   }
   // 创建检查
-  async determineExam() {
-    const { selItem, items } = this.state
-    const { ExaminationTriageUpdate } = this.props
-    let array = []
-    for (let examination_patient_id in items) {
-      array.push({ examination_patient_id: examination_patient_id })
-    }
-    const { clinic_triage_patient_id } = selItem
-    const order_status = '20'
-    let error = await ExaminationTriageUpdate({ clinic_triage_patient_id, order_status, items: JSON.stringify(array) })
-    if (error) {
-      this.refs.myAlert.alert('保存失败', error, null, 'Danger')
-    } else {
-      this.refs.myAlert.alert('保存成功')
-      this.getListData({ offset: 0, limit: 6 })
-      this.setState({ showMask: false })
-    }
+  determineExam() {
+
   }
   // 确认检查
   renderDetermine() {
-    // let items = [{}]
-    const { selItem, exams, items } = this.state
+    let items = [{}]
+    const {selItem} = this.state
     console.log('selItem', selItem)
     return (
       <div className={'mask'}>
@@ -141,9 +122,7 @@ class TobeCheckedScreen extends Component {
           </div>
           <div className={'maskBox_center'}>
             <div className={'center_top'}>
-              <div>
-                就诊人姓名：{selItem.patient_name}&nbsp;&nbsp;&nbsp;{selItem.sex === 0 ? '女' : '男'}
-              </div>
+              <div>就诊人姓名：{selItem.patient_name}&nbsp;&nbsp;&nbsp;{selItem.sex === 0 ? '女' : '男'}</div>
               <div>年龄：{getAgeByBirthday(selItem.birthday)}</div>
               <div>门诊ID： </div>
             </div>
@@ -152,29 +131,17 @@ class TobeCheckedScreen extends Component {
                 <thead>
                   <tr>
                     <td>选择</td>
-                    <td style={{ flex: 9 }}>检查项目</td>
+                    <td style={{flex: 9}}>检查项目</td>
                   </tr>
                 </thead>
                 <tbody>
-                  {exams.map((item, index) => {
+                  {items.map((item, index) => {
                     return (
-                      <tr key={index}>
+                      <tr>
                         <td>
-                          <input
-                            type='checkbox'
-                            onChange={e => {
-                              console.log('clinic_examination_name ==========', selItem.clinic_triage_patient_id, item.examination_patient_id, item.clinic_examination_name, e.target.checked)
-                              let checked = e.target.checked
-                              if (!checked) {
-                                delete items[item.examination_patient_id]
-                              } else {
-                                items[item.examination_patient_id] = item.examination_patient_id
-                              }
-                              this.setState({ items })
-                            }}
-                          />
+                          <input type='checkbox' />
                         </td>
-                        <td style={{ flex: 9 }}>{item.clinic_examination_name}</td>
+                        <td style={{flex: 9}}>{''}</td>
                       </tr>
                     )
                   })}
@@ -184,26 +151,22 @@ class TobeCheckedScreen extends Component {
           </div>
           <div className={'maskBox_bottom'}>
             <div>
-              <button onClick={() => this.setState({ showMask: false })}>取消</button>
-              <button
-                onClick={() => {
-                  this.determineExam()
-                }}
-              >
-                保存
-              </button>
+              <button onClick={() => this.setState({showMask: false})}>取消</button>
+              <button onClick={() => {
+                this.determineExam()
+              }}>保存</button>
             </div>
           </div>
         </div>
         <style jsx>{`
-          .maskBox {
+          .maskBox{
             width: 950px;
             height: 683px;
-            background: rgba(244, 247, 248, 1);
-            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+            background: rgba(244,247,248,1);
+            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
             position: absolute;
-            display: flex;
-            flex-direction: column;
+            display:flex;
+            flex-direction:column;
             align-items: center;
           }
           .maskBox_top {
@@ -211,10 +174,10 @@ class TobeCheckedScreen extends Component {
             width: 100%;
             height: 93px;
           }
-          .maskBox_top > span:nth-child(1) {
+          .maskBox_top>span:nth-child(1) {
             font-size: 14px;
             font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
+            color: rgba(102,102,102,1);
             line-height: 17px;
             height: 17px;
             text-indent: 0;
@@ -236,18 +199,18 @@ class TobeCheckedScreen extends Component {
           // }
           .maskBox_center {
             width: 90%;
-            display: flex;
+            display:flex;
             flex-direction: column;
             align-items: center;
             // background:#dddddd;
           }
           .center_top {
-            width: 100%;
+            width:100%;
             margin-top: 20px;
-            display: flex;
+            display:flex;
           }
           .center_top > div {
-            flex: 1;
+            flex:1;
           }
           .centerCotent {
             width: 100%;
@@ -257,44 +220,45 @@ class TobeCheckedScreen extends Component {
             overflow-y: auto;
             overflow-x: hidden;
           }
-          .centerCotent table {
+          .centerCotent table{
             width: 99%;
             border-collapse: collapse;
             border: 1px solid #d8d8d8;
             display: flex;
             flex-direction: column;
           }
-          .centerCotent table thead tr {
+          .centerCotent table thead tr{
             display: flex;
             height: 40px;
             border-bottom: 1px solid #d8d8d8;
           }
-          .centerCotent table thead td {
-            flex: 1;
+          .centerCotent table thead td{
+            flex:1;
             border-right: 1px solid #d8d8d8;
             height: 40px;
-            line-height: 40px;
+            line-height:40px;
             text-align: center;
-            font-weight: bold;
+            font-weight:bold;
           }
-          .centerCotent table tbody {
+          .centerCotent table tbody{
+            
           }
-          .centerCotent table tbody tr {
+          .centerCotent table tbody tr{
             display: flex;
             border-bottom: 1px solid #d8d8d8;
             height: 30px;
           }
-          .centerCotent table tbody tr td {
-            flex: 1;
+          .centerCotent table tbody tr td{
+            flex:1;
             border-right: 1px solid #d8d8d8;
             text-align: center;
             height: 30px;
-            line-height: 30px;
+            line-height:30px;
           }
-          .centerCotent table tbody tr td input {
+          .centerCotent table tbody tr td input{
             width: 100%;
-            border: none;
-            background: transparent;
+            border:none;
+            background:transparent;
             outline-style: none;
           }
         `}</style>
@@ -303,13 +267,17 @@ class TobeCheckedScreen extends Component {
   }
   // 加载
   render() {
-    const { showMask } = this.state
+    const {showMask} = this.state
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={'sel'}>待检查</span>
-          <span onClick={() => Router.push('/treatment/exam/inInspection')}>检查中</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>已检查</span>
+          <span className={'sel'}>待治疗</span>
+          <span onClick={() => Router.push('/treatment/treat/inInspection')}>
+						治疗中
+					</span>
+          <span onClick={() => Router.push('/treatment/treat/checked')}>
+						已治疗
+					</span>
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
@@ -318,7 +286,7 @@ class TobeCheckedScreen extends Component {
               placeholder='选择开始日期'
               value={this.state.start_date}
               onChange={e => {
-                this.setState({ start_date: e.target.value })
+                this.setState({start_date: e.target.value})
               }}
             />
             <input
@@ -326,28 +294,25 @@ class TobeCheckedScreen extends Component {
               placeholder='选择结束日期'
               value={this.state.end_date}
               onChange={e => {
-                this.setState({ end_date: e.target.value })
+                this.setState({end_date: e.target.value})
               }}
             />
             <input
               type='text'
               placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
               onClick={e => {
-                this.setState({ keyword: e.target.value })
+                this.setState({keyword: e.target.value})
               }}
             />
             <button
               onClick={() => {
-                this.getListData({ offset: 0, limit: 6 })
+                this.getListData({offset: 0, limit: 6})
               }}
-            >
-              查询
-            </button>
+            >查询</button>
           </div>
         </div>
         {this.showTobeCharged()}
         {showMask ? this.renderDetermine() : ''}
-        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -357,12 +322,9 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
-    waiting_data: state.examinationTriages.waiting_data,
-    pageInfo: state.examinationTriages.waiting_page_info
+    waiting_data: state.treatmentTriages.waiting_data,
+    pageInfo: state.treatmentTriages.waiting_page_info
   }
 }
 
-export default connect(
-  mapStateToProps,
-  { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate }
-)(TobeCheckedScreen)
+export default connect(mapStateToProps, { TreatmentTriageWaiting })(TobeTreatScreen)

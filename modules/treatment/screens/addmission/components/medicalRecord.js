@@ -12,7 +12,8 @@ import {
   queryMedicalsByPatient,
   queryChiefComplaints,
   queryDictDiagnosisList,
-  FileUpload
+  FileUpload,
+  xhrFileUpload
 } from '../../../../../ducks'
 // 病历
 class MedicalRecordScreen extends Component {
@@ -59,29 +60,34 @@ class MedicalRecordScreen extends Component {
     const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints } = this.props
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
-    let recordStr = JSON.stringify(record)
+    console.log('record====', record)
+    let recordStr = ''
+    // let
     // console.log('record===', record)
     let files = []
     let imgArray = []
-    if (record.files !== '') {
-      files = JSON.parse(record.files)
-      for (let j = 0; j < files.length; j++) {
-        let url = files[j].url
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
-          imgArray.push(files[j])
+    let diagnosisArray = []
+    if (record.id) {
+      recordStr = JSON.stringify(record)
+      if (record.files !== '') {
+        files = JSON.parse(record.files)
+        for (let j = 0; j < files.length; j++) {
+          let url = files[j].url
+          if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+            imgArray.push(files[j])
+          }
         }
       }
-    }
-    let diagnosisArray = []
-    if (record.diagnosis !== '') {
-      let array = record.diagnosis.split(',')
-      if (array.length > 0) {
-        for (let i = 0; i < array.length; i++) {
-          let item = {value: array[i], label: array[i]}
-          diagnosisArray.push(item)
+      if (record.diagnosis !== '') {
+        let array = record.diagnosis.split(',')
+        if (array.length > 0) {
+          for (let i = 0; i < array.length; i++) {
+            let item = {value: array[i], label: array[i]}
+            diagnosisArray.push(item)
+          }
+        } else {
+          diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
         }
-      } else {
-        diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
       }
     }
     this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray })
@@ -987,19 +993,23 @@ class MedicalRecordScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(selPage) {
     const { recordStr } = this.state
-    let oldJson = JSON.parse(recordStr)
-    let newJSON = {}
-    for (let key in oldJson) {
-      newJSON[key] = this.state[key]
-    }
-    let jsonStr = JSON.stringify(newJSON)
-    // console.log(recordStr)
-    // console.log(jsonStr)
     const { changePage } = this.props
-    if (jsonStr !== recordStr) {
-      this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
-        this.save()
-      })
+    if (recordStr !== '') {
+      let oldJson = JSON.parse(recordStr)
+      let newJSON = {}
+      for (let key in oldJson) {
+        newJSON[key] = this.state[key]
+      }
+      let jsonStr = JSON.stringify(newJSON)
+      // console.log(recordStr)
+      // console.log(jsonStr)
+      if (jsonStr !== recordStr) {
+        this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
+          this.save()
+        })
+      } else {
+        changePage(selPage)
+      }
     } else {
       changePage(selPage)
     }
@@ -1044,28 +1054,29 @@ class MedicalRecordScreen extends Component {
           this.setState({imgWidth: width, imgHeight: height})
         }}
       >
-        <img
-          style={{width: imgWidth, height: imgHeight}}
-          src={bigImg}
-          alt={'...'}
-          onWheel={e => {
-            // console.log('sadasdasd==', e)
-            let width = imgWidth - imgWidth * e.deltaY / 1000
-            let height = imgHeight - imgHeight * e.deltaY / 1000
-            if (width < 100) {
-              width = 100
-            }
-            if (height < 100) {
-              height = 100
-            }
-            this.setState({imgWidth: width, imgHeight: height})
-          }}
-        />
-        <span
-          onClick={() => {
-            this.setState({showBigImg: false})
-          }}
-        >×</span>
+        <div className={'imgDiv'} style={{width: imgWidth, height: imgHeight}}>
+          <img
+            src={bigImg}
+            alt={'...'}
+            onWheel={e => {
+              // console.log('sadasdasd==', e)
+              let width = imgWidth - imgWidth * e.deltaY / 1000
+              let height = imgHeight - imgHeight * e.deltaY / 1000
+              if (width < 100) {
+                width = 100
+              }
+              if (height < 100) {
+                height = 100
+              }
+              this.setState({imgWidth: width, imgHeight: height})
+            }}
+          />
+          <span
+            onClick={() => {
+              this.setState({showBigImg: false})
+            }}
+          >×</span>
+        </div>
         <a
           className={'prev'}
           onClick={() => {
@@ -1089,7 +1100,14 @@ class MedicalRecordScreen extends Component {
           }}
         >{'》'}</a>
         <style jsx>{`
+          .imgDiv {
+            position:relative;
+            max-width: 100%;
+            max-height:100%;
+          }
           img{
+            width:100%;
+            height:100%;
             max-width: 100%;
             max-height:100%;
           }
@@ -1251,15 +1269,32 @@ class MedicalRecordScreen extends Component {
   }
   // 上传文件
   async FileUpload(files) {
-    const {FileUpload} = this.props
+    const {FileUpload} = this.props // xhrFileUpload
     const {uploadedFiles, imgFiles} = this.state
     let array = uploadedFiles
     let imgArray = imgFiles
     if (files) {
       let file = new FormData()
       // console.log('files===', files)
+      // for (let i = 0; i < files.length; i++) {
+      //   file.append('file[' + i + ']', files[i]) // ++++++++++
+      // }
       file.append('file', files[0])
       let url = await FileUpload(file)
+      // xhrFileUpload(file, function (type, data) {
+      //   if (type === 'progress' || type === 'uploading') {
+      //     console.log('progress=====', data)
+      //   }
+      //   if (type === 'cancel') {
+      //     console.log('cancel=====', data)
+      //   }
+      //   if (type === 'error') {
+      //     console.log('error=====', data)
+      //   }
+      //   if (type === 'ok') {
+      //     console.log('ok=====', data)
+      //   }
+      // })
       if (url) {
         let item = {
           docName: files[0].name,
@@ -1460,7 +1495,7 @@ class MedicalRecordScreen extends Component {
                   {this.renderFiles()}
                   <div className={'chooseFile'}>
                     <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
-                      <input type='file' onChange={e => {
+                      <input multiple='multiple' type='file' onChange={e => {
                         // console.log('文件=====', e.target.files)
                         this.FileUpload(e.target.files)
                       }} />
@@ -1771,6 +1806,7 @@ export default connect(
     queryMedicalsByPatient,
     queryChiefComplaints,
     queryDictDiagnosisList,
-    FileUpload
+    FileUpload,
+    xhrFileUpload
   }
 )(MedicalRecordScreen)

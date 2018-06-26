@@ -2,7 +2,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryLaboratoryItemList } from '../../../../ducks'
+import {
+  queryLaboratoryItemList,
+  LaboratoryItemOnOff
+} from '../../../../ducks'
 import { PageCard, Select } from '../../../../components'
 import AddLaboratoryItemScreen from './components/addLaboratoryItemScreen'
 import RelatedItemsScreen from './components/relatedItemsScreen'
@@ -18,7 +21,8 @@ class TestItemsScreen extends Component {
       status: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      clinic_laboratory_item_id: ''
     }
   }
 
@@ -26,13 +30,17 @@ class TestItemsScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, clinic_laboratory_item_id, showWay } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddLaboratoryItemScreen drugType={1} back2List={() => {
-        this.setState({pageType: 1})
-        this.getDataList({offset: 0, limit: 10})
-      }} />
+      2: <AddLaboratoryItemScreen
+        drugType={1}
+        clinic_laboratory_item_id={clinic_laboratory_item_id}
+        showWay={showWay}
+        back2List={() => {
+          this.setState({pageType: 1})
+          this.getDataList({offset: 0, limit: 10})
+        }} />
     }
     return map[pageType] || null
   }
@@ -197,9 +205,23 @@ class TestItemsScreen extends Component {
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{flex: 2.5}} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          clinic_laboratory_item_id: item.clinic_laboratory_item_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>停用</div>
+                      <div onClick={() => {
+                        let status = item.status
+                        if (status) {
+                          status = false
+                        } else {
+                          status = true
+                        }
+                        this.LaboratoryItemOnOff(item.clinic_laboratory_item_id, status)
+                      }}>{item.status ? '停用' : '启用'}</div>
                     </div>
                   </td>
                 </tr>
@@ -268,6 +290,20 @@ class TestItemsScreen extends Component {
         `}</style>
       </div>
     )
+  }
+  async LaboratoryItemOnOff(clinic_laboratory_item_id, status) {
+    const {clinic_id, LaboratoryItemOnOff, pageInfo} = this.props
+    const requestData = {
+      clinic_laboratory_item_id,
+      clinic_id,
+      status
+    }
+    let error = await LaboratoryItemOnOff(requestData)
+    if (error) {
+      this.refs.myAlert.alert('更新失败', error)
+    } else {
+      this.getDataList({ offset: pageInfo.offset, limit: pageInfo.limit })
+    }
   }
   // 关联项目
   relatedItems() {
@@ -343,4 +379,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {queryLaboratoryItemList})(TestItemsScreen)
+export default connect(mapStateToProps, {
+  queryLaboratoryItemList,
+  LaboratoryItemOnOff
+})(TestItemsScreen)

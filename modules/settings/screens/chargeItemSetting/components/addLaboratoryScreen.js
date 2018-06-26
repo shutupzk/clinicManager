@@ -2,8 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select, Confirm } from '../../../../../components'
-import { laboratoryCreate, queryDoseUnitList, queryLaboratorySampleList, queryCuvetteColorList, queryLaboList } from '../../../../../ducks'
-import { limitMoney } from '../../../../../utils'
+import {
+  laboratoryCreate,
+  queryDoseUnitList,
+  queryLaboratorySampleList,
+  queryCuvetteColorList,
+  queryLaboList,
+  LaboratoryDetail,
+  LaboratoryUpdate
+} from '../../../../../ducks'
+import { limitMoney, formatMoney } from '../../../../../utils'
 
 // 病历
 class AddLaboratoryScreen extends Component {
@@ -21,16 +29,36 @@ class AddLaboratoryScreen extends Component {
     }
   }
 
-  async componentDidMount() {}
+  async componentDidMount() {
+    const {showWay, clinic_laboratory_id, LaboratoryDetail} = this.props
+    if (showWay === 2) {
+      let data = await LaboratoryDetail({clinic_laboratory_id})
+      if (data) {
+        console.log('LaboratoryDetail=====', data)
+        data.price = formatMoney(data.price)
+        if (data.cost !== null) {
+          data.cost = formatMoney(data.cost)
+        }
+        this.setState({laboratoryInfo: data})
+      }
+    }
+  }
 
   render() {
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => this.submit()}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.LaboratoryUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -91,8 +119,21 @@ class AddLaboratoryScreen extends Component {
       }
     }
   }
-  // 保存并入库
-  saveInStock() {}
+  // 修改
+  async LaboratoryUpdate() {
+    let { laboratoryInfo } = this.state
+    const { clinic_id, LaboratoryUpdate } = this.props
+    laboratoryInfo.clinic_id = clinic_id
+    console.log('laboratoryInfo=====', laboratoryInfo)
+    if (this.validateData(laboratoryInfo)) {
+      let error = await LaboratoryUpdate(laboratoryInfo)
+      if (error) {
+        alert(error)
+      } else {
+        this.props.back2List()
+      }
+    }
+  }
   // 设置字段值
   setItemValue(e, key, type = 1) {
     const { laboratoryInfo } = this.state
@@ -674,5 +715,7 @@ export default connect(mapStateToProps, {
   queryDoseUnitList,
   queryLaboratorySampleList,
   queryCuvetteColorList,
-  queryLaboList
+  queryLaboList,
+  LaboratoryDetail,
+  LaboratoryUpdate
 })(AddLaboratoryScreen)

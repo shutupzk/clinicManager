@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { ClinicDrugList, queryDrugClassList } from '../../../../ducks'
-import { PageCard, Select } from '../../../../components'
+import { ClinicDrugList, queryDrugClassList, ClinicDrugOnOff } from '../../../../ducks'
+import { PageCard, Select, Confirm } from '../../../../components'
 import AddDrugScreen from './components/addDrugScreen'
 import { formatMoney } from '../../../../utils'
 
@@ -16,7 +16,9 @@ class WMPrescriptionScreen extends Component {
       keyword: '',
       status: '',
       type: 0,
-      drug_class_id: -1
+      drug_class_id: -1,
+      showWay: 1,
+      clinic_drug_id: ''
     }
   }
 
@@ -31,13 +33,16 @@ class WMPrescriptionScreen extends Component {
     this.getDrugsList({ offset: 0, limit: 10, drug_class_id })
   }
   showView() {
-    let { pageType, drug_class_id } = this.state
+    let { pageType, drug_class_id, showWay, clinic_drug_id, drugInfo } = this.state
     const { clinic_id } = this.props
     let map = {
       // 1: <AddDrugScreen />,
       2: (
         <AddDrugScreen
           drug_class_id={drug_class_id}
+          showWay={showWay}
+          clinic_drug_id={clinic_drug_id}
+          drugInfo={drugInfo}
           drugType={0}
           back2List={() => {
             this.setState({ pageType: 1 })
@@ -205,7 +210,12 @@ class WMPrescriptionScreen extends Component {
             <button>导出</button>
             <button
               onClick={() => {
-                this.setState({ pageType: 2 })
+                this.setState({
+                  pageType: 2,
+                  clinic_drug_id: '',
+                  showWay: 1,
+                  drugInfo: {}
+                })
               }}
             >
               新建
@@ -284,6 +294,21 @@ class WMPrescriptionScreen extends Component {
       </div>
     )
   }
+  async ClinicDrugOnOff(clinic_drug_id, status) {
+    const {clinic_id, ClinicDrugOnOff, pageInfo} = this.props
+    const {drug_class_id} = this.state
+    const drugInfo = {
+      clinic_drug_id,
+      clinic_id,
+      status
+    }
+    let error = await ClinicDrugOnOff(drugInfo)
+    if (error) {
+      this.refs.myAlert.alert('更新失败', error)
+    } else {
+      this.getDrugsList({ offset: pageInfo.offset, limit: pageInfo.limit, drug_class_id })
+    }
+  }
   // 加载表格
   renderTable() {
     const { drugs, pageInfo } = this.props
@@ -318,9 +343,24 @@ class WMPrescriptionScreen extends Component {
                   <td>{item.status ? '正常' : '停用'}</td>
                   <td style={{ flex: 1.5 }} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          clinic_drug_id: item.clinic_drug_id,
+                          showWay: 2,
+                          drugInfo: item
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>停用</div>
+                      <div onClick={() => {
+                        let status = item.status
+                        if (status) {
+                          status = false
+                        } else {
+                          status = true
+                        }
+                        this.ClinicDrugOnOff(item.clinic_drug_id, status)
+                      }}>{item.status ? '停用' : '启用'}</div>
                     </div>
                   </td>
                 </tr>
@@ -444,6 +484,7 @@ class WMPrescriptionScreen extends Component {
             cursor: pointer;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -458,4 +499,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { ClinicDrugList, queryDrugClassList })(WMPrescriptionScreen)
+export default connect(mapStateToProps, { ClinicDrugList, queryDrugClassList, ClinicDrugOnOff })(WMPrescriptionScreen)

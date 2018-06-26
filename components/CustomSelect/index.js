@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 function getLable(value, valueKey, labelKey, options = []) {
+  console.log('value, valueKey, labelKey, options', value, valueKey, labelKey, options)
   if (!value || !valueKey || !labelKey) return ''
   for (let option of options) {
     if (option[valueKey] === value) {
@@ -111,7 +112,7 @@ export default class CustomSelect extends Component {
   }
 
   render() {
-    const { onInputChange, controlStyle, placeholder, mustOptionValue } = this.props
+    const { onInputChange, controlStyle, placeholder, mustOptionValue, value } = this.props
     const { onMouseOver, showOptions, label } = this.state
     let marginTop = controlStyle.marginTop || '0px'
     return (
@@ -134,7 +135,7 @@ export default class CustomSelect extends Component {
             marginTop: '0px'
           }}
           placeholder={placeholder || ''}
-          value={label || ''}
+          value={label || value || ''}
           type='text'
           onChange={e => {
             let value = e.target.value

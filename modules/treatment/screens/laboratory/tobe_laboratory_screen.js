@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate } from '../../../../ducks'
+import { LaboratoryTriageWaiting, LaboratoryTriageList, LaboratoryTriageUpdate } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
 
-class TobeCheckedScreen extends Component {
+class TobeLaboratoryScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -28,7 +28,7 @@ class TobeCheckedScreen extends Component {
   }
   // 获取列表数据
   getListData({ offset = 0, limit = 6 }) {
-    const { clinic_id, ExaminationTriageWaiting } = this.props
+    const { clinic_id, LaboratoryTriageWaiting } = this.props
     const { keyword, start_date, end_date } = this.state
     let requestData = {
       clinic_id,
@@ -44,11 +44,11 @@ class TobeCheckedScreen extends Component {
     if (end_date !== '') {
       requestData.end_date = end_date
     }
-    ExaminationTriageWaiting(requestData)
+    LaboratoryTriageWaiting(requestData)
   }
   // 显示待收费
   showTobeCharged() {
-    const { waiting_data, pageInfo, ExaminationTriageList } = this.props
+    const { waiting_data, pageInfo, LaboratoryTriageList } = this.props
     console.log('waiting_data====', waiting_data)
     return (
       <div>
@@ -61,7 +61,7 @@ class TobeCheckedScreen extends Component {
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待检查</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待检验</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
@@ -84,11 +84,11 @@ class TobeCheckedScreen extends Component {
                   <div className={'itemBottom'}>
                     <span
                       onClick={async () => {
-                        let exams = await ExaminationTriageList({ clinic_triage_patient_id: patient.clinic_triage_patient_id, order_status: '10' })
-                        this.setState({ showMask: true, selItem: patient, exams })
+                        let labors = await LaboratoryTriageList({ clinic_triage_patient_id: patient.clinic_triage_patient_id, order_status: '10' })
+                        this.setState({ showMask: true, selItem: patient, labors })
                       }}
                     >
-                      待检查
+                      待检验
                     </span>
                   </div>
                 </li>
@@ -108,17 +108,17 @@ class TobeCheckedScreen extends Component {
       </div>
     )
   }
-  // 创建检查
+  // 创建检验
   async determineExam() {
     const { selItem, items } = this.state
-    const { ExaminationTriageUpdate } = this.props
+    const { LaboratoryTriageUpdate } = this.props
     let array = []
-    for (let examination_patient_id in items) {
-      array.push({ examination_patient_id: examination_patient_id })
+    for (let laboratory_patient_id in items) {
+      array.push({ laboratory_patient_id: laboratory_patient_id })
     }
     const { clinic_triage_patient_id } = selItem
     const order_status = '20'
-    let error = await ExaminationTriageUpdate({ clinic_triage_patient_id, order_status, items: JSON.stringify(array) })
+    let error = await LaboratoryTriageUpdate({ clinic_triage_patient_id, order_status, items: JSON.stringify(array) })
     if (error) {
       this.refs.myAlert.alert('保存失败', error, null, 'Danger')
     } else {
@@ -127,16 +127,15 @@ class TobeCheckedScreen extends Component {
       this.setState({ showMask: false })
     }
   }
-  // 确认检查
+  // 确认检验
   renderDetermine() {
-    // let items = [{}]
-    const { selItem, exams, items } = this.state
-    console.log('selItem', selItem)
+    const { selItem, labors, items } = this.state
+    console.log('selItem', labors, selItem)
     return (
       <div className={'mask'}>
         <div className={'maskBox'}>
           <div className={'maskBox_top'}>
-            <span>检查确认</span>
+            <span>检验确认</span>
             <span />
           </div>
           <div className={'maskBox_center'}>
@@ -152,29 +151,29 @@ class TobeCheckedScreen extends Component {
                 <thead>
                   <tr>
                     <td>选择</td>
-                    <td style={{ flex: 9 }}>检查项目</td>
+                    <td style={{ flex: 9 }}>检验项目</td>
                   </tr>
                 </thead>
                 <tbody>
-                  {exams.map((item, index) => {
+                  {labors.map((item, index) => {
                     return (
                       <tr key={index}>
                         <td>
                           <input
                             type='checkbox'
                             onChange={e => {
-                              console.log('clinic_examination_name ==========', selItem.clinic_triage_patient_id, item.examination_patient_id, item.clinic_examination_name, e.target.checked)
+                              console.log('clinic_examination_name ==========', selItem.clinic_triage_patient_id, item.laboratory_patient_id, e.target.checked)
                               let checked = e.target.checked
                               if (!checked) {
-                                delete items[item.examination_patient_id]
+                                delete items[item.laboratory_patient_id]
                               } else {
-                                items[item.examination_patient_id] = item.examination_patient_id
+                                items[item.laboratory_patient_id] = item.laboratory_patient_id
                               }
                               this.setState({ items })
                             }}
                           />
                         </td>
-                        <td style={{ flex: 9 }}>{item.clinic_examination_name}</td>
+                        <td style={{ flex: 9 }}>{item.clinic_laboratory_name}</td>
                       </tr>
                     )
                   })}
@@ -307,9 +306,9 @@ class TobeCheckedScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span className={'sel'}>待检查</span>
-          <span onClick={() => Router.push('/treatment/exam/inInspection')}>检查中</span>
-          <span onClick={() => Router.push('/treatment/exam/checked')}>已检查</span>
+          <span className={'sel'}>待检验</span>
+          <span onClick={() => Router.push('/treatment/inspect/inInspection')}>检验中</span>
+          <span onClick={() => Router.push('/treatment/inspect/checked')}>已检验</span>
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
@@ -357,12 +356,12 @@ const mapStateToProps = state => {
   console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
-    waiting_data: state.examinationTriages.waiting_data,
-    pageInfo: state.examinationTriages.waiting_page_info
+    waiting_data: state.laboratoryTriages.waiting_data,
+    pageInfo: state.laboratoryTriages.waiting_page_info
   }
 }
 
 export default connect(
   mapStateToProps,
-  { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate }
-)(TobeCheckedScreen)
+  { LaboratoryTriageWaiting, LaboratoryTriageList, LaboratoryTriageUpdate }
+)(TobeLaboratoryScreen)

@@ -2,7 +2,22 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import { Select, Confirm, CustomSelect } from '../../../../../components'
-import { ClinicDrugCreate, ClinicDrugList, queryDoseUnitList, queryDoseFormList, queryFrequencyList, queryRouteAdministrationList, queryDicDrugsList } from '../../../../../ducks'
+import {
+  ClinicDrugCreate,
+  ClinicDrugList,
+  queryDoseUnitList,
+  queryDoseFormList,
+  queryFrequencyList,
+  queryRouteAdministrationList,
+  queryDicDrugsList,
+  ClinicDrugDetail,
+  ClinicDrugUpdate,
+  querySupplierList,
+  queryInstockWayList,
+  createDrugInstock
+} from '../../../../../ducks'
+import moment from 'moment'
+import {formatMoney, limitMoney} from '../../../../../utils'
 
 // 病历
 class AddCDrugScreen extends Component {
@@ -15,11 +30,40 @@ class AddCDrugScreen extends Component {
         is_discount: false,
         drug_type_code: '3',
         status: true
-      }
+      },
+      druginstockInfo: {
+        // drugName: '',
+        items: [{}],
+        instock_operation_id: '',
+        clinic_id: '',
+        instock_way_name: '',
+        supplier_name: '',
+        remark: '',
+        instock_date: ''
+      },
+      drugReturnInfo: {},
+      isInstock: false,
+      showInstock: false
     }
   }
 
-  async componentDidMount() {}
+  async componentDidMount() {
+    const {showWay, clinic_drug_id, ClinicDrugDetail} = this.props
+    if (showWay === 2) {
+      let data = await ClinicDrugDetail({clinic_drug_id})
+      if (data) {
+        console.log('drugInfo=====', data)
+        data.ret_price = formatMoney(data.ret_price)
+        if (data.buy_price !== null) {
+          data.buy_price = formatMoney(data.buy_price)
+        }
+        // if (data.bulk_sales_price !== null) {
+        //   data.bulk_sales_price = formatMoney(data.bulk_sales_price)
+        // }
+        this.setState({drugInfo: data})
+      }
+    }
+  }
 
   style() {
     return (
@@ -137,17 +181,32 @@ class AddCDrugScreen extends Component {
     )
   }
   render() {
+    const {showInstock} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderSearchBlank()}
         {this.renderBaseInfoBlank()}
         {this.renderFeeInfoBlank()}
         {this.renderUsageInfoBlank()}
+        {showInstock ? this.renderSaveAndInstock() : ''}
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => this.submit()}>保存</button>
-            <button onClick={() => this.saveInStock()}>保存并入库</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.ClinicDrugUpdate(false)
+              } else {
+                this.submit(false)
+              }
+            }}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.ClinicDrugUpdate(true)
+              } else {
+                this.submit(true)
+              }
+            }}>保存并入库</button>
           </div>
         </div>
         {this.style()}
@@ -155,7 +214,390 @@ class AddCDrugScreen extends Component {
       </div>
     )
   }
-
+  // 保存并入库
+  renderSaveAndInstock() {
+    // let array = [{}]
+    const {drugReturnInfo, druginstockInfo} = this.state
+    console.log('drugReturnInfo====', drugReturnInfo, druginstockInfo)
+    return (
+      <div className={'mask'}>
+        <div className={'maskBox'}>
+          <div className={'maskBox_top'}>
+            <span>药品入库</span>
+            <span />
+          </div>
+          <div className={'maskBox_center'}>
+            <div className={'center_top'}>
+              <ul>
+                <li>
+                  <label>药品名称</label>
+                  <div>
+                    <input readOnly type='text' value={drugReturnInfo.drug_name} />
+                  </div>
+                </li>
+                <li>
+                  <label>规格</label>
+                  <div>
+                    <input readOnly type='text' value={drugReturnInfo.specification} />
+                  </div>
+                </li>
+                <li>
+                  <label>生产厂商</label>
+                  <div>
+                    <input readOnly type='text' value={drugReturnInfo.manu_factory_name} />
+                  </div>
+                </li>
+                <li>
+                  <label>入库日期</label>
+                  <div>
+                    <input
+                      type='date'
+                      value={moment(druginstockInfo.instock_date || '').format('YYYY-MM-DD')}
+                      onChange={e => {
+                        this.setInstockData(e, 'instock_date')
+                      }}
+                    />
+                  </div>
+                </li>
+                <li>
+                  <label>入库方式</label>
+                  <div>
+                    <Select
+                      height={34}
+                      placeholder={'请选择'}
+                      value={this.getSelectValue(druginstockInfo.instock_way_name, this.getInstockWayNameOptions())}
+                      onChange={({value}) => {
+                        // this.setState({ instock_way_name: value })
+                        this.setInstockData(value, 'instock_way_name', 2)
+                      }}
+                      onInputChange={keyword => { this.queryInstockWayList(keyword) }}
+                      options={this.getInstockWayNameOptions()}
+                    />
+                  </div>
+                </li>
+                <li>
+                  <label>供应商</label>
+                  <div>
+                    <Select
+                      height={34}
+                      placeholder={'请选择'}
+                      value={this.getSelectValue(druginstockInfo.supplier_name, this.getSupplierOptions())}
+                      onChange={({value}) => {
+                        this.setInstockData(value, 'supplier_name', 2)
+                      }}
+                      onInputChange={keyword => { this.querySupplierList(keyword) }}
+                      options={this.getSupplierOptions()}
+                    />
+                  </div>
+                </li>
+                <li>
+                  <label>备注</label>
+                  <div>
+                    <input
+                      type='text'
+                      value={druginstockInfo.remark}
+                      onChange={e => {
+                        this.setInstockData(e, 'remark')
+                      }}
+                    />
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div className={'centerCotent'}>
+              <table>
+                <thead>
+                  <tr>
+                    <td>序号</td>
+                    <td>数量</td>
+                    <td>单位</td>
+                    <td>零售价</td>
+                    <td>成本价</td>
+                    <td>成本合计</td>
+                    <td>批号</td>
+                    <td style={{flex: 2}}>有效日期</td>
+                    {/* <td>增加</td> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {druginstockInfo.items.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <input
+                            type='number'
+                            value={item.instock_amount}
+                            onChange={e => {
+                              this.setInstockItemValue(e, index, 'instock_amount')
+                            }}
+                          />
+                        </td>
+                        <td>{drugReturnInfo.packing_unit_name}</td>
+                        <td>{formatMoney(drugReturnInfo.ret_price)}</td>
+                        <td>
+                          <input
+                            type='text'
+                            value={item.buy_price}
+                            onChange={e => {
+                              let value = limitMoney(e.target.value)
+                              this.setInstockItemValue(value, index, 'buy_price', 2)
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            readOnly
+                            type='text'
+                            value={item.buy_price * item.instock_amount || ''}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type='text'
+                            value={item.serial}
+                            onChange={e => {
+                              this.setInstockItemValue(e, index, 'serial')
+                            }}
+                          />
+                        </td>
+                        <td style={{flex: 2}}>
+                          <input
+                            type='date'
+                            value={moment(item.eff_date || '').format('YYYY-MM-DD')}
+                            onChange={e => {
+                              this.setInstockItemValue(e, index, 'eff_date')
+                            }}
+                          />
+                        </td>
+                        {/* <td>删除</td> */}
+                      </tr>
+                    )
+                  })}
+                  {/* <tr>
+                    <td>合计</td>
+                    <td>11</td>
+                    <td>单位</td>
+                    <td>100</td>
+                    <td>1000</td>
+                    <td>10000</td>
+                    <td>批号</td>
+                    <td>有效日期</td>
+                    <td>--</td>
+                  </tr> */}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className={'maskBox_bottom'}>
+            <div>
+              <button onClick={() => this.setState({showInstock: false})}>取消</button>
+              <button onClick={() => {
+                this.saveInStock()
+              }}>保存</button>
+            </div>
+          </div>
+        </div>
+        <style jsx>{`
+          .maskBox{
+            width: 950px;
+            height: 683px;
+            background: rgba(244,247,248,1);
+            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+            position: absolute;
+            display:flex;
+            flex-direction:column;
+            align-items: center;
+          }
+          .maskBox_top {
+            border-bottom: 1px solid #d8d8d8;
+            width: 100%;
+            height: 93px;
+          }
+          .maskBox_top>span:nth-child(1) {
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102,102,102,1);
+            line-height: 17px;
+            height: 17px;
+            text-indent: 0;
+            margin: 40px 0 0 60px;
+            float: left;
+          }
+          // .maskBox_top span:last-child {
+          //   width: 40px;
+          //   height: 40px;
+          //   background: rgba(255,95,87,1);
+          //   float: right;
+          //   color: #ffffff;
+          //   font-size: 20px;
+          //   text-align: center;
+          //   text-indent: 10px;
+          //   line-height: 35px;
+          //   border-bottom-left-radius: 100%;
+          //   cursor: pointer;
+          // }
+          .maskBox_center {
+            width: 90%;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            // background:#dddddd;
+          }
+          .center_top {
+            width:100%;
+            margin-top: 20px;
+          }
+          .center_top ul{
+            width:100%;
+          }
+          .center_top ul li{
+            float: left;
+            width: 24%;
+            margin-right: 1%;
+            margin-top: 10px;
+          }
+          .center_top ul li label{
+            width: 100%;
+          }
+          .center_top ul li>div{
+            width: 100%;
+          }
+          .center_top ul li>div>input{
+            width: 100%;
+            height: 30px;
+            background: rgb(245, 248, 249);
+            border-radius: 4px;
+            border: 1px solid rgb(217, 217, 217);
+            margin-top: 0px;
+          } 
+          .center_top ul li>div>input[type='date']{
+            height: 32px;
+          }
+          .centerCotent {
+            width: 100%;
+            margin: 20px 0;
+            height: 340px;
+            // background:#a0a0a0;
+            overflow-y: auto;
+            overflow-x: hidden;
+          }
+          .centerCotent table{
+            width: 99%;
+            border-collapse: collapse;
+            border: 1px solid #d8d8d8;
+            display: flex;
+            flex-direction: column;
+          }
+          .centerCotent table thead tr{
+            display: flex;
+            height: 40px;
+            border-bottom: 1px solid #d8d8d8;
+          }
+          .centerCotent table thead td{
+            flex:1;
+            border-right: 1px solid #d8d8d8;
+            height: 40px;
+            line-height:40px;
+            text-align: center;
+            font-weight:bold;
+          }
+          .centerCotent table tbody{
+            
+          }
+          .centerCotent table tbody tr{
+            display: flex;
+            border-bottom: 1px solid #d8d8d8;
+            height: 30px;
+          }
+          .centerCotent table tbody tr td{
+            flex:1;
+            border-right: 1px solid #d8d8d8;
+            text-align: center;
+            height: 30px;
+            line-height:30px;
+          }
+          .centerCotent table tbody tr td input{
+            width: 100%;
+            border:none;
+            background:transparent;
+            outline-style: none;
+          }
+        `}</style>
+      </div>
+    )
+  }
+  setInstockItemValue(e, index, key, type = 1) {
+    const { druginstockInfo } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    let array = druginstockInfo.items
+    array[index][key] = value
+    druginstockInfo.items = array
+    this.setState({ druginstockInfo })
+  }
+  // 设置入库数据
+  setInstockData(e, key, type = 1) {
+    const { druginstockInfo } = this.state
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    druginstockInfo[key] = value
+    this.setState({ druginstockInfo })
+  }
+  // 获取入库方式筛选
+  getInstockWayNameOptions() {
+    const { instock_way, queryInstockWayList } = this.props
+    // console.log('instock_way====', instock_way)
+    let array = []
+    for (let key in instock_way) {
+      let {name} = instock_way[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 0) {
+      queryInstockWayList({keyword: ''})
+    }
+    return array
+  }
+  // 获取供应商筛选
+  getSupplierOptions() {
+    const { supplier_data, querySupplierList } = this.props
+    // console.log('supplier_data====', supplier_data)
+    let array = []
+    for (let key in supplier_data) {
+      let {name} = supplier_data[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 0) {
+      querySupplierList({keyword: ''})
+    }
+    return array
+  }
+  // 获取供应商数据
+  querySupplierList(keyword) {
+    const {querySupplierList} = this.props
+    if (keyword) {
+      querySupplierList({keyword})
+    }
+  }
+  // 获取入库方式数据
+  queryInstockWayList(keyword) {
+    const {queryInstockWayList} = this.props
+    if (keyword) {
+      queryInstockWayList({keyword})
+    }
+  }
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
@@ -204,22 +646,87 @@ class AddCDrugScreen extends Component {
     }
     return true
   }
+  // 修改
+  async ClinicDrugUpdate(isInstock) {
+    let { drugInfo } = this.state
+    const { clinic_id, ClinicDrugUpdate } = this.props
+    drugInfo.buy_price = drugInfo.buy_price * 100
+    if (this.validateData(drugInfo)) {
+      let clinic_drug_id = drugInfo.id
+      delete drugInfo.id
+      let data = await ClinicDrugUpdate({ ...drugInfo, clinic_drug_id, clinic_id, type: 1 })
+      if (data.code !== '200') {
+        this.refs.myAlert.alert('修改药品失败', error, null, 'Danger')
+      } else {
+        this.refs.myAlert.alert('修改成功')
+        if (isInstock) {
+          this.setState({showInstock: true, drugReturnInfo: data.data})
+        } else {
+          this.props.back2List()
+        }
+      }
+    }
+  }
   // 保存
-  async submit() {
+  async submit(isInstock) {
     let { drugInfo } = this.state
     const { clinic_id, ClinicDrugCreate } = this.props
+    drugInfo.buy_price = drugInfo.buy_price * 100
     if (this.validateData(drugInfo)) {
       let error = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 1 })
-      if (error) {
+      if (data.code !== '200') {
         this.refs.myAlert.alert('添加药品失败', error, null, 'Danger')
       } else {
         this.refs.myAlert.alert('添加成功')
-        this.props.back2List()
+        if (isInstock) {
+          this.setState({showInstock: true, drugReturnInfo: data.data})
+        } else {
+          this.props.back2List()
+        }
       }
     }
   }
   // 保存并入库
-  saveInStock() {}
+  async saveInStock() {
+    const { createDrugInstock, clinic_id, instock_operation_id } = this.props
+    let {druginstockInfo, drugReturnInfo} = this.state
+    druginstockInfo.clinic_id = clinic_id
+    druginstockInfo.instock_operation_id = instock_operation_id
+    let array = []
+    for (let key of druginstockInfo.items) {
+      let value = {}
+      value.clinic_drug_id = drugReturnInfo.clinic_drug_id + ''
+      value.buy_price = key.buy_price * 100 + ''
+      if (key.instock_amount > 0) {
+        value.instock_amount = key.instock_amount + ''
+      } else {
+        this.refs.myAlert.alert('提示', '入库数量必须大于0')
+        return
+      }
+      if (key.serial !== '' && key.serial) {
+        value.serial = key.serial
+      } else {
+        this.refs.myAlert.alert('提示', '请填写批号')
+        return
+      }
+      if (key.eff_date && key.eff_date !== '') {
+        value.eff_date = key.eff_date
+      } else {
+        this.refs.myAlert.alert('提示', '请选择有效期')
+        return
+      }
+      array.push(value)
+    }
+    druginstockInfo.items = JSON.stringify(array)
+    let error = await createDrugInstock(druginstockInfo)
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      // this.setState({ showSaveModel: false })
+      this.refs.myAlert.alert('保存成功')
+      this.props.back2List()
+    }
+  }
   // 设置字段值
   setItemValue(e, key, type = 1) {
     const { drugInfo } = this.state
@@ -363,6 +870,8 @@ class AddCDrugScreen extends Component {
                 placeholder='搜索'
                 controlStyle={{ height: '30px' }}
                 labelKey='name'
+                valueKey='name'
+                value={drugInfo.name}
                 withoutFitler={!false}
                 onChange={({ name, specification, english_name, packing_unit_name, print_name, license_no, dose_form_name, py_code, barcode, dosage, dosage_unit_name, manu_factory_name }) => {
                   let obj = {
@@ -789,11 +1298,14 @@ class AddCDrugScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
+    instock_operation_id: state.user.data.id,
     doseUnits: state.doseUnits.data,
     doseForms: state.doseForms.data,
     routeAdministrationss: state.routeAdministrationss.data,
     frequencies: state.frequencies.data,
-    drugs: state.drugs.drug_data
+    drugs: state.drugs.drug_data,
+    instock_way: state.drugStocks.instock_way,
+    supplier_data: state.drugStocks.supplier_data
   }
 }
 
@@ -804,5 +1316,10 @@ export default connect(mapStateToProps, {
   queryDoseFormList,
   queryFrequencyList,
   queryRouteAdministrationList,
-  queryDicDrugsList
+  queryDicDrugsList,
+  ClinicDrugDetail,
+  ClinicDrugUpdate,
+  querySupplierList,
+  queryInstockWayList,
+  createDrugInstock
 })(AddCDrugScreen)
