@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 // import { Select } from '../../../../../components'
-import { queryLaboratoryList, LaboratoryPatientModelCreate } from '../../../../../ducks'
+import {
+  queryLaboratoryList,
+  LaboratoryPatientModelCreate,
+  LaboratoryPatientModelUpdate,
+  LaboratoryPatientModelDetail
+} from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 
 // 病历
@@ -13,6 +18,22 @@ class AddLaboratoryModelScreen extends Component {
       is_common: false,
       status: true,
       laboratories: []
+    }
+  }
+  async componentDidMount() {
+    const {showWay, laboratory_patient_model_id, LaboratoryPatientModelDetail} = this.props
+    if (showWay === 2) {
+      let data = await LaboratoryPatientModelDetail({laboratory_patient_model_id})
+      if (data) {
+        console.log('LaboratoryPatientModelDetail=====', data)
+        this.setState({
+          is_common: data.is_common,
+          laboratories: data.items,
+          laboratory_patient_model_id: data.laboratory_patient_model_id,
+          model_name: data.model_name,
+          status: data.status
+        })
+      }
     }
   }
   // 验证字段
@@ -89,6 +110,27 @@ class AddLaboratoryModelScreen extends Component {
       })
     }
     let error = await LaboratoryPatientModelCreate({ model_name, is_common, operation_id: personnel_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      this.setState({ showSaveModel: false })
+      this.refs.myAlert.alert('保存成功')
+      backToList()
+    }
+  }
+  async LaboratoryPatientModelUpdate() {
+    const { LaboratoryPatientModelUpdate, personnel_id, backToList } = this.props
+    const { laboratories, model_name, is_common, laboratory_patient_model_id } = this.state
+    let items = []
+    for (let { clinic_laboratory_id, times, illustration } of laboratories) {
+      items.push({
+        clinic_laboratory_id: clinic_laboratory_id + '',
+        times: times + '',
+        illustration: illustration + ''
+      })
+    }
+    items = JSON.stringify(items)
+    let error = await LaboratoryPatientModelUpdate({ laboratory_patient_model_id, model_name, is_common, operation_id: personnel_id, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -235,6 +277,7 @@ class AddLaboratoryModelScreen extends Component {
   }
 
   render() {
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         <div className={'commonBlank baseInfoBlank'}>
@@ -247,7 +290,11 @@ class AddLaboratoryModelScreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.LaboratoryPatientModelCreate()
+                if (showWay === 2) {
+                  this.LaboratoryPatientModelUpdate()
+                } else {
+                  this.LaboratoryPatientModelCreate()
+                }
               }}
             >
               保存
@@ -549,5 +596,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   queryLaboratoryList,
-  LaboratoryPatientModelCreate
+  LaboratoryPatientModelCreate,
+  LaboratoryPatientModelUpdate,
+  LaboratoryPatientModelDetail
 })(AddLaboratoryModelScreen)

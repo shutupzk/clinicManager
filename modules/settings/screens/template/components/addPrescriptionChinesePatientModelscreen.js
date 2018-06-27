@@ -1,6 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { ClinicDrugList, queryRouteAdministrationList, queryFrequencyList, queryDoseUnitList, PrescriptionChinesePatientModelCreate } from '../../../../../ducks'
+import {
+  ClinicDrugList,
+  queryRouteAdministrationList,
+  queryFrequencyList,
+  queryDoseUnitList,
+  PrescriptionChinesePatientModelCreate,
+  PrescriptionChinesePatientModelUpdate,
+  PrescriptionChinesePatientModelDetail
+} from '../../../../../ducks'
 import { Select, Confirm, CustomSelect } from '../../../../../components'
 const places = [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
 
@@ -17,7 +25,31 @@ class AddPrescriptionChinesePatientModelscreen extends Component {
   }
 
   async componentWillMount() {}
-
+  async componentDidMount() {
+    const {showWay, prescription_patient_model_id, PrescriptionChinesePatientModelDetail} = this.props
+    if (showWay === 2) {
+      let data = await PrescriptionChinesePatientModelDetail({prescription_patient_model_id})
+      if (data) {
+        console.log('PrescriptionChinesePatientModelDetail=====', data)
+        let info = {
+          amount: data.amount,
+          eff_day: data.eff_day,
+          fetch_address: data.fetch_address,
+          frequency_name: data.frequency_name,
+          medicine_illustration: data.medicine_illustration,
+          route_administration_name: data.route_administration_name
+        }
+        this.setState({
+          is_common: data.is_common,
+          array: data.items,
+          prescription_patient_model_id: data.prescription_patient_model_id,
+          model_name: data.model_name,
+          status: data.status,
+          info
+        })
+      }
+    }
+  }
   getCNameOptions() {
     const { drugs } = this.props
     console.log('drugs =============', drugs)
@@ -116,6 +148,29 @@ class AddPrescriptionChinesePatientModelscreen extends Component {
       this.props.backToList()
     }
   }
+  async PrescriptionChinesePatientModelUpdate() {
+    const { PrescriptionChinesePatientModelUpdate, operation_id } = this.props
+    const { info, array, is_common, model_name, prescription_patient_model_id } = this.state
+    let items = []
+    for (let item of array) {
+      let obj = {}
+      for (let key in item) {
+        if (item[key] === 0) {
+          obj[key] = item[key] + ''
+        } else {
+          obj[key] = item[key] ? item[key] + '' : ''
+        }
+      }
+      items.push(obj)
+    }
+    let error = await PrescriptionChinesePatientModelUpdate({ prescription_patient_model_id, operation_id, is_common, model_name, ...info, items })
+    if (error) {
+      this.refs.myAlert.alert('保存失败', error)
+    } else {
+      this.refs.myAlert.alert('保存成功')
+      this.props.backToList()
+    }
+  }
 
   setCItemValue(e, index, key, type = 1) {
     const { array } = this.state
@@ -185,6 +240,7 @@ class AddPrescriptionChinesePatientModelscreen extends Component {
   }
 
   render() {
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         <div className={'commonBlank baseInfoBlank'}>
@@ -197,7 +253,11 @@ class AddPrescriptionChinesePatientModelscreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.PrescriptionChinesePatientModelCreate()
+                if (showWay === 2) {
+                  this.PrescriptionChinesePatientModelUpdate()
+                } else {
+                  this.PrescriptionChinesePatientModelCreate()
+                }
               }}
             >
               保存
@@ -766,6 +826,14 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { ClinicDrugList, queryRouteAdministrationList, queryFrequencyList, queryDoseUnitList, PrescriptionChinesePatientModelCreate })(
+export default connect(mapStateToProps, {
+  ClinicDrugList,
+  queryRouteAdministrationList,
+  queryFrequencyList,
+  queryDoseUnitList,
+  PrescriptionChinesePatientModelCreate,
+  PrescriptionChinesePatientModelUpdate,
+  PrescriptionChinesePatientModelDetail
+})(
   AddPrescriptionChinesePatientModelscreen
 )

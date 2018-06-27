@@ -72,3 +72,28 @@ export const TreatmentPatientModelCreate = ({ model_name, is_common = false, ope
     return e.message
   }
 }
+export const TreatmentPatientModelUpdate = (requestData) => async dispatch => {
+  try {
+    requestData.items = JSON.stringify(requestData.items)
+    console.log('TreatmentPatientModelUpdate =====', requestData)
+    const data = await request('/treatment/TreatmentPatientModelUpdate', requestData)
+    console.log('data ======', data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const TreatmentPatientModelDetail = ({treatment_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', treatment_patient_model_id)
+    const data = await request('/treatment/TreatmentPatientModelDetail', {treatment_patient_model_id})
+    console.log('TreatmentPatientModelDetail=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
