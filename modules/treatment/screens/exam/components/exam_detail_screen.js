@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
-import { queryMedicalRecord, ExaminationTriageList, ExaminationTriageRecordCreate, ExaminationTriagePatientRecordList } from '../../../../../ducks'
+import { queryMedicalRecord, ExaminationTriageList, ExaminationTriageRecordCreate, ExaminationTriagePatientRecordList, FileUpload } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
+import { API_SERVER } from '../../../../../config'
 import moment from 'moment'
 
 // 检查
@@ -16,7 +17,9 @@ class ExamDetailScreen extends Component {
       showExamHistory: false,
       showExamHistoryDetail: false,
       historyDetail: {},
-      showRecord: false
+      showRecord: false,
+      imgWidth: 0,
+      imgHeight: 0
     }
   }
 
@@ -366,6 +369,325 @@ class ExamDetailScreen extends Component {
     }
   }
 
+  // 显示上传的文件
+  renderFiles(picture_examination) {
+    if (!picture_examination) return null
+    let uploadedFiles = JSON.parse(picture_examination)
+    const { showBigImg } = this.state
+    // console.log('uploadedFiles==', uploadedFiles)
+    if (uploadedFiles.length === 0) {
+      return null
+    } else {
+      return (
+        <div className={'filesBox'}>
+          {showBigImg ? this.renderBigImg() : ''}
+          <ul>
+            {uploadedFiles.map((item, index) => {
+              let suffix = item.docName.split('.')[1]
+              if (suffix === 'png' || suffix === 'jpg') {
+                return (
+                  <li className={'imgLi'} key={index} title={item.docName} style={{flexDirection: 'row'}}>
+                    <img
+                      src={API_SERVER + item.url}
+                      onClick={e => {
+                        this.setState({
+                          showBigImg: true,
+                          bigImg: API_SERVER + item.url,
+                          imgWidth: e.target.width,
+                          imgHeight: e.target.height
+                        })
+                      }}
+                    />
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        this.setState({ uploadedFiles: array })
+                      }}
+                    >
+                      ×
+                    </span>
+                  </li>
+                )
+              } else {
+                return (
+                  <li key={index} title={item.docName}>
+                    {item.docName}
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        this.setState({ uploadedFiles: array })
+                      }}
+                    >
+                      ×
+                    </span>
+                  </li>
+                )
+              }
+            })}
+          </ul>
+          <style jsx>{`
+            .filesBox {
+              width: 100%;
+              position: absolute;
+              top: 60px;
+            }
+            .filesBox ul {
+              display: flex;
+              flex-direction: row;
+              width: 100%;
+            }
+            .filesBox ul li {
+              position: relative;
+              margin: 0 0 0 5px;
+              background: rgba(233, 233, 233, 0.8);
+              border-radius: 4px;
+              overflow: hidden;
+              width: auto;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              padding: 3px 15px 3px 3px;
+              height: 20px;
+              text-align: left;
+              display: block;
+              cursor: default;
+            }
+            .filesBox ul li:first-child {
+              margin: 0;
+            }
+            .filesBox ul li.imgLi {
+              width: 60px;
+              height: 60px;
+            }
+            .filesBox ul li.imgLi img {
+              // width: 100%;
+              // height: 100%;
+              opacity: 0.7;
+            }
+            .filesBox ul li span {
+              position: absolute;
+              display: block;
+              top: 0;
+              cursor: pointer;
+              width: 12px;
+              height: 12px;
+              right: 0;
+              text-align: center;
+              background: rgba(100, 100, 100, 0.3);
+              opacity: 0.7;
+              line-height: 12px;
+            }
+            .filesBox ul li span:hover {
+              opacity: 1;
+            }
+            .filesBox ul li:hover span {
+              display: block;
+              transition: 0.3s ease;
+            }
+          `}</style>
+        </div>
+      )
+    }
+  }
+
+  // 上传文件
+  async FileUpload(files, picture_examination) {
+    const { FileUpload } = this.props // xhrFileUpload
+    const { imgFiles, selIndex, exams } = this.state
+    let uploadedFiles = picture_examination ? JSON.parse(picture_examination) : []
+    let array = uploadedFiles
+    let imgArray = imgFiles || []
+    if (files) {
+      let file = new FormData()
+      // console.log('files===', files)
+      // for (let i = 0; i < files.length; i++) {
+      //   file.append('file[' + i + ']', files[i]) // ++++++++++
+      // }
+      file.append('file', files[0])
+      let url = await FileUpload(file)
+      // xhrFileUpload(file, function (type, data) {
+      //   if (type === 'progress' || type === 'uploading') {
+      //     console.log('progress=====', data)
+      //   }
+      //   if (type === 'cancel') {
+      //     console.log('cancel=====', data)
+      //   }
+      //   if (type === 'error') {
+      //     console.log('error=====', data)
+      //   }
+      //   if (type === 'ok') {
+      //     console.log('ok=====', data)
+      //   }
+      // })
+      if (url) {
+        let item = {
+          docName: files[0].name,
+          url
+        }
+        array.push(item)
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+          imgArray.push(item)
+        }
+        exams[selIndex].picture_examination = JSON.stringify(array)
+        this.setState({ exams })
+        // this.setState({ uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array) })
+      }
+    }
+  }
+
+  renderBigImg() {
+    const { selIndex, exams } = this.state
+    const { picture_examination } = exams[selIndex]
+    let imgFiles = picture_examination ? JSON.parse(picture_examination) : []
+    const { bigImg, imgWidth, imgHeight } = this.state
+    // console.log('uploadedFiles===', uploadedFiles)
+    let nexImg = ''
+    let prevImg = ''
+    for (let i = 0; i < imgFiles.length; i++) {
+      if (bigImg === API_SERVER + imgFiles[i].url) {
+        if (imgFiles.length > 1) {
+          if (i === 0) {
+            nexImg = API_SERVER + imgFiles[i + 1].url
+            prevImg = API_SERVER + imgFiles[imgFiles.length - 1].url
+          } else if (i === imgFiles.length - 1) {
+            nexImg = API_SERVER + imgFiles[0].url
+            prevImg = API_SERVER + imgFiles[i - 1].url
+          } else {
+            nexImg = API_SERVER + imgFiles[i + 1].url
+            prevImg = API_SERVER + imgFiles[i - 1].url
+          }
+        } else {
+          nexImg = bigImg
+          prevImg = bigImg
+        }
+      }
+    }
+    return (
+      <div
+        className={'mask'}
+        onWheel={e => {
+          // console.log('onWheel=====', e.deltaY, e.target.width, e.target.height)
+          let width = imgWidth - (imgWidth * e.deltaY) / 1000
+          let height = imgHeight - (imgHeight * e.deltaY) / 1000
+          if (width < 100) {
+            width = 100
+          }
+          if (height < 100) {
+            height = 100
+          }
+          this.setState({ imgWidth: width, imgHeight: height })
+        }}
+      >
+        <div className={'imgDiv'} style={{ width: imgWidth, height: imgHeight }}>
+          <img
+            src={bigImg}
+            alt={'...'}
+            onWheel={e => {
+              // console.log('sadasdasd==', e)
+              let width = imgWidth - (imgWidth * e.deltaY) / 1000
+              let height = imgHeight - (imgHeight * e.deltaY) / 1000
+              if (width < 100) {
+                width = 100
+              }
+              if (height < 100) {
+                height = 100
+              }
+              this.setState({ imgWidth: width, imgHeight: height })
+            }}
+          />
+          <span
+            onClick={() => {
+              this.setState({ showBigImg: false })
+            }}
+          >
+            ×
+          </span>
+        </div>
+        <a
+          className={'prev'}
+          onClick={() => {
+            this.setState({
+              showBigImg: true,
+              bigImg: prevImg,
+              imgWidth: 640,
+              imgHeight: 360
+            })
+          }}
+        >
+          {'《'}
+        </a>
+        <a
+          className={'next'}
+          onClick={() => {
+            this.setState({
+              showBigImg: true,
+              bigImg: nexImg,
+              imgWidth: 640,
+              imgHeight: 360
+            })
+          }}
+        >
+          {'》'}
+        </a>
+        <style jsx>{`
+          .imgDiv {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+          }
+          img {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+          }
+          span {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            color: #d8d8d8;
+            right: 0;
+            top: 0;
+            font-size: 30px;
+            cursor: pointer;
+            border-radius: 100%;
+            border: 1px solid #d8d8d8;
+            text-align: center;
+            line-height: 30px;
+          }
+          span:hover {
+            background: red;
+            transition: 0.3s ease;
+          }
+          a {
+            position: absolute;
+            top: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 30px;
+            border-radius: 100%;
+            cursor: pointer;
+            color: #d8d8d8;
+            line-height: 50px;
+          }
+          a:hover {
+            background: rgba(233, 233, 233, 0.3);
+            transition: 0.3 ease;
+          }
+          .prev {
+            left: 10px;
+            text-align: left;
+          }
+          .next {
+            right: 10px;
+            text-align: right;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   renderContent() {
     const { selIndex, exams } = this.state
     const data = exams[selIndex]
@@ -375,7 +697,23 @@ class ExamDetailScreen extends Component {
         <ul>
           <li>
             <label>检查图片</label>
-            <div style={{ height: '100px' }}>文件、照片上传</div>
+            <div style={{ width: '100%', height: '120px' }}>
+              {this.renderFiles(data.picture_examination)}
+              <div className={'chooseFile'}>
+                <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
+                  <input
+                    multiple='multiple'
+                    type='file'
+                    onChange={e => {
+                      // console.log('文件=====', e.target.files)
+                      this.FileUpload(e.target.files, data.picture_examination)
+                    }}
+                  />
+                </form>
+                <button> + 添加文件</button>
+                <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
+              </div>
+            </div>
           </li>
           <li>
             <label>描述</label>
@@ -404,6 +742,7 @@ class ExamDetailScreen extends Component {
             <button>取消</button>
           </div>
         </div>
+        {this.getStyle()}
       </div>
     )
   }
@@ -523,15 +862,15 @@ class ExamDetailScreen extends Component {
             // width: 100%;
             display: flex;
             flex-direction: column;
-            margin: 10px 20px;
-            width: 90%;
+            margin: 10px 5% 0 3%;
+            width: 94%;
           }
           .detailContent ul li textarea {
-            width: 100%;
             height: 100px;
             background: rgba(245, 248, 249, 1);
             border-radius: 4px;
             resize: none;
+            margin: 10px 0 0 0;
             border: 1px solid #d8d8d8;
           }
           .tableDIV {
@@ -576,6 +915,39 @@ class ExamDetailScreen extends Component {
           .tableDIV ul li > div:nth-child(1) {
             flex: 3;
           }
+          .chooseFile {
+            // height: 66px;
+            margin-top: 10px;
+            display: flex;
+            position: relative;
+          }
+          .chooseFile input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+          }
+          .chooseFile button {
+            height: 30px;
+            width: 200px;
+            border: 1px dashed #d9d9d9;
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            margin: 0 20px 0px 0px;
+            color: rgba(102, 102, 102, 1);
+          }
+          .chooseFile a {
+            width: 500px;
+            height: 34px;
+            font-size: 12px;
+            font-family: PingFangSC-Regular;
+            color: rgba(102, 102, 102, 1);
+            line-height: 15px;
+            display: block;
+            line-height: 34px;
+          }
         `}
       </style>
     )
@@ -598,6 +970,7 @@ export default connect(
     queryMedicalRecord,
     ExaminationTriageList,
     ExaminationTriageRecordCreate,
-    ExaminationTriagePatientRecordList
+    ExaminationTriagePatientRecordList,
+    FileUpload
   }
 )(ExamDetailScreen)
