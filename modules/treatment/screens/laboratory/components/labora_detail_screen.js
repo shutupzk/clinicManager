@@ -587,7 +587,7 @@ class LaboraDetailScreen extends Component {
                       }}
                     />
                   </div>
-                  <div style={{ flex: 2, color: is_normal === '偏高' || is_normal === '偏低' ? 'red' : '#505050' }}>{is_normal}</div>
+                  <div style={{ flex: 2, color: is_normal === '偏高' ? 'red' : is_normal === '偏低' ? 'blue' : '#505050' }}>{is_normal}</div>
                   <div style={{ flex: 2 }}>{item.unit_name}</div>
                   <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
                   <div style={{ flex: 3 }}>{reference}</div>
