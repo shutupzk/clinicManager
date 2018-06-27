@@ -4,7 +4,9 @@ import { connect } from 'react-redux'
 // import { Select } from '../../../../../components'
 import {
   queryTreatmentList,
-  TreatmentPatientModelCreate
+  TreatmentPatientModelCreate,
+  TreatmentPatientModelUpdate,
+  TreatmentPatientModelDetail
 } from '../../../../../ducks'
 import { Select } from '../../../../../components'
 
@@ -262,8 +264,21 @@ class AddTreatmentPatientModelscreen extends Component {
       `}</style>
     )
   }
+  async componentDidMount() {
+    const {showWay, treatment_patient_model_id, TreatmentPatientModelDetail} = this.props
+    if (showWay === 2) {
+      let data = await TreatmentPatientModelDetail({treatment_patient_model_id})
+      if (data) {
+        console.log('TreatmentPatientModelDetail=====', data)
+        this.setState({
+          modelInfo: data
+        })
+      }
+    }
+  }
   render() {
     const {showType} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -271,7 +286,13 @@ class AddTreatmentPatientModelscreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.TreatmentPatientModelUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -294,18 +315,43 @@ class AddTreatmentPatientModelscreen extends Component {
     modelInfo.clinic_id = clinic_id
     modelInfo.operation_id = operation_id
     // let requestData = {...modelInfo}
-    // requestData.items = JSON.stringify(requestData.items)
-    console.log('this.validateData(modelInfo)=====', modelInfo)
+    // modelInfo.items = JSON.stringify(modelInfo.items)
+    // console.log('this.validateData(modelInfo)=====', modelInfo)
+    for (let i = 0; i < modelInfo.items.length; i++) {
+      modelInfo.items[i].clinic_treatment_id = modelInfo.items[i].clinic_treatment_id + ''
+      modelInfo.items[i].times = modelInfo.items[i].times + ''
+    }
     if (this.validateData(modelInfo)) {
       let error = await TreatmentPatientModelCreate(modelInfo)
       if (error) {
         alert(error)
-        this.setState({modelInfo})
+        // this.setState({modelInfo})
       } else {
         this.props.back2List()
       }
     }
-    // alert(0)
+  }
+  async TreatmentPatientModelUpdate() {
+    let {modelInfo} = this.state
+    const {clinic_id, TreatmentPatientModelUpdate, operation_id} = this.props
+    modelInfo.clinic_id = clinic_id
+    modelInfo.operation_id = operation_id
+    // let requestData = {...modelInfo}
+    // requestData.items = JSON.stringify(requestData.items)
+    // console.log('this.validateData(modelInfo)=====', modelInfo)
+    for (let i = 0; i < modelInfo.items.length; i++) {
+      modelInfo.items[i].clinic_treatment_id = modelInfo.items[i].clinic_treatment_id + ''
+      modelInfo.items[i].times = modelInfo.items[i].times + ''
+    }
+    if (this.validateData(modelInfo)) {
+      let error = await TreatmentPatientModelUpdate(modelInfo)
+      if (error) {
+        alert(error)
+        // this.setState({modelInfo})
+      } else {
+        this.props.back2List()
+      }
+    }
   }
   // 保存并入库
   saveInStock() {
@@ -549,5 +595,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   queryTreatmentList,
-  TreatmentPatientModelCreate
+  TreatmentPatientModelCreate,
+  TreatmentPatientModelUpdate,
+  TreatmentPatientModelDetail
 })(AddTreatmentPatientModelscreen)

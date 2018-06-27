@@ -18,7 +18,9 @@ class InspectionTemplateScreen extends Component {
       operation_id: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      showWay: 1,
+      laboratory_patient_model_id: ''
     }
   }
 
@@ -26,12 +28,14 @@ class InspectionTemplateScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, showWay, laboratory_patient_model_id } = this.state
     let map = {
       // 1: <AddDrugScreen />,
       2: (
         <AddLaboratoryModelScreen
           drugType={1}
+          showWay={showWay}
+          laboratory_patient_model_id={laboratory_patient_model_id}
           backToList={() => {
             this.setState({ pageType: 1 })
             this.getDataList({ offset: 0, limit: 10 })
@@ -138,7 +142,7 @@ class InspectionTemplateScreen extends Component {
             <button>导出</button>
             <button
               onClick={() => {
-                this.setState({ pageType: 2 })
+                this.setState({ pageType: 2, showWay: 1 })
               }}
             >
               新建
@@ -236,9 +240,15 @@ class InspectionTemplateScreen extends Component {
                   <td>{item.operation_name}</td>
                   <td style={{ flex: 2 }} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          laboratory_patient_model_id: item.laboratory_patient_model_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>停用</div>
+                      <div>删除</div>
                     </div>
                   </td>
                 </tr>

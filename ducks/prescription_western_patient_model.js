@@ -92,3 +92,45 @@ export const PrescriptionWesternPatientModelCreate = ({ model_name, is_common = 
     return e.message
   }
 }
+export const PrescriptionWesternPatientModelUpdate = ({ prescription_patient_model_id, model_name, is_common = false, operation_id, items }) => async dispatch => {
+  try {
+    console.log('PrescriptionWesternPatientModelCreate =====', prescription_patient_model_id, model_name, is_common, operation_id, items)
+    const data = await request('/clinic_drug/PrescriptionWesternPatientModelUpdate', {
+      prescription_patient_model_id,
+      model_name,
+      is_common,
+      operation_id,
+      items: JSON.stringify(items)
+    })
+    console.log('data ======', data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const PrescriptionWesternPatientModelDetail = ({prescription_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', prescription_patient_model_id)
+    const data = await request('/clinic_drug/PrescriptionWesternPatientModelDetail', {prescription_patient_model_id})
+    console.log('PrescriptionWesternPatientModelDetail=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
+export const PrescriptionWesternPatientModelDelete = ({prescription_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', prescription_patient_model_id)
+    const data = await request('/clinic_drug/PrescriptionWesternPatientModelDelete', {prescription_patient_model_id})
+    console.log('PrescriptionWesternPatientModelDelete=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
