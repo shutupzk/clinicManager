@@ -52,7 +52,6 @@ export const queryFinanceMonthList = ({ start_date, end_date, offset = 0, limit 
       offset,
       limit
     })
-    console.log(data)
     const json = data.data || []
     const page_info = data.page_info || { offset, limit, total: 0 }
     dispatch({

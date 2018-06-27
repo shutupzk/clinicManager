@@ -34,6 +34,17 @@ class ReportMonthScreen extends Component {
     const { finances, finances_page } = this.props
     return (
       <div>
+        <div
+          style={{
+            float: 'left',
+            display: 'flex',
+            width: '1200px',
+            justifyContent: 'center',
+            marginBottom: '15px'
+          }}
+        >
+          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '收费月报表'}</h3>
+        </div>
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
@@ -145,9 +156,9 @@ class ReportMonthScreen extends Component {
             <button style={{ marginLeft: '100px' }} onClick={() => this.queryContentData({})}>
               查询
             </button>
-            {/* <button style={{ marginLeft: '20px' }} onClick={() => {}}>
+            <button style={{ marginLeft: '20px' }} onClick={() => {}}>
               导出
-            </button> */}
+            </button>
           </div>
         </div>
         {this.showContent()}
