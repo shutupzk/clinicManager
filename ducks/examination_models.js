@@ -59,3 +59,27 @@ export const examinationModelCreate = ({ model_name, is_common = false, operatio
     return e.message
   }
 }
+export const ExaminationPatientModelUpdate = (requestData) => async dispatch => {
+  try {
+    const data = await request('/examination/ExaminationPatientModelUpdate', requestData)
+    console.log('ExaminationPatientModelUpdate =====', requestData)
+    console.log('data ======', data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const ExaminationPatientModelDetail = ({examination_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', examination_patient_model_id)
+    const data = await request('/examination/ExaminationPatientModelDetail', {examination_patient_model_id})
+    console.log('ExaminationPatientModelDetail=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}

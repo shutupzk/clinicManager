@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { queryExaminationList, examinationModelCreate, queryExaminationOrganList } from '../../../../../ducks'
+import {
+  queryExaminationList,
+  examinationModelCreate,
+  queryExaminationOrganList,
+  ExaminationPatientModelUpdate,
+  ExaminationPatientModelDetail
+} from '../../../../../ducks'
 import { Select, Confirm } from '../../../../../components'
 
 // 病历
@@ -16,9 +22,22 @@ class AddExaminationModelScreen extends Component {
     }
   }
 
-  componentDidMount() {
-    const { queryExaminationOrganList } = this.props
+  async componentDidMount() {
+    const { queryExaminationOrganList, showWay, examination_patient_model_id, ExaminationPatientModelDetail } = this.props
     queryExaminationOrganList({ limit: 1000 }, true)
+    if (showWay === 2) {
+      let data = await ExaminationPatientModelDetail({examination_patient_model_id})
+      if (data) {
+        console.log('ExaminationPatientModelDetail=====', data)
+        this.setState({
+          is_common: data.is_common,
+          examines: data.items,
+          examination_patient_model_id: data.examination_patient_model_id,
+          model_name: data.model_name,
+          status: data.status
+        })
+      }
+    }
   }
 
   // 验证字段
@@ -96,6 +115,28 @@ class AddExaminationModelScreen extends Component {
       })
     }
     let error = await examinationModelCreate({ model_name, is_common, operation_id: personnel_id, items })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error)
+    } else {
+      this.setState({ showSaveModel: false })
+      this.refs.myAlert.alert('保存成功')
+      backToList()
+    }
+  }
+  async ExaminationPatientModelUpdate() {
+    const { ExaminationPatientModelUpdate, personnel_id, backToList } = this.props
+    const { examines, model_name, is_common, examination_patient_model_id } = this.state
+    let items = []
+    for (let { clinic_examination_id, times, organ, illustration } of examines) {
+      items.push({
+        clinic_examination_id: clinic_examination_id + '',
+        times: times ? times + '' : '',
+        organ: organ ? organ + '' : '',
+        illustration: illustration ? illustration + '' : ''
+      })
+    }
+    items = JSON.stringify(items)
+    let error = await ExaminationPatientModelUpdate({ examination_patient_model_id, model_name, is_common, operation_id: personnel_id, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -332,7 +373,9 @@ class AddExaminationModelScreen extends Component {
                   </div>
                   <div>
                     <input value={examines[index].organ} type='text' readOnly />
-                    <button onClick={() => this.setState({ showChooseOrgan: true, index })}>选择</button>
+                    <button onClick={() => {
+                      this.setState({ showChooseOrgan: true, index, selOrgans: examines[index].organ.split(',') })
+                    }}>选择</button>
                   </div>
                   <div>
                     <input value={examines[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
@@ -353,6 +396,7 @@ class AddExaminationModelScreen extends Component {
   }
 
   render() {
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         <div className={'commonBlank baseInfoBlank'}>
@@ -365,7 +409,11 @@ class AddExaminationModelScreen extends Component {
             <button>取消</button>
             <button
               onClick={() => {
-                this.examinationModelCreate()
+                if (showWay === 2) {
+                  this.ExaminationPatientModelUpdate()
+                } else {
+                  this.examinationModelCreate()
+                }
               }}
             >
               保存
@@ -649,6 +697,9 @@ class AddExaminationModelScreen extends Component {
           outline-style: none;
           border: none;
         }
+        button{
+          white-space: nowrap;
+        }
         .tableDIV ul li > div:nth-child(1) {
           flex: 3;
         }
@@ -670,5 +721,7 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   queryExaminationList,
   examinationModelCreate,
-  queryExaminationOrganList
+  queryExaminationOrganList,
+  ExaminationPatientModelUpdate,
+  ExaminationPatientModelDetail
 })(AddExaminationModelScreen)

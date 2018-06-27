@@ -111,3 +111,69 @@ export const PrescriptionChinesePatientModelCreate = ({
     return e.message
   }
 }
+export const PrescriptionChinesePatientModelUpdate = ({
+  prescription_patient_model_id,
+  model_name,
+  is_common = false,
+  operation_id,
+  route_administration_name,
+  frequency_name,
+  amount,
+  fetch_address,
+  eff_day,
+  medicine_illustration,
+  items
+}) => async dispatch => {
+  try {
+    const data = await request('/clinic_drug/PrescriptionChinesePatientModelUpdate', {
+      prescription_patient_model_id,
+      model_name,
+      is_common,
+      operation_id,
+      route_administration_name,
+      frequency_name,
+      amount,
+      fetch_address,
+      eff_day,
+      medicine_illustration,
+      items: JSON.stringify(items)
+    })
+    console.log('data ======', prescription_patient_model_id, model_name, is_common, operation_id, route_administration_name, frequency_name, amount, fetch_address, eff_day, medicine_illustration, items, data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const PrescriptionChinesePatientModelDetail = ({prescription_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', prescription_patient_model_id)
+    const data = await request('/clinic_drug/PrescriptionChinesePatientModelDetail', {prescription_patient_model_id})
+    console.log('PrescriptionChinesePatientModelDetail=======', data)
+    const docs = data.data || {}
+    let frequency_data = {}
+    const {frequency_name} = docs
+    if (frequency_name) frequency_data[frequency_name] = {name: frequency_name}
+    dispatch({
+      type: 'FREQUENCY_ADD',
+      data: frequency_data
+    })
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
+export const PrescriptionChinesePatientModelDelete = ({prescription_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', prescription_patient_model_id)
+    const data = await request('/clinic_drug/PrescriptionChinesePatientModelDelete', {prescription_patient_model_id})
+    console.log('PrescriptionChinesePatientModelDelete=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}

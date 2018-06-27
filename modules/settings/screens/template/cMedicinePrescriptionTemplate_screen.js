@@ -22,7 +22,9 @@ class CMedicinePrescriptionTemplateScreen extends Component {
       operation_id: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      showWay: 1,
+      prescription_patient_model_id: ''
     }
   }
 
@@ -30,13 +32,17 @@ class CMedicinePrescriptionTemplateScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, showWay, prescription_patient_model_id } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddPrescriptionChinesePatientModelscreen drugType={1} backToList={() => {
-        this.setState({pageType: 1})
-        this.getDataList({offset: 0, limit: 10})
-      }} />
+      2: <AddPrescriptionChinesePatientModelscreen
+        drugType={1}
+        showWay={showWay}
+        prescription_patient_model_id={prescription_patient_model_id}
+        backToList={() => {
+          this.setState({pageType: 1})
+          this.getDataList({offset: 0, limit: 10})
+        }} />
     }
     return map[pageType] || null
   }
@@ -145,7 +151,7 @@ class CMedicinePrescriptionTemplateScreen extends Component {
             <button>批量导入</button>
             <button>导出</button>
             <button
-              onClick={() => { this.setState({pageType: 2}) }}
+              onClick={() => { this.setState({pageType: 2, showWay: 1}) }}
             >新建</button>
           </div>
         </div>
@@ -271,7 +277,13 @@ class CMedicinePrescriptionTemplateScreen extends Component {
                   <td>{item.operation_name}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          prescription_patient_model_id: item.prescription_patient_model_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
                       <div>停用</div>
                     </div>

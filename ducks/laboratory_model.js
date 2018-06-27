@@ -108,3 +108,27 @@ export const LaboratoryPatientModelCreate = ({ model_name, is_common = false, op
     return e.message
   }
 }
+export const LaboratoryPatientModelUpdate = (requestData) => async dispatch => {
+  try {
+    console.log('LaboratoryPatientModelUpdate =====', requestData)
+    const data = await request('/laboratory/LaboratoryPatientModelUpdate', requestData)
+    console.log('data ======', data)
+    if (data.code !== '200') return data.msg
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const LaboratoryPatientModelDetail = ({laboratory_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', laboratory_patient_model_id)
+    const data = await request('/laboratory/LaboratoryPatientModelDetail', {laboratory_patient_model_id})
+    console.log('LaboratoryPatientModelDetail=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
