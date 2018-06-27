@@ -196,7 +196,7 @@ import {
   queryDrugDeliveryRefundRecordDetail
 } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
-import { finances, queryFinanceList } from './finance'
+import { finances, queryFinanceList, queryFinanceMonthList } from './finance'
 import {FileUpload, xhrFileUpload} from './files'
 import {
   examinationTriages,
@@ -496,6 +496,7 @@ export {
   queryDrugDeliveryRefundRecordDetail,
   FileUpload,
   queryFinanceList,
+  queryFinanceMonthList,
   xhrFileUpload,
   ExaminationTriageList,
   ExaminationTriageWaiting,

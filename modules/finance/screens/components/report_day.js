@@ -28,10 +28,11 @@ class ReportDayScreen extends Component {
     this.setState({ selectType })
   }
 
-  queryContentData({ skip = 0, limit = 10 }) {
+  // 查询数据
+  queryContentData({ offset = 0, limit = 10 }) {
     const { queryFinanceList } = this.props
     const { start_date, end_date, patientName, oprationName } = this.state
-    queryFinanceList({ start_date, end_date, patientName, oprationName, skip, limit })
+    queryFinanceList({ start_date, end_date, patientName, oprationName, offset, limit })
   }
 
   showContent() {
@@ -39,6 +40,7 @@ class ReportDayScreen extends Component {
     else return this.showMethodContent()
   }
 
+  // 按业务类型
   showTypeContent() {
     const { finances, finances_page } = this.props
     return (
@@ -125,6 +127,7 @@ class ReportDayScreen extends Component {
     )
   }
 
+  // 按收费方式
   showMethodContent() {
     const { finances, finances_page } = this.props
     return (
@@ -164,7 +167,7 @@ class ReportDayScreen extends Component {
               <div>{formatMoney(0)}</div>
               <div>{formatMoney(finances_page.medical_money)}</div>
               <div>{formatMoney(finances_page.on_credit_money)}</div>
-              <div>{formatMoney(finances_page.discount_money + finances_page.voucher_money)}</div>
+              <div>{formatMoney(finances_page.discount_money || 0 + finances_page.voucher_money || 0)}</div>
               <div>{formatMoney(finances_page.derate_money)}</div>
               <div />
               <div />
