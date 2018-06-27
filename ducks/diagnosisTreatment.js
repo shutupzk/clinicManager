@@ -82,6 +82,65 @@ export const diagnosisTreatmentCreate = (requestData) => async dispatch => {
     return e.message
   }
 }
+export const DiagnosisTreatmentUpdate = (requestData) => async dispatch => {
+  try {
+    if (requestData.price) {
+      requestData.price = Math.round(requestData.price * 100)
+    }
+    if (requestData.cost) {
+      requestData.cost = Math.round(requestData.cost * 100)
+    }
+    const data = await request('/diagnosisTreatment/update', requestData)
+    console.log(
+      requestData,
+      data
+    )
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const DiagnosisTreatmentOnOff = requestData => async dispatch => {
+  try {
+    const data = await request('/diagnosisTreatment/onOff', requestData)
+    console.log(requestData, data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const DiagnosisTreatmentDetail = ({clinic_diagnosis_treatment_id}) => async dispatch => {
+  try {
+    console.log('limit====', clinic_diagnosis_treatment_id)
+    const data = await request('/diagnosisTreatment/detail', {clinic_diagnosis_treatment_id})
+    console.log('DiagnosisTreatmentDetail=======', data)
+    const docs = data.data || {}
+    // let array_data = []
+    // array_data.push(docs)
+    // dispatch({
+    //   type: TREATMENT_PROJECT_ADD,
+    //   data: docs
+    // })
+    let unitJson = {}
+    // let sample_data = {}
+    // let color_data = {}
+    const {unit_name} = docs
+    if (unit_name) unitJson[unit_name] = { name: unit_name }
+    dispatch({ type: 'DOSE_UNIT_ADD', data: unitJson })
+    // if (laboratory_sample) sample_data[laboratory_sample] = {name: laboratory_sample}
+    // if (cuvette_color_name) color_data[cuvette_color_name] = {name: cuvette_color_name}
+    // dispatch({ type: 'LABORATORY_SAMPLE_LIST', data: sample_data })
+    // dispatch({ type: 'CUVETTE_COLOR_LIST', data: color_data })
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
 
 export const queryDictDiagnosisList = ({ keyword, offset = 0, limit = 10 }) => async dispatch => {
   try {

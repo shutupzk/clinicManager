@@ -4,9 +4,11 @@ import { connect } from 'react-redux'
 import { Select, Confirm } from '../../../../../components'
 import {
   otherCostsCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  OtherCostUpdate,
+  OtherCostDetail
 } from '../../../../../ducks'
-import {limitMoney} from '../../../../../utils'
+import {limitMoney, formatMoney} from '../../../../../utils'
 // 病历
 class AddOtherFeeScreen extends Component {
   constructor(props) {
@@ -216,16 +218,37 @@ class AddOtherFeeScreen extends Component {
       `}</style>
     )
   }
+  async componentDidMount() {
+    const {showWay, clinic_other_cost_id, OtherCostDetail} = this.props
+    if (showWay === 2) {
+      let data = await OtherCostDetail({clinic_other_cost_id})
+      if (data) {
+        console.log('OtherCostDetail=====', data)
+        data.price = formatMoney(data.price)
+        if (data.cost !== null) {
+          data.cost = formatMoney(data.cost)
+        }
+        this.setState({otherCostInfo: data})
+      }
+    }
+  }
   render() {
     const {showType} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
         {showType ? this.chooseOrgan() : ''}
         <div className={'bottomBtn'}>
           <div>
-            <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button onClick={() => this.props.back2List()}>取消</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.OtherCostUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -262,6 +285,25 @@ class AddOtherFeeScreen extends Component {
     // console.log('this.validateData(otherCostInfo)=====', this.validateData(otherCostInfo))
     if (this.validateData(otherCostInfo)) {
       let error = await otherCostsCreate(otherCostInfo)
+      if (error) {
+        this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+        this.setState({otherCostInfo})
+      } else {
+        this.refs.myAlert.alert('保存成功')
+        this.props.back2List()
+      }
+    }
+    // alert(0)
+  }
+  async OtherCostUpdate() {
+    let {otherCostInfo} = this.state
+    const {clinic_id, OtherCostUpdate} = this.props
+    otherCostInfo.clinic_id = clinic_id
+    // let requestData = {...otherCostInfo}
+    // requestData.items = JSON.stringify(requestData.items)
+    // console.log('this.validateData(otherCostInfo)=====', this.validateData(otherCostInfo))
+    if (this.validateData(otherCostInfo)) {
+      let error = await OtherCostUpdate(otherCostInfo)
       if (error) {
         this.refs.myAlert.alert('保存失败', error, null, 'Danger')
         this.setState({otherCostInfo})
@@ -332,29 +374,6 @@ class AddOtherFeeScreen extends Component {
       queryDoseUnitList({ keyword })
     }
   }
-
-  // 部位筛选
-  // getExaminationOrgansOptions() {
-  //   const { examinationOrgans } = this.props
-  //   let array = []
-  //   for (let key in examinationOrgans) {
-  //     const { name, id } = examinationOrgans[key]
-  //     // console.log(doseForms[key])
-  //     array.push({
-  //       value: id,
-  //       label: name
-  //     })
-  //   }
-  //   return array
-  // }
-  // // 获取部位数据
-  // getExaminationOrgansList(keyword) {
-  //   const { queryExaminationOrganList } = this.props
-  //   queryExaminationOrganList({ keyword }, true)
-  //   // if (keyword) {
-  //   //   queryExaminationOrganList({ keyword })
-  //   // }
-  // }
   // 检验项目基本信息
   renderBaseInfoBlank() {
     const {otherCostInfo} = this.state
@@ -529,5 +548,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   otherCostsCreate,
-  queryDoseUnitList
+  queryDoseUnitList,
+  OtherCostUpdate,
+  OtherCostDetail
 })(AddOtherFeeScreen)

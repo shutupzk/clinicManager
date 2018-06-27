@@ -527,9 +527,12 @@ class ExamDetailScreen extends Component {
             width: 90%;
           }
           .detailContent ul li textarea {
-            resize: none;
             width: 100%;
             height: 100px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            resize: none;
+            border: 1px solid #d8d8d8;
           }
           .tableDIV {
             display: flex;

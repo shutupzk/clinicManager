@@ -40,18 +40,18 @@ class AddLaboratoryItemScreen extends Component {
         //   data.cost = formatMoney(data.cost)
         // }
         let references = []
-        if (data[0].references) {
-          if (!data[0].is_special) {
-            data[0].reference_min = data[0].references[0].reference_min
-            data[0].reference_max = data[0].references[0].reference_max
+        if (data.references) {
+          if (!data.is_special) {
+            data.reference_min = data.references[0].reference_min
+            data.reference_max = data.references[0].reference_max
           } else {
-            data[0].items = []
-            for (let i = 0; i < data[0].references.length; i++) {
-              data[0].items.push(data[0].references[i])
+            data.items = []
+            for (let i = 0; i < data.references.length; i++) {
+              data.items.push(data.references[i])
             }
           }
         }
-        this.setState({laboratoryItemInfo: data[0], references})
+        this.setState({laboratoryItemInfo: data, references})
       }
     }
   }
@@ -258,7 +258,7 @@ class AddLaboratoryItemScreen extends Component {
             <button
               onClick={() => {
                 if (showWay === 2) {
-                  this.LaboratoryItemDetail()
+                  this.LaboratoryItemUpdate()
                 } else {
                   this.submit()
                 }
@@ -295,11 +295,11 @@ class AddLaboratoryItemScreen extends Component {
       this.props.back2List()
     }
   }
-  async LaboratoryItemDetail() {
+  async LaboratoryItemUpdate() {
     let { laboratoryItemInfo } = this.state
-    const { clinic_id, LaboratoryItemDetail } = this.props
+    const { clinic_id, LaboratoryItemUpdate } = this.props
     laboratoryItemInfo.clinic_id = clinic_id
-    let error = await LaboratoryItemDetail({ requestData: { ...laboratoryItemInfo, clinic_id } })
+    let error = await LaboratoryItemUpdate({ requestData: { ...laboratoryItemInfo, clinic_id } })
     if (error) {
       this.refs.myAlert.alert('保存失败', error, null, 'Danger')
       this.setState({ laboratoryItemInfo })
