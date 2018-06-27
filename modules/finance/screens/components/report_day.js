@@ -12,9 +12,10 @@ class ReportDayScreen extends Component {
     this.state = {
       patientName: '',
       oprationName: '',
-      start_date: moment()
+      start_date: moment().format('YYYY-MM-DD'),
+      end_date: moment()
+        .add(1, 'd')
         .format('YYYY-MM-DD'),
-      end_date: moment().add(1, 'd').format('YYYY-MM-DD'),
       selectType: 1
     }
   }
@@ -59,8 +60,26 @@ class ReportDayScreen extends Component {
               <div>其他费用</div>
               <div>交易时间</div>
               <div>操作员</div>
-              <div style={{flex: 2}}>接诊科室</div>
+              <div style={{ flex: 2 }}>接诊科室</div>
               <div>接诊医生</div>
+            </li>
+            <li style={{ background: 'rgba(247,247,247,1)' }}>
+              <div>总计</div>
+              <div />
+              <div>{formatMoney(finances_page.total_money)}</div>
+              <div>{formatMoney(finances_page.traditional_medical_fee)}</div>
+              <div>{formatMoney(finances_page.western_medicine_fee)}</div>
+              <div>{formatMoney(finances_page.examination_fee)}</div>
+              <div>{formatMoney(finances_page.labortory_fee)}</div>
+              <div>{formatMoney(finances_page.treatment_fee)}</div>
+              <div>{formatMoney(finances_page.diagnosis_treatment_fee)}</div>
+              <div>{formatMoney(finances_page.material_fee)}</div>
+              <div>{formatMoney(finances_page.retail_fee)}</div>
+              <div>{formatMoney(finances_page.other_fee)}</div>
+              <div />
+              <div />
+              <div style={{ flex: 2 }} />
+              <div />
             </li>
             {finances.map((item, iKey) => {
               return (
@@ -77,9 +96,9 @@ class ReportDayScreen extends Component {
                   <div>{formatMoney(item.material_fee)}</div>
                   <div>{formatMoney(item.retail_fee)}</div>
                   <div>{formatMoney(item.other_fee)}</div>
-                  <div>{moment().format('YYYY-MM-DD')}</div>
+                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
                   <div>{item.operation}</div>
-                  <div style={{flex: 2}}>{item.departmentname}</div>
+                  <div style={{ flex: 2 }}>{item.departmentname}</div>
                   <div>{item.doctorname}</div>
                 </li>
               )
@@ -129,8 +148,28 @@ class ReportDayScreen extends Component {
               <div>减免</div>
               <div>交易时间</div>
               <div>操作员</div>
-              <div style={{flex: 2}}>接诊科室</div>
+              <div style={{ flex: 2 }}>接诊科室</div>
               <div>接诊医生</div>
+            </li>
+            <li style={{ background: 'rgba(247,247,247,1)' }}>
+              <div>总计</div>
+              <div />
+              <div>{formatMoney(finances_page.total_money)}</div>
+              <div>{formatMoney(finances_page.balance_money)}</div>
+              <div>{formatMoney(finances_page.cash)}</div>
+              <div>{formatMoney(finances_page.bank)}</div>
+              <div>{formatMoney(finances_page.wechat)}</div>
+              <div>{formatMoney(finances_page.alipay)}</div>
+              <div>{formatMoney(finances_page.bonus_points_money)}</div>
+              <div>{formatMoney(0)}</div>
+              <div>{formatMoney(finances_page.medical_money)}</div>
+              <div>{formatMoney(finances_page.on_credit_money)}</div>
+              <div>{formatMoney(finances_page.discount_money + finances_page.voucher_money)}</div>
+              <div>{formatMoney(finances_page.derate_money)}</div>
+              <div />
+              <div />
+              <div style={{ flex: 2 }} />
+              <div />
             </li>
             {finances.map((item, iKey) => {
               return (
@@ -149,9 +188,9 @@ class ReportDayScreen extends Component {
                   <div>{formatMoney(item.on_credit_money)}</div>
                   <div>{formatMoney(item.discount_money + item.voucher_money)}</div>
                   <div>{formatMoney(item.derate_money)}</div>
-                  <div>{moment().format('YYYY-MM-DD')}</div>
+                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
                   <div>{item.operation}</div>
-                  <div style={{flex: 2}}>{item.departmentname}</div>
+                  <div style={{ flex: 2 }}>{item.departmentname}</div>
                   <div>{item.doctorname}</div>
                 </li>
               )
