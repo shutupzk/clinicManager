@@ -414,7 +414,7 @@ class LaboraDetailScreen extends Component {
       let is_normal = '正常'
       if (ref.data_type === 2) {
         if (item.result_inspection * 1 < ref.reference_min) {
-          is_normal = '正常'
+          is_normal = '偏低'
         } else if (item.result_inspection * 1 > ref.reference_max) {
           is_normal = '偏高'
         }
@@ -525,6 +525,7 @@ class LaboraDetailScreen extends Component {
     const { selIndex, laboraDetails, laboras } = this.state
     const array = laboraDetails[selIndex]
     if (!array || !array.length) return null
+    console.log('array =====', array)
     let data = laboras[selIndex]
     return (
       <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 40px 0', background: 'rgba(255, 255, 255, 1)' }}>
@@ -534,6 +535,7 @@ class LaboraDetailScreen extends Component {
               <div style={{ flex: 1 }}>序号</div>
               <div style={{ flex: 3 }}>项目</div>
               <div style={{ flex: 2 }}>结果</div>
+              <div style={{ flex: 2 }}>异常标志</div>
               <div style={{ flex: 2 }}>单位</div>
               <div style={{ flex: 2 }}>性质</div>
               <div style={{ flex: 3 }}>参考值</div>
@@ -545,7 +547,17 @@ class LaboraDetailScreen extends Component {
             </li>
             {array.map((item, index) => {
               let nameOptions = this.getNameOptions(index)
-              const { reference } = this.getReference(item)
+              const { reference, reference_min, reference_max, data_type } = this.getReference(item)
+              let is_normal = ''
+              if (data_type === 2) {
+                if (item.result_inspection * 1 < reference_min) {
+                  is_normal = '偏低'
+                } else if (item.result_inspection * 1 > reference_max) {
+                  is_normal = '偏高'
+                } else {
+                  is_normal = '正常'
+                }
+              }
               return (
                 <li key={index}>
                   <div style={{ flex: 1 }}>{index + 1}</div>
@@ -575,6 +587,7 @@ class LaboraDetailScreen extends Component {
                       }}
                     />
                   </div>
+                  <div style={{ flex: 2, color: is_normal === '偏高' || is_normal === '偏低' ? 'red' : '#505050' }}>{is_normal}</div>
                   <div style={{ flex: 2 }}>{item.unit_name}</div>
                   <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
                   <div style={{ flex: 3 }}>{reference}</div>
