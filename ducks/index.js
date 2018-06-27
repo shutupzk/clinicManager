@@ -219,7 +219,8 @@ import {
   LaboratoryTriageUpdate,
   LaboratoryTriageRecordList,
   LaboratoryTriageDetail,
-  LaboratoryTriageRecordDetail
+  LaboratoryTriageRecordDetail,
+  LaboratoryTriagePatientRecordList
 } from './laboratory_triage'
 import {
   treatmentTriages,
@@ -520,5 +521,6 @@ export {
   TreatmentTriageRecordCreate,
   TreatmentTriageRecordList,
   TreatmentTriageUpdate,
-  ExaminationTriagePatientRecordList
+  ExaminationTriagePatientRecordList,
+  LaboratoryTriagePatientRecordList
 }

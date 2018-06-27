@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
-import { queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail, LaboratoryTriageRecordCreate, ExaminationTriagePatientRecordList, queryLaboratoryItemList } from '../../../../../ducks'
+import { queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail, LaboratoryTriageRecordCreate, LaboratoryTriagePatientRecordList, queryLaboratoryItemList } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import moment from 'moment'
 
@@ -14,7 +14,7 @@ class LaboraDetailScreen extends Component {
       laboras: [],
       selIndex: 0,
       laboraDetails: {},
-      showExamHistory: false,
+      showLaboraHistory: false,
       showRecord: false
     }
   }
@@ -68,8 +68,9 @@ class LaboraDetailScreen extends Component {
         {this.renderItemTitle()}
         {this.renderContent()}
         {this.getStyle()}
-        {this.renderExamHistory()}
+        {this.renderLobroaHistory()}
         {this.renderMedicalRecord()}
+        {this.renderHistoryDetail()}
         <Confirm ref='myAlert' />
       </div>
     )
@@ -144,22 +145,22 @@ class LaboraDetailScreen extends Component {
     )
   }
 
-  ExaminationTriagePatientRecordList({ offset = 0, limit = 10 }) {
-    const { triagePatient, ExaminationTriagePatientRecordList } = this.props
+  LaboratoryTriagePatientRecordList({ offset = 0, limit = 10 }) {
+    const { triagePatient, LaboratoryTriagePatientRecordList } = this.props
     const { clinic_triage_patient_id } = triagePatient
-    ExaminationTriagePatientRecordList({ clinic_triage_patient_id, offset, limit })
+    LaboratoryTriagePatientRecordList({ clinic_triage_patient_id, offset, limit })
   }
 
-  renderExamHistory() {
-    const { showExamHistory } = this.state
-    if (!showExamHistory) return
-    const { patient_record_data, patient_record_page_info } = this.props
+  renderLobroaHistory() {
+    const { showLaboraHistory } = this.state
+    if (!showLaboraHistory) return
+    const { patient_record_data, patient_record_page_info, queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail } = this.props
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
           <div className='doctorList_top'>
             <span>查看历史记录</span>
-            <span onClick={() => this.setState({ showExamHistory: false })}>x</span>
+            <span onClick={() => this.setState({ showLaboraHistory: false })}>x</span>
           </div>
           <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <ul style={{ flex: 1 }}>
@@ -170,13 +171,32 @@ class LaboraDetailScreen extends Component {
                 <div style={{ flex: 1 }} />
               </li>
               {patient_record_data.map((item, index) => {
-                const { finish_time, clinic_laboratory_name, clinic_name } = item
+                const { finish_time, clinic_laboratory_name, clinic_name, clinic_triage_patient_id, department_name, doctor_name } = item
                 return (
                   <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
                     <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
                     <div style={{ flex: 2 }}>{clinic_name}</div>
                     <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_laboratory_name}</div>
-                    <div style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }} onClick={() => {}}>
+                    <div
+                      style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                      onClick={async () => {
+                        let record = await queryMedicalRecord(clinic_triage_patient_id)
+                        let laboras = await LaboratoryTriageList({ clinic_triage_patient_id, order_status: '30' })
+                        let laboraDetails = {}
+                        if (laboras && laboras.length) {
+                          let { clinic_laboratory_id, laboratory_patient_id } = laboras[0]
+                          let detail = await LaboratoryTriageDetail({ laboratory_patient_id, clinic_laboratory_id })
+                          let resultsData = detail.resultsData || []
+                          let array = [...resultsData]
+                          laboraDetails['0'] = array
+                        }
+                        this.setState({
+                          showLaboraHistoryDetail: true,
+                          showLaboraHistory: false,
+                          historyDetail: { record, laboras, finish_time, department_name, doctor_name, selIndex: 0, laboraDetails }
+                        })
+                      }}
+                    >
                       查看报告
                     </div>
                   </li>
@@ -191,11 +211,95 @@ class LaboraDetailScreen extends Component {
             total={patient_record_page_info.total}
             onItemClick={({ offset, limit }) => {
               const keyword = this.state.keyword
-              this.ExaminationTriagePatientRecordList({ offset, limit, keyword })
+              this.LaboratoryTriagePatientRecordList({ offset, limit, keyword })
             }}
           />
         </div>
         {this.getStyle()}
+      </div>
+    )
+  }
+
+  renderHistoryDetail() {
+    const { showLaboraHistoryDetail, historyDetail } = this.state
+    if (!showLaboraHistoryDetail) return null
+    let { record = {}, laboras = [], selIndex, laboraDetails } = historyDetail
+    const array = laboraDetails[selIndex]
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>报告详情</span>
+            <span onClick={() => this.setState({ showLaboraHistoryDetail: false, showExamHistory: true })}>x</span>
+          </div>
+          <div className={'detail'}>
+            <div className={'filterBox'}>
+              <div>
+                <div>开单医生：{historyDetail.doctor_name}</div>
+              </div>
+              <div>
+                <div>开单科室：{historyDetail.department_name}</div>
+              </div>
+              <div>
+                <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              </div>
+            </div>
+            {this.renderPatientInfo()}
+            <div className={'filterBox'}>
+              <div className={'longTxt'}>
+                <label>诊断：</label>
+                <div>{record.diagnosis}</div>
+              </div>
+              <div className={'longTxt'}>
+                <label>过敏史：</label>
+                <div>{record.allergic_history}</div>
+              </div>
+            </div>
+            <div className={'detailCenter'}>
+              <div className={'childTopBar'}>
+                {laboras.map((item, index) => {
+                  return (
+                    <span
+                      key={index}
+                      className={index === selIndex ? 'sel' : ''}
+                      onClick={() => {
+                        this.setState({ historyDetail: { ...historyDetail, selIndex: index } })
+                      }}
+                    >
+                      {item.clinic_laboratory_name}
+                    </span>
+                  )
+                })}
+              </div>
+            </div>
+            <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
+              <ul>
+                <li>
+                  <div style={{ flex: 1 }}>序号</div>
+                  <div style={{ flex: 3 }}>项目</div>
+                  <div style={{ flex: 2 }}>结果</div>
+                  <div style={{ flex: 2 }}>单位</div>
+                  <div style={{ flex: 2 }}>性质</div>
+                  <div style={{ flex: 3 }}>参考值</div>
+                </li>
+                {array.map((item, index) => {
+                  const { reference } = this.getReference(item)
+                  return (
+                    <li key={index}>
+                      <div style={{ flex: 1 }}>{index + 1}</div>
+                      <div style={{ flex: 3 }}>{item.name}</div>
+                      <div style={{ flex: 2 }}>{item.result_inspection}</div>
+                      <div style={{ flex: 2 }}>{item.unit_name}</div>
+                      <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
+                      <div style={{ flex: 3 }}>{reference}</div>
+                    </li>
+                  )
+                })}
+              </ul>
+              {this.getStyle()}
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -277,8 +381,8 @@ class LaboraDetailScreen extends Component {
           <button onClick={() => this.setState({ showRecord: true })}>查看病历</button>
           <button
             onClick={() => {
-              this.setState({ showExamHistory: true })
-              this.ExaminationTriagePatientRecordList({})
+              this.setState({ showLaboraHistory: true })
+              this.LaboratoryTriagePatientRecordList({})
             }}
           >
             检验记录
@@ -681,8 +785,8 @@ const mapStateToProps = state => {
   return {
     operation_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
-    patient_record_data: state.examinationTriages.patient_record_data,
-    patient_record_page_info: state.examinationTriages.patient_record_page_info,
+    patient_record_data: state.laboratoryTriages.patient_record_data,
+    patient_record_page_info: state.laboratoryTriages.patient_record_page_info,
     laboItemData: state.laboratoryItems.data
   }
 }
@@ -694,7 +798,7 @@ export default connect(
     LaboratoryTriageList,
     LaboratoryTriageDetail,
     LaboratoryTriageRecordCreate,
-    ExaminationTriagePatientRecordList,
+    LaboratoryTriagePatientRecordList,
     queryLaboratoryItemList
   }
 )(LaboraDetailScreen)

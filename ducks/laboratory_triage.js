@@ -4,6 +4,7 @@ const LABORATORY_TRIAGE_WAITING = 'LABORATORY_TRIAGE_WAITING'
 const LABORATORY_TRIAGE_CHECKED = 'LABORATORY_TRIAGE_CHECKED'
 const LABORATORY_TRIAGE_CHECKING = 'LABORATORY_TRIAGE_CHECKING'
 const LABORATORY_TRIAGE_RECORD = 'LABORATORY_TRIAGE_RECORD'
+const LABORA_TRIAGE_PATIENT_RECORD = 'LABORA_TRIAGE_PATIENT_RECORD'
 
 const initState = {
   waiting_data: [],
@@ -12,6 +13,8 @@ const initState = {
   checked_page_info: {},
   checking_data: [],
   checking_page_info: {},
+  patient_record_data: [],
+  patient_record_page_info: {},
   list_data: {},
   record_data: [],
   selectId: null
@@ -29,6 +32,8 @@ export function laboratoryTriages(state = initState, action = {}) {
       return { ...state, checked_data: action.checked_data, checked_page_info: action.checked_page_info }
     case LABORATORY_TRIAGE_CHECKING:
       return { ...state, checking_data: action.checking_data, checking_page_info: action.checking_page_info }
+    case LABORA_TRIAGE_PATIENT_RECORD:
+      return { ...state, patient_record_data: action.patient_record_data, patient_record_page_info: action.patient_record_page_info }
     default:
       return state
   }
@@ -182,6 +187,25 @@ export const LaboratoryTriageRecordDetail = (requestData) => async dispatch => {
       data
     )
     if (data.code === '200') return data
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const LaboratoryTriagePatientRecordList = ({ patient_id, clinic_triage_patient_id, offset, limit }) => async dispatch => {
+  try {
+    console.log('limit====', { patient_id, clinic_triage_patient_id, offset, limit })
+    const data = await request('/laboratoryTriage/LaboratoryTriagePatientRecordList', { patient_id, clinic_triage_patient_id, offset, limit })
+    console.log('data=====', data)
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    dispatch({
+      type: LABORA_TRIAGE_PATIENT_RECORD,
+      patient_record_data: docs,
+      patient_record_page_info: page_info
+    })
     return null
   } catch (e) {
     console.log(e)
