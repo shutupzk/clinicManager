@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { PageCard } from '../../../../components'
 import moment from 'moment'
 import { queryFinanceCredit } from '../../../../ducks'
+import { formatMoney } from '../../../../utils'
 
 // 其他收费
 class CreditDayScreen extends Component {
@@ -65,7 +66,7 @@ class CreditDayScreen extends Component {
                   <div>{item.sex === 1 ? '男' : '女'}</div>
                   <div>{item.phone}</div>
                   <div>{item.type === 1 ? '还账' : '挂账'}</div>
-                  <div>{item.on_credit_money}</div>
+                  <div>{formatMoney(item.on_credit_money)}</div>
                   <div style={{flex: 2}}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div>{item.remark}</div>
                   <div>{item.operation}</div>
