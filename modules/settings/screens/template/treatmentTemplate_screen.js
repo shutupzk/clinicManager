@@ -4,9 +4,10 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import {
   TreatmentPatientModelList,
-  queryDoctorList
+  queryDoctorList,
+  TreatmentPatientModelDelete
 } from '../../../../ducks'
-import { PageCard, Select } from '../../../../components'
+import { PageCard, Select, Confirm } from '../../../../components'
 import AddTreatmentPatientModelscreen from './components/addTreatmentPatientModelscreen'
 import moment from 'moment'
 
@@ -285,7 +286,9 @@ class TreatmentTemplateScreen extends Component {
                         })
                       }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>删除</div>
+                      <div onClick={() => {
+                        this.TreatmentPatientModelDelete(item.treatment_patient_model_id)
+                      }}>删除</div>
                     </div>
                   </td>
                 </tr>
@@ -356,6 +359,23 @@ class TreatmentTemplateScreen extends Component {
       </div>
     )
   }
+  // 删除
+  TreatmentPatientModelDelete(treatment_patient_model_id) {
+    const {TreatmentPatientModelDelete, pageInfo, treatmentPatientModels} = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await TreatmentPatientModelDelete({treatment_patient_model_id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (treatmentPatientModels.length > 1) {
+          this.getDataList({ offset: pageInfo.offset, limit: 10 })
+        } else if (pageInfo.offset > 0) {
+          this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
+        }
+      }
+    })
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -406,6 +426,7 @@ class TreatmentTemplateScreen extends Component {
             cursor:pointer;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -422,5 +443,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   TreatmentPatientModelList,
-  queryDoctorList
+  queryDoctorList,
+  TreatmentPatientModelDelete
 })(TreatmentTemplateScreen)
