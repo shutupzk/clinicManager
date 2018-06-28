@@ -4,6 +4,7 @@ const TREATMENT_TRIAGE_WAITING = 'TREATMENT_TRIAGE_WAITING'
 const TREATMENT_TRIAGE_CHECKED = 'TREATMENT_TRIAGE_CHECKED'
 const TREATMENT_TRIAGE_CHECKING = 'TREATMENT_TRIAGE_CHECKING'
 const TREATMENT_TRIAGE_RECORD = 'TREATMENT_TRIAGE_RECORD'
+const TREAT_TRIAGE_PATIENT_RECORD = 'TREAT_TRIAGE_PATIENT_RECORD'
 
 const initState = {
   waiting_data: [],
@@ -12,6 +13,8 @@ const initState = {
   checked_page_info: {},
   checking_data: [],
   checking_page_info: {},
+  patient_record_data: [],
+  patient_record_page_info: {},
   list_data: {},
   record_data: [],
   selectId: null
@@ -29,6 +32,8 @@ export function treatmentTriages(state = initState, action = {}) {
       return { ...state, checked_data: action.checked_data, checked_page_info: action.checked_page_info }
     case TREATMENT_TRIAGE_CHECKING:
       return { ...state, checking_data: action.checking_data, checking_page_info: action.checking_page_info }
+    case TREAT_TRIAGE_PATIENT_RECORD:
+      return { ...state, patient_record_data: action.patient_record_data, patient_record_page_info: action.patient_record_page_info }
     default:
       return state
   }
@@ -41,18 +46,18 @@ export const TreatmentTriageList = (requestData) => async dispatch => {
     console.log('data=====', data)
     const docs = data.data || []
     // const page_info = data.page_info || {}
-    let json = {}
-    for (let doc of docs) {
-      json[doc.id] = doc
-    }
-    dispatch({
-      type: TREATMENT_TRIAGE_LIST,
-      list_data: json
-    })
-    return null
+    // let json = {}
+    // for (let doc of docs) {
+    //   json[doc.id] = doc
+    // }
+    // dispatch({
+    //   type: TREATMENT_TRIAGE_LIST,
+    //   list_data: json
+    // })
+    return docs
   } catch (e) {
     console.log(e)
-    return e.message
+    return []
   }
 }
 export const TreatmentTriageWaiting = (requestData) => async dispatch => {
@@ -149,6 +154,25 @@ export const TreatmentTriageUpdate = (requestData) => async dispatch => {
     )
     if (data.code === '200') return null
     return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const TreatmentTriagePatientRecordList = ({ patient_id, clinic_triage_patient_id, offset, limit }) => async dispatch => {
+  try {
+    console.log('limit====', { patient_id, clinic_triage_patient_id, offset, limit })
+    const data = await request('/treatmentTriage/TreatmentTriagePatientRecordList', { patient_id, clinic_triage_patient_id, offset, limit })
+    console.log('data=====', data)
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    dispatch({
+      type: TREAT_TRIAGE_PATIENT_RECORD,
+      patient_record_data: docs,
+      patient_record_page_info: page_info
+    })
+    return null
   } catch (e) {
     console.log(e)
     return e.message

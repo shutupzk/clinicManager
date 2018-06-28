@@ -262,7 +262,8 @@ import {
   TreatmentTriageChecking,
   TreatmentTriageRecordCreate,
   TreatmentTriageRecordList,
-  TreatmentTriageUpdate
+  TreatmentTriageUpdate,
+  TreatmentTriagePatientRecordList
 } from './treatment_triage'
 
 // keys
@@ -567,5 +568,6 @@ export {
   TreatmentTriageRecordList,
   TreatmentTriageUpdate,
   ExaminationTriagePatientRecordList,
-  LaboratoryTriagePatientRecordList
+  LaboratoryTriagePatientRecordList,
+  TreatmentTriagePatientRecordList
 }

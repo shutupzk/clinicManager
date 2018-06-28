@@ -163,7 +163,6 @@ class TobeCheckedScreen extends Component {
                           <input
                             type='checkbox'
                             onChange={e => {
-                              console.log('clinic_examination_name ==========', selItem.clinic_triage_patient_id, item.examination_patient_id, item.clinic_examination_name, e.target.checked)
                               let checked = e.target.checked
                               if (!checked) {
                                 delete items[item.examination_patient_id]
