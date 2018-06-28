@@ -2,14 +2,17 @@ import { request } from './request'
 const FINANCE_ADD = 'FINANCE_ADD'
 const FINANCE_ADD_MONTH = 'FINANCE_ADD_MONTH'
 const FINANCE_ADD_DETAIL = 'FINANCE_ADD_DETAIL'
+const FINANCE_ADD_CREDIT = 'FINANCE_ADD_CREDIT'
 
 const initState = {
   data: [], // 收费日报表
   data_month: [], // 收费月报表
   data_detail: [], // 收费明细
+  data_credit: [], // 挂账记录
   page_info: {},
   page_info_month: {},
-  page_info_detail: {}
+  page_info_detail: {},
+  page_info_credit: {}
 }
 
 export function finances(state = initState, action = {}) {
@@ -20,6 +23,8 @@ export function finances(state = initState, action = {}) {
       return { ...state, data_month: action.data, page_info_month: action.page_info }
     case FINANCE_ADD_DETAIL:
       return { ...state, data_detail: action.data, page_info_detail: action.page_info }
+    case FINANCE_ADD_CREDIT:
+      return { ...state, data_credit: action.data, page_info_credit: action.page_info }
     default:
       return state
   }
@@ -84,11 +89,34 @@ export const queryFinanceItemList = ({ start_date, end_date, patientName, porjec
       offset,
       limit
     })
-    console.log(data)
     const json = data.data || []
     const page_info = data.page_info || { offset, limit, total: 0 }
     dispatch({
       type: FINANCE_ADD_DETAIL,
+      data: json,
+      page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const queryFinanceCredit = ({ start_date, end_date, keyword, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    const data = await request('/charge/business/transaction/credit', {
+      start_date,
+      end_date,
+      keyword,
+      offset,
+      limit
+    })
+    console.log(data)
+    const json = data.data || []
+    const page_info = data.page_info || { offset, limit, total: 0 }
+    dispatch({
+      type: FINANCE_ADD_CREDIT,
       data: json,
       page_info
     })
