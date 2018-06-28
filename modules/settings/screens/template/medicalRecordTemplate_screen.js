@@ -4,9 +4,10 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import {
   queryMedicalModels,
-  queryDoctorList
+  queryDoctorList,
+  MedicalRecordModelDelete
 } from '../../../../ducks'
-import { PageCard, Select } from '../../../../components'
+import { PageCard, Select, Confirm } from '../../../../components'
 import AddMedicalRecordModelScreen from './components/addMedicalRecordModelScreen'
 import moment from 'moment'
 
@@ -24,7 +25,8 @@ class MedicalRecordTemplateScreen extends Component {
       relateItem: {},
       alertType: 0,
       showWay: 1,
-      laboratory_patient_model_id: ''
+      laboratory_patient_model_id: '',
+      selModel: {}
     }
   }
 
@@ -32,13 +34,13 @@ class MedicalRecordTemplateScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType, showWay, laboratory_patient_model_id } = this.state
+    let { pageType, showWay, selModel } = this.state
     let map = {
       // 1: <AddDrugScreen />,
       2: <AddMedicalRecordModelScreen
         drugType={1}
         showWay={showWay}
-        laboratory_patient_model_id={laboratory_patient_model_id}
+        selModel={selModel}
         back2List={() => {
           this.setState({pageType: 1})
           this.getDataList({offset: 0, limit: 10})
@@ -250,9 +252,17 @@ class MedicalRecordTemplateScreen extends Component {
                   <td>{item.operation_name}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          selModel: item,
+                          showWay: 2
+                        })
+                      }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>删除</div>
+                      <div onClick={() => {
+                        this.MedicalRecordModelDelete(item.id)
+                      }}>删除</div>
                     </div>
                   </td>
                 </tr>
@@ -322,6 +332,23 @@ class MedicalRecordTemplateScreen extends Component {
       </div>
     )
   }
+  // 删除
+  MedicalRecordModelDelete(medical_record_model_id) {
+    const {MedicalRecordModelDelete, pageInfo, medicalRecordModels} = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await MedicalRecordModelDelete({medical_record_model_id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (medicalRecordModels.length > 1) {
+          this.getDataList({ offset: pageInfo.offset, limit: 10 })
+        } else if (pageInfo.offset > 0) {
+          this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
+        }
+      }
+    })
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -372,6 +399,7 @@ class MedicalRecordTemplateScreen extends Component {
             cursor:pointer;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -388,5 +416,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   queryMedicalModels,
-  queryDoctorList
+  queryDoctorList,
+  MedicalRecordModelDelete
 })(MedicalRecordTemplateScreen)

@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { LaboratoryPatientModelList, queryDoctorList } from '../../../../ducks'
-import { PageCard, Select } from '../../../../components'
+import {
+  LaboratoryPatientModelList,
+  queryDoctorList,
+  LaboratoryPatientModelDelete
+} from '../../../../ducks'
+import { PageCard, Select, Confirm } from '../../../../components'
 import AddLaboratoryModelScreen from './components/addLaboratoryModelScreen'
 import moment from 'moment'
 
@@ -248,7 +252,9 @@ class InspectionTemplateScreen extends Component {
                         })
                       }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>删除</div>
+                      <div onClick={() => {
+                        this.LaboratoryPatientModelDelete(item.laboratory_patient_model_id)
+                      }}>删除</div>
                     </div>
                   </td>
                 </tr>
@@ -317,6 +323,23 @@ class InspectionTemplateScreen extends Component {
       </div>
     )
   }
+  // 删除
+  LaboratoryPatientModelDelete(laboratory_patient_model_id) {
+    const {LaboratoryPatientModelDelete, pageInfo, laboratoryPatientModels} = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await LaboratoryPatientModelDelete({laboratory_patient_model_id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (laboratoryPatientModels.length > 1) {
+          this.getDataList({ offset: pageInfo.offset, limit: 10 })
+        } else if (pageInfo.offset > 0) {
+          this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
+        }
+      }
+    })
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -373,6 +396,7 @@ class InspectionTemplateScreen extends Component {
             cursor: pointer;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -389,5 +413,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   LaboratoryPatientModelList,
-  queryDoctorList
+  queryDoctorList,
+  LaboratoryPatientModelDelete
 })(InspectionTemplateScreen)

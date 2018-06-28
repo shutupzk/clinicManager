@@ -188,6 +188,64 @@ export const createMedicalRecordAsModel = ({
     return e
   }
 }
+export const MedicalRecordModelUpdate = ({
+  medical_record_model_id,
+  model_name,
+  is_common,
+  operation_id,
+  morbidity_date,
+  chief_complaint,
+  history_of_present_illness,
+  history_of_past_illness,
+  family_medical_history,
+  allergic_history,
+  allergic_reaction,
+  body_examination,
+  immunizations,
+  diagnosis,
+  cure_suggestion,
+  remark,
+  files
+}) => async dispatch => {
+  try {
+    const data = await request('/medicalRecord/model/update', {
+      medical_record_model_id,
+      is_common,
+      model_name,
+      operation_id,
+      morbidity_date,
+      chief_complaint,
+      history_of_present_illness,
+      history_of_past_illness,
+      family_medical_history,
+      allergic_history,
+      allergic_reaction,
+      body_examination,
+      immunizations,
+      diagnosis,
+      cure_suggestion,
+      remark
+    })
+    console.log('data====', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    return e
+  }
+}
+
+export const MedicalRecordModelDelete = ({medical_record_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', medical_record_model_id)
+    const data = await request('/medicalRecord/model/delete', {medical_record_model_id})
+    console.log('MedicalRecordModelDelete=======', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
 
 export const queryChiefComplaints = () => async dispatch => {
   try {

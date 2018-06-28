@@ -83,3 +83,15 @@ export const ExaminationPatientModelDetail = ({examination_patient_model_id}) =>
     return {} // e.message
   }
 }
+export const ExaminationPatientModelDelete = ({examination_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', examination_patient_model_id)
+    const data = await request('/examination/ExaminationPatientModelDelete', {examination_patient_model_id})
+    console.log('ExaminationPatientModelDelete=======', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
