@@ -170,8 +170,8 @@ export const PrescriptionChinesePatientModelDelete = ({prescription_patient_mode
     console.log('limit====', prescription_patient_model_id)
     const data = await request('/clinic_drug/PrescriptionChinesePatientModelDelete', {prescription_patient_model_id})
     console.log('PrescriptionChinesePatientModelDelete=======', data)
-    const docs = data.data || {}
-    return docs
+    if (data.code === '200') return null
+    return data.msg
   } catch (e) {
     console.log(e)
     return {} // e.message

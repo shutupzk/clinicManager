@@ -127,8 +127,8 @@ export const PrescriptionWesternPatientModelDelete = ({prescription_patient_mode
     console.log('limit====', prescription_patient_model_id)
     const data = await request('/clinic_drug/PrescriptionWesternPatientModelDelete', {prescription_patient_model_id})
     console.log('PrescriptionWesternPatientModelDelete=======', data)
-    const docs = data.data || {}
-    return docs
+    if (data.code === '200') return null
+    return data.msg
   } catch (e) {
     console.log(e)
     return {} // e.message

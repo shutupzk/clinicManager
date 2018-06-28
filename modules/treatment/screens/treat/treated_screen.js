@@ -5,6 +5,7 @@ import { TreatmentTriageChecked } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
+import TreatDetailScreen from './components/treat_detail_screen'
 
 class TreatedScreen extends Component {
   constructor(props) {
@@ -12,23 +13,23 @@ class TreatedScreen extends Component {
     this.state = {
       keyword: '',
       start_date: moment()
-      .add(-7, 'd')
-      .format('YYYY-MM-DD'),
+        .add(-7, 'd')
+        .format('YYYY-MM-DD'),
       end_date: moment()
-      .add(1, 'd')
-      .format('YYYY-MM-DD'),
+        .add(1, 'd')
+        .format('YYYY-MM-DD'),
       showMask: false,
       selItem: {}
     }
   }
 
   componentWillMount() {
-    this.getListData({offset: 0, limit: 6})
+    this.getListData({ offset: 0, limit: 6 })
   }
-	// 获取列表数据
-  getListData({offset = 0, limit = 6}) {
-    const {clinic_id, TreatmentTriageChecked} = this.props
-    const {keyword, start_date, end_date} = this.state
+  // 获取列表数据
+  getListData({ offset = 0, limit = 6 }) {
+    const { clinic_id, TreatmentTriageChecked } = this.props
+    const { keyword, start_date, end_date } = this.state
     let requestData = {
       clinic_id,
       offset,
@@ -45,9 +46,9 @@ class TreatedScreen extends Component {
     }
     TreatmentTriageChecked(requestData)
   }
-	// 显示待收费
+  // 显示待收费
   showTobeCharged() {
-    const {checked_data, pageInfo} = this.props
+    const { checked_data, pageInfo } = this.props
     console.log('checked_data====', checked_data)
     return (
       <div>
@@ -83,14 +84,11 @@ class TreatedScreen extends Component {
                   <div className={'itemBottom'}>
                     <span
                       onClick={() => {
-                        // this.setState({showMask: true, selItem: patient})
+                        this.setState({ showMask: true, selItem: patient, order_status: '30' })
                       }}
-                    >检查中(10)</span>
-                    <span
-                      onClick={() => {
-                        // this.setState({showMask: true, selItem: patient})
-                      }}
-                    >已检查(10)</span>
+                    >
+                      已治疗({patient.checked_total_count})
+                    </span>
                   </div>
                 </li>
               )
@@ -112,50 +110,62 @@ class TreatedScreen extends Component {
 
   // 加载
   render() {
+    const { showMask, selItem, order_status } = this.state
     return (
       <div>
-        <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/treatment/treat')}>待治疗</span>
-          <span onClick={() => Router.push('/treatment/treat/inInspection')}>
-						治疗中
-					</span>
-          <span className={'sel'}>
-						已治疗
-					</span>
-        </div>
-        <div className={'filterBox'}>
-          <div className={'boxLeft'}>
-            <input
-              type='date'
-              placeholder='选择开始日期'
-              value={this.state.start_date}
-              onChange={e => {
-                this.setState({start_date: e.target.value})
-              }}
-            />
-            <input
-              type='date'
-              placeholder='选择结束日期'
-              value={this.state.end_date}
-              onChange={e => {
-                this.setState({end_date: e.target.value})
-              }}
-            />
-            <input
-              type='text'
-              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
-              onClick={e => {
-                this.setState({keyword: e.target.value})
-              }}
-            />
-            <button
-              onClick={() => {
-                this.getListData({offset: 0, limit: 6})
-              }}
-            >查询</button>
+        {showMask ? (
+          <TreatDetailScreen
+            triagePatient={selItem}
+            order_status={order_status}
+            back2List={() => {
+              this.setState({ showMask: false })
+              this.getListData({ offset: 0, limit: 6 })
+            }}
+          />
+        ) : (
+          <div>
+            <div className={'childTopBar'}>
+              <span onClick={() => Router.push('/treatment/treat')}>待治疗</span>
+              <span onClick={() => Router.push('/treatment/treat/inInspection')}>治疗中</span>
+              <span className={'sel'}>已治疗</span>
+            </div>
+            <div className={'filterBox'}>
+              <div className={'boxLeft'}>
+                <input
+                  type='date'
+                  placeholder='选择开始日期'
+                  value={this.state.start_date}
+                  onChange={e => {
+                    this.setState({ start_date: e.target.value })
+                  }}
+                />
+                <input
+                  type='date'
+                  placeholder='选择结束日期'
+                  value={this.state.end_date}
+                  onChange={e => {
+                    this.setState({ end_date: e.target.value })
+                  }}
+                />
+                <input
+                  type='text'
+                  placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+                  onClick={e => {
+                    this.setState({ keyword: e.target.value })
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    this.getListData({ offset: 0, limit: 6 })
+                  }}
+                >
+                  查询
+                </button>
+              </div>
+            </div>
+            {this.showTobeCharged()}
           </div>
-        </div>
-        {this.showTobeCharged()}
+        )}
       </div>
     )
   }
@@ -170,4 +180,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { TreatmentTriageChecked })(TreatedScreen)
+export default connect(
+  mapStateToProps,
+  { TreatmentTriageChecked }
+)(TreatedScreen)

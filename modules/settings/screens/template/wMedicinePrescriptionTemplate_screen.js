@@ -4,9 +4,10 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 import {
   PrescriptionWesternPatientModelList,
-  queryDoctorList
+  queryDoctorList,
+  PrescriptionWesternPatientModelDelete
 } from '../../../../ducks'
-import { PageCard, Select } from '../../../../components'
+import { PageCard, Select, Confirm } from '../../../../components'
 import AddPrescriptionWesternPatientModelscreen from './components/addPrescriptionWesternPatientModelscreen'
 import moment from 'moment'
 
@@ -285,7 +286,9 @@ class WMedicinePrescriptionTemplateScreen extends Component {
                         })
                       }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>删除</div>
+                      <div onClick={() => {
+                        this.PrescriptionWesternPatientModelDelete(item.prescription_patient_model_id)
+                      }}>删除</div>
                     </div>
                   </td>
                 </tr>
@@ -356,6 +359,23 @@ class WMedicinePrescriptionTemplateScreen extends Component {
       </div>
     )
   }
+  // 删除
+  PrescriptionWesternPatientModelDelete(prescription_patient_model_id) {
+    const {PrescriptionWesternPatientModelDelete, pageInfo, prescriptionWesternPatientModels} = this.props
+    this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
+      let error = await PrescriptionWesternPatientModelDelete({prescription_patient_model_id})
+      if (error) {
+        return this.refs.myAlert.alert('删除失败', error)
+      } else {
+        this.refs.myAlert.alert('删除成功')
+        if (prescriptionWesternPatientModels.length > 1) {
+          this.getDataList({ offset: pageInfo.offset, limit: 10 })
+        } else if (pageInfo.offset > 0) {
+          this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
+        }
+      }
+    })
+  }
   // 显示列表信息
   renderList() {
     return (
@@ -406,6 +426,7 @@ class WMedicinePrescriptionTemplateScreen extends Component {
             cursor:pointer;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -422,5 +443,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   PrescriptionWesternPatientModelList,
-  queryDoctorList
+  queryDoctorList,
+  PrescriptionWesternPatientModelDelete
 })(WMedicinePrescriptionTemplateScreen)

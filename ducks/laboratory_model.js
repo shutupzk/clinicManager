@@ -132,3 +132,15 @@ export const LaboratoryPatientModelDetail = ({laboratory_patient_model_id}) => a
     return {} // e.message
   }
 }
+export const LaboratoryPatientModelDelete = ({laboratory_patient_model_id}) => async dispatch => {
+  try {
+    console.log('limit====', laboratory_patient_model_id)
+    const data = await request('/laboratory/LaboratoryPatientModelDelete', {laboratory_patient_model_id})
+    console.log('LaboratoryPatientModelDelete=======', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}

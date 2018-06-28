@@ -35,6 +35,8 @@ import {
   medicalRecords,
   createMedicalRecord,
   createMedicalRecordAsModel,
+  MedicalRecordModelUpdate,
+  MedicalRecordModelDelete,
   queryMedicalRecord,
   queryMedicalModels,
   queryMedicalsByPatient,
@@ -146,6 +148,7 @@ import {
   TreatmentPatientModelList,
   TreatmentPatientModelUpdate,
   TreatmentPatientModelDetail,
+  TreatmentPatientModelDelete,
   TreatmentPatientModelCreate
 } from './treatment_models'
 import {
@@ -153,6 +156,7 @@ import {
   examinationModelList,
   ExaminationPatientModelUpdate,
   ExaminationPatientModelDetail,
+  ExaminationPatientModelDelete,
   examinationModelCreate
 } from './examination_models'
 import {
@@ -160,6 +164,7 @@ import {
   LaboratoryPatientModelCreate,
   LaboratoryPatientModelUpdate,
   LaboratoryPatientModelDetail,
+  LaboratoryPatientModelDelete,
   LaboratoryPersonalPatientModelList,
   LaboratoryPatientModelList } from './laboratory_model'
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
@@ -262,7 +267,8 @@ import {
   TreatmentTriageChecking,
   TreatmentTriageRecordCreate,
   TreatmentTriageRecordList,
-  TreatmentTriageUpdate
+  TreatmentTriageUpdate,
+  TreatmentTriagePatientRecordList
 } from './treatment_triage'
 
 // keys
@@ -366,6 +372,8 @@ export {
   completePreDiagnosis,
   createMedicalRecord,
   createMedicalRecordAsModel,
+  MedicalRecordModelDelete,
+  MedicalRecordModelUpdate,
   queryMedicalRecord,
   queryMedicalModels,
   queryMedicalModelsByDoctor,
@@ -452,13 +460,16 @@ export {
   TreatmentPatientModelCreate,
   TreatmentPatientModelUpdate,
   TreatmentPatientModelDetail,
+  TreatmentPatientModelDelete,
   examinationModelList,
   examinationModelCreate,
   ExaminationPatientModelUpdate,
   ExaminationPatientModelDetail,
+  ExaminationPatientModelDelete,
   LaboratoryPatientModelCreate,
   LaboratoryPatientModelUpdate,
   LaboratoryPatientModelDetail,
+  LaboratoryPatientModelDelete,
   LaboratoryPersonalPatientModelList,
   RemoveScheduleByID,
   ExaminationUpdate,
@@ -568,5 +579,6 @@ export {
   TreatmentTriageRecordList,
   TreatmentTriageUpdate,
   ExaminationTriagePatientRecordList,
-  LaboratoryTriagePatientRecordList
+  LaboratoryTriagePatientRecordList,
+  TreatmentTriagePatientRecordList
 }

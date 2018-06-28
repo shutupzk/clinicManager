@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 // import Router from 'next/router'
 // import { Select } from '../../../../../components'
 import {
+  createMedicalRecordAsModel,
+  MedicalRecordModelUpdate
 } from '../../../../../ducks'
 
 // 病历
@@ -18,6 +20,14 @@ class AddMedicalRecordModelScreen extends Component {
   }
 
   async componentWillMount() {
+  }
+  async componentDidMount() {
+    const {showWay, selModel} = this.props
+    if (showWay === 2) {
+      let modelInfo = selModel
+      modelInfo.medical_record_model_id = selModel.id
+      this.setState({modelInfo})
+    }
   }
   style() {
     return (
@@ -224,6 +234,7 @@ class AddMedicalRecordModelScreen extends Component {
   }
   render() {
     const {showType} = this.state
+    const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
         {this.renderBaseInfoBlank()}
@@ -231,7 +242,13 @@ class AddMedicalRecordModelScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => { this.submit() }}>保存</button>
+            <button onClick={() => {
+              if (showWay === 2) {
+                this.MedicalRecordModelUpdate()
+              } else {
+                this.submit()
+              }
+            }}>保存</button>
           </div>
         </div>
         {this.style()}
@@ -240,36 +257,56 @@ class AddMedicalRecordModelScreen extends Component {
   }
   // 验证字段
   validateData(data) {
-    if (!data.name || data.name === '') {
-      this.setState({nameFailed: true})
+    if (!data.model_name || data.model_name === '') {
+      this.setState({model_nameFailed: true})
       // alert(1)
       return false
     }
-    if (!data.unit_name || data.unit_name === '') {
-      this.setState({unit_nameFailed: true})
+    if (!data.chief_complaint || data.chief_complaint === '') {
+      this.setState({chief_complaintFailed: true})
       // alert(2)
       return false
     }
-    if (!data.price || data.price === '') {
-      this.setState({priceFailed: true})
-      // alert(2)
-      return false
-    }
+    // if (!data.price || data.price === '') {
+    //   this.setState({priceFailed: true})
+    //   // alert(2)
+    //   return false
+    // }
     return true
   }
   // 保存
   async submit() {
     let {modelInfo} = this.state
-    const {clinic_id, otherCostsCreate} = this.props
+    const {clinic_id, createMedicalRecordAsModel, operation_id} = this.props
     modelInfo.clinic_id = clinic_id
+    modelInfo.operation_id = operation_id
     // let requestData = {...modelInfo}
     // requestData.items = JSON.stringify(requestData.items)
     // console.log('this.validateData(modelInfo)=====', this.validateData(modelInfo))
     if (this.validateData(modelInfo)) {
-      let error = await otherCostsCreate(modelInfo)
+      let error = await createMedicalRecordAsModel(modelInfo)
       if (error) {
         alert(error)
-        this.setState({modelInfo})
+        // this.setState({modelInfo})
+      } else {
+        this.props.back2List()
+      }
+    }
+    // alert(0)
+  }
+  async MedicalRecordModelUpdate() {
+    let {modelInfo} = this.state
+    const {clinic_id, MedicalRecordModelUpdate, operation_id} = this.props
+    modelInfo.clinic_id = clinic_id
+    modelInfo.operation_id = operation_id
+    // let requestData = {...modelInfo}
+    // requestData.items = JSON.stringify(requestData.items)
+    // console.log('this.validateData(modelInfo)=====', this.validateData(modelInfo))
+    if (this.validateData(modelInfo)) {
+      let error = await MedicalRecordModelUpdate(modelInfo)
+      if (error) {
+        alert(error)
+        // this.setState({modelInfo})
       } else {
         this.props.back2List()
       }
@@ -438,32 +475,82 @@ class AddMedicalRecordModelScreen extends Component {
               />
             </li>
             <li>
-              <label>个人史</label>
+              <label>过敏史</label>
               <textarea
-                placeholder={'family_medical_history'}
-                value={modelInfo.history_of_present_illness}
+                placeholder={'allergic_history'}
+                value={modelInfo.allergic_history}
                 onChange={e => {
-                  this.setItemValue(e, 'history_of_present_illness')
+                  this.setItemValue(e, 'allergic_history')
+                }}
+              />
+            </li>
+            <li>
+              <label>过敏反应</label>
+              <textarea
+                placeholder={'allergic_reaction'}
+                value={modelInfo.allergic_reaction}
+                onChange={e => {
+                  this.setItemValue(e, 'allergic_reaction')
+                }}
+              />
+            </li>
+            <li>
+              <label>疫苗接种史</label>
+              <textarea
+                placeholder={'immunizations'}
+                value={modelInfo.immunizations}
+                onChange={e => {
+                  this.setItemValue(e, 'immunizations')
+                }}
+              />
+            </li>
+            <li>
+              <label>体格检查</label>
+              <textarea
+                placeholder={'body_examination'}
+                value={modelInfo.body_examination}
+                onChange={e => {
+                  this.setItemValue(e, 'body_examination')
                 }}
               />
             </li>
             <li>
               <label>家族史</label>
               <textarea
-                placeholder={'history_of_present_illness'}
-                value={modelInfo.history_of_present_illness}
+                placeholder={'family_medical_history'}
+                value={modelInfo.family_medical_history}
                 onChange={e => {
-                  this.setItemValue(e, 'history_of_present_illness')
+                  this.setItemValue(e, 'family_medical_history')
+                }}
+              />
+            </li>
+            <li>
+              <label>诊断</label>
+              <textarea
+                placeholder={'diagnosis'}
+                value={modelInfo.diagnosis}
+                onChange={e => {
+                  this.setItemValue(e, 'diagnosis')
                 }}
               />
             </li>
             <li>
               <label>治疗意见</label>
               <textarea
-                placeholder={'history_of_present_illness'}
-                value={modelInfo.history_of_present_illness}
+                placeholder={'cure_suggestion'}
+                value={modelInfo.cure_suggestion}
                 onChange={e => {
-                  this.setItemValue(e, 'history_of_present_illness')
+                  this.setItemValue(e, 'cure_suggestion')
+                }}
+              />
+            </li>
+            <li>
+              <label>备注</label>
+              <textarea
+                placeholder={'remark'}
+                value={modelInfo.remark}
+                onChange={e => {
+                  this.setItemValue(e, 'remark')
                 }}
               />
             </li>
@@ -477,9 +564,12 @@ class AddMedicalRecordModelScreen extends Component {
 const mapStateToProps = state => {
   console.log('state=====', state)
   return {
-    clinic_id: state.user.data.clinic_id
+    clinic_id: state.user.data.clinic_id,
+    operation_id: state.user.data.id
   }
 }
 
 export default connect(mapStateToProps, {
+  createMedicalRecordAsModel,
+  MedicalRecordModelUpdate
 })(AddMedicalRecordModelScreen)
