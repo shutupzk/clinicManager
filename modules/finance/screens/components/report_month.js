@@ -40,17 +40,19 @@ class ReportMonthScreen extends Component {
       xAxis: {
         data: xdata
       },
-      yAxis: {
-      },
+      yAxis: {},
       series: [
         {
           name: '费用合计',
           type: 'line',
-          data: ydata,
+          label: {
+            normal: {
+              show: true,
+              position: 'top'
+            }
+          },
+          data: ydata
           // smooth: true,
-          markLine: {
-            silent: true
-          }
         }
       ]
     }
