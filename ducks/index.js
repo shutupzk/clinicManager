@@ -177,7 +177,8 @@ import {
   roleCreate,
   roleSelect,
   RoleUpdate,
-  RoleDetail
+  RoleDetail,
+  RoleFunctionUnset
 } from './role'
 import { menus, queryMenuGetByClinicID, menuSelect } from './business'
 import {
@@ -503,6 +504,7 @@ export {
   roleCreate,
   RoleUpdate,
   RoleDetail,
+  RoleFunctionUnset,
   roleSelect,
   queryMenuGetByClinicID,
   menuSelect,

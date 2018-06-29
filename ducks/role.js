@@ -115,6 +115,18 @@ export const RoleDetail = ({role_id}) => async dispatch => {
     return {} // e.message
   }
 }
+export const RoleFunctionUnset = ({role_id}) => async dispatch => {
+  try {
+    console.log('limit====', role_id)
+    const data = await request('/role/RoleFunctionUnset', {role_id})
+    console.log('RoleFunctionUnset=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
 
 export const roleSelect = ({ id }) => async dispatch => {
   try {
