@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, CustomSelect } from '../../../../../components'
-import { triagePatientsList, getPatientByKeyword } from '../../../../../ducks'
+import { Select } from '../../../../../components'
+import { TriagePatientDetail } from '../../../../../ducks'
 import { getAgeByBirthday, checkPhoneNumber, checkIdCard } from '../../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../../config/provinces'
@@ -21,13 +21,12 @@ class BaseInfoScreen extends Component {
       county: '请选择'
     }
   }
-  componentWillMount() {
-    const { clinic_triage_patient_id, triagePatients } = this.props
-    for (let item of triagePatients) {
-      if (item.clinic_triage_patient_id === clinic_triage_patient_id) {
-        this.setState({ patientInfo: item })
-        break
-      }
+  async componentWillMount() {
+    const { clinic_triage_patient_id, TriagePatientDetail } = this.props
+    let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
+    if (patient) {
+      const { province, city, district } = patient
+      this.setState({ patientInfo: patient, province, city, county: district })
     }
   }
 
@@ -37,11 +36,6 @@ class BaseInfoScreen extends Component {
     let newPatient = this.state.patientInfo
     newPatient[key] = e.target.value
     this.setState({ patientInfo: newPatient })
-  }
-
-  async queryPatients(keyword) {
-    const { getPatientByKeyword } = this.props
-    getPatientByKeyword({ keyword })
   }
 
   getProvincesOptions() {
@@ -103,9 +97,15 @@ class BaseInfoScreen extends Component {
     return options
   }
 
+  getSelectValue(value, options) {
+    for (let option of options) {
+      if (option.value === value) return option
+    }
+    return null
+  }
+
   showBaseInfo() {
     let patient = this.state.patientInfo
-    console.log('patient ======', patient)
     const { isPhone, isIdCode } = this.state
     return (
       <div className={'formList'}>
@@ -117,9 +117,9 @@ class BaseInfoScreen extends Component {
               </label>
               <input
                 type='text'
-                value={patient.patient_name || ''}
+                value={patient.name || ''}
                 onChange={e => {
-                  patient.patient_name = e.target.value
+                  patient.name = e.target.value
                   this.setState({ patientInfo: patient })
                 }}
               />
@@ -154,12 +154,11 @@ class BaseInfoScreen extends Component {
               </label>
               <input
                 type='date'
-                style={{ width: '120px' }}
+                style={{ width: '150px' }}
                 value={moment(patient.birthday).format('YYYY-MM-DD')}
                 onChange={e => {
                   let newPatient = patient
                   newPatient.birthday = moment(e.target.value).format('YYYY-MM-DD')
-                  console.log('newPatient.birthday====', newPatient.birthday)
                   newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
                   this.setState({ patientInfo: newPatient })
                 }}
@@ -169,16 +168,7 @@ class BaseInfoScreen extends Component {
               <label>
                 年龄：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input
-                type='text'
-                style={{ width: '120px' }}
-                value={patient.age || ''}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.age = e.target.value
-                  this.setState({ patientInfo: newPatient })
-                }}
-              />
+              <input readOnly type='text' style={{ width: '120px' }} value={getAgeByBirthday(patient.birthday)} />
             </li>
             <li style={{ width: '24%' }}>
               <label>
@@ -267,11 +257,11 @@ class BaseInfoScreen extends Component {
                 就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
-                <input id='first' type='radio' name='type' value={1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <input id='first' type='radio' name='type' value={1} checked={patient.visit_type === 1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='first'>首诊</label>
-                <input id='referral' type='radio' name='type' value={2} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <input id='referral' type='radio' name='type' value={2} checked={patient.visit_type === 2} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='referral'>复诊</label>
-                <input id='operate' type='radio' name='type' value={3} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <input id='operate' type='radio' name='type' value={3} checked={patient.visit_type === 3} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='operate'>术后复诊</label>
               </div>
             </li>
@@ -286,6 +276,7 @@ class BaseInfoScreen extends Component {
                 <div style={{ width: '100%' }}>
                   <Select
                     placeholder='请选择'
+                    value={this.getSelectValue(patient.patient_channel_id, this.getChanelOptions())}
                     options={this.getChanelOptions()}
                     onChange={({ value }) => {
                       let newPatient = patient
@@ -298,11 +289,11 @@ class BaseInfoScreen extends Component {
             </li>
             <li>
               <label>职业：</label>
-              <input type='text' value={patient.profession} onChange={e => this.setPatientInfo(e, 'profession')} />
+              <input type='text' value={patient.profession || ''} onChange={e => this.setPatientInfo(e, 'profession')} />
             </li>
             <li>
               <label>备注：</label>
-              <input type='text' onChange={e => this.setPatientInfo(e, 'remark')} />
+              <input type='text' value={patient.remark || ''} onChange={e => this.setPatientInfo(e, 'remark')} />
             </li>
           </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
@@ -334,7 +325,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    triagePatientsList,
-    getPatientByKeyword
+    TriagePatientDetail
   }
 )(BaseInfoScreen)

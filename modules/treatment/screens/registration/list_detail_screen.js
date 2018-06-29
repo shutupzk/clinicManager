@@ -5,6 +5,9 @@ import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triageP
 import moment from 'moment'
 import BaseInfoScreen from './components/base_info'
 import MemberInfoScreen from './components/member_info'
+import VisitInfoScreen from './components/visit_info'
+import LaboraReportScreen from './components/labora_report'
+import ExamReportScreen from './components/exam_report'
 
 class ListDetailScreen extends Component {
   constructor(props) {
@@ -58,52 +61,6 @@ class ListDetailScreen extends Component {
     getPatientByKeyword({ keyword })
   }
 
-  // 就诊信息
-  showVisitInfo() {
-    return (
-      <div className={'detailBox'}>
-        <div className={'blankBox patientInfo'}>
-          <div>就诊人姓名：王俊凯</div>
-          <div style={{ flex: 1 }}>性别：男</div>
-          <div style={{ flex: 1 }}>年龄：18</div>
-          <div>就诊ID：1234567890</div>
-          <div>手机号码：13333333333</div>
-        </div>
-        <div className={'blankBox keyPhysicalData'}>
-          <span>关键体征数据</span>
-          <ul>
-            <li>
-              <div className={'dataTitle'}>身高(CM)</div>
-              <div className={'dataContent'}>180</div>
-            </li>
-            <li>
-              <div className={'dataTitle'}>身高(CM)</div>
-              <div className={'dataContent'}>180</div>
-            </li>
-            <li>
-              <div className={'dataTitle'}>身高(CM)</div>
-              <div className={'dataContent'}>180</div>
-            </li>
-            <li>
-              <div className={'dataTitle'}>身高(CM)</div>
-              <div className={'dataContent'}>180</div>
-            </li>
-            <li>
-              <div className={'dataTitle'}>身高(CM)</div>
-              <div className={'dataContent'}>180</div>
-            </li>
-          </ul>
-          <div className={'seeMore'}>查看更多</div>
-        </div>
-        <div className={'blankBox'}>sadas</div>
-        <style jsx='true'>{`
-          .detailBox {
-            float: left;
-          }
-        `}</style>
-      </div>
-    )
-  }
   // 收费信息
   showTollInfo() {
     return <div className={'formList'}>dasdas</div>
@@ -133,14 +90,18 @@ class ListDetailScreen extends Component {
             积分信息
           </span>
           <span className={this.state.pageType === 6 ? 'sel' : ''} onClick={() => this.changeContent({ type: 6 })}>
-            登记预约
+            检验报告
+          </span>
+          <span className={this.state.pageType === 7 ? 'sel' : ''} onClick={() => this.changeContent({ type: 7 })}>
+            检查报告
           </span>
           <span onClick={() => Router.push('/treatment/registration/list')}>返回列表</span>
         </div>
         {this.state.pageType === 1 ? <BaseInfoScreen /> : ''}
         {this.state.pageType === 2 ? <MemberInfoScreen /> : ''}
-        {this.state.pageType === 3 ? this.showVisitInfo() : ''}
-        {this.state.pageType === 4 ? this.showTollInfo() : ''}
+        {this.state.pageType === 3 ? <VisitInfoScreen /> : ''}
+        {this.state.pageType === 6 ? <LaboraReportScreen /> : ''}
+        {this.state.pageType === 7 ? <ExamReportScreen /> : ''}
         {this.state.pageType === 5 ? this.showIntgralInfo() : ''}
       </div>
     )
