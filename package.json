@@ -17,6 +17,8 @@
     "body-parser": "^1.18.2",
     "draft-js": "^0.10.3",
     "draftjs-to-html": "^0.7.6",
+    "echarts": "^4.1.0",
+    "echarts-for-react": "^2.0.13",
     "express": "^4.14.0",
     "html-to-draftjs": "^1.0.1",
     "localforage": "^1.5.2",

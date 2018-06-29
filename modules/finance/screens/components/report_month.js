@@ -4,6 +4,7 @@ import moment from 'moment'
 import { queryFinanceMonthList } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { formatMoney } from '../../../../utils'
+import ReactEcharts from 'echarts-for-react'
 
 // 其他收费
 class ReportMonthScreen extends Component {
@@ -24,6 +25,40 @@ class ReportMonthScreen extends Component {
     this.queryContentData({})
   }
 
+  getOption() {
+    const { finances } = this.props
+    let xdata = []
+    let ydata = []
+    for (let item of finances) {
+      xdata.push(item.date)
+      ydata.push(formatMoney(item.total_money))
+    }
+    return {
+      tooltip: {
+        trigger: 'axis'
+      },
+      xAxis: {
+        data: xdata
+      },
+      yAxis: {
+        splitLine: {
+          show: true
+        }
+      },
+      series: [
+        {
+          name: '费用合计',
+          type: 'line',
+          data: ydata,
+          // smooth: true,
+          markLine: {
+            silent: true
+          }
+        }
+      ]
+    }
+  }
+
   queryContentData({ offset = 0, limit = 10 }) {
     const { queryFinanceMonthList } = this.props
     const { start_date, end_date } = this.state
@@ -34,6 +69,9 @@ class ReportMonthScreen extends Component {
     const { finances, finances_page } = this.props
     return (
       <div>
+        <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
+          <ReactEcharts option={this.getOption()} style={{ height: '400px', width: '100%' }} />
+        </div>
         <div
           style={{
             float: 'left',
