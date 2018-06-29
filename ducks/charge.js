@@ -7,6 +7,8 @@ const CHARGE_PAID_TRIAGE_ADD = 'CHARGE_PAID_TRIAGE_ADD'
 const CHARGE_PAID_SELECT = 'CHARGE_PAID_SELECT'
 const CHARGE_PAID_ORDER_ADD = 'CHARGE_PAID_ORDER_ADD'
 
+const CHARGE_PATIENT_ORDER_LIST = 'CHARGE_PATIENT_ORDER_LIST'
+
 const initState = {
   charge_unpay: [], // 未交费的就诊记录
   charge_unpay_selectId: '', // 选中的未交费的记录
@@ -20,7 +22,9 @@ const initState = {
   charge_paid_triage_page: {}, // 已交费的就诊记录的页签
   paid_orders: [], // 已交费的详细条目
   paid_orders_page: {},
-  paid_orders_type: []
+  paid_orders_type: [],
+  patient_charge_data: [],
+  patient_charge_page_info: {}
 }
 
 export function charge(state = initState, action = {}) {
@@ -60,6 +64,12 @@ export function charge(state = initState, action = {}) {
         paid_orders: action.data,
         paid_orders_page: action.page_info,
         paid_orders_type: action.type_total
+      }
+    case CHARGE_PATIENT_ORDER_LIST:
+      return {
+        ...state,
+        patient_charge_data: action.data,
+        patient_charge_page_info: action.page_info
       }
     default:
       return state
@@ -185,6 +195,31 @@ export const queryPaidOrders = ({ mz_paid_record_id, offset = 0, limit = 10 }) =
       data: docs,
       page_info,
       type_total
+    })
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const PatientChargeList = ({ patient_id, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    const data = await request('/charge/PatientChargeList', {
+      patient_id,
+      offset,
+      limit
+    })
+    const docs = data.data || []
+    const page_info = data.page_info || {
+      offset,
+      limit,
+      total: 0
+    }
+
+    dispatch({
+      type: CHARGE_PATIENT_ORDER_LIST,
+      data: docs,
+      page_info
     })
   } catch (e) {
     console.log(e)

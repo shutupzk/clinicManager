@@ -8,6 +8,7 @@ import MemberInfoScreen from './components/member_info'
 import VisitInfoScreen from './components/visit_info'
 import LaboraReportScreen from './components/labora_report'
 import ExamReportScreen from './components/exam_report'
+import ChargeInfoScreen from './components/charge_info'
 
 class ListDetailScreen extends Component {
   constructor(props) {
@@ -100,6 +101,7 @@ class ListDetailScreen extends Component {
         {this.state.pageType === 1 ? <BaseInfoScreen /> : ''}
         {this.state.pageType === 2 ? <MemberInfoScreen /> : ''}
         {this.state.pageType === 3 ? <VisitInfoScreen /> : ''}
+        {this.state.pageType === 4 ? <ChargeInfoScreen /> : ''}
         {this.state.pageType === 6 ? <LaboraReportScreen /> : ''}
         {this.state.pageType === 7 ? <ExamReportScreen /> : ''}
         {this.state.pageType === 5 ? this.showIntgralInfo() : ''}
