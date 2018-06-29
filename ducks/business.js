@@ -25,8 +25,8 @@ export function menus(state = initState, action = {}) {
 
 export const queryMenuGetByClinicID = ({ clinic_id }, jsonType) => async dispatch => {
   try {
-    console.log('limit====', limit)
-    const data = await request('/business/menubar/MenuGetByClinicID', {
+    console.log('queryMenuGetByClinicID====', clinic_id)
+    const data = await request('/business/clinic/menubar', {
       clinic_id
     })
     console.log('role ======', {
@@ -51,6 +51,7 @@ export const queryMenuGetByClinicID = ({ clinic_id }, jsonType) => async dispatc
         array_data: docs,
         page_info
       })
+      return docs
     }
     return null
   } catch (e) {

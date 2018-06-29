@@ -21,7 +21,9 @@ class PermissionGroupScreen extends Component {
       operation_id: '',
       type: 1,
       relateItem: {},
-      alertType: 0
+      alertType: 0,
+      showWay: 1,
+      role_id: ''
     }
   }
 
@@ -29,13 +31,16 @@ class PermissionGroupScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType } = this.state
+    let { pageType, showWay, role_id } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddRoleScreen backToList={() => {
-        this.setState({pageType: 1})
-        this.getDataList({offset: 0, limit: 10})
-      }} />
+      2: <AddRoleScreen
+        showWay={showWay}
+        role_id={role_id}
+        backToList={() => {
+          this.setState({pageType: 1})
+          this.getDataList({offset: 0, limit: 10})
+        }} />
     }
     return map[pageType] || null
   }
@@ -77,7 +82,7 @@ class PermissionGroupScreen extends Component {
           </div>
           <div className={'rightTopFilterRight'}>
             <button
-              onClick={() => { this.setState({pageType: 2}) }}
+              onClick={() => { this.setState({pageType: 2, showWay: 1}) }}
             >新增</button>
           </div>
         </div>
@@ -150,20 +155,6 @@ class PermissionGroupScreen extends Component {
       </div>
     )
   }
-  // 返回检查项目名称
-  itemsDetail(items) {
-    return (
-      <div>
-        {items.map((item, index) => {
-          return (
-            <div key={index}>
-              {item.examination_name}
-            </div>
-          )
-        })}
-      </div>
-    )
-  }
   // 加载表格
   renderTable() {
     const { roles, pageInfo } = this.props
@@ -190,7 +181,15 @@ class PermissionGroupScreen extends Component {
                   <td style={{flex: 2}}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
                   <td style={{flex: 2}} className={'operTd'}>
                     <div>
-                      <div>修改</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 2,
+                          role_id: item.role_id,
+                          showWay: 2
+                        })
+                      }}>修改</div>
+                      <div className={'divideLine'}>|</div>
+                      <div>分配</div>
                       <div className={'divideLine'}>|</div>
                       <div>删除</div>
                     </div>

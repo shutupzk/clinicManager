@@ -170,7 +170,14 @@ import {
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate, queryClinicCode, clinicSelect } from './clinic'
-import { roles, queryRoleList, roleCreate, roleSelect } from './role'
+import {
+  roles,
+  queryRoleList,
+  roleCreate,
+  roleSelect,
+  RoleUpdate,
+  RoleDetail
+} from './role'
 import { menus, queryMenuGetByClinicID, menuSelect } from './business'
 import {
   drugStocks,
@@ -493,6 +500,8 @@ export {
   clinicSelect,
   queryRoleList,
   roleCreate,
+  RoleUpdate,
+  RoleDetail,
   roleSelect,
   queryMenuGetByClinicID,
   menuSelect,
