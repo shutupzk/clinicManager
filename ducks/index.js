@@ -13,7 +13,8 @@ import {
   completeBodySign,
   completePreMedicalRecord,
   completePreDiagnosis,
-  GetHealthRecord
+  GetHealthRecord,
+  TriagePatientDetail
 } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword, MemberPateintList } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
@@ -581,5 +582,6 @@ export {
   TreatmentTriageUpdate,
   ExaminationTriagePatientRecordList,
   LaboratoryTriagePatientRecordList,
-  TreatmentTriagePatientRecordList
+  TreatmentTriagePatientRecordList,
+  TriagePatientDetail
 }

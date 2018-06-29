@@ -262,7 +262,12 @@ class LaboraDetailScreen extends Component {
                     <span
                       key={index}
                       className={index === selIndex ? 'sel' : ''}
-                      onClick={() => {
+                      onClick={async () => {
+                        const { laboratory_patient_id, clinic_laboratory_id } = item
+                        let detail = await LaboratoryTriageDetail({ laboratory_patient_id, clinic_laboratory_id })
+                        let resultsData = detail.resultsData || []
+                        let array = [...resultsData]
+                        laboraDetails[index] = array
                         this.setState({ historyDetail: { ...historyDetail, selIndex: index } })
                       }}
                     >
