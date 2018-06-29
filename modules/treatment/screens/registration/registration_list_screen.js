@@ -3,14 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import {
-  getPatientByCertNo,
-  queryDepartmentList,
-  addTriagePatientsList,
-  triagePatientsList,
-  getPatientByKeyword,
-  triagePatientsSelect
-} from '../../../../ducks'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword, triagePatientsSelect } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
@@ -122,9 +115,13 @@ class RegistrationListScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span onClick={() => {
-                      this.seeDetail({clinic_triage_patient_id: patient.clinic_triage_patient_id})
-                    }}>查看详情 >></span>
+                    <span
+                      onClick={() => {
+                        this.seeDetail({ clinic_triage_patient_id: patient.clinic_triage_patient_id })
+                      }}
+                    >
+                      查看详情 >>
+                    </span>
                   </div>
                 </li>
               )
@@ -153,9 +150,9 @@ class RegistrationListScreen extends Component {
     )
   }
   // 查看详情
-  seeDetail({clinic_triage_patient_id}) {
-    const {triagePatientsSelect} = this.props
-    triagePatientsSelect({clinic_triage_patient_id})
+  seeDetail({ clinic_triage_patient_id }) {
+    const { triagePatientsSelect } = this.props
+    triagePatientsSelect({ clinic_triage_patient_id })
     Router.push('/treatment/registration/list_detail')
   }
 
@@ -163,15 +160,10 @@ class RegistrationListScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span
-            className={this.state.pageType === 1 ? 'sel' : ''}
-            onClick={() => Router.push('/treatment/registration')}
-          >
+          <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => Router.push('/treatment/registration')}>
             + 新增登记
           </span>
-          <span className={'sel'}>
-            登记列表
-          </span>
+          <span className={'sel'}>登记列表</span>
         </div>
         {this.showNewList()}
       </div>
@@ -190,11 +182,14 @@ const mapStateToProps = state => {
     limit: state.triagePatients.page_info.limit
   }
 }
-export default connect(mapStateToProps, {
-  getPatientByCertNo,
-  queryDepartmentList,
-  addTriagePatientsList,
-  triagePatientsList,
-  getPatientByKeyword,
-  triagePatientsSelect
-})(RegistrationListScreen)
+export default connect(
+  mapStateToProps,
+  {
+    getPatientByCertNo,
+    queryDepartmentList,
+    addTriagePatientsList,
+    triagePatientsList,
+    getPatientByKeyword,
+    triagePatientsSelect
+  }
+)(RegistrationListScreen)
