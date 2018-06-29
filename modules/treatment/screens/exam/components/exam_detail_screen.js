@@ -131,7 +131,6 @@ class ExamDetailScreen extends Component {
     const { showExamHistory } = this.state
     if (!showExamHistory) return
     const { patient_record_data, patient_record_page_info, ExaminationTriageList, queryMedicalRecord } = this.props
-    console.log('patient_record_data ========', patient_record_data)
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
