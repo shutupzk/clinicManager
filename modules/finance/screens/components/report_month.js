@@ -41,9 +41,6 @@ class ReportMonthScreen extends Component {
         data: xdata
       },
       yAxis: {
-        splitLine: {
-          show: true
-        }
       },
       series: [
         {
