@@ -44,7 +44,9 @@ const MAINFUNCTION = [
     navigateName: '/finance',
     children: [
       { title: '费用报表', navigateName: '/finance', icon: '/static/icons/expenseReport.svg' },
-      { title: '医用报表', navigateName: '/finance/template', icon: '/static/icons/medicalReport.svg' }
+      { title: '医用报表', navigateName: '/finance/template', icon: '/static/icons/medicalReport.svg' },
+      { title: '分析类报表', navigateName: '/finance/analysis', icon: '/static/icons/medicalReport.svg' },
+      { title: '进销存统计', navigateName: '/finance/stock', icon: '/static/icons/medicalReport.svg' }
     ]
   },
   {
