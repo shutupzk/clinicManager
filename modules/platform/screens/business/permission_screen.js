@@ -39,6 +39,7 @@ class BusinessClinicPermissionScreen extends Component {
     let { queryClinicHassetPermissions, queryClinicUnsetPermissions, clinic_selectId } = this.props
     let unSet = await queryClinicUnsetPermissions(clinic_selectId)
     let hasSet = await queryClinicHassetPermissions(clinic_selectId)
+    console.log('unSet====', unSet, 'hasSe======', hasSet)
     this.setState({ array1: JSON.parse(JSON.stringify(unSet)), array2: JSON.parse(JSON.stringify(hasSet)) })
   }
 

@@ -94,7 +94,7 @@ export const addTriagePatientsList = ({ patientInfo }) => async dispatch => {
 
 export const TriagePatientDetail = ({ clinic_triage_patient_id }) => async dispatch => {
   try {
-    console.log('clinic_triage_patient_id', clinic_triage_patient_id)
+    console.log('patient_id', clinic_triage_patient_id)
     const data = await request('/triage/TriagePatientDetail', { clinic_triage_patient_id })
     console.log(data)
     if (data.code === '200') {

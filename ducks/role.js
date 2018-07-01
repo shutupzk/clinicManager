@@ -67,13 +67,15 @@ export const queryRoleList = ({ clinic_id, keyword = '', offset = 0, limit = 6 }
 
 export const roleCreate = ({ clinic_id, name, items }) => async dispatch => {
   try {
+    console.log(
+      {
+        clinic_id, name, items
+      }
+    )
     const data = await request('/role/create', {
       clinic_id, name, items
     })
     console.log(
-      {
-        clinic_id, name, items
-      },
       data
     )
     if (data.code === '200') return null
@@ -81,6 +83,48 @@ export const roleCreate = ({ clinic_id, name, items }) => async dispatch => {
   } catch (e) {
     console.log(e)
     return e.message
+  }
+}
+export const RoleUpdate = ({ role_id, clinic_id, name, items }) => async dispatch => {
+  try {
+    console.log('RoleUpdate', {
+      role_id, clinic_id, name, items
+    })
+    const data = await request('/role/update', {
+      role_id, clinic_id, name, items
+    })
+    console.log(
+      data
+    )
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const RoleDetail = ({role_id}) => async dispatch => {
+  try {
+    console.log('limit====', role_id)
+    const data = await request('/role/roleDetail', {role_id})
+    console.log('RoleDetail=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
+export const RoleFunctionUnset = ({role_id}) => async dispatch => {
+  try {
+    console.log('limit====', role_id)
+    const data = await request('/role/RoleFunctionUnset', {role_id})
+    console.log('RoleFunctionUnset=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
   }
 }
 
