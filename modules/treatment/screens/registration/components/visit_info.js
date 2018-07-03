@@ -9,6 +9,7 @@ class VisitInfoScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      showMore: false,
       body_sign: {},
       pre_medical_record: {},
       pre_diagnosis: {},
@@ -44,7 +45,7 @@ class VisitInfoScreen extends Component {
   }
 
   getVisitType(type) {
-    const types = { '1': '出诊', '2': '复诊', '3': '术后复诊' }
+    const types = { '1': '初诊', '2': '复诊', '3': '术后复诊' }
     return types[type]
   }
 
@@ -179,7 +180,7 @@ class VisitInfoScreen extends Component {
 
   // 就诊信息
   showVisitInfo() {
-    const { patientInfo, body_sign } = this.state
+    const { patientInfo, body_sign, showMore } = this.state
     return (
       <div className={'detailBox'}>
         <div className={'blankBox patientInfo'}>
@@ -215,7 +216,29 @@ class VisitInfoScreen extends Component {
               </div>
             </li>
           </ul>
-          <div className={'seeMore'}>查看更多</div>
+          {showMore ? (
+            <ul>
+              <li>
+                <div className={'dataTitle'}>呼吸(次/分钟)</div>
+                <div className={'dataContent'}>{body_sign.breathe}</div>
+              </li>
+              <li>
+                <div className={'dataTitle'}>脉搏(次/分钟)</div>
+                <div className={'dataContent'}>{body_sign.pulse}</div>
+              </li>
+              <li>
+                <div className={'dataTitle'}>血糖浓度(mmol/I)</div>
+                <div className={'dataContent'}>{body_sign.oxygen_saturation}</div>
+              </li>
+              <li>
+                <div className={'dataTitle'}>疼痛评分</div>
+                <div className={'dataContent'}>{body_sign.pain_score}</div>
+              </li>
+            </ul>
+          ) : null}
+          <div className={'seeMore'} onClick={() => this.setState({ showMore: !showMore })}>
+            {!showMore ? '查看更多' : '收起更多'}
+          </div>
         </div>
         <div className={'blankBox'}>{this.renderMedicalHistory()}</div>
         <style jsx='true'>{`

@@ -110,7 +110,6 @@ class ListDetailScreen extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log(state)
   return {
     personnel_id: state.user.data.id,
     patients: state.patients.data,
