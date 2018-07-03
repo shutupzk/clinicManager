@@ -182,7 +182,7 @@ class ChargedDetailScreen extends Component {
           limit={limit}
           total={total}
           onItemClick={({ offset, limit }) => {
-            this.props.queryUnPaidOrders({ clinic_triage_patient_id: this.props.charge_unpay_selectId, offset, limit })
+            this.props.queryPaidOrders({ mz_paid_record_id: this.props.charge_paid_triage_selectId, offset, limit })
           }}
         />
         <div className={'feeScheduleBottom'}>
