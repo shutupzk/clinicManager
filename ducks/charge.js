@@ -215,6 +215,7 @@ export const PatientChargeList = ({ patient_id, offset = 0, limit = 10 }) => asy
       limit,
       total: 0
     }
+    console.log('docs ======', docs)
 
     dispatch({
       type: CHARGE_PATIENT_ORDER_LIST,

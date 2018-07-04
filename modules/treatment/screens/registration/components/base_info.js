@@ -14,6 +14,8 @@ class BaseInfoScreen extends Component {
         visit_type: 1,
         patient_channel_id: 1
       },
+      isIdCode: true,
+      isPhone: true,
       cities: [],
       counties: [],
       province: '请选择',
@@ -26,7 +28,7 @@ class BaseInfoScreen extends Component {
     let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
     if (patient) {
       const { province, city, district } = patient
-      this.setState({ patientInfo: patient, province, city, county: district })
+      this.setState({ patientInfo: patient, province, city, county: district, isIdCode: true, isPhone: true })
     }
   }
 
@@ -187,7 +189,7 @@ class BaseInfoScreen extends Component {
               </label>
               <input
                 type='text'
-                value={patient.phone}
+                value={patient.phone || ''}
                 onChange={e => {
                   if (checkPhoneNumber(e.target.value)) {
                     this.setState({ isPhone: true })
