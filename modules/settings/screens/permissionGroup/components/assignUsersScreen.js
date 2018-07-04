@@ -11,59 +11,43 @@ import {
   RoleDetail,
   roleCreate,
   RoleUpdate,
-  RoleFunctionUnset
+  RoleFunctionUnset,
+  queryDoctorList
 } from '../../../../../ducks'
 // import {limitMoney} from '../../../../../utils'
 
 // 病历
-class AddRoleScreen extends Component {
+class AssignUsersScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       roleInfo: {
         items: []
       },
-      selectedKeys: ['0-1', '0-1-1'],
-      defaultCheckedKeys: [],
-      defaultExpandedKeys: [],
-      checkedMenuId: [],
       array1: [],
       array2: [],
-      role_id: ''
+      role_id: '',
+      keyword: '',
+      department_id: ''
     }
   }
 
-  async componentDidMount() {
-    const {showWay, role_id, RoleDetail, RoleFunctionUnset} = this.props
-    if (showWay === 1) {
-      this.queryMenuGetByClinicID()
-    } else {
-      let data = await RoleDetail({role_id})
-      let data1 = await RoleFunctionUnset({role_id})
-      console.log('data====', data, data1)
-      let roleInfo = {
-        name: data.name,
-        role_id: data.role_id
-      }
-      let array1 = []
-      let array2 = []
-      if (data.funtionMenus) {
-        array2 = data.funtionMenus
-      }
-      if (data1.length > 0) {
-        array1 = data1
-      }
-      this.setState({
-        roleInfo,
-        array2,
-        array1
-      })
+  componentDidMount() {
+    const {selRole, role_id} = this.props
+    let roleInfo = {
+      name: selRole.name,
+      role_id
     }
+    this.setState({
+      roleInfo
+    })
+    this.queryDoctorList({offset: 0, limit: 10})
   }
-  async queryMenuGetByClinicID() {
-    const {queryMenuGetByClinicID, clinic_id} = this.props
-    let data = await queryMenuGetByClinicID({clinic_id})
-    this.setState({array1: JSON.parse(JSON.stringify(data))})
+
+  queryDoctorList({offset = 0, limit = 10}) {
+    const {queryDoctorList, clinic_id} = this.props
+    const {keyword} = this.state
+    queryDoctorList({ clinic_id, keyword, offset, limit })
   }
   style() {
     return (
@@ -449,8 +433,9 @@ class AddRoleScreen extends Component {
   }
   // 角色基本信息
   renderBaseInfoBlank() {
-    const {roleInfo, array1, array2} = this.state
-    // console.log('roleInfo=======', roleInfo)
+    const {roleInfo} = this.state
+    const {doctors} = this.props
+    console.log('doctors=======', doctors)
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
@@ -469,15 +454,40 @@ class AddRoleScreen extends Component {
               {this.state.nameFailed || roleInfo.name === '' || !roleInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
             </li>
             <li style={{width: '49%'}}>
-              <label>分组分配</label>
+              <label>用户分配</label>
               <div className={'boxContentItem'}>
-                {array1.map((item, iKey) => {
+                <div className={'boxContentList'}>
+                  <span>{'搜索科室/姓名'}</span>
+                  <ul>
+                    {doctors.map((func, funkey) => {
+                      // console.log('func===', func)
+                      let depart = ''
+                      if (func.department_name) {
+                        depart = func.department_name
+                      } else {
+                        depart = '无'
+                      }
+                      return (
+                        <li key={funkey}>
+                          <input
+                            type={'checkBox'}
+                            checked={false}
+                            onChange={e => {
+                              // this.addFunc(item, func)
+                            }}
+                          />
+                          <label>{func.name + '(' + depart + ')'}</label>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+                {/* {doctors.map((item, iKey) => {
                   return (
                     <div key={iKey} className={'boxContentList'}>
                       <span>{item.parent_name}</span>
                       <ul>
                         {item.childrens_menus.map((func, funkey) => {
-                          // console.log('func===', func)
                           return (
                             <li key={funkey}>
                               <input
@@ -494,36 +504,7 @@ class AddRoleScreen extends Component {
                       </ul>
                     </div>
                   )
-                })}
-              </div>
-              {/* {this.renderMenuList()} */}
-            </li>
-            <li style={{width: '49%'}}>
-              <label>已分配权限</label>
-              <div className={'boxContentItem'}>
-                {array2.map((item, iKey) => {
-                  return (
-                    <div key={iKey} className={'boxContentList'}>
-                      <span>{item.parent_name}</span>
-                      <ul>
-                        {item.childrens_menus.map((func, funkey) => {
-                          return (
-                            <li key={funkey}>
-                              <input
-                                type={'checkBox'}
-                                checked
-                                onChange={e => {
-                                  this.delFunc(item, func)
-                                }}
-                              />
-                              <label>{func.menu_name}</label>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                  )
-                })}
+                })} */}
               </div>
               {/* {this.renderMenuList()} */}
             </li>
@@ -622,7 +603,8 @@ const mapStateToProps = state => {
   console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
-    menus: state.menus.array_data
+    menus: state.menus.array_data,
+    doctors: state.doctors.array_data
   }
 }
 
@@ -631,5 +613,6 @@ export default connect(mapStateToProps, {
   RoleDetail,
   roleCreate,
   RoleUpdate,
-  RoleFunctionUnset
-})(AddRoleScreen)
+  RoleFunctionUnset,
+  queryDoctorList
+})(AssignUsersScreen)

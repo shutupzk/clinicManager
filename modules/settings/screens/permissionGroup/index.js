@@ -7,6 +7,7 @@ import {
 } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import AddRoleScreen from './components/addRoleScreen'
+import AssignUsersScreen from './components/assignUsersScreen'
 import moment from 'moment'
 
 class PermissionGroupScreen extends Component {
@@ -23,7 +24,8 @@ class PermissionGroupScreen extends Component {
       relateItem: {},
       alertType: 0,
       showWay: 1,
-      role_id: ''
+      role_id: '',
+      selRole: {}
     }
   }
 
@@ -31,11 +33,18 @@ class PermissionGroupScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType, showWay, role_id } = this.state
+    let { pageType, showWay, role_id, selRole } = this.state
     let map = {
       // 1: <AddDrugScreen />,
       2: <AddRoleScreen
         showWay={showWay}
+        role_id={role_id}
+        backToList={() => {
+          this.setState({pageType: 1})
+          this.getDataList({offset: 0, limit: 10})
+        }} />,
+      3: <AssignUsersScreen
+        selRole={selRole}
         role_id={role_id}
         backToList={() => {
           this.setState({pageType: 1})
@@ -189,7 +198,13 @@ class PermissionGroupScreen extends Component {
                         })
                       }}>修改</div>
                       <div className={'divideLine'}>|</div>
-                      <div>分配</div>
+                      <div onClick={() => {
+                        this.setState({
+                          pageType: 3,
+                          role_id: item.role_id,
+                          selRole: item
+                        })
+                      }}>分配</div>
                       <div className={'divideLine'}>|</div>
                       <div>删除</div>
                     </div>
