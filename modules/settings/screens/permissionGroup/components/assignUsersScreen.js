@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { Confirm } from '../../../../../components'
+import { Confirm, PageCard } from '../../../../../components'
 // import 'rc-tree/assets/index.less'
 // import './contextmenu.less'
 // import Tree, { TreeNode } from 'rc-tree'
@@ -431,10 +431,22 @@ class AssignUsersScreen extends Component {
     }
     return array.sort((a, b) => a.parent_id * 1 - b.parent_id * 1)
   }
+  // 选择用户
+  addArray1(item) {
+    let {array2} = this.state
+    let idArray = []
+    for (let key of array2) {
+      idArray.push(key.id)
+    }
+    if (idArray.indexOf(item.id) === -1) {
+      array2.push(item)
+    }
+    this.setState({array2})
+  }
   // 角色基本信息
   renderBaseInfoBlank() {
-    const {roleInfo} = this.state
-    const {doctors} = this.props
+    const {roleInfo, array1, array2} = this.state
+    const {doctors, page_info} = this.props
     console.log('doctors=======', doctors)
     return (
       <div className={'commonBlank baseInfoBlank'}>
@@ -461,6 +473,12 @@ class AssignUsersScreen extends Component {
                   <ul>
                     {doctors.map((func, funkey) => {
                       // console.log('func===', func)
+                      let checked = false
+                      for (let i = 0; i < array2.length; i++) {
+                        if (array2[i].id === func.id) {
+                          checked = true
+                        }
+                      }
                       let depart = ''
                       if (func.department_name) {
                         depart = func.department_name
@@ -471,8 +489,62 @@ class AssignUsersScreen extends Component {
                         <li key={funkey}>
                           <input
                             type={'checkBox'}
-                            checked={false}
+                            checked={checked}
                             onChange={e => {
+                              if (e.target.checked) {
+                                this.addArray1(func)
+                              }
+                              // this.addFunc(item, func)
+                            }}
+                          />
+                          <label>{func.name + '(' + depart + ')'}</label>
+                        </li>
+                      )
+                    })}
+                    <PageCard
+                      style={{width: '100%', margin: '0'}}
+                      offset={page_info.offset}
+                      limit={page_info.limit}
+                      total={page_info.total}
+                      onItemClick={({ offset, limit }) => {
+                        // const keyword = this.state.keyword
+                        this.queryDoctorList({ offset, limit })
+                      }}
+                    />
+                  </ul>
+                </div>
+              </div>
+              {/* {this.renderMenuList()} */}
+            </li>
+            <li style={{width: '49%'}}>
+              <label>已分配用户</label>
+              <div className={'boxContentItem'}>
+                <div className={'boxContentList'}>
+                  {/* <span>{'搜索科室/姓名'}</span> */}
+                  <ul>
+                    {array2.map((func, funkey) => {
+                      // console.log('func===', func)
+                      // let checked = false
+                      // for (let i = 0; i < array2.length; i++) {
+                      //   if (array2[i].id === func.id) {
+                      //     checked = true
+                      //   }
+                      // }
+                      let depart = ''
+                      if (func.department_name) {
+                        depart = func.department_name
+                      } else {
+                        depart = '无'
+                      }
+                      return (
+                        <li key={funkey}>
+                          <input
+                            type={'checkBox'}
+                            checked
+                            onChange={e => {
+                              if (e.target.checked) {
+                                this.addArray1(func)
+                              }
                               // this.addFunc(item, func)
                             }}
                           />
@@ -482,29 +554,6 @@ class AssignUsersScreen extends Component {
                     })}
                   </ul>
                 </div>
-                {/* {doctors.map((item, iKey) => {
-                  return (
-                    <div key={iKey} className={'boxContentList'}>
-                      <span>{item.parent_name}</span>
-                      <ul>
-                        {item.childrens_menus.map((func, funkey) => {
-                          return (
-                            <li key={funkey}>
-                              <input
-                                type={'checkBox'}
-                                checked={false}
-                                onChange={e => {
-                                  this.addFunc(item, func)
-                                }}
-                              />
-                              <label>{func.menu_name}</label>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                  )
-                })} */}
               </div>
               {/* {this.renderMenuList()} */}
             </li>
@@ -575,7 +624,7 @@ class AssignUsersScreen extends Component {
           .boxContentList > ul > li {
             margin: 0;
             margin-bottom: 5px;
-            width: 25%;
+            width: 100%;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -604,7 +653,8 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     menus: state.menus.array_data,
-    doctors: state.doctors.array_data
+    doctors: state.doctors.array_data,
+    page_info: state.doctors.page_info
   }
 }
 
