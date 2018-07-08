@@ -12,7 +12,8 @@ import {
   roleCreate,
   RoleUpdate,
   RoleFunctionUnset,
-  queryDoctorList
+  queryDoctorList,
+  RoleAllocation
 } from '../../../../../ducks'
 // import {limitMoney} from '../../../../../utils'
 
@@ -245,7 +246,7 @@ class AssignUsersScreen extends Component {
     )
   }
   render() {
-    const {showWay} = this.props
+    // const {showWay} = this.props
     // console.log('menus', menus)
     return (
       <div className={'contentCenter'}>
@@ -254,11 +255,12 @@ class AssignUsersScreen extends Component {
           <div>
             <button>取消</button>
             <button onClick={() => {
-              if (showWay === 2) {
-                this.RoleUpdate()
-              } else {
-                this.submit()
-              }
+              // if (showWay === 2) {
+              //   this.RoleUpdate()
+              // } else {
+              //   this.submit()
+              // }
+              this.submit()
             }}>保存</button>
           </div>
         </div>
@@ -278,25 +280,40 @@ class AssignUsersScreen extends Component {
   }
   // 保存
   async submit() {
-    let {roleInfo, array2} = this.state
-    const {clinic_id, roleCreate} = this.props
-    roleInfo.clinic_id = clinic_id
-    // console.log('array2=====', array2)
+    // let {roleInfo, array2} = this.state
+    // const {clinic_id, roleCreate} = this.props
+    // roleInfo.clinic_id = clinic_id
+    // // console.log('array2=====', array2)
+    // let items = []
+    // for (let item of array2) {
+    //   for (let it of item.childrens_menus) {
+    //     // console.log(it)
+    //     items.push({ clinic_function_menu_id: it.clinic_function_menu_id + '' }) // it.clinic_function_menu_id
+    //   }
+    // }
+    // roleInfo.items = JSON.stringify(items)
+    // if (this.validateData(roleInfo)) {
+      // let error = await roleCreate(roleInfo)
+      // if (error) {
+      //   return this.refs.myAlert.alert('创建角色失败', error, null, 'Warning')
+      // } else {
+      //   this.props.backToList()
+      // }
+    // }
+    const {role_id, RoleAllocation} = this.props
+    const {array2} = this.state
+    let requestData = {}
     let items = []
     for (let item of array2) {
-      for (let it of item.childrens_menus) {
-        // console.log(it)
-        items.push({ clinic_function_menu_id: it.clinic_function_menu_id + '' }) // it.clinic_function_menu_id
-      }
+      items.push({ personnel_id: item.id + '' })
     }
-    roleInfo.items = JSON.stringify(items)
-    if (this.validateData(roleInfo)) {
-      let error = await roleCreate(roleInfo)
-      if (error) {
-        return this.refs.myAlert.alert('创建角色失败', error, null, 'Warning')
-      } else {
-        this.props.backToList()
-      }
+    requestData.role_id = role_id
+    requestData.items = JSON.stringify(items)
+    let error = await RoleAllocation(requestData)
+    if (error) {
+      return this.refs.myAlert.alert('分配角色失败', error, null, 'Warning')
+    } else {
+      this.props.backToList()
     }
   }
   // 修改
@@ -443,6 +460,15 @@ class AssignUsersScreen extends Component {
     }
     this.setState({array2})
   }
+  removeArray2(item) {
+    let {array2} = this.state
+    for (let i = 0; i < array2.length; i++) {
+      if (item.id === array2[i].id) {
+        array2.splice(i, 1)
+      }
+    }
+    this.setState({array2})
+  }
   // 角色基本信息
   renderBaseInfoBlank() {
     const {roleInfo, array1, array2} = this.state
@@ -493,6 +519,8 @@ class AssignUsersScreen extends Component {
                             onChange={e => {
                               if (e.target.checked) {
                                 this.addArray1(func)
+                              } else {
+                                this.removeArray2(func)
                               }
                               // this.addFunc(item, func)
                             }}
@@ -542,9 +570,10 @@ class AssignUsersScreen extends Component {
                             type={'checkBox'}
                             checked
                             onChange={e => {
-                              if (e.target.checked) {
-                                this.addArray1(func)
-                              }
+                              this.removeArray2(func)
+                              // if (e.target.checked) {
+                              //   this.addArray1(func)
+                              // }
                               // this.addFunc(item, func)
                             }}
                           />
@@ -664,5 +693,6 @@ export default connect(mapStateToProps, {
   roleCreate,
   RoleUpdate,
   RoleFunctionUnset,
-  queryDoctorList
+  queryDoctorList,
+  RoleAllocation
 })(AssignUsersScreen)

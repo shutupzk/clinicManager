@@ -127,6 +127,24 @@ export const RoleFunctionUnset = ({role_id}) => async dispatch => {
     return {} // e.message
   }
 }
+export const RoleAllocation = ({ role_id, items }) => async dispatch => {
+  try {
+    console.log('RoleAllocation', {
+      role_id, items
+    })
+    const data = await request('/role/RoleAllocation', {
+      role_id, items
+    })
+    console.log(
+      data
+    )
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
 
 export const roleSelect = ({ id }) => async dispatch => {
   try {
