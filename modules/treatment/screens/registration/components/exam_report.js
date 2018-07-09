@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { TriagePatientDetail, GetHealthRecord, ExaminationTriagePatientRecordList, queryMedicalRecord, ExaminationTriageList } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
-import { PageCard } from '../../../../../components'
+import { PageCard, ImageViewer } from '../../../../../components'
 import { API_SERVER } from '../../../../../config'
 import moment from 'moment'
 
@@ -312,183 +312,25 @@ class ExamReportScreen extends Component {
     )
   }
 
-  renderBigImg(picture_examination) {
-    let imgFiles = picture_examination ? JSON.parse(picture_examination) : []
-    const { bigImg, imgWidth, imgHeight } = this.state
-    // console.log('uploadedFiles===', uploadedFiles)
-    let nexImg = ''
-    let prevImg = ''
-    for (let i = 0; i < imgFiles.length; i++) {
-      if (bigImg === API_SERVER + imgFiles[i].url) {
-        if (imgFiles.length > 1) {
-          if (i === 0) {
-            nexImg = API_SERVER + imgFiles[i + 1].url
-            prevImg = API_SERVER + imgFiles[imgFiles.length - 1].url
-          } else if (i === imgFiles.length - 1) {
-            nexImg = API_SERVER + imgFiles[0].url
-            prevImg = API_SERVER + imgFiles[i - 1].url
-          } else {
-            nexImg = API_SERVER + imgFiles[i + 1].url
-            prevImg = API_SERVER + imgFiles[i - 1].url
-          }
-        } else {
-          nexImg = bigImg
-          prevImg = bigImg
-        }
-      }
-    }
-    return (
-      <div
-        className={'mask'}
-        onWheel={e => {
-          // console.log('onWheel=====', e.deltaY, e.target.width, e.target.height)
-          let width = imgWidth - (imgWidth * e.deltaY) / 1000
-          let height = imgHeight - (imgHeight * e.deltaY) / 1000
-          if (width < 100) {
-            width = 100
-          }
-          if (height < 100) {
-            height = 100
-          }
-          this.setState({ imgWidth: width, imgHeight: height })
-        }}
-      >
-        <div className={'imgDiv'} style={{ width: imgWidth, height: imgHeight }}>
-          <img
-            src={bigImg}
-            alt={'...'}
-            onWheel={e => {
-              // console.log('sadasdasd==', e)
-              let width = imgWidth - (imgWidth * e.deltaY) / 1000
-              let height = imgHeight - (imgHeight * e.deltaY) / 1000
-              if (width < 100) {
-                width = 100
-              }
-              if (height < 100) {
-                height = 100
-              }
-              this.setState({ imgWidth: width, imgHeight: height })
-            }}
-          />
-          <span
-            onClick={() => {
-              this.setState({ showBigImg: false })
-            }}
-          >
-            ×
-          </span>
-        </div>
-        <a
-          className={'prev'}
-          onClick={() => {
-            this.setState({
-              showBigImg: true,
-              bigImg: prevImg,
-              imgWidth: 640,
-              imgHeight: 360
-            })
-          }}
-        >
-          {'《'}
-        </a>
-        <a
-          className={'next'}
-          onClick={() => {
-            this.setState({
-              showBigImg: true,
-              bigImg: nexImg,
-              imgWidth: 640,
-              imgHeight: 360
-            })
-          }}
-        >
-          {'》'}
-        </a>
-        <style jsx>{`
-          .imgDiv {
-            position: relative;
-            max-width: 100%;
-            max-height: 100%;
-          }
-          img {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-          }
-          span {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            color: #d8d8d8;
-            right: 0;
-            top: 0;
-            font-size: 30px;
-            cursor: pointer;
-            border-radius: 100%;
-            border: 1px solid #d8d8d8;
-            text-align: center;
-            line-height: 30px;
-          }
-          span:hover {
-            background: red;
-            transition: 0.3s ease;
-          }
-          a {
-            position: absolute;
-            top: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 30px;
-            border-radius: 100%;
-            cursor: pointer;
-            color: #d8d8d8;
-            line-height: 50px;
-          }
-          a:hover {
-            background: rgba(233, 233, 233, 0.3);
-            transition: 0.3 ease;
-          }
-          .prev {
-            left: 10px;
-            text-align: left;
-          }
-          .next {
-            right: 10px;
-            text-align: right;
-          }
-        `}</style>
-      </div>
-    )
-  }
-
   // 显示上传的文件
   renderFiles(picture_examination) {
     if (!picture_examination) return null
     let uploadedFiles = JSON.parse(picture_examination)
-    const { showBigImg } = this.state
-    // console.log('uploadedFiles==', uploadedFiles)
     if (uploadedFiles.length === 0) {
       return null
     } else {
       return (
         <div className={'filesBox'}>
-          {showBigImg ? this.renderBigImg(picture_examination) : ''}
           <ul>
             {uploadedFiles.map((item, index) => {
               let suffix = item.docName.split('.')[1]
               if (suffix === 'png' || suffix === 'jpg') {
                 return (
-                  <li className={'imgLi'} key={index} title={item.docName} style={{flexDirection: 'row'}}>
+                  <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>
                     <img
                       src={API_SERVER + item.url}
                       onClick={e => {
-                        this.setState({
-                          showBigImg: true,
-                          bigImg: API_SERVER + item.url,
-                          imgWidth: e.target.width,
-                          imgHeight: e.target.height
-                        })
+                        this.refs.ImageViewer.show(index)
                       }}
                     />
                   </li>
@@ -497,15 +339,6 @@ class ExamReportScreen extends Component {
                 return (
                   <li key={index} title={item.docName}>
                     {item.docName}
-                    <span
-                      onClick={() => {
-                        let array = uploadedFiles
-                        array.splice(index, 1)
-                        this.setState({ uploadedFiles: array })
-                      }}
-                    >
-                      ×
-                    </span>
                   </li>
                 )
               }
@@ -580,6 +413,13 @@ class ExamReportScreen extends Component {
     if (!showExamHistoryDetail) return null
     let { record = {}, exams = [], selIndex } = historyDetail
     const data = exams[selIndex]
+    let images = []
+    if (data.picture_examination) {
+      let uploadedFiles = JSON.parse(data.picture_examination)
+      for (let f of uploadedFiles) {
+        images.push({ src: API_SERVER + f.url })
+      }
+    }
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
@@ -625,7 +465,10 @@ class ExamReportScreen extends Component {
               <ul>
                 <li>
                   <label>检查图片</label>
-                  <div style={{ height: '100px' }}>{this.renderFiles(data.picture_examination)}</div>
+                  <div style={{ height: '100px' }}>
+                    {this.renderFiles(data.picture_examination)}
+                    {<ImageViewer ref='ImageViewer' images={images} />}
+                  </div>
                 </li>
                 <li>
                   <label>描述</label>

@@ -9,6 +9,7 @@ import Confirm from './Confirm'
 import MyTree from './Tree'
 import CustomSelect from './CustomSelect'
 import MyCreatableSelect from './CreatableSelect'
+import ImageViewer from './ImageViewer'
 
 export {
   Loading,
@@ -21,5 +22,6 @@ export {
   Confirm,
   MyTree,
   CustomSelect,
-  MyCreatableSelect
+  MyCreatableSelect,
+  ImageViewer
 }

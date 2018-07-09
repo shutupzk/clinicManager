@@ -322,6 +322,7 @@ class LaboraDetailScreen extends Component {
         <div>
           <div>开单时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
+        <div />
       </div>
     )
   }

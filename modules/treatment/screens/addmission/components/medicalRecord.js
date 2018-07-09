@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Confirm, PageCard, MyCreatableSelect } from '../../../../../components'
+import { Confirm, PageCard, MyCreatableSelect, ImageViewer } from '../../../../../components'
 import { API_SERVER } from '../../../../../config'
 // import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
@@ -82,11 +82,11 @@ class MedicalRecordScreen extends Component {
         let array = record.diagnosis.split(',')
         if (array.length > 0) {
           for (let i = 0; i < array.length; i++) {
-            let item = {value: array[i], label: array[i]}
+            let item = { value: array[i], label: array[i] }
             diagnosisArray.push(item)
           }
         } else {
-          diagnosisArray.push({label: record.diagnosis, value: record.diagnosis})
+          diagnosisArray.push({ label: record.diagnosis, value: record.diagnosis })
         }
       }
     }
@@ -128,7 +128,7 @@ class MedicalRecordScreen extends Component {
           newJSON[key] = this.state[key]
         }
         let jsonStr = JSON.stringify(newJSON)
-        this.setState({recordStr: jsonStr})
+        this.setState({ recordStr: jsonStr })
         if (selPage !== 1) {
           changePage(selPage)
         }
@@ -405,10 +405,7 @@ class MedicalRecordScreen extends Component {
                     <li>{model_name}</li>
                     <li>{is_common ? '通用模板' : '非通用模板'}</li>
                     <li>{moment(created_time).format('YYYY-MM-DD')}</li>
-                    <li
-                      style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }}
-                      onClick={() => this.setState({ ...this.state, ...item, showMedicalModels: false })}
-                    >
+                    <li style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }} onClick={() => this.setState({ ...this.state, ...item, showMedicalModels: false })}>
                       复 制
                     </li>
                   </ul>
@@ -661,7 +658,7 @@ class MedicalRecordScreen extends Component {
 
           .medical_detail_item input {
             flex: 6;
-            background: #F7F7F7;
+            background: #f7f7f7;
             border: none;
           }
 
@@ -1014,179 +1011,38 @@ class MedicalRecordScreen extends Component {
       changePage(selPage)
     }
   }
-  renderBigImg() {
-    const {bigImg, imgWidth, imgHeight, imgFiles} = this.state
-    // console.log('uploadedFiles===', uploadedFiles)
-    let nexImg = ''
-    let prevImg = ''
-    for (let i = 0; i < imgFiles.length; i++) {
-      if (bigImg === API_SERVER + imgFiles[i].url) {
-        if (imgFiles.length > 1) {
-          if (i === 0) {
-            nexImg = API_SERVER + imgFiles[i + 1].url
-            prevImg = API_SERVER + imgFiles[imgFiles.length - 1].url
-          } else if (i === imgFiles.length - 1) {
-            nexImg = API_SERVER + imgFiles[0].url
-            prevImg = API_SERVER + imgFiles[i - 1].url
-          } else {
-            nexImg = API_SERVER + imgFiles[i + 1].url
-            prevImg = API_SERVER + imgFiles[i - 1].url
-          }
-        } else {
-          nexImg = bigImg
-          prevImg = bigImg
-        }
-      }
-    }
-    return (
-      <div
-        className={'mask'}
-        onWheel={e => {
-          // console.log('onWheel=====', e.deltaY, e.target.width, e.target.height)
-          let width = imgWidth - imgWidth * e.deltaY / 1000
-          let height = imgHeight - imgHeight * e.deltaY / 1000
-          if (width < 100) {
-            width = 100
-          }
-          if (height < 100) {
-            height = 100
-          }
-          this.setState({imgWidth: width, imgHeight: height})
-        }}
-      >
-        <div className={'imgDiv'} style={{width: imgWidth, height: imgHeight}}>
-          <img
-            src={bigImg}
-            alt={'...'}
-            onWheel={e => {
-              // console.log('sadasdasd==', e)
-              let width = imgWidth - imgWidth * e.deltaY / 1000
-              let height = imgHeight - imgHeight * e.deltaY / 1000
-              if (width < 100) {
-                width = 100
-              }
-              if (height < 100) {
-                height = 100
-              }
-              this.setState({imgWidth: width, imgHeight: height})
-            }}
-          />
-          <span
-            onClick={() => {
-              this.setState({showBigImg: false})
-            }}
-          >×</span>
-        </div>
-        <a
-          className={'prev'}
-          onClick={() => {
-            this.setState({
-              showBigImg: true,
-              bigImg: prevImg,
-              imgWidth: 640,
-              imgHeight: 360
-            })
-          }}
-        >{'《'}</a>
-        <a
-          className={'next'}
-          onClick={() => {
-            this.setState({
-              showBigImg: true,
-              bigImg: nexImg,
-              imgWidth: 640,
-              imgHeight: 360
-            })
-          }}
-        >{'》'}</a>
-        <style jsx>{`
-          .imgDiv {
-            position:relative;
-            max-width: 100%;
-            max-height:100%;
-          }
-          img{
-            width:100%;
-            height:100%;
-            max-width: 100%;
-            max-height:100%;
-          }
-          span{
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            color: #d8d8d8;
-            right: 0;
-            top: 0;
-            font-size: 30px;
-            cursor: pointer;
-            border-radius: 100%;
-            border: 1px solid #d8d8d8;
-            text-align: center;
-            line-height: 30px;
-          }
-          span:hover{
-            background:red;
-            transition:0.3s ease;
-          }
-          a{
-            position:absolute;
-            top: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 30px;
-            border-radius:100%;
-            cursor:pointer;
-            color: #d8d8d8;
-            line-height: 50px;
-          }
-          a:hover{
-            background: rgba(233,233,233,0.3);
-            transition: 0.3 ease;
-          }
-          .prev{
-            left: 10px;
-            text-align: left;
-          }
-          .next{
-            right:10px;
-            text-align: right;
-          }
-        `}</style>
-      </div>
-    )
-  }
+
   // 显示上传的文件
   renderFiles() {
-    const {uploadedFiles, showBigImg} = this.state
+    const { uploadedFiles } = this.state
     // console.log('uploadedFiles==', uploadedFiles)
     if (uploadedFiles.length === 0) {
       return null
     } else {
       return (
         <div className={'filesBox'}>
-          {showBigImg ? this.renderBigImg() : ''}
           <ul>
             {uploadedFiles.map((item, index) => {
-              let suffix = item.docName.split('.')[1]
+              let fileNameArray = item.docName.split('.')
+              let suffix = fileNameArray[fileNameArray.length - 1]
               if (suffix === 'png' || suffix === 'jpg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName}>
-                    <img src={API_SERVER + item.url} onClick={e => {
-                      this.setState({
-                        showBigImg: true,
-                        bigImg: API_SERVER + item.url,
-                        imgWidth: e.target.width,
-                        imgHeight: e.target.height
-                      })
-                    }} />
+                    <img
+                      src={API_SERVER + item.url}
+                      onClick={e => {
+                        this.refs.ImageViewer.show(index)
+                      }}
+                    />
                     <span
                       onClick={() => {
                         let array = uploadedFiles
                         array.splice(index, 1)
-                        this.setState({uploadedFiles: array})
+                        this.setState({ uploadedFiles: array })
                       }}
-                    >×</span>
+                    >
+                      ×
+                    </span>
                   </li>
                 )
               } else {
@@ -1197,30 +1053,32 @@ class MedicalRecordScreen extends Component {
                       onClick={() => {
                         let array = uploadedFiles
                         array.splice(index, 1)
-                        this.setState({uploadedFiles: array})
+                        this.setState({ uploadedFiles: array })
                       }}
-                    >×</span>
+                    >
+                      ×
+                    </span>
                   </li>
                 )
               }
             })}
           </ul>
           <style jsx>{`
-            .filesBox{
+            .filesBox {
               width: 100%;
               position: absolute;
               top: 60px;
             }
-            .filesBox ul{
+            .filesBox ul {
               display: flex;
               width: 100%;
             }
             .filesBox ul li {
-              position:relative;
+              position: relative;
               margin: 0 0 0 5px;
-              background: rgba(233,233,233,0.8);
+              background: rgba(233, 233, 233, 0.8);
               border-radius: 4px;
-              overflow:hidden;
+              overflow: hidden;
               width: auto;
               white-space: nowrap;
               text-overflow: ellipsis;
@@ -1228,21 +1086,21 @@ class MedicalRecordScreen extends Component {
               height: 20px;
               text-align: left;
               display: block;
-              cursor:default;
+              cursor: default;
             }
             .filesBox ul li:first-child {
-              margin:0;
+              margin: 0;
             }
             .filesBox ul li.imgLi {
               width: 50px;
-              height:50px;
+              height: 50px;
             }
             .filesBox ul li.imgLi img {
               // width: 100%;
               // height: 100%;
-              opacity:0.7;
+              opacity: 0.7;
             }
-            .filesBox ul li span{
+            .filesBox ul li span {
               position: absolute;
               display: block;
               top: 0;
@@ -1251,14 +1109,14 @@ class MedicalRecordScreen extends Component {
               height: 12px;
               right: 0;
               text-align: center;
-              background: rgba(100,100,100,0.3);
+              background: rgba(100, 100, 100, 0.3);
               opacity: 0.7;
               line-height: 12px;
             }
             .filesBox ul li span:hover {
               opacity: 1;
             }
-            .filesBox ul li:hover span{
+            .filesBox ul li:hover span {
               display: block;
               transition: 0.3s ease;
             }
@@ -1269,8 +1127,8 @@ class MedicalRecordScreen extends Component {
   }
   // 上传文件
   async FileUpload(files) {
-    const {FileUpload} = this.props // xhrFileUpload
-    const {uploadedFiles, imgFiles} = this.state
+    const { FileUpload } = this.props // xhrFileUpload
+    const { uploadedFiles, imgFiles } = this.state
     let array = uploadedFiles
     let imgArray = imgFiles
     if (files) {
@@ -1304,12 +1162,13 @@ class MedicalRecordScreen extends Component {
         if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
           imgArray.push(item)
         }
-        this.setState({uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array)})
+        this.setState({ uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array) })
       }
     }
   }
   render() {
     let {
+      uploadedFiles,
       morbidity_date,
       chief_complaint,
       history_of_present_illness,
@@ -1330,6 +1189,10 @@ class MedicalRecordScreen extends Component {
     const { changePage } = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
+    let images = []
+    for (let f of uploadedFiles) {
+      images.push({ src: API_SERVER + f.url })
+    }
     return (
       <div>
         <div className={'childTopBar'}>
@@ -1480,10 +1343,10 @@ class MedicalRecordScreen extends Component {
                   />
                 </li>
                 <li style={{ height: '58px' }} />
-                <li style={{width: '100%'}}>
+                <li style={{ width: '100%' }}>
                   <label>体格检查</label>
                   <textarea
-                    style={{width: '97%'}}
+                    style={{ width: '97%' }}
                     value={body_examination}
                     onChange={e => {
                       this.setState({ body_examination: e.target.value })
@@ -1493,12 +1356,17 @@ class MedicalRecordScreen extends Component {
                 <li>
                   <label>上传文件</label>
                   {this.renderFiles()}
+                  <ImageViewer ref='ImageViewer' images={images} />
                   <div className={'chooseFile'}>
                     <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
-                      <input multiple='multiple' type='file' onChange={e => {
-                        // console.log('文件=====', e.target.files)
-                        this.FileUpload(e.target.files)
-                      }} />
+                      <input
+                        multiple='multiple'
+                        type='file'
+                        onChange={e => {
+                          // console.log('文件=====', e.target.files)
+                          this.FileUpload(e.target.files)
+                        }}
+                      />
                     </form>
                     <button> + 添加文件</button>
                     <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
@@ -1603,9 +1471,10 @@ class MedicalRecordScreen extends Component {
           {this.showMedicalModels()}
           {this.showHistroyMedicals()}
           <Confirm ref='myAlert' isAlert />
-          <Confirm ref='myConfirm'
+          <Confirm
+            ref='myConfirm'
             setPage={() => {
-              this.setState({selPage: 1})
+              this.setState({ selPage: 1 })
             }}
             sureText={'保存'}
           >
