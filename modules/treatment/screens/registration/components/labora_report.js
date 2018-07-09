@@ -347,6 +347,7 @@ class LaboraReportScreen extends Component {
               <div>
                 <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
