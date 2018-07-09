@@ -190,6 +190,13 @@ class ExamDetailScreen extends Component {
     if (!showExamHistoryDetail) return null
     let { record = {}, exams = [], selIndex } = historyDetail
     const data = exams[selIndex]
+    let images = []
+    if (data.picture_examination) {
+      let uploadedFiles = JSON.parse(data.picture_examination)
+      for (let f of uploadedFiles) {
+        images.push({ src: API_SERVER + f.url })
+      }
+    }
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
@@ -208,6 +215,7 @@ class ExamDetailScreen extends Component {
               <div>
                 <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -235,7 +243,10 @@ class ExamDetailScreen extends Component {
               <ul>
                 <li>
                   <label>检查图片</label>
-                  <div style={{ height: '100px' }}>文件、照片上传</div>
+                  <div style={{ width: '100%', height: '120px' }}>
+                    {<ImageViewer ref='ImageViewer1' images={images} />}
+                    {this.renderFiles(data.picture_examination, 'ImageViewer1', false)}
+                  </div>
                 </li>
                 <li>
                   <label>描述</label>
@@ -371,7 +382,7 @@ class ExamDetailScreen extends Component {
   }
 
   // 显示上传的文件
-  renderFiles(picture_examination) {
+  renderFiles(picture_examination, viewer, showDelete = true) {
     const { selIndex, exams } = this.state
     if (!picture_examination) return null
     let uploadedFiles = JSON.parse(picture_examination)
@@ -390,35 +401,39 @@ class ExamDetailScreen extends Component {
                     <img
                       src={API_SERVER + item.url}
                       onClick={e => {
-                        this.refs.ImageViewer.show(index)
+                        this.refs[viewer].show(index)
                       }}
                     />
-                    <span
-                      onClick={() => {
-                        let array = uploadedFiles
-                        array.splice(index, 1)
-                        exams[selIndex].picture_examination = JSON.stringify(array)
-                        this.setState({ exams })
-                      }}
-                    >
-                      ×
-                    </span>
+                    {showDelete ? (
+                      <span
+                        onClick={() => {
+                          let array = uploadedFiles
+                          array.splice(index, 1)
+                          exams[selIndex].picture_examination = JSON.stringify(array)
+                          this.setState({ exams })
+                        }}
+                      >
+                        ×
+                      </span>
+                    ) : null}
                   </li>
                 )
               } else {
                 return (
                   <li key={index} title={item.docName}>
                     {item.docName}
-                    <span
-                      onClick={() => {
-                        let array = uploadedFiles
-                        array.splice(index, 1)
-                        exams[selIndex].picture_examination = JSON.stringify(array)
-                        this.setState({ exams })
-                      }}
-                    >
-                      ×
-                    </span>
+                    {showDelete ? (
+                      <span
+                        onClick={() => {
+                          let array = uploadedFiles
+                          array.splice(index, 1)
+                          exams[selIndex].picture_examination = JSON.stringify(array)
+                          this.setState({ exams })
+                        }}
+                      >
+                        ×
+                      </span>
+                    ) : null}
                   </li>
                 )
               }
@@ -551,8 +566,8 @@ class ExamDetailScreen extends Component {
           <li>
             <label>检查图片</label>
             <div style={{ width: '100%', height: '120px' }}>
-              {this.renderFiles(data.picture_examination)}
-              <ImageViewer ref='ImageViewer' images={images} />
+              {this.renderFiles(data.picture_examination, 'ImageViewer2')}
+              <ImageViewer ref='ImageViewer2' images={images} />
               <div className={'chooseFile'}>
                 <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
                   <input
