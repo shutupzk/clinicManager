@@ -101,6 +101,9 @@ export default class Navigation extends Component {
             height: auto;
             min-height: 50px;
           }
+          .footNavUl > div a{
+            color: rgba(102, 102, 102, 1);
+          }
           .footNavUl div i {
             display: none;
             float: left;
