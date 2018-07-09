@@ -183,9 +183,9 @@ export default class CompleteHealth extends Component {
     console.log('bodySign======', bodySign)
     return (
       <div>
-        <div className={'progress'}>
+        {/* <div className={'progress'}>
           <div className={'progressContent'}>进度条</div>
-        </div>
+        </div> */}
         <div className={'recordContent'}>
           <ul>
             <li>
@@ -453,9 +453,9 @@ export default class CompleteHealth extends Component {
     console.log('preMedicalRecords======', preMedicalRecords)
     return (
       <div>
-        <div className={'progress'}>
+        {/* <div className={'progress'}>
           <div className={'progressContent'}>进度条</div>
-        </div>
+        </div> */}
         <div className={'mRecord'} style={{ height: 'auto' }}>
           <ul>
             <li>
@@ -641,9 +641,9 @@ export default class CompleteHealth extends Component {
     const { preDiagnosisRecords } = this.state
     return (
       <div>
-        <div className={'progress'}>
+        {/* <div className={'progress'}>
           <div className={'progressContent'}>进度条</div>
-        </div>
+        </div> */}
         <div className={'mRecord'} style={{ height: 'auto' }}>
           <ul>
             <li>

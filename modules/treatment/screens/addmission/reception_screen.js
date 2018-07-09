@@ -276,12 +276,8 @@ class RecptionScreen extends Component {
             <a>{triagePatient.phone}</a>
           </div>
           <div className={'boxRight'}>
-            <button onClick={() => this.setState({ showConfirm: true })}>
-              <a>结束就诊</a>
-            </button>
-            <button onClick={() => this.setState({ showFeeModel: true })}>
-              <a>费用预览</a>
-            </button>
+            <button onClick={() => this.setState({ showConfirm: true })}>结束就诊</button>
+            <button onClick={() => this.setState({ showFeeModel: true })}>费用预览</button>
           </div>
         </div>
         {this.showDataList()}
@@ -318,6 +314,7 @@ class RecptionScreen extends Component {
               float: left;
               margin-left: 30px;
               margin-right: 0;
+              line-height: 28px;
             }
           `}
         </style>
