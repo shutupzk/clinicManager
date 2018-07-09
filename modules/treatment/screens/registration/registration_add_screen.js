@@ -2,12 +2,15 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import { DatePicker } from 'antd'
+// import locale from 'antd/lib/locale-provider/zh_CN'
 import locale from 'antd/lib/date-picker/locale/zh_CN'
 // import 'antd/dist/antd.css'
 import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, getPatientByKeyword } from '../../../../ducks'
 
 import { getAgeByBirthday, checkIdCard, checkPhoneNumber } from '../../../../utils'
 import moment from 'moment'
+moment.locale('zh-cn')
+// import {zh_CH} from 'moment/locale/zh-cn'
 import { provinces } from '../../../../config/provinces'
 import { Select, Confirm, CustomSelect } from '../../../../components'
 
@@ -163,6 +166,7 @@ class RegistrationAddScreen extends Component {
     let patient = this.state.patientInfo
     const patients = this.props.patients || []
     const {isPhone, isIdCode} = this.state
+    // console.log('locale======', locale, zh_CH)
     return (
       <div className={'formList'}>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
