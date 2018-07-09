@@ -195,7 +195,8 @@ class RightContent extends Component {
 						height: 26px;
 						line-height: 26px;
 						float: left;
-						margin-left: 10px;
+            margin-left: 10px;
+            color: #000;
 					}
 					.rightUserInfo>span:nth-child(2){
 						width:70px;

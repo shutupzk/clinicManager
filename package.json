@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "add": "^2.0.6",
+    "antd": "^3.6.5",
     "axios": "^0.18.0",
     "babel-plugin-module-resolver": "^2.7.0",
     "babel-plugin-wrap-in-js": "^1.1.1",
