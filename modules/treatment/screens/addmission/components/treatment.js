@@ -123,7 +123,7 @@ class TreatmentScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
-        this.setState({treatmentsStr: JSON.stringify(treatments)})
+        this.setState({ treatmentsStr: JSON.stringify(treatments) })
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -244,7 +244,7 @@ class TreatmentScreen extends Component {
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
           <div className='doctorList_top'>
-            <span>西/成药处方模板</span>
+            <span>治疗模板</span>
             <span onClick={() => this.setState({ showModelList: false })}>x</span>
           </div>
           <div className='tableDIV' style={{ width: '94%', marginTop: '15px', marginLeft: '3%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -350,7 +350,7 @@ class TreatmentScreen extends Component {
           }
           .tableDIV ul li {
             display: flex;
-            height: 50px;
+            min-height: 50px;
             border-bottom: 1px solid #e9e9e9;
             line-height: 40px;
             text-align: center;
@@ -449,8 +449,8 @@ class TreatmentScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    const {changePage} = this.props
-    const {treatments, treatmentsStr} = this.state
+    const { changePage } = this.props
+    const { treatments, treatmentsStr } = this.state
     // console.log('othercostsStr==', othercostsStr)
     if (JSON.stringify(treatments) !== treatmentsStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
@@ -468,7 +468,7 @@ class TreatmentScreen extends Component {
         <div className={'childTopBar'}>
           <span
             onClick={() => {
-              this.setState({selPage: 1})
+              this.setState({ selPage: 1 })
               this.tipsToSave(1)
             }}
           >
@@ -477,7 +477,7 @@ class TreatmentScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 2})
+              this.setState({ selPage: 2 })
               this.tipsToSave(2)
             }}
           >
@@ -494,7 +494,7 @@ class TreatmentScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 4})
+              this.setState({ selPage: 4 })
               this.tipsToSave(4)
             }}
           >
@@ -503,7 +503,7 @@ class TreatmentScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 5})
+              this.setState({ selPage: 5 })
               this.tipsToSave(5)
             }}
           >
@@ -512,7 +512,7 @@ class TreatmentScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 6})
+              this.setState({ selPage: 6 })
               this.tipsToSave(6)
             }}
           >
@@ -521,7 +521,7 @@ class TreatmentScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 7})
+              this.setState({ selPage: 7 })
               this.tipsToSave(7)
             }}
           >
@@ -531,10 +531,15 @@ class TreatmentScreen extends Component {
         <div className='filterBox'>
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
             <div style={{ height: '65px', width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-              <button style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }} onClick={() => {
-                this.TreatmentPatientModelList({})
-                this.setState({ showModelList: true })
-              }}>选择模板</button>
+              <button
+                style={{ width: '100px', height: '28px', border: '1px solid rgba(42,205,200,1)', borderRadius: '4px', color: 'rgba(42,205,200,1)', marginRight: '64px' }}
+                onClick={() => {
+                  this.TreatmentPatientModelList({})
+                  this.setState({ showModelList: true })
+                }}
+              >
+                选择模板
+              </button>
             </div>
             <div className={'alergyBlank'}>
               <div>
@@ -587,10 +592,13 @@ class TreatmentScreen extends Component {
                         <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                       </div>
                       <div>
-                        <input value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                        <input maxLength='500' value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        <div
+                          onClick={() => this.removeColumn(index)}
+                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                        >
                           删除
                         </div>
                       </div>
@@ -628,37 +636,37 @@ class TreatmentScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-          .childTopBar{
+          .childTopBar {
             display: flex;
             margin-left: 65px;
           }
-          .childTopBar>span {
-            flex:1;
+          .childTopBar > span {
+            flex: 1;
             margin-left: 0;
           }
-            .buttonDiv {
-              width: 63px;
-              height: 30px;
-              border-radius: 4px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-left: 8px;
-            }
-            .buttonDivCancel {
-              background: rgba(255, 255, 255, 1);
-              border: 1px solid #d9d9d9;
-            }
-            .buttonDiv span {
-              height: 22px;
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              line-height: 22px;
-            }
-            .cancel {
-              color: rgba(0, 0, 0, 0.65);
-            }
+          .buttonDiv {
+            width: 63px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+          }
+          .buttonDivCancel {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #d9d9d9;
+          }
+          .buttonDiv span {
+            height: 22px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            line-height: 22px;
+          }
+          .cancel {
+            color: rgba(0, 0, 0, 0.65);
+          }
         `}</style>
       </div>
     )

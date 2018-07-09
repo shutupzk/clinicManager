@@ -356,7 +356,7 @@ class LaboratoryScreen extends Component {
           }
           .tableDIV ul li {
             display: flex;
-            height: 50px;
+            min-height: 50px;
             border-bottom: 1px solid #e9e9e9;
             line-height: 40px;
             text-align: center;
@@ -592,7 +592,7 @@ class LaboratoryScreen extends Component {
                         <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                       </div>
                       <div>
-                        <input value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                        <input maxLength='500' value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
                         <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
