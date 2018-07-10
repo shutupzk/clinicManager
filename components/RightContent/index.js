@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import { MAINFUNCTION } from '../../config'
+// import { MAINFUNCTION } from '../../config'
 // import canlendarStyles from './Wrapper'
 // import Link from 'next/link'
 import { theme } from '../../components'
@@ -89,15 +89,17 @@ class RightContent extends Component {
     // console.log("winWidth"+winWidth);
     // window.re();
     // console.log("curUrl",this.props.url.pathname+"==="+curUrl);
+    // console.log('curUrl====', curUrl, curUrl.split('/')[1])
+    const {user_menu} = this.props
     return (
       <div className={'rightContent'} style={{ width: this.state.windowWidth - 256 }}>
         <div className={'right_nav_menu'}>
           <ul className='left'>
-            {MAINFUNCTION.map((item, iKey) => {
+            {user_menu.map((item, iKey) => {
               return (
                 <li
                   key={item.navigateName}
-                  className={curUrl.indexOf(item.short_name) > -1 ? 'selLi' : ''}
+                  className={curUrl.split('/')[1] === item.navigateName.split('/')[1] ? 'selLi' : ''}
                   onClick={() => {
                     Router.push(item.navigateName)
                   }}
@@ -240,7 +242,8 @@ class RightContent extends Component {
 function mapStateToProps(state) {
   return {
     // token: state.user.data.token,
-    name: state.user.data.name
+    name: state.user.data.name,
+    user_menu: state.user.user_menu
     // loading: state.user.loading,
     // error: state.user.error
   }
