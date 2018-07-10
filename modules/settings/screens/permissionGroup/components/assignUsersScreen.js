@@ -13,7 +13,8 @@ import {
   RoleUpdate,
   RoleFunctionUnset,
   queryDoctorList,
-  RoleAllocation
+  RoleAllocation,
+  PersonnelsByRole
 } from '../../../../../ducks'
 // import {limitMoney} from '../../../../../utils'
 
@@ -45,10 +46,25 @@ class AssignUsersScreen extends Component {
     this.queryDoctorList({offset: 0, limit: 10})
   }
 
-  queryDoctorList({offset = 0, limit = 10}) {
+  queryDoctorList({offset = 0, limit = 10, keyword = ''}) {
     const {queryDoctorList, clinic_id} = this.props
-    const {keyword} = this.state
+    // const {} = this.state
     queryDoctorList({ clinic_id, keyword, offset, limit })
+    this.PersonnelsByRole()
+  }
+  async PersonnelsByRole() {
+    const {role_id, PersonnelsByRole} = this.props
+    let personnels = await PersonnelsByRole({role_id})
+    console.log('personnels=====', personnels)
+    let array = []
+    for (let key of personnels) {
+      let item = {
+        id: key.personnel_id,
+        name: key.personnel_name
+      }
+      array.push(item)
+    }
+    this.setState({array2: array})
   }
   style() {
     return (
@@ -471,7 +487,7 @@ class AssignUsersScreen extends Component {
   }
   // 角色基本信息
   renderBaseInfoBlank() {
-    const {roleInfo, array1, array2} = this.state
+    const {roleInfo, array2} = this.state
     const {doctors, page_info} = this.props
     console.log('doctors=======', doctors)
     return (
@@ -495,7 +511,17 @@ class AssignUsersScreen extends Component {
               <label>用户分配</label>
               <div className={'boxContentItem'}>
                 <div className={'boxContentList'}>
-                  <span>{'搜索科室/姓名'}</span>
+                  {/* <span>{'搜索科室/姓名'}</span> */}
+                  <div>
+                    <input
+                      className={'serchDoctor'}
+                      type='text'
+                      placeholder={'搜索科室/姓名'}
+                      onBlur={e => {
+                        this.queryDoctorList({limit: 10, offset: 0, keyword: e.target.value})
+                      }}
+                    />
+                  </div>
                   <ul>
                     {doctors.map((func, funkey) => {
                       // console.log('func===', func)
@@ -659,6 +685,15 @@ class AssignUsersScreen extends Component {
             align-items: center;
             float: left;
           }
+          .serchDoctor{
+            background: rgba(245,248,249,1);
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            height: 30px;
+            padding: 0;
+            width: 200px;
+            margin: 20px 0;
+          }
           .boxContentList > ul > li > input {
             margin: 0;
             margin-top: 2px;
@@ -666,10 +701,11 @@ class AssignUsersScreen extends Component {
             height: 16px;
             background: rgba(42, 205, 200, 1);
             border-radius: 2px;
-            flex: 1;
+            // flex: 1;
           }
           .boxContentList > ul > li > label {
             flex: 4;
+            margin-left: 20px;
           }
         `}</style>
       </div>
@@ -694,5 +730,6 @@ export default connect(mapStateToProps, {
   RoleUpdate,
   RoleFunctionUnset,
   queryDoctorList,
-  RoleAllocation
+  RoleAllocation,
+  PersonnelsByRole
 })(AssignUsersScreen)
