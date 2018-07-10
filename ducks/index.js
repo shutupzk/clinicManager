@@ -1,4 +1,4 @@
-import { user, signin, signout } from './user'
+import { user, signin, signout, RolesByPersonnel, saveUserMenu } from './user'
 import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete } from './doctors'
 import {
   triagePatients,
@@ -345,6 +345,8 @@ export {
 export {
   signin,
   signout,
+  RolesByPersonnel,
+  saveUserMenu,
   queryDoctorList,
   doctorSelect,
   PersonnelUpdate,

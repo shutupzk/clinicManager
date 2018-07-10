@@ -105,7 +105,9 @@ const MAINFUNCTION = [
     title: '平台管理',
     short_name: 'platform',
     navigateName: '/platform',
-    children: [{ title: '诊所管理', navigateName: '/platform', icon: '/static/icons/clinic.svg' }, { title: '业务管理', navigateName: '/platform/business', icon: '/static/icons/business.svg' }]
+    children: [
+      { title: '诊所管理', navigateName: '/platform', icon: '/static/icons/clinic.svg' },
+      { title: '业务管理', navigateName: '/platform/business', icon: '/static/icons/business.svg' }]
   }
 ]
 

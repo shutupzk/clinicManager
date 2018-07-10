@@ -2,9 +2,11 @@ import { request } from './request'
 import localforage from 'localforage'
 const USER_SIGNIN = 'USER_SIGNIN'
 const USER_SIGNOUT = 'USER_SIGNOUT'
+const USER_MENU = 'USER_MENU'
 
 const initState = {
-  data: {}
+  data: {},
+  user_menu: []
 }
 
 export function user (state = initState, action = {}) {
@@ -13,6 +15,8 @@ export function user (state = initState, action = {}) {
       return { ...state, data: action.data }
     case USER_SIGNOUT:
       return { ...state, data: {} }
+    case USER_MENU:
+      return {...state, user_menu: action.user_menu}
     default:
       return state
   }
@@ -35,7 +39,7 @@ export const signin = ({ username, password }) => async dispatch => {
       type: USER_SIGNIN,
       data: user
     })
-    return null
+    return data
   } catch (e) {
     console.log(e)
     return e.message
@@ -47,6 +51,31 @@ export const signout = () => async dispatch => {
     localforage.clear()
     dispatch({
       type: USER_SIGNOUT
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const RolesByPersonnel = ({id}) => async dispatch => {
+  try {
+    console.log('limit====', id)
+    const data = await request('/personnel/RolesByPersonnel', {id})
+    console.log('RolesByPersonnel=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
+export const saveUserMenu = ({user_menu}) => async dispatch => {
+  try {
+    // localforage.clear()
+    dispatch({
+      type: USER_MENU,
+      user_menu
     })
     return null
   } catch (e) {

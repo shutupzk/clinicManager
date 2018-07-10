@@ -60,7 +60,8 @@ class AssignUsersScreen extends Component {
     for (let key of personnels) {
       let item = {
         id: key.personnel_id,
-        name: key.personnel_name
+        name: key.personnel_name,
+        department_name: key.department_name
       }
       array.push(item)
     }

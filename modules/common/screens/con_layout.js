@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { TITLE, MAINFUNCTION } from '../../../config'
 import { theme } from '../../../components'
 import Navigation from './foot_navigation'
@@ -7,10 +8,12 @@ import Navigation from './foot_navigation'
 class ConLayout extends Component {
   render() {
     const url = (this.props.url && this.props.url.pathname) || '/'
-    const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
+    // const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
+    const conList = this.props.user_menu.filter(item => url.indexOf(item.navigateName) > -1)
     // console.log('conList======', conList, url)
     // const screenHeight = process.browser ? document.documentElement.clientHeight : 1000
     // const appConHeight = screenHeight - 126
+    console.log('conList======', conList)
     return (
 			// className={'appContent'} style={{ background: '#fff',minWidth: 1000 }}
       <div className={'leftBar'}>
@@ -109,5 +112,10 @@ class ConLayout extends Component {
 		)
   }
 }
+const mapStateToProps = state => {
+  return {
+    user_menu: state.user.user_menu
+  }
+}
 
-export default ConLayout
+export default connect(mapStateToProps, null)(ConLayout)

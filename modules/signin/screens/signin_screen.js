@@ -5,17 +5,17 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { styles } from '../../../components/styles'
 import { theme } from '../../../components'
-import { signin } from '../../../ducks'
+import { signin, RolesByPersonnel, saveUserMenu } from '../../../ducks'
 
 class SigninScreen extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       username: 'lh_admin',
       password: '123456'
     }
   }
-  async submit() {
+  async submit () {
     const username = this.state.username
     const password = this.state.password
     if (!username) {
@@ -27,11 +27,88 @@ class SigninScreen extends Component {
       return
     }
 
-    let error = await this.props.signin({ username, password })
-    if (error) return alert('登录失败：' + error)
-    Router.push('/treatment/registration')
+    let data = await this.props.signin({ username, password })
+    if (data.code !== '200') {
+      return alert('登录失败：' + error)
+    } else {
+      let user = data.data
+      this.RolesByPersonnel({ user })
+            // RolesByPersonnel({ id: user.id })
+    }
+        // Router.push('/treatment/registration')
   }
-  render() {
+  async RolesByPersonnel ({ user }) {
+    const { RolesByPersonnel, saveUserMenu } = this.props
+    let data = await RolesByPersonnel({ id: user.id })
+    let user_menu = []
+    console.log('user_menu======', data)
+    let chargeItemSetting = []
+    let template = []
+    for (let key of data) {
+      let item = {
+        title: key.parent_name,
+        navigateName: key.childrens_menus[0].menu_url,
+        children: []
+      }
+      for (let child of key.childrens_menus) {
+        let child_item = {
+          title: child.menu_name,
+          navigateName: child.menu_url,
+          icon: ''
+        }
+        if (child.menu_url.split('/')[2] === 'chargeItemSetting') {
+          chargeItemSetting.push(child)
+        }
+        if (child.menu_url.split('/')[2] === 'template') {
+          template.push(child)
+        }
+        if (child.menu_url.split('/')[2] !== 'chargeItemSetting' && child.menu_url.split('/')[2] !== 'template') {
+          item.children.push(child_item)
+        }
+      }
+      if (key.parent_url === '/setting') {
+        if (chargeItemSetting.length > 0) {
+          let charge_item = {
+            title: '收费项目设置',
+            navigateName: chargeItemSetting[0].menu_url,
+            children: [],
+            icon: ''
+          }
+          item.navigateName = chargeItemSetting[0].menu_url
+          for (let charge of chargeItemSetting) {
+            let c_item = {
+              title: charge.menu_name,
+              navigateName: charge.menu_url
+            }
+            charge_item.children.push(c_item)
+          }
+          item.children.push(charge_item)
+        }
+        if (template.length > 0) {
+          let temp_item = {
+            title: '模板设置',
+            navigateName: template[0].menu_url,
+            children: [],
+            icon: ''
+          }
+          item.navigateName = template[0].menu_url
+          for (let temp of template) {
+            let c_item = {
+              title: temp.menu_name,
+              navigateName: temp.menu_url
+            }
+            temp_item.children.push(c_item)
+          }
+          item.children.push(temp_item)
+        }
+      }
+      user_menu.push(item)
+    }
+    console.log('user_menusssss======', user_menu)
+    saveUserMenu({ user_menu })
+    Router.push(user_menu[0].children[0].navigateName)
+  }
+  render () {
     return (
       <div className={'loginPage'}>
         <div className={'loginLogo'} />
@@ -50,8 +127,8 @@ class SigninScreen extends Component {
             </li>
           </ul>
           <button className='loginBtn' onClick={() => this.submit(this.props)}>
-						登录
-					</button>
+                        登录
+                    </button>
         </section>
         <style jsx='true'>{`
           .loginLogo{
@@ -84,7 +161,8 @@ class SigninScreen extends Component {
           }
           .login_welcome a{
             float:left;
-            width:100%;
+						width:100%;
+						color:#fff;
           }
 					section {
 						border: 1px solid #d8d8d8;
@@ -217,4 +295,4 @@ class SigninScreen extends Component {
   }
 }
 
-export default connect(null, { signin })(SigninScreen)
+export default connect(null, { signin, RolesByPersonnel, saveUserMenu })(SigninScreen)
