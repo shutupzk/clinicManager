@@ -5,7 +5,7 @@ import { TriagePatientDetail } from '../../../../../ducks'
 import { getAgeByBirthday, checkPhoneNumber, checkIdCard } from '../../../../../utils'
 import moment from 'moment'
 moment.locale('zh-cn')
-import { DatePicker } from 'antd'
+import DatePicker from 'antd/lib/date-picker'
 import locale from 'antd/lib/date-picker/locale/zh_CN'
 import { provinces } from '../../../../../config/provinces'
 
