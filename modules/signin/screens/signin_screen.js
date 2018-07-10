@@ -41,7 +41,7 @@ class SigninScreen extends Component {
     const { RolesByPersonnel, saveUserMenu } = this.props
     let data = await RolesByPersonnel({ id: user.id })
     let user_menu = []
-    console.log('user_menu======', data)
+    // console.log('user_menu======', data)
     let chargeItemSetting = []
     let template = []
     for (let key of data) {
@@ -54,7 +54,7 @@ class SigninScreen extends Component {
         let child_item = {
           title: child.menu_name,
           navigateName: child.menu_url,
-          icon: ''
+          icon: child.icon
         }
         if (child.menu_url.split('/')[2] === 'chargeItemSetting') {
           chargeItemSetting.push(child)
@@ -72,7 +72,7 @@ class SigninScreen extends Component {
             title: '收费项目设置',
             navigateName: chargeItemSetting[0].menu_url,
             children: [],
-            icon: ''
+            icon: '/static/icons/charge2.svg'
           }
           item.navigateName = chargeItemSetting[0].menu_url
           for (let charge of chargeItemSetting) {
@@ -89,7 +89,7 @@ class SigninScreen extends Component {
             title: '模板设置',
             navigateName: template[0].menu_url,
             children: [],
-            icon: ''
+            icon: '/static/icons/template.svg'
           }
           item.navigateName = template[0].menu_url
           for (let temp of template) {

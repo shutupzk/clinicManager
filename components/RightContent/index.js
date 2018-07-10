@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import { MAINFUNCTION } from '../../config'
+// import { MAINFUNCTION } from '../../config'
 // import canlendarStyles from './Wrapper'
 // import Link from 'next/link'
 import { theme } from '../../components'
@@ -89,7 +89,7 @@ class RightContent extends Component {
     // console.log("winWidth"+winWidth);
     // window.re();
     // console.log("curUrl",this.props.url.pathname+"==="+curUrl);
-    console.log('curUrl====', curUrl, curUrl.split('/')[1])
+    // console.log('curUrl====', curUrl, curUrl.split('/')[1])
     const {user_menu} = this.props
     return (
       <div className={'rightContent'} style={{ width: this.state.windowWidth - 256 }}>
