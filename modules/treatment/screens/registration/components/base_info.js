@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '../../../../../components'
+import { Select, DatePicker } from '../../../../../components'
 import { TriagePatientDetail, GetHealthRecord } from '../../../../../ducks'
 import { getAgeByBirthday, checkPhoneNumber, checkIdCard } from '../../../../../utils'
 import moment from 'moment'
-moment.locale('zh-cn')
-import DatePicker from 'antd/lib/date-picker'
-import locale from 'antd/lib/date-picker/locale/zh_CN'
 import { provinces } from '../../../../../config/provinces'
 
 class BaseInfoScreen extends Component {
@@ -163,9 +160,6 @@ class BaseInfoScreen extends Component {
                 生日：<b style={{ color: 'red' }}> *</b>
               </label>
               <DatePicker
-                // type='date'
-                locale={locale}
-                style={{ width: '120px', marginTop: '17px' }}
                 value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 onChange={(date, str) => {
                   let newPatient = patient

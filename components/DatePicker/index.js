@@ -14,11 +14,7 @@ export default class MyDatePicker extends Component {
     return (
       <div>
         <DatePicker locale={locale} style={{ width: '120px', marginTop: '17px' }} {...this.props} />
-        {/* <style dangerouslySetInnerHTML={{ __html: thiscss }} /> */}
-        <style jsx='true'>{
-          `${thiscss}`
-        }
-        </style>
+        <style dangerouslySetInnerHTML={{ __html: thiscss }} />
       </div>
     )
   }

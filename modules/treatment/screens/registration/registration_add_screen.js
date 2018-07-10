@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-// import DatePicker from 'antd/lib/date-picker'
-// import locale from 'antd/lib/locale-provider/zh_CN'
-import locale from 'antd/lib/date-picker/locale/zh_CN'
-// import 'antd/dist/antd.css'
 import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, getPatientByKeyword } from '../../../../ducks'
 
 import { getAgeByBirthday, checkIdCard, checkPhoneNumber } from '../../../../utils'
 import moment from 'moment'
-moment.locale('zh-cn')
-// import {zh_CH} from 'moment/locale/zh-cn'
 import { provinces } from '../../../../config/provinces'
 import { Select, Confirm, CustomSelect, DatePicker } from '../../../../components'
 
@@ -261,16 +255,11 @@ class RegistrationAddScreen extends Component {
               <label>
                 生日：<b style={{ color: 'red' }}> *</b>
               </label>
-              {/* <DatePicker locale={locale} /> */}
               <div>
                 <DatePicker
-                  // type='date'
-                  locale={locale}
-                  style={{ width: '120px', marginTop: '17px' }}
                   value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                   onChange={(date, str) => {
                     let newPatient = patient
-                    console.log('date======', date)
                     if (date) {
                       newPatient.birthday = moment(date).format('YYYY-MM-DD')
                       console.log('newPatient.birthday====', newPatient.birthday)
