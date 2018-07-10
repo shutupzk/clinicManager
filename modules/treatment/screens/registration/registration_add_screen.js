@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import DatePicker from 'antd/lib/date-picker'
+// import DatePicker from 'antd/lib/date-picker'
 // import locale from 'antd/lib/locale-provider/zh_CN'
 import locale from 'antd/lib/date-picker/locale/zh_CN'
 // import 'antd/dist/antd.css'
@@ -12,7 +12,7 @@ import moment from 'moment'
 moment.locale('zh-cn')
 // import {zh_CH} from 'moment/locale/zh-cn'
 import { provinces } from '../../../../config/provinces'
-import { Select, Confirm, CustomSelect } from '../../../../components'
+import { Select, Confirm, CustomSelect, DatePicker } from '../../../../components'
 
 class RegistrationAddScreen extends Component {
   constructor(props) {

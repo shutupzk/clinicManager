@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select } from '../../../../../components'
-import { TriagePatientDetail } from '../../../../../ducks'
+import { TriagePatientDetail, GetHealthRecord } from '../../../../../ducks'
 import { getAgeByBirthday, checkPhoneNumber, checkIdCard } from '../../../../../utils'
 import moment from 'moment'
 moment.locale('zh-cn')
@@ -31,7 +31,10 @@ class BaseInfoScreen extends Component {
     let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
     if (patient) {
       const { province, city, district } = patient
-      this.setState({ patientInfo: patient, province, city, county: district, isIdCode: true, isPhone: true })
+      let { GetHealthRecord } = this.props
+      let data = await GetHealthRecord({ clinic_triage_patient_id })
+      const { pre_medical_record } = data
+      this.setState({ patientInfo: patient, province, city, county: district, isIdCode: true, isPhone: true, preMedicalRecords: pre_medical_record })
     }
   }
 
@@ -109,8 +112,10 @@ class BaseInfoScreen extends Component {
     return null
   }
 
-  showBaseInfo() {
+  render() {
     let patient = this.state.patientInfo
+    let { preMedicalRecords = {} } = this.state
+    console.log('preMedicalRecords======', preMedicalRecords)
     const { isPhone, isIdCode } = this.state
     return (
       <div className={'formList'}>
@@ -306,6 +311,155 @@ class BaseInfoScreen extends Component {
               <input type='text' value={patient.remark || ''} onChange={e => this.setPatientInfo(e, 'remark')} />
             </li>
           </ul>
+          <ul>
+            <li style={{ width: '48%' }}>
+              <label>
+                过敏史: <b style={{ color: 'red' }}> *</b>
+              </label>
+              <div className='liDiv'>
+                <input
+                  type='radio'
+                  name='allergy'
+                  style={{ width: 'auto', height: 'auto' }}
+                  checked={preMedicalRecords.has_allergic_history === true}
+                  value={!false}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'has_allergic_history')
+                  }}
+                />
+                <label htmlFor='man'>是</label>
+                <input
+                  type='radio'
+                  name='allergy'
+                  checked={preMedicalRecords.has_allergic_history === false}
+                  style={{ width: 'auto', height: 'auto' }}
+                  value={false}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'has_allergic_history')
+                  }}
+                />
+                <label htmlFor='woman'>否</label>
+                <input
+                  type='text'
+                  placeholder={'对什么过敏'}
+                  value={preMedicalRecords.allergic_history || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'allergic_history')
+                  }}
+                />
+              </div>
+            </li>
+            <li>
+              <label>个人史</label>
+              <textarea
+                style={{ height: '63px' }}
+                value={preMedicalRecords.personal_medical_history || ''}
+                placeholder='请填写个人史'
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'personal_medical_history')
+                }}
+              />
+            </li>
+            <li>
+              <label>家族史</label>
+              <textarea
+                style={{ height: '70px' }}
+                placeholder='请填写家族史'
+                value={preMedicalRecords.family_medical_history || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'family_medical_history')
+                }}
+              />
+            </li>
+            <li>
+              <label>接种疫苗</label>
+              <textarea
+                style={{ height: '35px' }}
+                placeholder='请填写接种疫苗'
+                value={preMedicalRecords.vaccination || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'vaccination')
+                }}
+              />
+            </li>
+            <li>
+              <label>月经史</label>
+              <input
+                type='text'
+                style={{ width: '170px' }}
+                placeholder='月经初潮年龄'
+                value={preMedicalRecords.menarche_age || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'menarche_age')
+                }}
+              />
+              <input
+                type='text'
+                style={{ width: '120px', marginLeft: '15px' }}
+                placeholder='月经经期开始时间'
+                value={preMedicalRecords.menstrual_period_start_day || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'menstrual_period_start_day')
+                }}
+              />
+              <input
+                type='text'
+                style={{ width: '120px', marginLeft: '5px' }}
+                placeholder='月经经期结束时间'
+                value={preMedicalRecords.menstrual_period_end_day || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'menstrual_period_end_day')
+                }}
+              />
+              <input
+                type='text'
+                style={{ width: '120px', marginLeft: '15px', marginTop: '10px' }}
+                placeholder='月经周期开始时间'
+                value={preMedicalRecords.menstrual_cycle_start_day || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
+                }}
+              />
+              <input
+                type='text'
+                style={{ width: '120px', marginLeft: '5px', marginTop: '10px' }}
+                placeholder='月经周期结束时间'
+                value={preMedicalRecords.menstrual_cycle_end_day || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
+                }}
+              />
+              <input
+                type='text'
+                style={{ width: '170px', marginTop: '10px' }}
+                placeholder='末次月经时间'
+                value={preMedicalRecords.menstrual_last_day || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'menstrual_last_day')
+                }}
+              />
+              <input
+                type='text'
+                style={{ width: '170px', marginLeft: '15px', marginTop: '10px' }}
+                placeholder='孕周'
+                value={preMedicalRecords.gestational_weeks || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'gestational_weeks')
+                }}
+              />
+            </li>
+            <li>
+              <label>生育史</label>
+              <input
+                type='text'
+                style={{ width: '661px' }}
+                value={preMedicalRecords.childbearing_history || ''}
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'childbearing_history')
+                }}
+              />
+            </li>
+          </ul>
           <div style={{ float: 'left', width: '1000px', height: '60px' }}>
             <button className='saveBtn' onClick={() => this.submit()}>
               保存
@@ -320,9 +474,6 @@ class BaseInfoScreen extends Component {
       </div>
     )
   }
-  render() {
-    return <div>{this.showBaseInfo()}</div>
-  }
 }
 const mapStateToProps = state => {
   return {
@@ -335,6 +486,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    TriagePatientDetail
+    TriagePatientDetail,
+    GetHealthRecord
   }
 )(BaseInfoScreen)

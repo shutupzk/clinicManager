@@ -13,7 +13,7 @@ export const Head = props => (
     <meta name='apple-mobile-web-app-status-bar-style' content='black' />
     <meta name='format-detection' content='telephne=no' />
     <link rel='icon' href='/static/favicon.ico' />
-    <link rel='stylesheet' href='/static/css/date/antd.css' />
+    {/* <link rel='stylesheet' href='/static/css/date/antd.css' /> */}
     <meta property='og:url' content={props.url || defaultOGURL} />
     <meta property='og:title' content={props.title || ''} />
     <meta property='og:description' content={props.description || defaultDescription} />

@@ -1,3 +1,10 @@
+
+// Converted Variables
+
+
+// Custom Media Query Variables
+
+
 @font-face {
   font-family: "Monospaced Number";
   src: local("Tahoma");
@@ -12730,7 +12737,7 @@ li.ant-calendar-time-picker-select-option-disabled:hover {
   content: '\203A';
 }
 .ant-calendar-month-panel-body {
-  height: calc(100% - 40px);
+  height: 80%;
 }
 .ant-calendar-month-panel-table {
   table-layout: fixed;
@@ -12868,7 +12875,7 @@ li.ant-calendar-time-picker-select-option-disabled:hover {
   content: '\203A';
 }
 .ant-calendar-year-panel-body {
-  height: calc(100% - 40px);
+  height: 80%;
 }
 .ant-calendar-year-panel-table {
   table-layout: fixed;
@@ -13005,7 +13012,7 @@ li.ant-calendar-time-picker-select-option-disabled:hover {
   content: '\203A';
 }
 .ant-calendar-decade-panel-body {
-  height: calc(100% - 40px);
+  height: 80%;
 }
 .ant-calendar-decade-panel-table {
   table-layout: fixed;
@@ -16486,7 +16493,7 @@ textarea.ant-mention-wrapper .ant-mention-editor {
 }
 .ant-menu-inline .ant-menu-item,
 .ant-menu-inline .ant-menu-submenu-title {
-  width: calc(100% + 1px);
+  width: 100%;
 }
 .ant-menu-inline .ant-menu-submenu-title {
   padding-right: 34px;
@@ -17186,7 +17193,7 @@ textarea.ant-mention-wrapper .ant-mention-editor {
   position: fixed;
   z-index: 1010;
   width: 384px;
-  max-width: calc(100vw - 32px);
+  max-width: (68px);
   margin-right: 24px;
 }
 .ant-notification-topLeft,
@@ -17220,7 +17227,7 @@ textarea.ant-mention-wrapper .ant-mention-editor {
   display: inline-block;
 }
 .ant-notification-notice-message-single-line-auto-margin {
-  width: calc(384px - 24px * 2 - 24px - 48px - 100%);
+  width: (384px - 24px * 2 - 24px - 48px);
   background-color: transparent;
   pointer-events: none;
   display: block;
@@ -17619,8 +17626,8 @@ a.ant-notification-notice-close:focus {
   padding-right: 0;
 }
 .ant-progress-show-info .ant-progress-outer {
-  padding-right: calc(2em + 8px);
-  margin-right: calc(-2em - 8px);
+  padding-right: (2px + 8px);
+  margin-right: (-2px - 8px);
 }
 .ant-progress-inner {
   display: inline-block;
@@ -18421,7 +18428,7 @@ a.ant-notification-notice-close:focus {
 }
 .ant-steps-dot .ant-steps-item-tail:after {
   height: 3px;
-  width: calc(100% - 20px);
+  width: (90%);
   margin-left: 12px;
 }
 .ant-steps-dot .ant-steps-item:first-child .ant-steps-icon-dot {
@@ -20088,7 +20095,7 @@ span.ant-transfer-list-search-action {
   color: rgba(0, 0, 0, 0.65);
   -webkit-transition: all .3s;
   transition: all .3s;
-  width: calc(100% - 24px);
+  width: (90%);
 }
 .ant-select-tree li .ant-select-tree-node-content-wrapper:hover {
   background-color: #e6f7ff;
@@ -20100,7 +20107,7 @@ span.ant-transfer-list-search-action {
   margin: 0 4px 0 0;
 }
 .ant-select-tree li span.ant-select-tree-checkbox + .ant-select-tree-node-content-wrapper {
-  width: calc(100% - 46px);
+  width: (80%);
 }
 .ant-select-tree li span.ant-select-tree-switcher,
 .ant-select-tree li span.ant-select-tree-iconEle {
@@ -21023,7 +21030,7 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
   padding-left: 56px;
   margin-top: 0;
   bottom: 14px;
-  width: calc(100% - 24px);
+  width: (90%);
 }
 .ant-upload-list-picture .anticon-cross,
 .ant-upload-list-picture-card .anticon-cross {
@@ -21228,5 +21235,3 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
     opacity: 0;
   }
 }
-
-/*# sourceMappingURL=antd.css.map*/
