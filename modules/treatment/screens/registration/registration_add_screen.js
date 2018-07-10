@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { DatePicker } from 'antd'
+import DatePicker from 'antd/lib/date-picker'
 // import locale from 'antd/lib/locale-provider/zh_CN'
 import locale from 'antd/lib/date-picker/locale/zh_CN'
 // import 'antd/dist/antd.css'
