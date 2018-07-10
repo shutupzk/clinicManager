@@ -31,6 +31,8 @@ import LaboratoriedScreen from './screens/laboratory/laboratoried_screen'
 import InTreatingScreen from './screens/treat/in_treating_screen'
 import TobeTreatScreen from './screens/treat/tobe_treat_screen'
 import TreatedScreen from './screens/treat/treated_screen'
+import RetailRecordScreen from './screens/drugretail/retail_record_screen'
+import RetailScreen from './screens/drugretail/retail_screen'
 
 export {
   RegistrationAddScreen,
@@ -65,5 +67,7 @@ export {
   LaboratoriedScreen,
   InTreatingScreen,
   TobeTreatScreen,
-  TreatedScreen
+  TreatedScreen,
+  RetailRecordScreen,
+  RetailScreen
 }
