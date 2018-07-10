@@ -208,7 +208,7 @@ class BaseInfoScreen extends Component {
               />
               {isPhone ? '' : <div style={{ color: 'red', fontSize: '10px' }}>手机号码格式不正确</div>}
             </li>
-            <li style={{ width: '100%' }}>
+            <li style={{ width: '99%' }}>
               <label>住址：</label>
               <div className='liDiv'>
                 <div style={{ width: '100px', marginRight: '10px' }}>
@@ -261,16 +261,16 @@ class BaseInfoScreen extends Component {
                 <input type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
-            <li style={{ width: '100%' }}>
+            <li style={{ width: '99%' }}>
               <label>
                 就诊类型：<b style={{ color: 'red' }}> *</b>
               </label>
               <div className='liDiv'>
                 <input id='first' type='radio' name='type' value={1} checked={patient.visit_type === 1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='first'>首诊</label>
-                <input id='referral' type='radio' name='type' value={2} checked={patient.visit_type === 2} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <input id='referral' type='radio' name='type' value={2} checked={patient.visit_type === 2} style={{ marginLeft: '20px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='referral'>复诊</label>
-                <input id='operate' type='radio' name='type' value={3} checked={patient.visit_type === 3} style={{ marginLeft: '15px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
+                <input id='operate' type='radio' name='type' value={3} checked={patient.visit_type === 3} style={{ marginLeft: '20px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
                 <label htmlFor='operate'>术后复诊</label>
               </div>
             </li>
@@ -305,8 +305,11 @@ class BaseInfoScreen extends Component {
               <input type='text' value={patient.remark || ''} onChange={e => this.setPatientInfo(e, 'remark')} />
             </li>
           </ul>
+        </div>
+        <div className={'formListBox'} style={{ marginTop: '40px', marginBottom: '40px' }}>
+          <div style={{width: '100%', height: '2px', backgroundColor: '#d8d8d8'}} />
           <ul>
-            <li style={{ width: '48%' }}>
+            <li style={{ width: '20%' }}>
               <label>
                 过敏史: <b style={{ color: 'red' }}> *</b>
               </label>
@@ -314,7 +317,6 @@ class BaseInfoScreen extends Component {
                 <input
                   type='radio'
                   name='allergy'
-                  style={{ width: 'auto', height: 'auto' }}
                   checked={preMedicalRecords.has_allergic_history === true}
                   value={!false}
                   onChange={e => {
@@ -326,13 +328,18 @@ class BaseInfoScreen extends Component {
                   type='radio'
                   name='allergy'
                   checked={preMedicalRecords.has_allergic_history === false}
-                  style={{ width: 'auto', height: 'auto' }}
+                  style={{ marginLeft: '50px' }}
                   value={false}
                   onChange={e => {
                     this.setPreMedicalRecords(e, 'has_allergic_history')
                   }}
                 />
                 <label htmlFor='woman'>否</label>
+              </div>
+            </li>
+            <li style={{ width: '78%' }}>
+              <label />
+              <div className='liDiv'>
                 <input
                   type='text'
                   placeholder={'对什么过敏'}
@@ -343,110 +350,130 @@ class BaseInfoScreen extends Component {
                 />
               </div>
             </li>
-            <li>
+            <li style={{ width: '99%' }}>
               <label>个人史</label>
               <textarea
-                style={{ height: '63px' }}
                 value={preMedicalRecords.personal_medical_history || ''}
-                placeholder='请填写个人史'
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'personal_medical_history')
                 }}
               />
             </li>
-            <li>
+            <li style={{ width: '99%' }}>
               <label>家族史</label>
               <textarea
-                style={{ height: '70px' }}
-                placeholder='请填写家族史'
                 value={preMedicalRecords.family_medical_history || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'family_medical_history')
                 }}
               />
             </li>
-            <li>
+            <li style={{ width: '99%' }}>
               <label>接种疫苗</label>
               <textarea
-                style={{ height: '35px' }}
-                placeholder='请填写接种疫苗'
                 value={preMedicalRecords.vaccination || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'vaccination')
                 }}
               />
             </li>
-            <li>
+            <li style={{ width: '32.5%' }}>
               <label>月经史</label>
-              <input
-                type='text'
-                style={{ width: '170px' }}
-                placeholder='月经初潮年龄'
-                value={preMedicalRecords.menarche_age || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menarche_age')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '15px' }}
-                placeholder='月经经期开始时间'
-                value={preMedicalRecords.menstrual_period_start_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_period_start_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '5px' }}
-                placeholder='月经经期结束时间'
-                value={preMedicalRecords.menstrual_period_end_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_period_end_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '15px', marginTop: '10px' }}
-                placeholder='月经周期开始时间'
-                value={preMedicalRecords.menstrual_cycle_start_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '5px', marginTop: '10px' }}
-                placeholder='月经周期结束时间'
-                value={preMedicalRecords.menstrual_cycle_end_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '170px', marginTop: '10px' }}
-                placeholder='末次月经时间'
-                value={preMedicalRecords.menstrual_last_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_last_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '170px', marginLeft: '15px', marginTop: '10px' }}
-                placeholder='孕周'
-                value={preMedicalRecords.gestational_weeks || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'gestational_weeks')
-                }}
-              />
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '170px' }}
+                  placeholder='月经初潮年龄'
+                  value={preMedicalRecords.menarche_age || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menarche_age')
+                  }}
+                />
+              </div>
             </li>
-            <li>
+            <li style={{ width: '32.5%' }}>
+              <label />
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '15px' }}
+                  placeholder='月经经期开始时间'
+                  value={preMedicalRecords.menstrual_period_start_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_period_start_day')
+                  }}
+                />
+              </div>
+            </li>
+            <li style={{ width: '32%' }}>
+              <label />
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '5px' }}
+                  placeholder='月经经期结束时间'
+                  value={preMedicalRecords.menstrual_period_end_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_period_end_day')
+                  }}
+                />
+              </div>
+            </li>
+            <li style={{ width: '32.5%' }}>
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '120px' }}
+                  placeholder='月经周期开始时间'
+                  value={preMedicalRecords.menstrual_cycle_start_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
+                  }}
+                />
+              </div>
+            </li>
+            <li style={{ width: '32%' }}>
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '15px' }}
+                  placeholder='月经周期结束时间'
+                  value={preMedicalRecords.menstrual_cycle_end_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
+                  }}
+                />
+              </div>
+            </li>
+            <li style={{ width: '32.5%' }}>
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '170px' }}
+                  placeholder='末次月经时间'
+                  value={preMedicalRecords.menstrual_last_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_last_day')
+                  }}
+                />
+              </div>
+            </li>
+            <li style={{ width: '32%' }}>
+              <div className='liDiv'>
+                <input
+                  type='text'
+                  style={{ width: '170px' }}
+                  placeholder='孕周'
+                  value={preMedicalRecords.gestational_weeks || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'gestational_weeks')
+                  }}
+                />
+              </div>
+            </li>
+            <li style={{ width: '100%' }}>
               <label>生育史</label>
-              <input
-                type='text'
-                style={{ width: '661px' }}
+              <textarea
                 value={preMedicalRecords.childbearing_history || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'childbearing_history')
@@ -454,15 +481,24 @@ class BaseInfoScreen extends Component {
               />
             </li>
           </ul>
-          <div style={{ float: 'left', width: '1000px', height: '60px' }}>
-            <button className='saveBtn' onClick={() => this.submit()}>
-              保存
-            </button>
-          </div>
+        </div>
+        <div style={{ float: 'left', width: '1000px', height: '60px' }}>
+          <button className='saveBtn' onClick={() => this.submit()}>
+            保存
+          </button>
         </div>
         <style jsx='true'>{`
           .formList {
             margin: 20px 66px 33px 66px;
+          }
+          textarea {
+            width: 100%;
+            height: 70px;
+            background: rgba(245, 248, 249, 1);
+            border-radius: 4px;
+            resize: none;
+            margin-top: 10px;
+            border: 1px solid #d8d8d8;
           }
         `}</style>
       </div>
