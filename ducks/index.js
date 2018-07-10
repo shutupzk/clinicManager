@@ -179,7 +179,8 @@ import {
   RoleUpdate,
   RoleDetail,
   RoleAllocation,
-  RoleFunctionUnset
+  RoleFunctionUnset,
+  PersonnelsByRole
 } from './role'
 import { menus, queryMenuGetByClinicID, menuSelect } from './business'
 import {
@@ -506,6 +507,7 @@ export {
   RoleUpdate,
   RoleDetail,
   RoleFunctionUnset,
+  PersonnelsByRole,
   RoleAllocation,
   roleSelect,
   queryMenuGetByClinicID,

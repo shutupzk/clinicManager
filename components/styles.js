@@ -8,6 +8,9 @@ export function styles() {
 					height: 30px;
 					border-bottom: 1px solid #d8d8d8;
 				}
+				a{
+					color: rgba(102,102,102,1)
+				}
 				.headerTop span {
 					float: right;
 					line-height: 30px;
@@ -534,7 +537,8 @@ export function styles() {
 				  border: none;
 				  -moz-box-shadow: none;
 				  -webkit-box-shadow: none;
-				  box-shadow: none;
+				  box-shadow: 1px 1px 4px 2px cadetblue;
+    			border-radius: 4px;
 				}
 				
 				.saveBtn {
@@ -717,12 +721,11 @@ export function styles() {
 
 				.healthFile {
 					width: 853px;
-					min-height: 785px;
-					background: rgba(244, 247, 248, 1);
-					box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+					min-height: 837px;
+					background: rgba(255,255,255,1);
+					box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
 					position: absolute;
 					top: 95px;
-					// left: 320px;
 				}
 				.doctorList {
 					width: 950px;
@@ -794,6 +797,7 @@ export function styles() {
 				.recordContent ul {
 					float: left;
 					width: 100%;
+					margin-top: 20px;
 				}
 				.mRecord ul li {
 					float: left;
@@ -804,7 +808,7 @@ export function styles() {
 				.recordContent ul li {
 					float: left;
 					width: 50%;
-					height: 75px;
+					height: 90px;
 				}
 				.mRecord ul li label,
 				.recordContent ul li label {
@@ -839,7 +843,7 @@ export function styles() {
 				}
 				.bottomBtn button {
 					float: left;
-					margin: 10px 0;
+					margin: 20px 0;
 				}
 
 				.radioDiv {

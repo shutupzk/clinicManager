@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-
+import DatePicker from 'antd/lib/date-picker'
+// import locale from 'antd/lib/locale-provider/zh_CN'
+import locale from 'antd/lib/date-picker/locale/zh_CN'
+// import 'antd/dist/antd.css'
 import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, getPatientByKeyword } from '../../../../ducks'
 
 import { getAgeByBirthday, checkIdCard, checkPhoneNumber } from '../../../../utils'
 import moment from 'moment'
+moment.locale('zh-cn')
+// import {zh_CH} from 'moment/locale/zh-cn'
 import { provinces } from '../../../../config/provinces'
 import { Select, Confirm, CustomSelect } from '../../../../components'
 
@@ -27,7 +32,7 @@ class RegistrationAddScreen extends Component {
       searchView: 0,
       candidatePatient: [],
       toSearch: false,
-      isPhone: false,
+      isPhone: true,
       isIdCode: true
     }
   }
@@ -161,6 +166,7 @@ class RegistrationAddScreen extends Component {
     let patient = this.state.patientInfo
     const patients = this.props.patients || []
     const {isPhone, isIdCode} = this.state
+    // console.log('locale======', locale, zh_CH)
     return (
       <div className={'formList'}>
         <div className={'formListBox'} style={{ marginTop: '20px' }}>
@@ -241,9 +247,12 @@ class RegistrationAddScreen extends Component {
                   if (e.target.value.length > 14) {
                     newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
                   }
-                  let validate = checkIdCard(e.target.value)
-                  this.setState({ patientInfo: newPatient, isIdCode: validate.pass })
+                  this.setState({ patientInfo: newPatient })
                   this.setPatientInfo(e, 'cert_no')
+                }}
+                onBlur={e => {
+                  let validate = checkIdCard(e.target.value)
+                  this.setState({ isIdCode: validate.pass })
                 }}
               />
               {isIdCode || patient.cert_no === '' ? '' : <div style={{color: 'red', fontSize: '10px'}}>身份证号格式不正确</div>}
@@ -252,18 +261,25 @@ class RegistrationAddScreen extends Component {
               <label>
                 生日：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input
-                type='date'
-                style={{ width: '120px' }}
-                value={moment(patient.birthday).format('YYYY-MM-DD')}
-                onChange={e => {
-                  let newPatient = patient
-                  newPatient.birthday = moment(e.target.value).format('YYYY-MM-DD')
-                  console.log('newPatient.birthday====', newPatient.birthday)
-                  newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
-                  this.setState({ patientInfo: newPatient })
-                }}
-              />
+              {/* <DatePicker locale={locale} /> */}
+              <div>
+                <DatePicker
+                  // type='date'
+                  locale={locale}
+                  style={{ width: '120px', marginTop: '17px' }}
+                  value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                  onChange={(date, str) => {
+                    let newPatient = patient
+                    console.log('date======', date)
+                    if (date) {
+                      newPatient.birthday = moment(date).format('YYYY-MM-DD')
+                      console.log('newPatient.birthday====', newPatient.birthday)
+                      newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
+                      this.setState({ patientInfo: newPatient })
+                    }
+                  }}
+                />
+              </div>
             </li>
             <li style={{ width: '24%' }}>
               <label>
@@ -299,12 +315,14 @@ class RegistrationAddScreen extends Component {
                 type='text'
                 value={patient.phone}
                 onChange={e => {
+                  this.setPatientInfo(e, 'phone')
+                }}
+                onBlur={e => {
                   if (checkPhoneNumber(e.target.value)) {
                     this.setState({isPhone: true})
                   } else {
                     this.setState({isPhone: false})
                   }
-                  this.setPatientInfo(e, 'phone')
                 }}
               />
               {isPhone ? '' : <div style={{color: 'red', fontSize: '10px'}}>手机号码格式不正确</div>}
@@ -426,12 +444,25 @@ class RegistrationAddScreen extends Component {
             </button>
           </div>
         </div>
-        <style jsx='true'>{`
+        <style>{`
           .formList {
             margin: 20px 66px 33px 66px;
           }
+          .ant-input{
+            height:40px;
+          }
         `}</style>
+        {this.style()}
       </div>
+    )
+  }
+  style() {
+    return (
+      <style jsx='true'>{`
+        .ant-input{
+          height:40px;
+        }
+      `}</style>
     )
   }
 

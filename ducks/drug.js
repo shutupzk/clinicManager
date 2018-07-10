@@ -152,7 +152,7 @@ export const ClinicDrugDetail = ({clinic_drug_id}) => async dispatch => {
   }
 }
 
-export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 10, type }) => async dispatch => {
+export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 20, type }) => async dispatch => {
   if (!type && type !== 0) return
   try {
     const data = await request('/dictionaries/Drugs', {

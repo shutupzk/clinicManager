@@ -4,6 +4,9 @@ import { Select } from '../../../../../components'
 import { TriagePatientDetail } from '../../../../../ducks'
 import { getAgeByBirthday, checkPhoneNumber, checkIdCard } from '../../../../../utils'
 import moment from 'moment'
+moment.locale('zh-cn')
+import DatePicker from 'antd/lib/date-picker'
+import locale from 'antd/lib/date-picker/locale/zh_CN'
 import { provinces } from '../../../../../config/provinces'
 
 class BaseInfoScreen extends Component {
@@ -154,15 +157,20 @@ class BaseInfoScreen extends Component {
               <label>
                 生日：<b style={{ color: 'red' }}> *</b>
               </label>
-              <input
-                type='date'
-                style={{ width: '150px' }}
-                value={moment(patient.birthday).format('YYYY-MM-DD')}
-                onChange={e => {
+              <DatePicker
+                // type='date'
+                locale={locale}
+                style={{ width: '120px', marginTop: '17px' }}
+                value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
                   let newPatient = patient
-                  newPatient.birthday = moment(e.target.value).format('YYYY-MM-DD')
-                  newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
-                  this.setState({ patientInfo: newPatient })
+                  console.log('date======', date)
+                  if (date) {
+                    newPatient.birthday = moment(date).format('YYYY-MM-DD')
+                    console.log('newPatient.birthday====', newPatient.birthday)
+                    newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
+                    this.setState({ patientInfo: newPatient })
+                  }
                 }}
               />
             </li>

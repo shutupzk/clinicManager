@@ -12,7 +12,7 @@ class TobeLaboratoryScreen extends Component {
     this.state = {
       keyword: '',
       start_date: moment()
-        .add(-7, 'd')
+        .add(-1, 'M')
         .format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
