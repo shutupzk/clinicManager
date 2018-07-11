@@ -51,7 +51,8 @@ import {
   queryDicDrugsList,
   ClinicDrugUpdate,
   ClinicDrugDetail,
-  ClinicDrugOnOff
+  ClinicDrugOnOff,
+  ClinicDrugListWithStock
 } from './drug'
 import {
   laboratories,
@@ -396,6 +397,7 @@ export {
   ClinicDrugDetail,
   ClinicDrugOnOff,
   ClinicDrugList,
+  ClinicDrugListWithStock,
   examinationCreate,
   laboratoryCreate,
   materialCreate,

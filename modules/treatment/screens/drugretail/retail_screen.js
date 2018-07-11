@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import { CustomSelect } from '../../../../components'
-import { ClinicDrugList } from '../../../../ducks'
+import { ClinicDrugListWithStock } from '../../../../ducks'
+import { formatMoney } from '../../../../utils'
+import momemt from 'moment'
 
 class RetailScreen extends Component {
   constructor(props) {
@@ -23,22 +25,22 @@ class RetailScreen extends Component {
     this.setState({ itemArray: items })
   }
 
-  ClinicDrugList(keyword, type = 0) {
-    const { ClinicDrugList, clinic_id } = this.props
+  ClinicDrugList(keyword) {
+    const { ClinicDrugListWithStock, clinic_id } = this.props
     if (keyword) {
-      ClinicDrugList({ clinic_id, status: true, keyword, type }, true)
+      ClinicDrugListWithStock({ clinic_id, keyword })
     }
   }
 
   getDrugOptions() {
     const { drugs } = this.props
     let array = []
-    for (let key in drugs) {
-      let { clinic_drug_id, drug_name } = drugs[key]
+    for (let item of drugs) {
+      let { clinic_drug_id, drug_name } = item
       array.push({
         value: clinic_drug_id,
         label: drug_name,
-        ...drugs[key]
+        ...item
       })
     }
     return array
@@ -47,6 +49,12 @@ class RetailScreen extends Component {
   setItemValues(item, index) {
     let items = [...this.state.itemArray]
     items[index] = { ...items[index], ...item }
+    this.setState({ itemArray: items })
+  }
+
+  setItemAmount(amount, index) {
+    let items = [...this.state.itemArray]
+    items[index].amount = amount
     this.setState({ itemArray: items })
   }
 
@@ -77,7 +85,6 @@ class RetailScreen extends Component {
               </div>
             </li>
             {itemArray.map((item, index) => {
-              console.log(item)
               return (
                 <li key={index}>
                   <div>
@@ -131,13 +138,26 @@ class RetailScreen extends Component {
                   </div>
                   <div>{item.specification}</div>
                   <div>{item.manu_factory_name}</div>
-                  <div>{item.ret_price}</div>
-                  <div>{}</div>
-                  <div>有效期</div>
-                  <div>库存数量</div>
-                  <div>数量</div>
-                  <div>单位</div>
-                  <div>合计</div>
+                  <div>{formatMoney(item.ret_price)}</div>
+                  <div>{item.serial}</div>
+                  <div>{item.eff_date && momemt(item.eff_date).format('YYYYMMDD')}</div>
+                  <div>{item.stock_amount !== undefined ? item.stock_amount || 0 : ''}</div>
+                  <div>
+                    <input
+                      style={{
+                        width: '70px',
+                        height: '30px',
+                        borderRadius: '4px',
+                        border: '1px solid rgb(217, 217, 217)',
+                        background: 'rgb(245, 248, 249)'
+                      }}
+                      value={item.amount || ''}
+                      type='number'
+                      onChange={e => this.setItemAmount(e.target.value, index)}
+                    />
+                  </div>
+                  <div>{item.packing_unit_name}</div>
+                  <div>{item.ret_price && formatMoney(item.ret_price * (item.amount || 0))}</div>
                   <div
                     style={{ color: 'red', cursor: 'pointer' }}
                     onClick={() => {
@@ -153,6 +173,10 @@ class RetailScreen extends Component {
         </div>
         <style jsx='true'>
           {`
+            .feeScheduleBox ul li {
+              min-height: 40px;
+              height: unset;
+            }
             .feeScheduleBox ul li div:nth-child(3),
             .feeScheduleBox ul li div:nth-child(1) {
               flex: 2;
@@ -184,11 +208,11 @@ const mapStateToProps = state => {
   return {
     personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
-    drugs: state.drugs.json_data
+    drugs: state.drugs.drug_stock_data
   }
 }
 
 export default connect(
   mapStateToProps,
-  { ClinicDrugList }
+  { ClinicDrugListWithStock }
 )(RetailScreen)
