@@ -1,7 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis, GetHealthRecord } from '../../../../ducks'
+import {
+  triagePatientsList,
+  triageDoctorsList,
+  triagePatient,
+  queryDepartmentList,
+  queryDoctorList,
+  completeBodySign,
+  completePreMedicalRecord,
+  completePreDiagnosis,
+  GetHealthRecord,
+  patientSelect
+} from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
@@ -49,7 +60,7 @@ class TriageScreen extends Component {
 
   // 显示分诊列表
   showTriageList() {
-    const { triagePatients, patient_page_info } = this.props
+    const { triagePatients, patient_page_info, patientSelect } = this.props
     return (
       <div>
         <div className={'filterBox'}>
@@ -70,6 +81,11 @@ class TriageScreen extends Component {
               return (
                 <li key={index}>
                   <PatientCard
+                    onNameClick={() => {
+                      let patient_id = patient.patient_id
+                      patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}
                     patient={patient}
                     buttons={[
                       {
@@ -116,7 +132,7 @@ class TriageScreen extends Component {
 
   render() {
     const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id, completeBodySign, completePreMedicalRecord, completePreDiagnosis } = this.props
-    const {selSex} = this.state
+    const { selSex } = this.state
     return (
       <div>
         <div className={'childTopBar'}>
@@ -149,12 +165,7 @@ class TriageScreen extends Component {
           </span>
         </div>
         {this.showTriageList()}
-        <CompleteHealth
-          ref='CompleteHealth'
-          selSex={selSex}
-          completeBodySign={completeBodySign}
-          completePreMedicalRecord={completePreMedicalRecord}
-          completePreDiagnosis={completePreDiagnosis} />
+        <CompleteHealth ref='CompleteHealth' selSex={selSex} completeBodySign={completeBodySign} completePreMedicalRecord={completePreMedicalRecord} completePreDiagnosis={completePreDiagnosis} />
         <ChooseDoctor
           ref='ChooseDoctor'
           triageDoctors={triageDoctors}
@@ -184,14 +195,18 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {
-  triagePatientsList,
-  triageDoctorsList,
-  triagePatient,
-  queryDepartmentList,
-  queryDoctorList,
-  completeBodySign,
-  completePreMedicalRecord,
-  completePreDiagnosis,
-  GetHealthRecord
-})(TriageScreen)
+export default connect(
+  mapStateToProps,
+  {
+    triagePatientsList,
+    triageDoctorsList,
+    triagePatient,
+    queryDepartmentList,
+    queryDoctorList,
+    completeBodySign,
+    completePreMedicalRecord,
+    completePreDiagnosis,
+    GetHealthRecord,
+    patientSelect
+  }
+)(TriageScreen)

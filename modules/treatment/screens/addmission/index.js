@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triagePatientsSelect, triageReception } from '../../../../ducks'
+import { triagePatientsList, triagePatientsSelect, triageReception, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
@@ -128,7 +128,11 @@ class AddmisionScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{treat_status}</span>
@@ -164,7 +168,11 @@ class AddmisionScreen extends Component {
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.reception(patient)}> {pageType === 1 ? '接诊' : '查看'}</span>
-                    <span onClick={() => this.showCompleteHealthFile(patient.clinic_triage_patient_id)}>查看健康档案</span>
+                    <span onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>查看健康档案</span>
                     <span onClick={() => this.receptionOperation(patient.clinic_triage_patient_id)}>操作</span>
                   </div>
                 </li>
@@ -290,4 +298,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triagePatientsSelect, triageReception })(AddmisionScreen)
+export default connect(mapStateToProps, { triagePatientsList, triagePatientsSelect, triageReception, patientSelect })(AddmisionScreen)

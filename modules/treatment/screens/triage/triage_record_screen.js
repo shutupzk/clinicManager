@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList } from '../../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, patientSelect } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
@@ -49,7 +49,7 @@ class TriageRecordScreen extends Component {
 
   // 显示分诊列表
   showTriageList() {
-    const { triagePatients, patient_page_info } = this.props
+    const { triagePatients, patient_page_info, patientSelect } = this.props
     console.log('triagePatients ======', triagePatients)
     return (
       <div>
@@ -71,6 +71,10 @@ class TriageRecordScreen extends Component {
               return (
                 <li key={index}>
                   <PatientCard
+                    onNameClick={() => {
+                      patientSelect({ patient_id: patient.patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}
                     patient={patient}
                     buttons={
                       patient.status === 20
@@ -184,4 +188,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList })(TriageRecordScreen)
+export default connect(
+  mapStateToProps,
+  { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, patientSelect }
+)(TriageRecordScreen)
