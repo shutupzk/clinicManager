@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { queryChargeUnpayList, chargeUnpaySelect } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard, Select } from '../../../../components'
-import { getAgeByBirthday, formatMoney } from '../../../../utils'
+import { formatMoney } from '../../../../utils'
 
 class RetailRecordScreen extends Component {
   constructor(props) {
@@ -51,31 +51,19 @@ class RetailRecordScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
-                    <span>{patient.sex === 0 ? '女' : '男'}</span>
-                    <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.charge_total_fee <= 0 ? '已收费' : '待收费'}</span>
+                    <span>药品零售</span>
+                    <span />
+                    <span />
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.charge_total_fee <= 0 ? '已收费' : '已退费'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>门诊ID：</a>
-                      <a>{patient.cert_no}</a>
-                    </span>
-                    <span>
-                      <a>接诊科室：</a>
+                      <a>支付方式：</a>
                       <a>{patient.department_name}</a>
                     </span>
                     <span>
-                      <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
-                    </span>
-                    <span>
-                      <a>登记人员：</a>
+                      <a>收费人员：</a>
                       <a>{patient.register_personnel_name}</a>
-                    </span>
-                    <span>
-                      <a>登记时间：</a>
-                      <a>{moment(patient.register_time).format('YYYY-MM-DD HH:mm:ss')}</a>
                     </span>
                     <span>
                       <a style={{ color: 'rgb(153, 153, 153)' }}>更新时间：</a>
@@ -83,14 +71,7 @@ class RetailRecordScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total_fee)}</span>
-                    <span
-                      onClick={() => {
-                        this.gotoChargeDetail(patient.clinic_triage_patient_id)
-                      }}
-                    >
-                      收费
-                    </span>
+                    <span>￥{formatMoney(patient.charge_total_fee)}{'（退费￥122.00）'}</span>
                   </div>
                 </li>
               )

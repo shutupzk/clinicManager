@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TriagePatientDetail, GetHealthRecord, queryMedicalsByPatient } from '../../../../../ducks'
+import { PatientGetByID, GetLastBodySign, queryMedicalsByPatient } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import { PageCard } from '../../../../../components'
 import moment from 'moment'
@@ -18,12 +18,11 @@ class VisitInfoScreen extends Component {
   }
 
   async componentWillMount() {
-    const { clinic_triage_patient_id, TriagePatientDetail, GetHealthRecord } = this.props
-    let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
-    let data = await GetHealthRecord({ clinic_triage_patient_id })
-    const { body_sign, pre_medical_record, pre_diagnosis } = data
+    const { patient_id, PatientGetByID, GetLastBodySign } = this.props
+    let patient = await PatientGetByID({ patient_id })
+    let body_sign = await GetLastBodySign({ patient_id })
     if (patient) {
-      this.setState({ patientInfo: patient, body_sign, pre_medical_record, pre_diagnosis }, () => {
+      this.setState({ patientInfo: patient, body_sign }, () => {
         this.queryMedicalsByPatient({})
       })
     }
@@ -32,10 +31,8 @@ class VisitInfoScreen extends Component {
   async submit() {}
 
   queryMedicalsByPatient({ offset = 0, limit = 6 }) {
-    const { patientInfo } = this.state
-    const { queryMedicalsByPatient } = this.props
-    const { clinic_patient_id } = patientInfo
-    queryMedicalsByPatient({ clinic_patient_id, offset, limit })
+    const { queryMedicalsByPatient, patient_id } = this.props
+    queryMedicalsByPatient({ patient_id, offset, limit })
   }
 
   setPatientInfo(e, key) {
@@ -258,14 +255,13 @@ class VisitInfoScreen extends Component {
 const mapStateToProps = state => {
   return {
     patients: state.patients.data,
-    triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id,
-    clinic_triage_patient_id: state.triagePatients.selectId,
+    patient_id: state.patients.selectId,
     history_medicals: state.medicalRecords.history_medicals,
     history_page_info: state.medicalRecords.history_page_info
   }
 }
 export default connect(
   mapStateToProps,
-  { TriagePatientDetail, GetHealthRecord, queryMedicalsByPatient }
+  { PatientGetByID, GetLastBodySign, queryMedicalsByPatient }
 )(VisitInfoScreen)

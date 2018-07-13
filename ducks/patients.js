@@ -91,3 +91,107 @@ export const MemberPateintList = ({ keyword = '', offset = 0, limit = 10, start_
     return null
   }
 }
+
+export const PatientGetByID = ({ patient_id }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id })
+  try {
+    const data = await request('/patient/getById', { id: patient_id })
+    console.log(data)
+    return data.data || {}
+  } catch (e) {
+    console.log(e)
+    return {}
+  }
+}
+
+export const PatientUpdate = ({ patient_id, cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, personnel_id }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, personnel_id })
+  try {
+    const data = await request('/patient/update', { id: patient_id, cert_no, name, birthday, sex, phone, address, profession, remark, patient_channel_id, personnel_id })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const PersonalMedicalRecordUpsert = ({
+  patient_id,
+  has_allergic_history,
+  allergic_history,
+  personal_medical_history,
+  family_medical_history,
+  vaccination,
+  menarche_age,
+  menstrual_period_start_day,
+  menstrual_period_end_day,
+  menstrual_cycle_start_day,
+  menstrual_cycle_end_day,
+  menstrual_last_day,
+  gestational_weeks,
+  childbearing_history,
+  remark
+}) => async dispatch => {
+  console.log('patient_id ======== ', {
+    patient_id,
+    has_allergic_history,
+    allergic_history,
+    personal_medical_history,
+    family_medical_history,
+    vaccination,
+    menarche_age,
+    menstrual_period_start_day,
+    menstrual_period_end_day,
+    menstrual_cycle_start_day,
+    menstrual_cycle_end_day,
+    menstrual_last_day,
+    gestational_weeks,
+    childbearing_history,
+    remark
+  })
+  try {
+    const data = await request('/patient/PersonalMedicalRecordUpsert', {
+      patient_id,
+      has_allergic_history,
+      allergic_history,
+      personal_medical_history,
+      family_medical_history,
+      vaccination,
+      menarche_age,
+      menstrual_period_start_day,
+      menstrual_period_end_day,
+      menstrual_cycle_start_day,
+      menstrual_cycle_end_day,
+      menstrual_last_day,
+      gestational_weeks,
+      childbearing_history,
+      remark
+    })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const PersonalMedicalRecord = ({ patient_id }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id })
+  try {
+    const data = await request('/patient/PersonalMedicalRecord', { patient_id })
+    console.log(data)
+    return data.data || {}
+  } catch (e) {
+    console.log(e)
+    return {}
+  }
+}

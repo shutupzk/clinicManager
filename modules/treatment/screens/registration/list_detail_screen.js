@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword } from '../../../../ducks'
 import moment from 'moment'
 import BaseInfoScreen from './components/base_info'
 import MemberInfoScreen from './components/member_info'
@@ -36,40 +35,18 @@ class ListDetailScreen extends Component {
   }
   async submit() {}
   back() {
-    Router.push('/treatment/registration')
+    Router.back()
   }
   componentWillMount() {}
   // 改变显示内容
   changeContent({ type }) {
     this.setState({ pageType: type })
   }
-  // 科室
-  queryDepartment() {
-    const array = []
-    const { departments } = this.props
-    for (let key in departments) {
-      array.push(departments[key])
-    }
-    return array
-  }
-  setPatientInfo(e, key) {
-    let newPatient = this.state.patientInfo
-    newPatient[key] = e.target.value
-    this.setState({ patientInfo: newPatient })
-  }
-  async queryPatients(keyword) {
-    const { getPatientByKeyword } = this.props
-    getPatientByKeyword({ keyword })
-  }
-
-  // 收费信息
-  showTollInfo() {
-    return <div className={'formList'}>dasdas</div>
-  }
   // 积分信息
   showIntgralInfo() {
     return <div className={'formList'}>dasdas</div>
   }
+
   render() {
     return (
       <div>
@@ -96,7 +73,7 @@ class ListDetailScreen extends Component {
           <span className={this.state.pageType === 7 ? 'sel' : ''} onClick={() => this.changeContent({ type: 7 })}>
             检查报告
           </span>
-          <span onClick={() => Router.push('/treatment/registration/list')}>返回列表</span>
+          <span onClick={() => Router.back()}>返回列表</span>
         </div>
         {this.state.pageType === 1 ? <BaseInfoScreen /> : ''}
         {this.state.pageType === 2 ? <MemberInfoScreen /> : ''}
@@ -121,13 +98,4 @@ const mapStateToProps = state => {
     clinic_triage_patient_id: state.triagePatients.selectId
   }
 }
-export default connect(
-  mapStateToProps,
-  {
-    getPatientByCertNo,
-    queryDepartmentList,
-    addTriagePatientsList,
-    triagePatientsList,
-    getPatientByKeyword
-  }
-)(ListDetailScreen)
+export default connect(mapStateToProps)(ListDetailScreen)
