@@ -298,16 +298,14 @@ class PendingDetailDrugScreen extends Component {
                   <div style={{ flex: 1 }}>{amount}</div>
                   <div style={{ flex: 2 }}>待发药</div>
                   <div>
-                    <textarea
-                      style={{ width: '90%', minHeight: '90%', height: this.state.textareaHeight[item.id] + 'px', resize: 'none', border: 'none' }}
-                      value={this.state.remarks[item.id]}
-                      onChange={e => {
-                        console.log('height=====', e.target.scrollHeight)
-                        this.setRemark(item.id, e.target.value)
-                        this.setTextareaHeight(item.id, e.target.scrollHeight - 4)
+                    <div
+                      style={{ width: '100%', lineHeight: '24px', minHeight: '100%' }}
+                      contentEditable
+                      onBlur={e => {
+                        // console.log('innerHtml======', e.target.innerHTML)
+                        this.setRemark(item.id, e.target.innerHTML)
                       }}
-                    />
-                    {/* </div> */}
+                    >{this.state.remarks[item.id]}</div>
                   </div>
                 </li>
               )
