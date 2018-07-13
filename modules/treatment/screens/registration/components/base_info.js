@@ -121,7 +121,6 @@ class BaseInfoScreen extends Component {
   }
 
   setPreMedicalRecords(e, key) {
-    console.log('e =====', e.target)
     const { preMedicalRecords } = this.state
     this.setState({ preMedicalRecords: { ...preMedicalRecords, [key]: e.target.value } })
   }
@@ -129,7 +128,6 @@ class BaseInfoScreen extends Component {
   render() {
     let patient = this.state.patientInfo
     let { preMedicalRecords = {} } = this.state
-    console.log('preMedicalRecords======', preMedicalRecords)
     const { isPhone, isIdCode } = this.state
     return (
       <div className={'formList'}>
@@ -382,7 +380,7 @@ class BaseInfoScreen extends Component {
               />
             </li>
           </ul>
-          {patient.sex === 1 ? null : (
+          {patient.sex * 1 === 1 ? null : (
             <ul>
               <li style={{ width: '32.5%' }}>
                 <label>月经史</label>
