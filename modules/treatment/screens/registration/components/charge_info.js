@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TriagePatientDetail, PatientChargeList, queryPaidOrders } from '../../../../../ducks'
+import { PatientGetByID, PatientChargeList, queryPaidOrders } from '../../../../../ducks'
 import { getAgeByBirthday, formatMoney } from '../../../../../utils'
 import { PageCard } from '../../../../../components'
 import moment from 'moment'
@@ -18,8 +18,8 @@ class ChargeInfoScreen extends Component {
   }
 
   async componentWillMount() {
-    const { clinic_triage_patient_id, TriagePatientDetail } = this.props
-    let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
+    const { patient_id, PatientGetByID } = this.props
+    let patient = await PatientGetByID({ patient_id })
     if (patient) {
       this.setState({ patientInfo: patient }, () => {
         this.PatientChargeList({})
@@ -30,10 +30,8 @@ class ChargeInfoScreen extends Component {
   async submit() {}
 
   PatientChargeList({ offset = 0, limit = 6 }) {
-    const { patientInfo } = this.state
-    const { PatientChargeList } = this.props
-    const { id } = patientInfo
-    PatientChargeList({ patient_id: id, offset, limit })
+    const { PatientChargeList, patient_id } = this.props
+    PatientChargeList({ patient_id, offset, limit })
   }
 
   renderChargeList() {
@@ -327,9 +325,8 @@ class ChargeInfoScreen extends Component {
 const mapStateToProps = state => {
   return {
     patients: state.patients.data,
-    triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id,
-    clinic_triage_patient_id: state.triagePatients.selectId,
+    patient_id: state.patients.selectId,
     patient_charge_data: state.charge.patient_charge_data,
     patient_charge_page_info: state.charge.patient_charge_page_info,
     paid_orders: state.charge.paid_orders,
@@ -339,5 +336,5 @@ const mapStateToProps = state => {
 }
 export default connect(
   mapStateToProps,
-  { TriagePatientDetail, PatientChargeList, queryPaidOrders }
+  { PatientGetByID, PatientChargeList, queryPaidOrders }
 )(ChargeInfoScreen)

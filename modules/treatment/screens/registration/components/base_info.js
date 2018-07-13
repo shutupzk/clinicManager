@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, DatePicker } from '../../../../../components'
-import { TriagePatientDetail, GetHealthRecord } from '../../../../../ducks'
+import { Select, DatePicker, Confirm } from '../../../../../components'
+import { PatientGetByID, PersonalMedicalRecord, PatientUpdate, PersonalMedicalRecordUpsert } from '../../../../../ducks'
 import { getAgeByBirthday, checkPhoneNumber, checkIdCard } from '../../../../../utils'
 import moment from 'moment'
 import { provinces } from '../../../../../config/provinces'
@@ -11,9 +11,9 @@ class BaseInfoScreen extends Component {
     super(props)
     this.state = {
       patientInfo: {
-        visit_type: 1,
         patient_channel_id: 1
       },
+      preMedicalRecords: {},
       isIdCode: true,
       isPhone: true,
       cities: [],
@@ -24,18 +24,29 @@ class BaseInfoScreen extends Component {
     }
   }
   async componentWillMount() {
-    const { clinic_triage_patient_id, TriagePatientDetail } = this.props
-    let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
+    const { patient_id, PatientGetByID } = this.props
+    let patient = await PatientGetByID({ patient_id })
     if (patient) {
       const { province, city, district } = patient
-      let { GetHealthRecord } = this.props
-      let data = await GetHealthRecord({ clinic_triage_patient_id })
-      const { pre_medical_record } = data
+      let { PersonalMedicalRecord } = this.props
+      let pre_medical_record = await PersonalMedicalRecord({ patient_id })
       this.setState({ patientInfo: patient, province, city, county: district, isIdCode: true, isPhone: true, preMedicalRecords: pre_medical_record })
     }
   }
 
-  async submit() {}
+  async submit() {
+    const { PatientUpdate, PersonalMedicalRecordUpsert, patient_id } = this.props
+    const { patientInfo, preMedicalRecords } = this.state
+    let error = await PatientUpdate({ ...patientInfo, patient_id })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+    }
+    error = await PersonalMedicalRecordUpsert({ ...preMedicalRecords, patient_id })
+    if (error) {
+      return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
+    }
+    this.refs.myAlert.alert('保存成功')
+  }
 
   setPatientInfo(e, key) {
     let newPatient = this.state.patientInfo
@@ -107,6 +118,12 @@ class BaseInfoScreen extends Component {
       if (option.value === value) return option
     }
     return null
+  }
+
+  setPreMedicalRecords(e, key) {
+    console.log('e =====', e.target)
+    const { preMedicalRecords } = this.state
+    this.setState({ preMedicalRecords: { ...preMedicalRecords, [key]: e.target.value } })
   }
 
   render() {
@@ -258,20 +275,7 @@ class BaseInfoScreen extends Component {
                     }}
                   />
                 </div>
-                <input type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
-              </div>
-            </li>
-            <li style={{ width: '99%' }}>
-              <label>
-                就诊类型：<b style={{ color: 'red' }}> *</b>
-              </label>
-              <div className='liDiv'>
-                <input id='first' type='radio' name='type' value={1} checked={patient.visit_type === 1} onChange={e => this.setPatientInfo(e, 'visit_type')} />
-                <label htmlFor='first'>首诊</label>
-                <input id='referral' type='radio' name='type' value={2} checked={patient.visit_type === 2} style={{ marginLeft: '20px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
-                <label htmlFor='referral'>复诊</label>
-                <input id='operate' type='radio' name='type' value={3} checked={patient.visit_type === 3} style={{ marginLeft: '20px' }} onChange={e => this.setPatientInfo(e, 'visit_type')} />
-                <label htmlFor='operate'>术后复诊</label>
+                <input type='text' value={patient.address || ''} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
             {/* <li style={{ width: '100%', cursor: 'pointer' }}>更多：完善健康档案（收起、展开）</li> */}
@@ -307,7 +311,7 @@ class BaseInfoScreen extends Component {
           </ul>
         </div>
         <div className={'formListBox'} style={{ marginTop: '40px', marginBottom: '40px' }}>
-          <div style={{width: '100%', height: '2px', backgroundColor: '#d8d8d8'}} />
+          <div style={{ width: '100%', height: '2px', backgroundColor: '#d8d8d8' }} />
           <ul>
             <li style={{ width: '20%' }}>
               <label>
@@ -320,7 +324,7 @@ class BaseInfoScreen extends Component {
                   checked={preMedicalRecords.has_allergic_history === true}
                   value={!false}
                   onChange={e => {
-                    this.setPreMedicalRecords(e, 'has_allergic_history')
+                    this.setState({ preMedicalRecords: { ...preMedicalRecords, has_allergic_history: true } })
                   }}
                 />
                 <label htmlFor='man'>是</label>
@@ -331,7 +335,7 @@ class BaseInfoScreen extends Component {
                   style={{ marginLeft: '50px' }}
                   value={false}
                   onChange={e => {
-                    this.setPreMedicalRecords(e, 'has_allergic_history')
+                    this.setState({ preMedicalRecords: { ...preMedicalRecords, has_allergic_history: false } })
                   }}
                 />
                 <label htmlFor='woman'>否</label>
@@ -377,110 +381,114 @@ class BaseInfoScreen extends Component {
                 }}
               />
             </li>
-            <li style={{ width: '32.5%' }}>
-              <label>月经史</label>
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '170px' }}
-                  placeholder='月经初潮年龄'
-                  value={preMedicalRecords.menarche_age || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'menarche_age')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '32.5%' }}>
-              <label />
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '120px', marginLeft: '15px' }}
-                  placeholder='月经经期开始时间'
-                  value={preMedicalRecords.menstrual_period_start_day || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'menstrual_period_start_day')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '32%' }}>
-              <label />
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '120px', marginLeft: '5px' }}
-                  placeholder='月经经期结束时间'
-                  value={preMedicalRecords.menstrual_period_end_day || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'menstrual_period_end_day')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '32.5%' }}>
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '120px' }}
-                  placeholder='月经周期开始时间'
-                  value={preMedicalRecords.menstrual_cycle_start_day || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '32%' }}>
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '120px', marginLeft: '15px' }}
-                  placeholder='月经周期结束时间'
-                  value={preMedicalRecords.menstrual_cycle_end_day || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '32.5%' }}>
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '170px' }}
-                  placeholder='末次月经时间'
-                  value={preMedicalRecords.menstrual_last_day || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'menstrual_last_day')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '32%' }}>
-              <div className='liDiv'>
-                <input
-                  type='text'
-                  style={{ width: '170px' }}
-                  placeholder='孕周'
-                  value={preMedicalRecords.gestational_weeks || ''}
-                  onChange={e => {
-                    this.setPreMedicalRecords(e, 'gestational_weeks')
-                  }}
-                />
-              </div>
-            </li>
-            <li style={{ width: '100%' }}>
-              <label>生育史</label>
-              <textarea
-                value={preMedicalRecords.childbearing_history || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'childbearing_history')
-                }}
-              />
-            </li>
           </ul>
+          {patient.sex === 1 ? null : (
+            <ul>
+              <li style={{ width: '32.5%' }}>
+                <label>月经史</label>
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '170px' }}
+                    placeholder='月经初潮年龄'
+                    value={preMedicalRecords.menarche_age || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'menarche_age')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '32.5%' }}>
+                <label />
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '120px', marginLeft: '15px' }}
+                    placeholder='月经经期开始时间'
+                    value={preMedicalRecords.menstrual_period_start_day || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'menstrual_period_start_day')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '32%' }}>
+                <label />
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '120px', marginLeft: '5px' }}
+                    placeholder='月经经期结束时间'
+                    value={preMedicalRecords.menstrual_period_end_day || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'menstrual_period_end_day')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '32.5%' }}>
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '120px' }}
+                    placeholder='月经周期开始时间'
+                    value={preMedicalRecords.menstrual_cycle_start_day || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '32%' }}>
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '120px', marginLeft: '15px' }}
+                    placeholder='月经周期结束时间'
+                    value={preMedicalRecords.menstrual_cycle_end_day || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '32.5%' }}>
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '170px' }}
+                    placeholder='末次月经时间'
+                    value={preMedicalRecords.menstrual_last_day || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'menstrual_last_day')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '32%' }}>
+                <div className='liDiv'>
+                  <input
+                    type='text'
+                    style={{ width: '170px' }}
+                    placeholder='孕周'
+                    value={preMedicalRecords.gestational_weeks || ''}
+                    onChange={e => {
+                      this.setPreMedicalRecords(e, 'gestational_weeks')
+                    }}
+                  />
+                </div>
+              </li>
+              <li style={{ width: '100%' }}>
+                <label>生育史</label>
+                <textarea
+                  value={preMedicalRecords.childbearing_history || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'childbearing_history')
+                  }}
+                />
+              </li>
+            </ul>
+          )}
         </div>
         <div style={{ float: 'left', width: '1000px', height: '60px' }}>
           <button className='saveBtn' onClick={() => this.submit()}>
@@ -501,22 +509,26 @@ class BaseInfoScreen extends Component {
             border: 1px solid #d8d8d8;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
 }
 const mapStateToProps = state => {
+  console.log('state.patients ======== ', state.patients)
   return {
     patients: state.patients.data,
     triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id,
-    clinic_triage_patient_id: state.triagePatients.selectId
+    patient_id: state.patients.selectId
   }
 }
 export default connect(
   mapStateToProps,
   {
-    TriagePatientDetail,
-    GetHealthRecord
+    PatientGetByID,
+    PersonalMedicalRecord,
+    PatientUpdate,
+    PersonalMedicalRecordUpsert
   }
 )(BaseInfoScreen)

@@ -369,3 +369,14 @@ export const GetHealthRecord = ({ clinic_triage_patient_id }) => async dispatch 
     return {}
   }
 }
+
+export const GetLastBodySign = ({ patient_id }) => async dispatch => {
+  try {
+    const data = await request('/patient/GetLastBodySign', { patient_id })
+    if (data.code !== '200') return {}
+    return data.data || {}
+  } catch (e) {
+    console.log(e)
+    return {}
+  }
+}

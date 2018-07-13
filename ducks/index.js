@@ -14,9 +14,10 @@ import {
   completePreMedicalRecord,
   completePreDiagnosis,
   GetHealthRecord,
-  TriagePatientDetail
+  TriagePatientDetail,
+  GetLastBodySign
 } from './triage_patients'
-import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword, MemberPateintList } from './patients'
+import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword, MemberPateintList, PatientGetByID, PersonalMedicalRecord, PatientUpdate, PersonalMedicalRecordUpsert } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
 import {
@@ -44,56 +45,12 @@ import {
   queryMedicalModelsByDoctor,
   queryChiefComplaints
 } from './medicRecord'
-import {
-  drugs,
-  ClinicDrugCreate,
-  ClinicDrugList,
-  queryDicDrugsList,
-  ClinicDrugUpdate,
-  ClinicDrugDetail,
-  ClinicDrugOnOff
-} from './drug'
-import {
-  laboratories,
-  laboratoryCreate,
-  queryLaboratoryList,
-  queryLaboList,
-  LaboratoryOnOff,
-  LaboratoryUpdate,
-  LaboratoryDetail
-} from './laboratory'
-import {
-  examinations,
-  examinationCreate,
-  queryExaminationList,
-  ExaminationUpdate,
-  ExaminationOnOff,
-  ExaminationDetail,
-  queryExams } from './examination'
-import {
-  materials,
-  materialCreate,
-  MaterialUpdate,
-  MaterialOnOff,
-  MaterialDetail,
-  queryMaterialList
-} from './material'
-import {
-  otherCostS,
-  otherCostsCreate,
-  OtherCostUpdate,
-  OtherCostOnOff,
-  OtherCostDetail,
-  queryOtherCostList
-} from './other_cost'
-import {
-  treatments,
-  treatmentCreate,
-  TreatmentUpdate,
-  TreatmentOnOff,
-  TreatmentDetail,
-  queryTreatmentList
-} from './treatment'
+import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff } from './drug'
+import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
+import { examinations, examinationCreate, queryExaminationList, ExaminationUpdate, ExaminationOnOff, ExaminationDetail, queryExams } from './examination'
+import { materials, materialCreate, MaterialUpdate, MaterialOnOff, MaterialDetail, queryMaterialList } from './material'
+import { otherCostS, otherCostsCreate, OtherCostUpdate, OtherCostOnOff, OtherCostDetail, queryOtherCostList } from './other_cost'
+import { treatments, treatmentCreate, TreatmentUpdate, TreatmentOnOff, TreatmentDetail, queryTreatmentList } from './treatment'
 import { doseUnits, queryDoseUnitList } from './dose_unit'
 import { examinationOrgans, queryExaminationOrganList } from './examination_organs'
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
@@ -109,15 +66,7 @@ import { doseForms, queryDoseFormList } from './dose_form'
 import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet } from './prescription_chinese_patient'
 import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
 import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
-import {
-  laboratoryItems,
-  queryLaboratoryItemList,
-  laboratoryItemCreate,
-  LaboratoryItemUpdate,
-  LaboratoryItemOnOff,
-  LaboratoryItemDetail,
-  queryLaboItemsList
-} from './laboratory_item'
+import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate, LaboratoryItemUpdate, LaboratoryItemOnOff, LaboratoryItemDetail, queryLaboItemsList } from './laboratory_item'
 import {
   prescriptionWesternPatientModels,
   PrescriptionWesternPatientModelList,
@@ -152,14 +101,7 @@ import {
   TreatmentPatientModelDelete,
   TreatmentPatientModelCreate
 } from './treatment_models'
-import {
-  examinationModels,
-  examinationModelList,
-  ExaminationPatientModelUpdate,
-  ExaminationPatientModelDetail,
-  ExaminationPatientModelDelete,
-  examinationModelCreate
-} from './examination_models'
+import { examinationModels, examinationModelList, ExaminationPatientModelUpdate, ExaminationPatientModelDetail, ExaminationPatientModelDelete, examinationModelCreate } from './examination_models'
 import {
   laboratoryPatientModels,
   LaboratoryPatientModelCreate,
@@ -167,21 +109,12 @@ import {
   LaboratoryPatientModelDetail,
   LaboratoryPatientModelDelete,
   LaboratoryPersonalPatientModelList,
-  LaboratoryPatientModelList } from './laboratory_model'
+  LaboratoryPatientModelList
+} from './laboratory_model'
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate, queryClinicCode, clinicSelect } from './clinic'
-import {
-  roles,
-  queryRoleList,
-  roleCreate,
-  roleSelect,
-  RoleUpdate,
-  RoleDetail,
-  RoleAllocation,
-  RoleFunctionUnset,
-  PersonnelsByRole
-} from './role'
+import { roles, queryRoleList, roleCreate, roleSelect, RoleUpdate, RoleDetail, RoleAllocation, RoleFunctionUnset, PersonnelsByRole } from './role'
 import { menus, queryMenuGetByClinicID, menuSelect } from './business'
 import {
   drugStocks,
@@ -245,7 +178,7 @@ import {
 } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
 import { finances, queryFinanceList, queryFinanceMonthList, queryFinanceItemList, queryFinanceCredit } from './finance'
-import {FileUpload, xhrFileUpload} from './files'
+import { FileUpload, xhrFileUpload } from './files'
 import {
   examinationTriages,
   ExaminationTriageList,
@@ -601,5 +534,10 @@ export {
   LaboratoryTriagePatientRecordList,
   TreatmentTriagePatientRecordList,
   TriagePatientDetail,
-  PatientChargeList
+  PatientChargeList,
+  GetLastBodySign,
+  PatientGetByID,
+  PersonalMedicalRecord,
+  PatientUpdate,
+  PersonalMedicalRecordUpsert
 }
