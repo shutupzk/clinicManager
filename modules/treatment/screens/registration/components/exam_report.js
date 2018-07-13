@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TriagePatientDetail, GetHealthRecord, ExaminationTriagePatientRecordList, queryMedicalRecord, ExaminationTriageList } from '../../../../../ducks'
+import { PatientGetByID, GetHealthRecord, ExaminationTriagePatientRecordList, queryMedicalRecord, ExaminationTriageList } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import { PageCard, ImageViewer } from '../../../../../components'
 import { API_SERVER } from '../../../../../config'
@@ -10,21 +10,16 @@ class ExamReportScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      body_sign: {},
-      pre_medical_record: {},
-      pre_diagnosis: {},
       patientInfo: {},
       historyDetail: {}
     }
   }
 
   async componentWillMount() {
-    const { clinic_triage_patient_id, TriagePatientDetail, GetHealthRecord } = this.props
-    let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
-    let data = await GetHealthRecord({ clinic_triage_patient_id })
-    const { body_sign, pre_medical_record, pre_diagnosis } = data
+    const { patient_id, PatientGetByID } = this.props
+    let patient = await PatientGetByID({ patient_id })
     if (patient) {
-      this.setState({ patientInfo: patient, body_sign, pre_medical_record, pre_diagnosis }, () => {
+      this.setState({ patientInfo: patient }, () => {
         this.ExaminationTriagePatientRecordList({})
       })
     }
@@ -33,8 +28,8 @@ class ExamReportScreen extends Component {
   async submit() {}
 
   ExaminationTriagePatientRecordList({ offset = 0, limit = 10 }) {
-    const { clinic_triage_patient_id, ExaminationTriagePatientRecordList } = this.props
-    ExaminationTriagePatientRecordList({ clinic_triage_patient_id, offset, limit })
+    const { patient_id, ExaminationTriagePatientRecordList } = this.props
+    ExaminationTriagePatientRecordList({ patient_id, offset, limit })
   }
 
   setPatientInfo(e, key) {
@@ -514,14 +509,13 @@ class ExamReportScreen extends Component {
 const mapStateToProps = state => {
   return {
     patients: state.patients.data,
-    triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id,
-    clinic_triage_patient_id: state.triagePatients.selectId,
+    patient_id: state.patients.selectId,
     patient_record_data: state.examinationTriages.patient_record_data,
     patient_record_page_info: state.examinationTriages.patient_record_page_info
   }
 }
 export default connect(
   mapStateToProps,
-  { TriagePatientDetail, GetHealthRecord, ExaminationTriagePatientRecordList, queryMedicalRecord, ExaminationTriageList }
+  { PatientGetByID, GetHealthRecord, ExaminationTriagePatientRecordList, queryMedicalRecord, ExaminationTriageList }
 )(ExamReportScreen)

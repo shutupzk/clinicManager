@@ -14,6 +14,7 @@ class PendingDetailDrugScreen extends Component {
       selectArray: [],
       remarks: {},
       selectRecordId: '',
+      textareaHeight: {},
       check: {}
     }
   }
@@ -119,9 +120,18 @@ class PendingDetailDrugScreen extends Component {
   // 设置每项的属性
   setRemark(itemId, value) {
     let { remarks } = this.state
+    console.log('remarks=====', remarks)
     if (!value) delete remarks[itemId]
     else remarks[itemId] = value
     this.setState({ remarks })
+  }
+  // 设置高度
+  setTextareaHeight(itemId, height) {
+    let { textareaHeight } = this.state
+    console.log('textareaHeight=====', height, textareaHeight)
+    if (!height) delete textareaHeight[itemId]
+    else textareaHeight[itemId] = height
+    this.setState({ textareaHeight })
   }
 
   // 查看发药项目
@@ -289,12 +299,15 @@ class PendingDetailDrugScreen extends Component {
                   <div style={{ flex: 2 }}>待发药</div>
                   <div>
                     <textarea
-                      style={{ width: '90%', resize: 'none', border: 'none' }}
+                      style={{ width: '90%', minHeight: '90%', height: this.state.textareaHeight[item.id] + 'px', resize: 'none', border: 'none' }}
                       value={this.state.remarks[item.id]}
                       onChange={e => {
+                        console.log('height=====', e.target.scrollHeight)
                         this.setRemark(item.id, e.target.value)
+                        this.setTextareaHeight(item.id, e.target.scrollHeight - 4)
                       }}
                     />
+                    {/* </div> */}
                   </div>
                 </li>
               )

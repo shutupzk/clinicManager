@@ -302,7 +302,7 @@ class RegistrationAddScreen extends Component {
               </label>
               <input
                 type='text'
-                value={patient.phone}
+                value={patient.phone || ''}
                 onChange={e => {
                   this.setPatientInfo(e, 'phone')
                 }}
@@ -366,7 +366,7 @@ class RegistrationAddScreen extends Component {
                     }}
                   />
                 </div>
-                <input type='text' value={patient.address} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
+                <input type='text' value={patient.address || ''} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
             <li>
@@ -420,7 +420,7 @@ class RegistrationAddScreen extends Component {
             </li>
             <li>
               <label>职业：</label>
-              <input type='text' value={patient.profession} onChange={e => this.setPatientInfo(e, 'profession')} />
+              <input type='text' value={patient.profession || ''} onChange={e => this.setPatientInfo(e, 'profession')} />
             </li>
             <li>
               <label>备注：</label>

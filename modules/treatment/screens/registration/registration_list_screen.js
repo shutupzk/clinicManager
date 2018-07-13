@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 // import { styles } from '../../../components/styles'
 // import { theme } from '../../../components'
-import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword, triagePatientsSelect } from '../../../../ducks'
+import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword, patientSelect } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
@@ -117,7 +117,7 @@ class RegistrationListScreen extends Component {
                   <div className={'itemBottom'}>
                     <span
                       onClick={() => {
-                        this.seeDetail({ clinic_triage_patient_id: patient.clinic_triage_patient_id })
+                        this.seeDetail({ patient_id: patient.patient_id })
                       }}
                     >
                       查看详情 >>
@@ -150,9 +150,9 @@ class RegistrationListScreen extends Component {
     )
   }
   // 查看详情
-  seeDetail({ clinic_triage_patient_id }) {
-    const { triagePatientsSelect } = this.props
-    triagePatientsSelect({ clinic_triage_patient_id })
+  seeDetail({ patient_id }) {
+    const { patientSelect } = this.props
+    patientSelect({ patient_id })
     Router.push('/treatment/registration/list_detail')
   }
 
@@ -190,6 +190,6 @@ export default connect(
     addTriagePatientsList,
     triagePatientsList,
     getPatientByKeyword,
-    triagePatientsSelect
+    patientSelect
   }
 )(RegistrationListScreen)

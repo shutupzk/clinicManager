@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
+import Router from 'next/router'
 import { connect } from 'react-redux'
 import { PageCard, Confirm } from '../../../../components'
-// import moment from 'moment'
-import {
-  MemberPateintList
-} from '../../../../ducks'
-import {getAgeByBirthday} from '../../../../utils'
+import { MemberPateintList, patientSelect } from '../../../../ducks'
+import { getAgeByBirthday } from '../../../../utils'
 import AddDrugInstockScreen from './components/addDrugInstockScreen'
 import moment from 'moment'
 
@@ -24,11 +22,11 @@ class PatientMgtScreen extends Component {
   }
 
   async componentWillMount() {
-    this.getDataList({offset: 0, limit: 10})
+    this.getDataList({ offset: 0, limit: 10 })
   }
   getDataList({ offset = 0, limit = 10 }) {
-    const {MemberPateintList} = this.props
-    const {start_date, end_date, keyword} = this.state
+    const { MemberPateintList } = this.props
+    const { start_date, end_date, keyword } = this.state
     let requestData = {
       offset,
       limit
@@ -44,11 +42,19 @@ class PatientMgtScreen extends Component {
     }
     MemberPateintList(requestData)
   }
+
+  // 查看详情
+  seeDetail({ patient_id }) {
+    const { patientSelect } = this.props
+    patientSelect({ patient_id })
+    Router.push('/treatment/registration/list_detail')
+  }
+
   renderTable() {
     const { patients, pageInfo } = this.props
     console.log('patients=====', patients)
     return (
-      <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
+      <div className={'contentCenterRight'} style={{ marginLeft: '0' }}>
         <div className={'contentTable'}>
           <div className={'tableContent'}>
             <table>
@@ -63,14 +69,22 @@ class PatientMgtScreen extends Component {
                   <td>最近就诊时间</td>
                   {/* <td>就诊类型</td>
                   <td>是否为会员</td> */}
-                  <td style={{flex: 2}}>操作</td>
+                  <td style={{ flex: 2 }}>操作</td>
                 </tr>
               </thead>
               <tbody>
                 {patients.map((item, index) => {
                   return (
                     <tr key={index}>
-                      <td>{item.name}</td>
+                      <td className={'operTd'}>
+                        <div>
+                          <div
+                            onClick={() => this.seeDetail({ patient_id: item.id })}
+                          >
+                            {item.name}
+                          </div>
+                        </div>
+                      </td>
                       <td>{item.id}</td>
                       <td>{item.phone}</td>
                       <td>{getAgeByBirthday(item.birthday)}</td>
@@ -79,19 +93,27 @@ class PatientMgtScreen extends Component {
                       <td>{moment(item.visited_time).format('YYYY-MM-DD hh:mm') === 'Invalid date' ? '' : moment(item.visited_time).format('YYYY-MM-DD hh:mm')}</td>
                       {/* <td>{item.supplier_name}</td>
                       <td>{item.instock_operation_name}</td> */}
-                      <td style={{flex: 2}} className={'operTd'}>
+                      <td style={{ flex: 2 }} className={'operTd'}>
                         <div>
-                          <div onClick={() => {
-                            this.setState({
-                              showType: 2,
-                              drug_instock_record_id: item.drug_instock_record_id,
-                              showWay: 2
-                            })
-                          }}>预约</div>
+                          <div
+                            onClick={() => {
+                              this.setState({
+                                showType: 2,
+                                drug_instock_record_id: item.drug_instock_record_id,
+                                showWay: 2
+                              })
+                            }}
+                          >
+                            预约
+                          </div>
                           <div className={'divideLine'}>|</div>
-                          <div onClick={() => {
-                            this.DrugInstockRecordDelete(item.drug_instock_record_id)
-                          }}>更多</div>
+                          <div
+                            onClick={() => {
+                              this.DrugInstockRecordDelete(item.drug_instock_record_id)
+                            }}
+                          >
+                            更多
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -103,7 +125,7 @@ class PatientMgtScreen extends Component {
               offset={pageInfo.offset}
               limit={pageInfo.limit}
               total={pageInfo.total}
-              style={{margin: '20px 0', width: '100%'}}
+              style={{ margin: '20px 0', width: '100%' }}
               onItemClick={({ offset, limit }) => {
                 // const keyword = this.state.keyword
                 this.getDataList({ offset, limit })
@@ -112,51 +134,50 @@ class PatientMgtScreen extends Component {
           </div>
         </div>
         <style jsx='true'>{`
-          .contentCenterRight{
-            width:100%;
-            height:715px; 
-            background:rgba(255,255,255,1);
-            box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
-            border-radius: 4px ;
-            margin-left:20px;
-            margin-top:5px;
+          .contentCenterRight {
+            width: 100%;
+            height: 715px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            margin-left: 20px;
+            margin-top: 5px;
             display: flex;
             flex-direction: column;
           }
-          .contentCenter{
+          .contentCenter {
             // background:#a0a0a0;
             display: flex;
           }
-          .contentTable{
-            margin:18px 32px;
+          .contentTable {
+            margin: 18px 32px;
             // background:#b0b0b0;
           }
-          .tableContent{
-
+          .tableContent {
           }
-          .tableContent table{
+          .tableContent table {
             display: flex;
             flex-direction: column;
             border-collapse: collapse;
-            border-top:1px solid #e8e8e8;
+            border-top: 1px solid #e8e8e8;
           }
-          .tableContent table thead{
-            background:rgba(250,250,250,1);
-            box-shadow: 1px 1px 0px 0px rgba(232,232,232,1) 
+          .tableContent table thead {
+            background: rgba(250, 250, 250, 1);
+            box-shadow: 1px 1px 0px 0px rgba(232, 232, 232, 1);
           }
-          .tableContent table tr{
-            height:40px; 
+          .tableContent table tr {
+            height: 40px;
             display: flex;
-            border-bottom:1px solid #e8e8e8;
-            border-right:1px solid #e8e8e8;
+            border-bottom: 1px solid #e8e8e8;
+            border-right: 1px solid #e8e8e8;
             align-items: center;
           }
-          .tableContent table tr td{
-            border-left:1px solid #e8e8e8;
-            height:40px; 
+          .tableContent table tr td {
+            border-left: 1px solid #e8e8e8;
+            height: 40px;
             // display: flex;
             align-items: center;
-            flex:1;
+            flex: 1;
             justify-content: center;
             line-height: 40px;
             text-align: center;
@@ -164,19 +185,19 @@ class PatientMgtScreen extends Component {
             text-overflow: ellipsis;
             white-space: nowrap;
           }
-          .operTd>div{
-            margin:0 auto;
+          .operTd > div {
+            margin: 0 auto;
             width: max-content;
           }
-          .operTd>div>div{
-            cursor:pointer;
-            color:#2ACDC8;
-            float:left;
+          .operTd > div > div {
+            cursor: pointer;
+            color: #2acdc8;
+            float: left;
           }
-          .operTd>div>div.divideLine{
-            cursor:default;
-            color:#e8e8e8;
-            margin:0 5px;
+          .operTd > div > div.divideLine {
+            cursor: default;
+            color: #e8e8e8;
+            margin: 0 5px;
           }
         `}</style>
       </div>
@@ -186,10 +207,17 @@ class PatientMgtScreen extends Component {
     let { showType, drug_instock_record_id, showWay } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddDrugInstockScreen showWay={showWay} drug_instock_record_id={drug_instock_record_id} drugType={1} backToList={() => {
-        this.setState({showType: 1})
-        this.getDataList({offset: 0, limit: 10})
-      }} />
+      2: (
+        <AddDrugInstockScreen
+          showWay={showWay}
+          drug_instock_record_id={drug_instock_record_id}
+          drugType={1}
+          backToList={() => {
+            this.setState({ showType: 1 })
+            this.getDataList({ offset: 0, limit: 10 })
+          }}
+        />
+      )
     }
     return map[showType] || null
   }
@@ -201,41 +229,35 @@ class PatientMgtScreen extends Component {
             placeholder={`就诊开始日期`}
             type='date'
             onChange={e => {
-              this.setState({start_date: e.target.value})
+              this.setState({ start_date: e.target.value })
             }}
           />
           <input
             placeholder={`就诊结束日期`}
             type='date'
             onChange={e => {
-              this.setState({end_date: e.target.value})
+              this.setState({ end_date: e.target.value })
             }}
           />
           <input
-            style={{width: '300px'}}
+            style={{ width: '300px' }}
             type='text'
             placeholder={`搜索就诊人姓名/门诊ID/身份证号码/手机号码`}
-            onChange={(e) => {
-              this.setState({keyword: e.target.value})
+            onChange={e => {
+              this.setState({ keyword: e.target.value })
             }}
           />
-          <button onClick={() => {
-            this.getDataList({offset: 0, limit: 10})
-          }}>查询</button>
+          <button
+            onClick={() => {
+              this.getDataList({ offset: 0, limit: 10 })
+            }}
+          >
+            查询
+          </button>
         </div>
-        <div className={'boxRight'} style={{display: 'flex'}}>
-          <button
-            onClick={() => {
-            }}
-          >
-            新增就诊人
-          </button>
-          <button
-            onClick={() => {
-            }}
-          >
-            导出数据
-          </button>
+        <div className={'boxRight'} style={{ display: 'flex' }}>
+          <button onClick={() => {}}>新增就诊人</button>
+          <button onClick={() => {}}>导出数据</button>
         </div>
         <style jsx='true'>{`
           .filterBox {
@@ -262,7 +284,7 @@ class PatientMgtScreen extends Component {
             text-indent: 10px;
             padding: 0;
           }
-          .filterBox .boxLeft>input[type='date'] {
+          .filterBox .boxLeft > input[type='date'] {
             height: 20px;
             padding: 5px 0;
             width: 120px;
@@ -306,7 +328,7 @@ class PatientMgtScreen extends Component {
         <div className={'boxLeft'}>
           <span>药房管理-入库</span>
         </div>
-        <div className='back2List' onClick={() => this.setState({showType: 1})}>
+        <div className='back2List' onClick={() => this.setState({ showType: 1 })}>
           {'<返回'}
         </div>
         <style jsx='true'>{`
@@ -325,9 +347,9 @@ class PatientMgtScreen extends Component {
             float: left;
             margin: 15px 20px;
           }
-          .back2List{
-            flex:1;
-            cursor:pointer;
+          .back2List {
+            flex: 1;
+            cursor: pointer;
             text-align: end;
             margin: 15px 20px;
           }
@@ -336,18 +358,18 @@ class PatientMgtScreen extends Component {
     )
   }
   render() {
-    const {showType} = this.state
+    const { showType } = this.state
     return (
       <div className={'boxContent'}>
         {showType === 1 ? this.renderFilter() : this.renderBack()}
         {showType === 1 ? this.renderTable() : this.showView()}
         <style jsx='true'>{`
-          .boxContent{
+          .boxContent {
             // background:#909090;
             display: flex;
             flex-direction: column;
-            margin:0 20px;
-            min-width:1165px;
+            margin: 0 20px;
+            min-width: 1165px;
           }
         `}</style>
         <Confirm ref='myAlert' />
@@ -364,6 +386,9 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {
-  MemberPateintList
-})(PatientMgtScreen)
+export default connect(
+  mapStateToProps,
+  {
+    MemberPateintList, patientSelect
+  }
+)(PatientMgtScreen)

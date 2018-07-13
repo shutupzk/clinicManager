@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TriagePatientDetail, GetHealthRecord, LaboratoryTriagePatientRecordList, queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail } from '../../../../../ducks'
+import { PatientGetByID, LaboratoryTriagePatientRecordList, queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import { PageCard } from '../../../../../components'
 import moment from 'moment'
@@ -9,21 +9,16 @@ class LaboraReportScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      body_sign: {},
-      pre_medical_record: {},
-      pre_diagnosis: {},
       patientInfo: {},
       historyDetail: {}
     }
   }
 
   async componentWillMount() {
-    const { clinic_triage_patient_id, TriagePatientDetail, GetHealthRecord } = this.props
-    let { patient } = await TriagePatientDetail({ clinic_triage_patient_id })
-    let data = await GetHealthRecord({ clinic_triage_patient_id })
-    const { body_sign, pre_medical_record, pre_diagnosis } = data
+    const { patient_id, PatientGetByID } = this.props
+    let patient = await PatientGetByID({ patient_id })
     if (patient) {
-      this.setState({ patientInfo: patient, body_sign, pre_medical_record, pre_diagnosis }, () => {
+      this.setState({ patientInfo: patient }, () => {
         this.LaboratoryTriagePatientRecordList({})
       })
     }
@@ -32,8 +27,8 @@ class LaboraReportScreen extends Component {
   async submit() {}
 
   LaboratoryTriagePatientRecordList({ offset = 0, limit = 10 }) {
-    const { clinic_triage_patient_id, LaboratoryTriagePatientRecordList } = this.props
-    LaboratoryTriagePatientRecordList({ clinic_triage_patient_id, offset, limit })
+    const { patient_id, LaboratoryTriagePatientRecordList } = this.props
+    LaboratoryTriagePatientRecordList({ patient_id, offset, limit })
   }
 
   setPatientInfo(e, key) {
@@ -465,12 +460,12 @@ const mapStateToProps = state => {
     patients: state.patients.data,
     triagePatients: state.triagePatients.data,
     clinic_id: state.user.data.clinic_id,
-    clinic_triage_patient_id: state.triagePatients.selectId,
+    patient_id: state.patients.selectId,
     patient_record_data: state.laboratoryTriages.patient_record_data,
     patient_record_page_info: state.laboratoryTriages.patient_record_page_info
   }
 }
 export default connect(
   mapStateToProps,
-  { TriagePatientDetail, GetHealthRecord, LaboratoryTriagePatientRecordList, queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail }
+  { PatientGetByID, LaboratoryTriagePatientRecordList, queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail }
 )(LaboraReportScreen)
