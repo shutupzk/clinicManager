@@ -1167,6 +1167,9 @@ export function styles() {
 					margin-left: 66px;
 					display: flex;
 				}
+				.filterBox a{
+					color: rgba(102,102,102,1);
+				}
 				.filterBox .boxLeft {
 					float: left;
 					flex: 9;

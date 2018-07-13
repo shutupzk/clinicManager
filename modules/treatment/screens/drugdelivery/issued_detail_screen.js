@@ -172,11 +172,12 @@ class IssuedDetailDrugScreen extends Component {
                   <div style={{ flex: 1 }}>{amount}</div>
                   <div style={{ flex: 2 }}>{status_map[item.order_status]}</div>
                   <div>
-                    <textarea
+                    <div style={{lineHeight: '24px'}}>{item.remark || ''}</div>
+                    {/* <textarea
                       style={{ width: '90%', resize: 'none', border: 'none' }}
                       value={item.remark || ''}
                       disabled
-                    />
+                    /> */}
                   </div>
                 </li>
               )
@@ -469,7 +470,8 @@ class IssuedDetailDrugScreen extends Component {
                     <div style={{ flex: 1 }}>{item.amount}</div>
                     <div style={{ flex: 2 }}>{status_map[item.order_status]}</div>
                     <div>
-                      <textarea disabled style={{ width: '90%', resize: 'none', border: 'none' }} value={item.remark} />
+                      <div>{item.remark}</div>
+                      {/* <textarea disabled style={{ width: '90%', resize: 'none', border: 'none' }} value={item.remark} /> */}
                     </div>
                   </li>
                 )
