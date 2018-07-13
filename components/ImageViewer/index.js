@@ -18,7 +18,7 @@ export default class ImageViewer extends Component {
   }
 
   render() {
-    console.log('this.props ======', this.props)
+    // console.log('this.props ======', this.props)
     return (
       <div>
         <Viewer

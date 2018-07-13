@@ -11,6 +11,7 @@ import CustomSelect from './CustomSelect'
 import MyCreatableSelect from './CreatableSelect'
 import ImageViewer from './ImageViewer'
 import DatePicker from './DatePicker'
+import Upload from './Upload'
 
 export {
   Loading,
@@ -25,5 +26,6 @@ export {
   CustomSelect,
   MyCreatableSelect,
   ImageViewer,
-  DatePicker
+  DatePicker,
+  Upload
 }

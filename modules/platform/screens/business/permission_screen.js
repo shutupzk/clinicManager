@@ -34,12 +34,25 @@ class BusinessClinicPermissionScreen extends Component {
     const { has_set_permissions, un_set_permissions } = this.props
     this.setState({ array1: JSON.parse(JSON.stringify(un_set_permissions)), array2: JSON.parse(JSON.stringify(has_set_permissions)) })
   }
+  // 组装树状结构
+  // getTree(array) {
+  //   let len = array.length
+  //   if (len > 0) {
+  //     let treeData = []
+  //     for (let p_item of array) {
+  //       if (p_item.level === 0) {
 
+  //       }
+  //     }
+  //   }
+  // }
   async componentDidMount() {
     let { queryClinicHassetPermissions, queryClinicUnsetPermissions, clinic_selectId } = this.props
     let unSet = await queryClinicUnsetPermissions(clinic_selectId)
     let hasSet = await queryClinicHassetPermissions(clinic_selectId)
     console.log('unSet====', unSet, 'hasSe======', hasSet)
+    // let array1 = this.getTree(unSet)
+    // let array2 = this.getTree(hasSet)
     this.setState({ array1: JSON.parse(JSON.stringify(unSet)), array2: JSON.parse(JSON.stringify(hasSet)) })
   }
 
@@ -144,9 +157,9 @@ class BusinessClinicPermissionScreen extends Component {
                   {array1.map((item, iKey) => {
                     return (
                       <div key={iKey} className={'boxContentList'}>
-                        <span>{item.parent_name}</span>
+                        <span>{item.menu_name}</span>
                         <ul>
-                          {item.childrens_menus.map((func, funkey) => {
+                          {/* {item.childrens_menus.map((func, funkey) => {
                             return (
                               <li key={funkey}>
                                 <input
@@ -159,7 +172,7 @@ class BusinessClinicPermissionScreen extends Component {
                                 <label>{func.menu_name}</label>
                               </li>
                             )
-                          })}
+                          })} */}
                         </ul>
                       </div>
                     )
@@ -172,9 +185,9 @@ class BusinessClinicPermissionScreen extends Component {
                   {array2.map((item, iKey) => {
                     return (
                       <div key={iKey} className={'boxContentList'}>
-                        <span>{item.parent_name}</span>
+                        <span>{item.menu_name}</span>
                         <ul>
-                          {item.childrens_menus.map((func, funkey) => {
+                          {/* {item.childrens_menus.map((func, funkey) => {
                             return (
                               <li key={funkey}>
                                 <input
@@ -187,7 +200,7 @@ class BusinessClinicPermissionScreen extends Component {
                                 <label>{func.menu_name}</label>
                               </li>
                             )
-                          })}
+                          })} */}
                         </ul>
                       </div>
                     )

@@ -30,7 +30,7 @@ class SigninScreen extends Component {
 
     let data = await this.props.signin({ username, password })
     if (data.code !== '200') {
-      return alert('登录失败：' + error)
+      return alert('登录失败：' + data.msg)
     } else {
       let user = data.data
       this.RolesByPersonnel({ user })
