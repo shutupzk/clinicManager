@@ -2,12 +2,14 @@ import { request } from './request'
 const DRUG_PROJECT_ADD = 'DRUG_PROJECT_ADD'
 const DRUG_JSON_ADD = 'DRUG_JSON_ADD'
 const DIC_DRUG_ARRAY_ADD = 'DIC_DRUG_ARRAY_ADD'
+const DRUG_STOCK_ADD = 'DRUG_STOCK_ADD'
 
 const initState = {
   data: [],
   drug_data: [],
   json_data: {},
   page_info: {},
+  drug_stock_data: [],
   selectId: null
 }
 
@@ -19,6 +21,8 @@ export function drugs(state = initState, action = {}) {
       return { ...state, json_data: { ...state.json_data, ...action.json_data } }
     case DIC_DRUG_ARRAY_ADD:
       return { ...state, drug_data: action.drug_data }
+    case DRUG_STOCK_ADD:
+      return { ...state, drug_stock_data: action.drug_data }
     default:
       return state
   }
@@ -27,7 +31,6 @@ export function drugs(state = initState, action = {}) {
 export const ClinicDrugList = ({ clinic_id, type, drug_class_id = '', keyword, status, offset, limit }, isJson) => async dispatch => {
   try {
     const data = await request('/clinic_drug/ClinicDrugList', { clinic_id, type, drug_class_id, keyword, status, offset, limit })
-    console.log('ClinicDrugList=======', data, { clinic_id, type, drug_class_id, keyword, status, offset, limit })
     const docs = data.data || []
     const page_info = data.page_info || {}
     let unitJson = {}
@@ -79,6 +82,16 @@ export const ClinicDrugList = ({ clinic_id, type, drug_class_id = '', keyword, s
   }
 }
 
+export const ClinicDrugListWithStock = ({ clinic_id, keyword, status = true, offset, limit = 20 }) => async dispatch => {
+  const data = await request('/clinic_drug/ClinicDrugStock', { clinic_id, keyword, status, offset, limit })
+  console.log(data)
+  const drug_data = data.data || []
+  dispatch({
+    type: DRUG_STOCK_ADD,
+    drug_data
+  })
+}
+
 export const ClinicDrugCreate = drugInfo => async dispatch => {
   try {
     if (drugInfo.ret_price) drugInfo.ret_price = drugInfo.ret_price * 100
@@ -118,10 +131,10 @@ export const ClinicDrugOnOff = drugInfo => async dispatch => {
     return e.message
   }
 }
-export const ClinicDrugDetail = ({clinic_drug_id}) => async dispatch => {
+export const ClinicDrugDetail = ({ clinic_drug_id }) => async dispatch => {
   try {
     console.log('limit====', clinic_drug_id)
-    const data = await request('/clinic_drug/ClinicDrugDetail', {clinic_drug_id})
+    const data = await request('/clinic_drug/ClinicDrugDetail', { clinic_drug_id })
     console.log('ClinicDrugDetail=======', data)
     const docs = data.data || {}
     let drug_data = []

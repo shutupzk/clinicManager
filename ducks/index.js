@@ -45,7 +45,7 @@ import {
   queryMedicalModelsByDoctor,
   queryChiefComplaints
 } from './medicRecord'
-import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff } from './drug'
+import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff, ClinicDrugListWithStock } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, ExaminationUpdate, ExaminationOnOff, ExaminationDetail, queryExams } from './examination'
 import { materials, materialCreate, MaterialUpdate, MaterialOnOff, MaterialDetail, queryMaterialList } from './material'
@@ -329,6 +329,7 @@ export {
   ClinicDrugDetail,
   ClinicDrugOnOff,
   ClinicDrugList,
+  ClinicDrugListWithStock,
   examinationCreate,
   laboratoryCreate,
   materialCreate,

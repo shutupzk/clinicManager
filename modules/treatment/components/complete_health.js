@@ -430,9 +430,13 @@ export default class CompleteHealth extends Component {
   }
 
   // 设置诊前病历数据
-  setPreMedicalRecords(e, key) {
+  setPreMedicalRecords(e, key, type = 1) {
     const { preMedicalRecords } = this.state
-    preMedicalRecords[key] = e.target.value
+    let value = e
+    if (type === 1) {
+      value = e.target.value
+    }
+    preMedicalRecords[key] = value
     this.setState({ preMedicalRecords })
   }
 
@@ -450,6 +454,7 @@ export default class CompleteHealth extends Component {
   // 显示诊前病历
   showPreMedicalRecords() {
     let { preMedicalRecords } = this.state
+    const {selSex} = this.props
     console.log('preMedicalRecords======', preMedicalRecords)
     return (
       <div>
@@ -465,11 +470,11 @@ export default class CompleteHealth extends Component {
                   type='radio'
                   name='allergy'
                   style={{ width: 'auto', height: 'auto' }}
-                  checked={preMedicalRecords.has_allergic_history === true}
-                  value={!false}
+                  checked={preMedicalRecords.has_allergic_history}
+                  // value={!false}
                   onChange={e => {
                     console.log('过敏史=======', e)
-                    this.setPreMedicalRecords(e, 'has_allergic_history')
+                    this.setPreMedicalRecords(true, 'has_allergic_history', 2)
                   }}
                 />是
               </label>
@@ -477,17 +482,18 @@ export default class CompleteHealth extends Component {
                 <input
                   type='radio'
                   name='allergy'
-                  checked={preMedicalRecords.has_allergic_history === false}
+                  checked={!preMedicalRecords.has_allergic_history}
                   style={{ width: 'auto', height: 'auto' }}
-                  value={false}
+                  // value={false}
                   onChange={e => {
-                    this.setPreMedicalRecords(e, 'has_allergic_history')
+                    this.setPreMedicalRecords(false, 'has_allergic_history', 2)
                   }}
                 />否
               </label>
               <input
                 type='text'
                 placeholder={'对什么过敏'}
+                readOnly={!preMedicalRecords.has_allergic_history}
                 value={preMedicalRecords.allergic_history || ''}
                 onChange={e => {
                   this.setPreMedicalRecords(e, 'allergic_history')
@@ -527,7 +533,7 @@ export default class CompleteHealth extends Component {
                 }}
               />
             </li>
-            <li>
+            {selSex === 2 ? <li>
               <label>月经史</label>
               <input
                 type='text'
@@ -592,8 +598,8 @@ export default class CompleteHealth extends Component {
                   this.setPreMedicalRecords(e, 'gestational_weeks')
                 }}
               />
-            </li>
-            <li>
+            </li> : ''}
+            {selSex === 2 ? <li>
               <label>生育史</label>
               <input
                 type='text'
@@ -603,7 +609,7 @@ export default class CompleteHealth extends Component {
                   this.setPreMedicalRecords(e, 'childbearing_history')
                 }}
               />
-            </li>
+            </li> : ''}
           </ul>
         </div>
         <div className={'bottomBtn'} style={{ width: '300px' }}>

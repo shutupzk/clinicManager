@@ -10,7 +10,8 @@ class TriageScreen extends Component {
     super(props)
     this.state = {
       pageType: 1,
-      keyword: ''
+      keyword: '',
+      selSex: 1
     }
   }
 
@@ -74,12 +75,13 @@ class TriageScreen extends Component {
                       {
                         title: '完善健康档案',
                         onClick: async () => {
-                          let { clinic_triage_patient_id } = patient
+                          let { clinic_triage_patient_id, sex } = patient
+                          console.log('patient=======', patient)
                           let data = await this.props.GetHealthRecord({ clinic_triage_patient_id })
                           const { body_sign, pre_medical_record, pre_diagnosis } = data
                           console.log('data =====', data)
                           this.showCompleteHealthFile(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis)
-                          this.setState({ clinic_triage_patient_id })
+                          this.setState({ clinic_triage_patient_id, selSex: sex })
                         }
                       },
                       {
@@ -114,6 +116,7 @@ class TriageScreen extends Component {
 
   render() {
     const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id, completeBodySign, completePreMedicalRecord, completePreDiagnosis } = this.props
+    const {selSex} = this.state
     return (
       <div>
         <div className={'childTopBar'}>
@@ -146,7 +149,12 @@ class TriageScreen extends Component {
           </span>
         </div>
         {this.showTriageList()}
-        <CompleteHealth ref='CompleteHealth' completeBodySign={completeBodySign} completePreMedicalRecord={completePreMedicalRecord} completePreDiagnosis={completePreDiagnosis} />
+        <CompleteHealth
+          ref='CompleteHealth'
+          selSex={selSex}
+          completeBodySign={completeBodySign}
+          completePreMedicalRecord={completePreMedicalRecord}
+          completePreDiagnosis={completePreDiagnosis} />
         <ChooseDoctor
           ref='ChooseDoctor'
           triageDoctors={triageDoctors}

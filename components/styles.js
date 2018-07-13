@@ -816,7 +816,8 @@ export function styles() {
 					width: 100%;
 				}
 				.mRecord ul li textarea {
-					width: 661px;
+					// width: 661px;
+					width: 100%;
 					background: rgba(245,248,249,1);
 					border-radius: 4px;
 					border: 1px solid #d9d9d9;
@@ -840,10 +841,11 @@ export function styles() {
 					width: 210px;
 					margin: 8px auto;
 					height: 40px;
+					display:flex;
 				}
 				.bottomBtn button {
 					float: left;
-					margin: 20px 0;
+					margin: 0 10px;
 				}
 
 				.radioDiv {
@@ -1215,6 +1217,9 @@ export function styles() {
 					cursor: pointer;
 					margin: 16px 35px 0 0;
 				}
+				.boxRight button a{
+					color: #ffffff;
+				}
 				.listContent {
 					float: left;
 					width: 1120px;
@@ -1300,7 +1305,7 @@ export function styles() {
 				}
 				.feeScheduleBox ul li{
 					display: flex;
-					height:40px;
+					min-height:40px;
 					border-bottom:1px solid #E9E9E9;
 					line-height:40px;
 					text-align:center;
