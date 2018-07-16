@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from '../../../../ducks'
+import { queryDrugIssuedTraigeList, drugIssuedTraigeSelect, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
@@ -47,7 +47,11 @@ class DrugHasBeenIssuedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{'已发药'}</span>
@@ -156,4 +160,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDrugIssuedTraigeList, drugIssuedTraigeSelect })(DrugHasBeenIssuedScreen)
+export default connect(mapStateToProps, { queryDrugIssuedTraigeList, drugIssuedTraigeSelect, patientSelect })(DrugHasBeenIssuedScreen)

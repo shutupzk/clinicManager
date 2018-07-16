@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate } from '../../../../ducks'
+import { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard, Confirm } from '../../../../components'
@@ -58,7 +58,11 @@ class TobeCheckedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待检查</span>
@@ -363,5 +367,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate }
+  { ExaminationTriageWaiting, ExaminationTriageList, ExaminationTriageUpdate, patientSelect }
 )(TobeCheckedScreen)

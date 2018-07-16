@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryDrugRefundTraigeList, drugRefundTraigeSelect } from '../../../../ducks'
+import { queryDrugRefundTraigeList, drugRefundTraigeSelect, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
@@ -47,7 +47,11 @@ class DrugHasBeenWithdrawnScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{'已退药'}</span>
@@ -156,4 +160,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryDrugRefundTraigeList, drugRefundTraigeSelect })(DrugHasBeenWithdrawnScreen)
+export default connect(mapStateToProps, { queryDrugRefundTraigeList, drugRefundTraigeSelect, patientSelect })(DrugHasBeenWithdrawnScreen)

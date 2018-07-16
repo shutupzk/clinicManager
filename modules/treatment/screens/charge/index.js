@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryChargeUnpayList, chargeUnpaySelect } from '../../../../ducks'
+import { queryChargeUnpayList, chargeUnpaySelect, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
@@ -42,7 +42,11 @@ class TobeChargedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.charge_total_fee <= 0 ? '已收费' : '待收费'}</span>
@@ -160,4 +164,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryChargeUnpayList, chargeUnpaySelect })(TobeChargedScreen)
+export default connect(mapStateToProps, { queryChargeUnpayList, chargeUnpaySelect, patientSelect })(TobeChargedScreen)

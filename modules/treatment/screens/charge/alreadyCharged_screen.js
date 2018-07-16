@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { queryCreditTriageList, creditTriageSelect } from '../../../../ducks'
+import { queryCreditTriageList, creditTriageSelect, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { PageCard } from '../../../../components'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
@@ -47,7 +47,11 @@ class AlreadyChargedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>已挂账</span>
@@ -160,4 +164,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryCreditTriageList, creditTriageSelect })(AlreadyChargedScreen)
+export default connect(mapStateToProps, { queryCreditTriageList, creditTriageSelect, patientSelect })(AlreadyChargedScreen)

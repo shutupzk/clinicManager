@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { TreatmentTriageChecking } from '../../../../ducks'
+import { TreatmentTriageChecking, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 import { PageCard } from '../../../../components'
@@ -58,7 +58,11 @@ class InTreatingScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>治疗中</span>
@@ -188,5 +192,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { TreatmentTriageChecking }
+  { TreatmentTriageChecking, patientSelect }
 )(InTreatingScreen)

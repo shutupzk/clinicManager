@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList } from '../../../../ducks'
+import { triagePatientsList, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
 
@@ -79,7 +79,11 @@ class RefundedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已收费' : '待收费'}</span>
@@ -168,4 +172,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(RefundedScreen)
+export default connect(mapStateToProps, { triagePatientsList, patientSelect })(RefundedScreen)
