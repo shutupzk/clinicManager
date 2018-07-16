@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { TreatmentTriageChecked, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-import { PageCard } from '../../../../components'
+import { PageCard, DatePicker } from '../../../../components'
 import TreatDetailScreen from './components/treat_detail_screen'
 
 class TreatedScreen extends Component {
@@ -135,22 +135,28 @@ class TreatedScreen extends Component {
             </div>
             <div className={'filterBox'}>
               <div className={'boxLeft'}>
-                <input
-                  type='date'
-                  placeholder='选择开始日期'
-                  value={this.state.start_date}
-                  onChange={e => {
-                    this.setState({ start_date: e.target.value })
-                  }}
-                />
-                <input
-                  type='date'
-                  placeholder='选择结束日期'
-                  value={this.state.end_date}
-                  onChange={e => {
-                    this.setState({ end_date: e.target.value })
-                  }}
-                />
+                <div className={'dateDiv'}>
+                  <DatePicker
+                    placeholder={'开始日期'}
+                    value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                    onChange={(date, str) => {
+                      if (date) {
+                        this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
+                      }
+                    }}
+                  />
+                </div>
+                <div className={'dateDiv'}>
+                  <DatePicker
+                    placeholder={'结束日期'}
+                    value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                    onChange={(date, str) => {
+                      if (date) {
+                        this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
+                      }
+                    }}
+                  />
+                </div>
                 <input
                   type='text'
                   placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'

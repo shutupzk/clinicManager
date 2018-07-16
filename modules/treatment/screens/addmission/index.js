@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { triagePatientsList, triagePatientsSelect, triageReception, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-import { PageCard, Confirm } from '../../../../components'
+import { PageCard, Confirm, DatePicker } from '../../../../components'
 class AddmisionScreen extends Component {
   constructor(props) {
     super(props)
@@ -218,24 +218,28 @@ class AddmisionScreen extends Component {
     } else {
       return (
         <div className={'boxLeft'}>
-          <input
-            type='date'
-            placeholder='开始日期'
-            value={startDate}
-            onChange={e => {
-              this.setState({ startDate: e.target.value })
-            }}
-          />
-
-          <input
-            type='date'
-            placeholder='结束日期'
-            value={endDate}
-            onChange={e => {
-              this.setState({ endDate: e.target.value })
-            }}
-          />
-
+          <div className={'dateDiv'}>
+            <DatePicker
+              placeholder={'开始日期'}
+              value={moment(moment(startDate).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+              onChange={(date, str) => {
+                if (date) {
+                  this.setState({ startDate: moment(date).format('YYYY-MM-DD') })
+                }
+              }}
+            />
+          </div>
+          <div className={'dateDiv'}>
+            <DatePicker
+              placeholder={'结束日期'}
+              value={moment(moment(endDate).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+              onChange={(date, str) => {
+                if (date) {
+                  this.setState({ endDate: moment(date).format('YYYY-MM-DD') })
+                }
+              }}
+            />
+          </div>
           <input
             type='text'
             placeholder='搜索就诊人姓名/身份证号码/手机号码'

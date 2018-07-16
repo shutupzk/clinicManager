@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import { triagePatientsList } from '../../../../ducks'
 import moment from 'moment'
+import { DatePicker } from '../../../../components'
 // import { getAgeByBirthday } from '../../../../utils'
 
 class OrderManagementScreen extends Component {
@@ -171,7 +172,18 @@ class OrderManagementScreen extends Component {
         <div className={'filterBox'}>
           {pageType === 5 ? this.renderOrderType() : ''}
           <div className={'boxLeft'}>
-            <input type='date' placeholder='选择日期' />
+            <div className={'dateDiv'}>
+              <DatePicker
+                // placeholder={'开始日期'}
+                // value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
+                  if (date) {
+                    // this.setState({ start_date: date })
+                  }
+                }}
+              />
+            </div>
+            {/* <input type='date' placeholder='选择日期' /> */}
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>

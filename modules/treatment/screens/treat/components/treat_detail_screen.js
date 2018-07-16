@@ -265,6 +265,7 @@ class TreatDetailScreen extends Component {
         <div>
           <div>开单时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
+        <div />
       </div>
     )
   }
@@ -529,6 +530,7 @@ class TreatDetailScreen extends Component {
           }
           .detailCenter {
             display: flex;
+            margin: 10px 0;
           }
           .childTopBar {
             flex: 8;
