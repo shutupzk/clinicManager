@@ -1,28 +1,26 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions } from '../../../../ducks'
+import { queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions, MenubarList } from '../../../../ducks'
 import { Confirm } from '../../../../components'
+import { formatMenuList, formatUnHasMemuList, deleteMenu, addMenu } from '../../../../utils'
 
 class BusinessClinicPermissionScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      array1: [],
-      array2: []
+      hasSet: [],
+      allMenus: []
     }
   }
 
   async submit() {
-    const { array2 } = this.state
-    const { clinic_selectId, createClinicPermissions } = this.props
+    const { hasSet } = this.state
+    const { clinic_id, createClinicPermissions } = this.props
     let items = []
-    for (let item of array2) {
-      for (let it of item.childrens_menus) {
-        console.log(it)
-        items.push({ function_menu_id: it.function_menu_id + '' })
-      }
+    for (let item of hasSet) {
+      items.push({function_menu_id: item.function_menu_id + ''})
     }
-    let error = await createClinicPermissions({ clinic_id: clinic_selectId, items: JSON.stringify(items) })
+    let error = await createClinicPermissions({ clinic_id, items: JSON.stringify(items) })
     if (error) {
       return this.refs.myAlert.alert('设置权限失败', error, null, 'Warning')
     } else {
@@ -30,119 +28,37 @@ class BusinessClinicPermissionScreen extends Component {
     }
   }
 
-  cancel() {
-    const { has_set_permissions, un_set_permissions } = this.props
-    this.setState({ array1: JSON.parse(JSON.stringify(un_set_permissions)), array2: JSON.parse(JSON.stringify(has_set_permissions)) })
-  }
-  // 组装树状结构
-  // getTree(array) {
-  //   let len = array.length
-  //   if (len > 0) {
-  //     let treeData = []
-  //     for (let p_item of array) {
-  //       if (p_item.level === 0) {
+  cancel() {}
 
-  //       }
-  //     }
-  //   }
-  // }
   async componentDidMount() {
-    let { queryClinicHassetPermissions, queryClinicUnsetPermissions, clinic_selectId } = this.props
-    let unSet = await queryClinicUnsetPermissions(clinic_selectId)
-    let hasSet = await queryClinicHassetPermissions(clinic_selectId)
-    console.log('unSet====', unSet, 'hasSe======', hasSet)
-    // let array1 = this.getTree(unSet)
-    // let array2 = this.getTree(hasSet)
-    this.setState({ array1: JSON.parse(JSON.stringify(unSet)), array2: JSON.parse(JSON.stringify(hasSet)) })
+    let { queryClinicHassetPermissions, clinic_id, MenubarList } = this.props
+    let hasSet = await queryClinicHassetPermissions(clinic_id)
+    let allMenus = await MenubarList({ ascription: '01' })
+    this.setState({ hasSet, allMenus })
   }
 
   // 添加功能
-  addFunc(parent, menu) {
-    let { array2, array1 } = this.state
-    this.changeFunc(array1, array2, parent, menu)
-    this.setState({ array2, array1 })
+  addFunc(menu) {
+    let { hasSet, allMenus } = this.state
+    let array = addMenu(menu, JSON.parse(JSON.stringify(hasSet)), JSON.parse(JSON.stringify(allMenus)))
+    this.setState({ hasSet: array })
   }
 
   // 删除功能
-  delFunc(parent, menu) {
-    let { array2, array1 } = this.state
-    this.changeFunc(array2, array1, parent, menu)
-    this.setState({ array2, array1 })
-  }
-
-  // 将fromArray中的功能块移到toArray中并
-  changeFunc(fromArray, toArray, parent, menu, cb) {
-    // 向toArray中添加数据
-    let index = -1
-    for (let i = 0; i < toArray.length; i++) {
-      let item = toArray[i]
-      if (item.parent_id === parent.parent_id) {
-        index = i
-        break
-      }
-    }
-    if (index === -1) {
-      let obj = {
-        parent_id: parent.parent_id,
-        parent_name: parent.parent_name,
-        parent_url: parent.parent_url,
-        childrens_menus: [
-          {
-            function_menu_id: menu.function_menu_id,
-            menu_name: menu.menu_name,
-            menu_url: menu.menu_url
-          }
-        ]
-      }
-      toArray.push(obj)
-    } else {
-      let funcs = toArray[index].childrens_menus
-      let exist = false
-      for (let func of funcs) {
-        // 子功能存在与否
-        if (func.function_menu_id === menu.function_menu_id) {
-          exist = true
-          break
-        }
-      }
-      if (!exist) {
-        toArray[index].childrens_menus.push({
-          function_menu_id: menu.function_menu_id,
-          menu_name: menu.menu_name,
-          menu_url: menu.menu_url
-        })
-      }
-    }
-
-    // 删除fromArray中的数据
-    for (let ai = 0; ai < fromArray.length; ai++) {
-      let childrens = fromArray[ai].childrens_menus
-      for (let bi = 0; bi < childrens.length; bi++) {
-        if (childrens[bi].function_menu_id === menu.function_menu_id) {
-          fromArray[ai].childrens_menus.splice(bi, 1)
-          break
-        }
-      }
-      if (fromArray[ai].childrens_menus.length === 0) fromArray.splice(ai, 1)
-    }
-
-    fromArray = this.sort(fromArray)
-    toArray = this.sort(toArray)
-  }
-
-  sort(array) {
-    for (let i = 0; i < array.length; i++) {
-      array[i].childrens_menus = array[i].childrens_menus.sort((a, b) => a.function_menu_id * 1 - b.function_menu_id * 1)
-    }
-    return array.sort((a, b) => a.parent_id * 1 - b.parent_id * 1)
+  delFunc(menu) {
+    let { hasSet } = this.state
+    let array = deleteMenu(menu, JSON.parse(JSON.stringify(hasSet)))
+    this.setState({ hasSet: array })
   }
 
   showList() {
-    let { array1, array2 } = this.state
-    const { clinics, clinic_selectId } = this.props
+    let { hasSet, allMenus } = this.state
+    let unsets = formatUnHasMemuList(JSON.parse(JSON.stringify(hasSet)), JSON.parse(JSON.stringify(allMenus)))
+    let sets = formatMenuList(null, JSON.parse(JSON.stringify(hasSet)))
+    const { clinics, clinic_id } = this.props
     let clinic = null
     for (let item of clinics) {
-      if (item.id === clinic_selectId) clinic = item
+      if (item.id === clinic_id) clinic = item
     }
     return (
       <div>
@@ -153,26 +69,61 @@ class BusinessClinicPermissionScreen extends Component {
             <ul>
               <li>
                 <span>业务分配</span>
-                <div className={'boxContentItem'}>
-                  {array1.map((item, iKey) => {
+                <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                  {unsets.map((item, iKey) => {
                     return (
                       <div key={iKey} className={'boxContentList'}>
-                        <span>{item.menu_name}</span>
+                        <div
+                          style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}
+                        >
+                          <input
+                            type={'checkBox'}
+                            checked={false}
+                            onChange={e => {
+                              this.addFunc(item)
+                            }}
+                          />
+                          <span>{item.menu_name}</span>
+                        </div>
                         <ul>
-                          {/* {item.childrens_menus.map((func, funkey) => {
+                          {item.children.map((func, funkey) => {
                             return (
-                              <li key={funkey}>
-                                <input
-                                  type={'checkBox'}
-                                  checked={false}
-                                  onChange={e => {
-                                    this.addFunc(item, func)
-                                  }}
-                                />
-                                <label>{func.menu_name}</label>
+                              <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
+                                <div className={'boxContentList'}>
+                                  <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
+                                    <input
+                                      type={'checkBox'}
+                                      checked={false}
+                                      onChange={e => {
+                                        this.addFunc(func)
+                                      }}
+                                    />
+                                    <label>{func.menu_name}</label>
+                                  </div>
+                                  <ul>
+                                    {func.children.map((func, funkey) => {
+                                      return (
+                                        <li key={funkey}>
+                                          <div className={'boxContentList'}>
+                                            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
+                                              <input
+                                                type={'checkBox'}
+                                                checked={false}
+                                                onChange={e => {
+                                                  this.addFunc(func)
+                                                }}
+                                              />
+                                              <label>{func.menu_name}</label>
+                                            </div>
+                                          </div>
+                                        </li>
+                                      )
+                                    })}
+                                  </ul>
+                                </div>
                               </li>
                             )
-                          })} */}
+                          })}
                         </ul>
                       </div>
                     )
@@ -181,26 +132,61 @@ class BusinessClinicPermissionScreen extends Component {
               </li>
               <li>
                 <span>业务已分配</span>
-                <div className={'boxContentItem'}>
-                  {array2.map((item, iKey) => {
+                <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                  {sets.map((item, iKey) => {
                     return (
                       <div key={iKey} className={'boxContentList'}>
-                        <span>{item.menu_name}</span>
+                        <div
+                          style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}
+                        >
+                          <input
+                            type={'checkBox'}
+                            checked
+                            onChange={e => {
+                              this.delFunc(item)
+                            }}
+                          />
+                          <span>{item.menu_name}</span>
+                        </div>
                         <ul>
-                          {/* {item.childrens_menus.map((func, funkey) => {
+                          {item.children.map((func, funkey) => {
                             return (
-                              <li key={funkey}>
-                                <input
-                                  type={'checkBox'}
-                                  checked
-                                  onChange={e => {
-                                    this.delFunc(item, func)
-                                  }}
-                                />
-                                <label>{func.menu_name}</label>
+                              <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
+                                <div className={'boxContentList'}>
+                                  <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
+                                    <input
+                                      type={'checkBox'}
+                                      checked
+                                      onChange={e => {
+                                        this.delFunc(func)
+                                      }}
+                                    />
+                                    <label>{func.menu_name}</label>
+                                  </div>
+                                  <ul>
+                                    {func.children.map((func, funkey) => {
+                                      return (
+                                        <li key={funkey}>
+                                          <div className={'boxContentList'}>
+                                            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
+                                              <input
+                                                type={'checkBox'}
+                                                checked
+                                                onChange={e => {
+                                                  this.delFunc(func)
+                                                }}
+                                              />
+                                              <label>{func.menu_name}</label>
+                                            </div>
+                                          </div>
+                                        </li>
+                                      )
+                                    })}
+                                  </ul>
+                                </div>
                               </li>
                             )
-                          })} */}
+                          })}
                         </ul>
                       </div>
                     )
@@ -272,26 +258,21 @@ class BusinessClinicPermissionScreen extends Component {
           }
           .boxContentList {
             width: 94%;
-            margin-top: 20px;
             display: flex;
             flex-direction: column;
             float: left;
             padding-left: 24px;
-            font-size: 14px;
-            font-family: PingFangSC-Regular;
             color: rgba(0, 0, 0, 0.85);
             line-height: 20px;
           }
-          .boxContentList ul {
+          .boxContentList > ul {
             width: 100%;
           }
           .boxContentList span {
             height: 20px;
-            margin-bottom: 10px;
           }
           .boxContentList > ul > li {
             margin: 0;
-            margin-bottom: 5px;
             width: 25%;
             display: flex;
             flex-direction: row;
@@ -299,9 +280,7 @@ class BusinessClinicPermissionScreen extends Component {
           }
           .boxContentList > ul > li > input {
             margin: 0;
-            margin-top: 2px;
             width: 16px;
-            height: 16px;
             background: rgba(42, 205, 200, 1);
             border-radius: 2px;
             flex: 1;
@@ -327,13 +306,12 @@ class BusinessClinicPermissionScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinics: state.clinics.data,
-    clinic_selectId: state.clinics.selectId,
-    has_set_permissions: state.clinicPermissions.has_set_permissions,
-    un_set_permissions: state.clinicPermissions.un_set_permissions
+    clinic_id: state.clinics.selectId,
+    all_menu: state.user.all_menu
   }
 }
 
 export default connect(
   mapStateToProps,
-  { queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions }
+  { queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions, MenubarList }
 )(BusinessClinicPermissionScreen)

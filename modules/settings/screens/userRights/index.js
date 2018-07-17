@@ -187,9 +187,9 @@ class UserRightsScreen extends Component {
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.name}</td>
-                  <td>{item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
+                  <td>{item.items && item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
                   <td>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
-                  <td>{item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
+                  <td>{item.items && item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
                   <td className={'operTd'}>
                     <div>
                       <div>修改</div>

@@ -6,14 +6,9 @@ import { Confirm } from '../../../../../components'
 // import './contextmenu.less'
 // import Tree, { TreeNode } from 'rc-tree'
 // import 'rc-tree/assets/index.css'
-import {
-  queryMenuGetByClinicID,
-  RoleDetail,
-  roleCreate,
-  RoleUpdate,
-  RoleFunctionUnset
-} from '../../../../../ducks'
+import { queryClinicHassetPermissions, RoleDetail, roleCreate, RoleUpdate, RoleFunctionUnset } from '../../../../../ducks'
 // import {limitMoney} from '../../../../../utils'
+import { formatMenuList, formatUnHasMemuList, deleteMenu, addMenu } from '../../../../../utils'
 
 // 病历
 class AddRoleScreen extends Component {
@@ -27,241 +22,44 @@ class AddRoleScreen extends Component {
       defaultCheckedKeys: [],
       defaultExpandedKeys: [],
       checkedMenuId: [],
-      array1: [],
-      array2: [],
+      hasSet: [],
+      allMenus: [],
       role_id: ''
     }
   }
 
   async componentDidMount() {
-    const {showWay, role_id, RoleDetail, RoleFunctionUnset} = this.props
-    if (showWay === 1) {
-      this.queryMenuGetByClinicID()
-    } else {
-      let data = await RoleDetail({role_id})
-      let data1 = await RoleFunctionUnset({role_id})
-      console.log('data====', data, data1)
-      let roleInfo = {
+    const { showWay, role_id, RoleDetail, queryClinicHassetPermissions, clinic_id } = this.props
+    let allMenus = await queryClinicHassetPermissions(clinic_id)
+    let hasSet = []
+    let roleInfo = {}
+    if (showWay !== 1) {
+      let data = await RoleDetail({ role_id })
+      roleInfo = {
         name: data.name,
-        role_id: data.role_id
+        role_id
       }
-      let array1 = []
-      let array2 = []
-      if (data.funtionMenus) {
-        array2 = data.funtionMenus
-      }
-      if (data1.length > 0) {
-        array1 = data1
-      }
-      this.setState({
-        roleInfo,
-        array2,
-        array1
-      })
+      hasSet = data.funtionMenus || []
     }
+    this.setState({ allMenus, hasSet, roleInfo })
   }
-  async queryMenuGetByClinicID() {
-    const {queryMenuGetByClinicID, clinic_id} = this.props
-    let data = await queryMenuGetByClinicID({clinic_id})
-    this.setState({array1: JSON.parse(JSON.stringify(data))})
+
+  // 添加功能
+  addFunc(menu) {
+    let { hasSet, allMenus } = this.state
+    let array = addMenu(menu, JSON.parse(JSON.stringify(hasSet)), JSON.parse(JSON.stringify(allMenus)))
+    this.setState({ hasSet: array })
   }
-  style() {
-    return (
-      <style jsx={'1'}>{`
-        .contentCenter{
-          // background:#a0a0a0;
-          display: flex;
-          flex-direction: column;
-        }
-        .contentCenter button{
-          background: rgba(255,255,255,1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          height: 32px;
-          cursor: pointer;
-          margin-left: 10px;
-          font-size: 14px;
-          font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
-          padding: 0 15px;
-        }
-        .contentCenter button:hover{
-          background:rgba(42,205,200,1);
-          color:rgba(255,255,255,1);
-          border: 1px solid rgba(42,205,200,1);
-        }
-        .bottomBtn{
-          // background:#909090;
-          width: 1098px;
-          margin:0 0 30px 0;
-          display: flex;
-          align-items:center;
-        }
-        .bottomBtn>div{
-          margin:0 auto;
-        }
-        .bottomBtn button{
-          
-        }
-        .commonBlank{
-          background:rgba(255,255,255,1);
-          box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2) ;
-          border-radius: 4px ; 
-          margin-bottom:20px;
-          // width:1038px;
-          min-width:1038px;
-          display: flex;
-          flex-direction: column;
-          padding:5px 30px;
-        }
-        .commonBlank>span{
-          font-size:18px;
-          height:40px;
-          border-bottom:1px solid #d9d9d9;
-          align-items: center;
-          display: flex;
-        }
-        .commonBlank>div{
-          display: flex;
-          margin:10px 0;
-        }
-        .commonBlank>div>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
-          height: 30px;
-          padding:0;
-        }
-        .commonBlank>div>button{
-          background: rgba(255,255,255,1);
-          border-radius: 4px;
-          border: 1px solid #d9d9d9;
-          height: 32px;
-          cursor: pointer;
-          margin-left: 10px;
-          font-size: 14px;
-          font-family: MicrosoftYaHei;
-          color: rgba(0,0,0,0.65);
-          padding: 0 15px;
-        }
-        .commonBlank>div>ul{
-          // background:#a0a0a0;
-          margin:0 auto;
-          width:100%;
-        }
-        .commonBlank>div>ul>li{
-          float:left;
-          width:100%;
-          display: flex;
-          flex-direction: column;
-          min-height:70px;
-          margin-right:1%;
-          margin-top:5px;
-        }
-        .commonBlank>div>ul>li>label{
-          height:25px;
-        }
-        .commonBlank>div>ul>li>div>input,
-        .commonBlank>div>ul>li>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
-          height: 30px;
-          padding:0;
-        }
-        .commonBlank>div>ul>li>div{
-          
-        }
-        .commonBlank>div>ul>li>div>label{
-          margin-left:15px;
-          display: flex;
-          align-items:center;
-          float:left;
-          height:30px;
-        }
-        .commonBlank>div>ul>li>div>label:first-child{
-          margin-left:0;
-        }
-        .commonBlank>div>ul>li>div.douInput{
-          display: flex;
-          align-items: center;
-        }
-        .commonBlank>div>ul>li>div.douInput>input{
-          width:100px;
-        }
-        .commonBlank>div>ul>li>div.douInput>span{
-          margin:0 5px;
-        }
-        .commonBlank>div>ul>li.tableLi{
-          width: 100%;
-          margin: 20px 0;
-          height: auto;
-        }
-        .commonBlank>div>ul>li.tableLi>div{
-          // background: #909090;
-          float: left;
-          width: 1000px;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul{
-          width: 100%;
-          border-top: 1px solid #d8d8d8;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li{
-          display: flex;
-          float:left;
-          width: 100%;
-          // flex: 1;
-          height: 40px;
-          align-items: center;
-          justify-content: center;
-          border-right: 1px solid #d8d8d8;
-          border-bottom: 1px solid #d8d8d8;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li:first-child{
-          background: rgba(250,250,250,1);
-          box-shadow: 1px 1px 0px 0px rgba(232,232,232,1);
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div{
-          flex:2;
-          height: 40px;
-          border-left: 1px solid #d8d8d8;
-          float:left;
-          line-height: 40px;
-          text-align: center;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div:last-child{
-          flex:1;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div{
-          flex:1;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div{
-         
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div>input{
-          background:rgba(245,248,249,1);
-          border-radius: 4px ; 
-          border:1px solid #d9d9d9;
-          height: 30px;
-          padding:0;
-          width:100%;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div>span{
-          margin:0 5px;
-        }
-        .commonBlank>div>ul>li.tableLi>div>ul>li>div>div.douInput{
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-      `}</style>
-    )
+
+  // 删除功能
+  delFunc(menu) {
+    let { hasSet } = this.state
+    let array = deleteMenu(menu, JSON.parse(JSON.stringify(hasSet)))
+    this.setState({ hasSet: array })
   }
+
   render() {
-    const {showWay} = this.props
+    const { showWay } = this.props
     // console.log('menus', menus)
     return (
       <div className={'contentCenter'}>
@@ -269,13 +67,17 @@ class AddRoleScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button>取消</button>
-            <button onClick={() => {
-              if (showWay === 2) {
-                this.RoleUpdate()
-              } else {
-                this.submit()
-              }
-            }}>保存</button>
+            <button
+              onClick={() => {
+                if (showWay === 2) {
+                  this.RoleUpdate()
+                } else {
+                  this.submit()
+                }
+              }}
+            >
+              保存
+            </button>
           </div>
         </div>
         {this.style()}
@@ -286,7 +88,7 @@ class AddRoleScreen extends Component {
   // 验证字段
   validateData(data) {
     if (!data.name || data.name === '') {
-      this.setState({nameFailed: true})
+      this.setState({ nameFailed: true })
       // alert(1)
       return false
     }
@@ -294,16 +96,12 @@ class AddRoleScreen extends Component {
   }
   // 保存
   async submit() {
-    let {roleInfo, array2} = this.state
-    const {clinic_id, roleCreate} = this.props
+    let { roleInfo, hasSet } = this.state
+    const { clinic_id, roleCreate } = this.props
     roleInfo.clinic_id = clinic_id
-    // console.log('array2=====', array2)
     let items = []
-    for (let item of array2) {
-      for (let it of item.childrens_menus) {
-        // console.log(it)
-        items.push({ clinic_function_menu_id: it.clinic_function_menu_id + '' }) // it.clinic_function_menu_id
-      }
+    for (let item of hasSet) {
+      items.push({ clinic_function_menu_id: item.clinic_function_menu_id + '' })
     }
     roleInfo.items = JSON.stringify(items)
     if (this.validateData(roleInfo)) {
@@ -317,16 +115,12 @@ class AddRoleScreen extends Component {
   }
   // 修改
   async RoleUpdate() {
-    let {roleInfo, array2} = this.state
-    const {clinic_id, RoleUpdate} = this.props
+    let { roleInfo, hasSet } = this.state
+    const { clinic_id, RoleUpdate } = this.props
     roleInfo.clinic_id = clinic_id
-    // console.log('array2=====', array2)
     let items = []
-    for (let item of array2) {
-      for (let it of item.childrens_menus) {
-        // console.log(it)
-        items.push({ clinic_function_menu_id: it.clinic_function_menu_id + '' })
-      }
+    for (let item of hasSet) {
+      items.push({ clinic_function_menu_id: item.clinic_function_menu_id + '' })
     }
     roleInfo.items = JSON.stringify(items)
     if (this.validateData(roleInfo)) {
@@ -340,13 +134,13 @@ class AddRoleScreen extends Component {
   }
   // 设置字段值
   setItemValue(e, key, type = 1) {
-    const {roleInfo} = this.state
+    const { roleInfo } = this.state
     let value = e
     if (type === 1) {
       value = e.target.value
     }
     roleInfo[key] = value
-    this.setState({roleInfo})
+    this.setState({ roleInfo })
   }
   // 设置选中显示
   getSelectValue(value, array, type) {
@@ -365,129 +159,85 @@ class AddRoleScreen extends Component {
     return null
   }
 
-  // 添加功能
-  addFunc(parent, menu) {
-    let { array2, array1 } = this.state
-    this.changeFunc(array1, array2, parent, menu)
-    this.setState({ array2, array1 })
-  }
-
-  // 删除功能
-  delFunc(parent, menu) {
-    let { array2, array1 } = this.state
-    this.changeFunc(array2, array1, parent, menu)
-    this.setState({ array2, array1 })
-  }
-
-  // 将fromArray中的功能块移到toArray中并
-  changeFunc(fromArray, toArray, parent, menu, cb) {
-    // 向toArray中添加数据
-    let index = -1
-    for (let i = 0; i < toArray.length; i++) {
-      let item = toArray[i]
-      if (item.parent_id === parent.parent_id) {
-        index = i
-        break
-      }
-    }
-    if (index === -1) {
-      let obj = {
-        parent_id: parent.parent_id,
-        parent_name: parent.parent_name,
-        parent_url: parent.parent_url,
-        childrens_menus: [
-          {
-            function_menu_id: menu.function_menu_id,
-            clinic_function_menu_id: menu.clinic_function_menu_id,
-            menu_name: menu.menu_name,
-            menu_url: menu.menu_url
-          }
-        ]
-      }
-      toArray.push(obj)
-    } else {
-      let funcs = toArray[index].childrens_menus
-      let exist = false
-      for (let func of funcs) {
-        // 子功能存在与否
-        if (func.function_menu_id === menu.function_menu_id) {
-          exist = true
-          break
-        }
-      }
-      if (!exist) {
-        toArray[index].childrens_menus.push({
-          function_menu_id: menu.function_menu_id,
-          clinic_function_menu_id: menu.clinic_function_menu_id,
-          menu_name: menu.menu_name,
-          menu_url: menu.menu_url
-        })
-      }
-    }
-
-    // 删除fromArray中的数据
-    for (let ai = 0; ai < fromArray.length; ai++) {
-      let childrens = fromArray[ai].childrens_menus
-      for (let bi = 0; bi < childrens.length; bi++) {
-        if (childrens[bi].function_menu_id === menu.function_menu_id) {
-          fromArray[ai].childrens_menus.splice(bi, 1)
-          break
-        }
-      }
-      if (fromArray[ai].childrens_menus.length === 0) fromArray.splice(ai, 1)
-    }
-
-    fromArray = this.sort(fromArray)
-    toArray = this.sort(toArray)
-  }
-
-  sort(array) {
-    for (let i = 0; i < array.length; i++) {
-      array[i].childrens_menus = array[i].childrens_menus.sort((a, b) => a.function_menu_id * 1 - b.function_menu_id * 1)
-    }
-    return array.sort((a, b) => a.parent_id * 1 - b.parent_id * 1)
-  }
   // 角色基本信息
   renderBaseInfoBlank() {
-    const {roleInfo, array1, array2} = this.state
+    const { roleInfo, hasSet, allMenus } = this.state
     // console.log('roleInfo=======', roleInfo)
+    let unsets = formatUnHasMemuList(JSON.parse(JSON.stringify(hasSet)), JSON.parse(JSON.stringify(allMenus)))
+    let sets = formatMenuList(null, JSON.parse(JSON.stringify(hasSet)))
     return (
       <div className={'commonBlank baseInfoBlank'}>
         <span />
         <div>
           <ul>
             <li>
-              <label>分组名称<b style={{color: 'red'}}>*</b></label>
+              <label>
+                分组名称<b style={{ color: 'red' }}>*</b>
+              </label>
               <input
                 type='text'
                 placeholder={'name'}
-                value={roleInfo.name}
+                value={roleInfo.name || ''}
                 onChange={e => {
                   this.setItemValue(e, 'name')
                 }}
               />
-              {this.state.nameFailed || roleInfo.name === '' || !roleInfo.name ? <div style={{color: 'red', fontSize: '12px'}}>此为必填项</div> : ''}
+              {this.state.nameFailed || roleInfo.name === '' || !roleInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
-            <li style={{width: '49%'}}>
-              <label>分组分配</label>
-              <div className={'boxContentItem'}>
-                {array1.map((item, iKey) => {
+            <li style={{ width: '49%' }}>
+              <span>业务分配</span>
+              <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                {unsets.map((item, iKey) => {
                   return (
                     <div key={iKey} className={'boxContentList'}>
-                      <span>{item.parent_name}</span>
+                      <div
+                        style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}
+                      >
+                        <input
+                          type={'checkBox'}
+                          checked={false}
+                          onChange={e => {
+                            this.addFunc(item)
+                          }}
+                        />
+                        <span>{item.menu_name}</span>
+                      </div>
                       <ul>
-                        {item.childrens_menus.map((func, funkey) => {
-                          // console.log('func===', func)
+                        {item.children.map((func, funkey) => {
                           return (
-                            <li key={funkey}>
-                              <input
-                                type={'checkBox'}
-                                checked={false}
-                                onChange={e => {
-                                  this.addFunc(item, func)
-                                }}
-                              />
-                              <label>{func.menu_name}</label>
+                            <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
+                              <div className={'boxContentList'}>
+                                <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
+                                  <input
+                                    type={'checkBox'}
+                                    checked={false}
+                                    onChange={e => {
+                                      this.addFunc(func)
+                                    }}
+                                  />
+                                  <label>{func.menu_name}</label>
+                                </div>
+                                <ul>
+                                  {func.children.map((func, funkey) => {
+                                    return (
+                                      <li key={funkey}>
+                                        <div className={'boxContentList'}>
+                                          <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
+                                            <input
+                                              type={'checkBox'}
+                                              checked={false}
+                                              onChange={e => {
+                                                this.addFunc(func)
+                                              }}
+                                            />
+                                            <label>{func.menu_name}</label>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    )
+                                  })}
+                                </ul>
+                              </div>
                             </li>
                           )
                         })}
@@ -496,27 +246,61 @@ class AddRoleScreen extends Component {
                   )
                 })}
               </div>
-              {/* {this.renderMenuList()} */}
             </li>
-            <li style={{width: '49%'}}>
-              <label>已分配权限</label>
-              <div className={'boxContentItem'}>
-                {array2.map((item, iKey) => {
+            <li style={{ width: '49%' }}>
+              <span>业务已分配</span>
+              <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                {sets.map((item, iKey) => {
                   return (
                     <div key={iKey} className={'boxContentList'}>
-                      <span>{item.parent_name}</span>
+                      <div
+                        style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}
+                      >
+                        <input
+                          type={'checkBox'}
+                          checked
+                          onChange={e => {
+                            this.delFunc(item)
+                          }}
+                        />
+                        <span>{item.menu_name}</span>
+                      </div>
                       <ul>
-                        {item.childrens_menus.map((func, funkey) => {
+                        {item.children.map((func, funkey) => {
                           return (
-                            <li key={funkey}>
-                              <input
-                                type={'checkBox'}
-                                checked
-                                onChange={e => {
-                                  this.delFunc(item, func)
-                                }}
-                              />
-                              <label>{func.menu_name}</label>
+                            <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
+                              <div className={'boxContentList'}>
+                                <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
+                                  <input
+                                    type={'checkBox'}
+                                    checked
+                                    onChange={e => {
+                                      this.delFunc(func)
+                                    }}
+                                  />
+                                  <label>{func.menu_name}</label>
+                                </div>
+                                <ul>
+                                  {func.children.map((func, funkey) => {
+                                    return (
+                                      <li key={funkey}>
+                                        <div className={'boxContentList'}>
+                                          <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
+                                            <input
+                                              type={'checkBox'}
+                                              checked
+                                              onChange={e => {
+                                                this.delFunc(func)
+                                              }}
+                                            />
+                                            <label>{func.menu_name}</label>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    )
+                                  })}
+                                </ul>
+                              </div>
                             </li>
                           )
                         })}
@@ -525,7 +309,6 @@ class AddRoleScreen extends Component {
                   )
                 })}
               </div>
-              {/* {this.renderMenuList()} */}
             </li>
           </ul>
         </div>
@@ -574,13 +357,10 @@ class AddRoleScreen extends Component {
           }
           .boxContentList {
             width: 94%;
-            margin-top: 20px;
             display: flex;
             flex-direction: column;
             float: left;
             padding-left: 24px;
-            font-size: 14px;
-            font-family: PingFangSC-Regular;
             color: rgba(0, 0, 0, 0.85);
             line-height: 20px;
           }
@@ -589,12 +369,9 @@ class AddRoleScreen extends Component {
           }
           .boxContentList span {
             height: 20px;
-            margin-bottom: 10px;
           }
           .boxContentList > ul > li {
             margin: 0;
-            margin-bottom: 5px;
-            width: 25%;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -616,6 +393,198 @@ class AddRoleScreen extends Component {
       </div>
     )
   }
+  style() {
+    return (
+      <style jsx={'1'}>{`
+        .contentCenter {
+          // background:#a0a0a0;
+          display: flex;
+          flex-direction: column;
+        }
+        .contentCenter button {
+          background: rgba(255, 255, 255, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 32px;
+          cursor: pointer;
+          margin-left: 10px;
+          font-size: 14px;
+          font-family: MicrosoftYaHei;
+          color: rgba(0, 0, 0, 0.65);
+          padding: 0 15px;
+        }
+        .contentCenter button:hover {
+          background: rgba(42, 205, 200, 1);
+          color: rgba(255, 255, 255, 1);
+          border: 1px solid rgba(42, 205, 200, 1);
+        }
+        .bottomBtn {
+          // background:#909090;
+          width: 1098px;
+          margin: 0 0 30px 0;
+          display: flex;
+          align-items: center;
+        }
+        .bottomBtn > div {
+          margin: 0 auto;
+        }
+        .bottomBtn button {
+        }
+        .commonBlank {
+          background: rgba(255, 255, 255, 1);
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+          margin-bottom: 20px;
+          // width:1038px;
+          min-width: 1038px;
+          display: flex;
+          flex-direction: column;
+          padding: 5px 30px;
+        }
+        .commonBlank > span {
+          font-size: 18px;
+          height: 40px;
+          border-bottom: 1px solid #d9d9d9;
+          align-items: center;
+          display: flex;
+        }
+        .commonBlank > div {
+          display: flex;
+          margin: 10px 0;
+        }
+        .commonBlank > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 30px;
+          padding: 0;
+        }
+        .commonBlank > div > button {
+          background: rgba(255, 255, 255, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 32px;
+          cursor: pointer;
+          margin-left: 10px;
+          font-size: 14px;
+          font-family: MicrosoftYaHei;
+          color: rgba(0, 0, 0, 0.65);
+          padding: 0 15px;
+        }
+        .commonBlank > div > ul {
+          // background:#a0a0a0;
+          margin: 0 auto;
+          width: 100%;
+        }
+        .commonBlank > div > ul > li {
+          float: left;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          min-height: 70px;
+          margin-right: 1%;
+          margin-top: 5px;
+        }
+        .commonBlank > div > ul > li > label {
+          height: 25px;
+        }
+        .commonBlank > div > ul > li > div > input,
+        .commonBlank > div > ul > li > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 30px;
+          padding: 0;
+        }
+        .commonBlank > div > ul > li > div {
+        }
+        .commonBlank > div > ul > li > div > label {
+          margin-left: 15px;
+          display: flex;
+          align-items: center;
+          float: left;
+          height: 30px;
+        }
+        .commonBlank > div > ul > li > div > label:first-child {
+          margin-left: 0;
+        }
+        .commonBlank > div > ul > li > div.douInput {
+          display: flex;
+          align-items: center;
+        }
+        .commonBlank > div > ul > li > div.douInput > input {
+          width: 100px;
+        }
+        .commonBlank > div > ul > li > div.douInput > span {
+          margin: 0 5px;
+        }
+        .commonBlank > div > ul > li.tableLi {
+          width: 100%;
+          margin: 20px 0;
+          height: auto;
+        }
+        .commonBlank > div > ul > li.tableLi > div {
+          // background: #909090;
+          float: left;
+          width: 1000px;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul {
+          width: 100%;
+          border-top: 1px solid #d8d8d8;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li {
+          display: flex;
+          float: left;
+          width: 100%;
+          // flex: 1;
+          height: 40px;
+          align-items: center;
+          justify-content: center;
+          border-right: 1px solid #d8d8d8;
+          border-bottom: 1px solid #d8d8d8;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li:first-child {
+          background: rgba(250, 250, 250, 1);
+          box-shadow: 1px 1px 0px 0px rgba(232, 232, 232, 1);
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div {
+          flex: 2;
+          height: 40px;
+          border-left: 1px solid #d8d8d8;
+          float: left;
+          line-height: 40px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div:last-child {
+          flex: 1;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div {
+          flex: 1;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div {
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div > input {
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          height: 30px;
+          padding: 0;
+          width: 100%;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div > span {
+          margin: 0 5px;
+        }
+        .commonBlank > div > ul > li.tableLi > div > ul > li > div > div.douInput {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      `}</style>
+    )
+  }
 }
 
 const mapStateToProps = state => {
@@ -626,10 +595,13 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, {
-  queryMenuGetByClinicID,
-  RoleDetail,
-  roleCreate,
-  RoleUpdate,
-  RoleFunctionUnset
-})(AddRoleScreen)
+export default connect(
+  mapStateToProps,
+  {
+    queryClinicHassetPermissions,
+    RoleDetail,
+    roleCreate,
+    RoleUpdate,
+    RoleFunctionUnset
+  }
+)(AddRoleScreen)
