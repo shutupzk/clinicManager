@@ -1,4 +1,4 @@
-import { user, signin, signout, RolesByPersonnel, saveUserMenu } from './user'
+import { user, signin, signout, RolesByPersonnel, saveUserMenu, MenubarList } from './user'
 import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete } from './doctors'
 import {
   triagePatients,
@@ -540,5 +540,6 @@ export {
   PatientGetByID,
   PersonalMedicalRecord,
   PatientUpdate,
-  PersonalMedicalRecordUpsert
+  PersonalMedicalRecordUpsert,
+  MenubarList
 }

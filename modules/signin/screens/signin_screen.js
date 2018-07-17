@@ -5,8 +5,8 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { styles } from '../../../components/styles'
 import { theme } from '../../../components'
-import { MAINFUNCTION } from '../../../config'
-import { signin, RolesByPersonnel, saveUserMenu } from '../../../ducks'
+import { signin, RolesByPersonnel, saveUserMenu, queryClinicHassetPermissions } from '../../../ducks'
+import { formatMenuList, getLastMenu } from '../../../utils'
 
 class SigninScreen extends Component {
   constructor (props) {
@@ -39,76 +39,15 @@ class SigninScreen extends Component {
         // Router.push('/treatment/registration')
   }
   async RolesByPersonnel ({ user }) {
-    // const { RolesByPersonnel, saveUserMenu } = this.props
-    // let data = await RolesByPersonnel({ id: user.id })
-    // let user_menu = []
-    // // console.log('user_menu======', data)
-    // let chargeItemSetting = []
-    // let template = []
-    // for (let key of data) {
-    //   let item = {
-    //     title: key.parent_name,
-    //     navigateName: key.childrens_menus[0].menu_url,
-    //     children: []
-    //   }
-    //   for (let child of key.childrens_menus) {
-    //     let child_item = {
-    //       title: child.menu_name,
-    //       navigateName: child.menu_url,
-    //       icon: child.icon
-    //     }
-    //     if (child.menu_url.split('/')[2] === 'chargeItemSetting') {
-    //       chargeItemSetting.push(child)
-    //     }
-    //     if (child.menu_url.split('/')[2] === 'template') {
-    //       template.push(child)
-    //     }
-    //     if (child.menu_url.split('/')[2] !== 'chargeItemSetting' && child.menu_url.split('/')[2] !== 'template') {
-    //       item.children.push(child_item)
-    //     }
-    //   }
-    //   if (key.parent_url === '/setting') {
-    //     if (chargeItemSetting.length > 0) {
-    //       let charge_item = {
-    //         title: '收费项目设置',
-    //         navigateName: chargeItemSetting[0].menu_url,
-    //         children: [],
-    //         icon: '/static/icons/charge2.svg'
-    //       }
-    //       item.navigateName = chargeItemSetting[0].menu_url
-    //       for (let charge of chargeItemSetting) {
-    //         let c_item = {
-    //           title: charge.menu_name,
-    //           navigateName: charge.menu_url
-    //         }
-    //         charge_item.children.push(c_item)
-    //       }
-    //       item.children.push(charge_item)
-    //     }
-    //     if (template.length > 0) {
-    //       let temp_item = {
-    //         title: '模板设置',
-    //         navigateName: template[0].menu_url,
-    //         children: [],
-    //         icon: '/static/icons/template.svg'
-    //       }
-    //       item.navigateName = template[0].menu_url
-    //       for (let temp of template) {
-    //         let c_item = {
-    //           title: temp.menu_name,
-    //           navigateName: temp.menu_url
-    //         }
-    //         temp_item.children.push(c_item)
-    //       }
-    //       item.children.push(temp_item)
-    //     }
-    //   }
-    //   user_menu.push(item)
-    // }
-    console.log('user_menusssss======', MAINFUNCTION)
-    saveUserMenu({ user_menu: MAINFUNCTION })
-    Router.push(MAINFUNCTION[0].children[0].navigateName)
+    const { RolesByPersonnel, saveUserMenu } = this.props
+    let data = await RolesByPersonnel({ id: user.id })
+    let user_menu = formatMenuList(null, JSON.parse(JSON.stringify(data)))
+    console.log('user_menu ===', user_menu)
+    saveUserMenu({ user_menu })
+    let menu = getLastMenu(user_menu[0])
+    Router.push(menu.menu_url)
   }
+
   render () {
     return (
       <div className={'loginPage'}>
@@ -296,4 +235,4 @@ class SigninScreen extends Component {
   }
 }
 
-export default connect(null, { signin, RolesByPersonnel, saveUserMenu })(SigninScreen)
+export default connect(null, { signin, RolesByPersonnel, saveUserMenu, queryClinicHassetPermissions })(SigninScreen)

@@ -23,7 +23,7 @@ export const queryClinicUnsetPermissions = clinic_id => async dispatch => {
   try {
     const res = await request('/business/menubar/list/clinicUnset', { clinic_id })
     const data = res.data || []
-    dispatch({ type: CLINIC_PERMISSIONS_UN_LIST, data })
+    // dispatch({ type: CLINIC_PERMISSIONS_UN_LIST, data })
     return data
   } catch (e) {
     console.log(e)
@@ -36,7 +36,7 @@ export const queryClinicHassetPermissions = clinic_id => async dispatch => {
   try {
     const res = await request('/business/clinic/menubar', { clinic_id })
     const data = res.data || []
-    dispatch({ type: CLINIC_PERMISSIONS_HAS_LIST, data })
+    // dispatch({ type: CLINIC_PERMISSIONS_HAS_LIST, data })
     return data
   } catch (e) {
     console.log(e)
@@ -46,7 +46,6 @@ export const queryClinicHassetPermissions = clinic_id => async dispatch => {
 
 export const createClinicPermissions = ({ clinic_id, items }) => async dispatch => {
   try {
-    console.log(items)
     const res = await request('/business/clinic/assign', { clinic_id, items })
     console.log('wwww', res)
     if (res && res.code === '200') return null

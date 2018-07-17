@@ -1,30 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { TITLE, MAINFUNCTION } from '../../../config'
-// MAINFUNCTION
+import { TITLE } from '../../../config'
 import { theme } from '../../../components'
 import Navigation from './foot_navigation'
-// import { TITLE, HOSPITAL_NAME} from '../../../config'
 
 class ConLayout extends Component {
   render() {
     const url = (this.props.url && this.props.url.pathname) || '/'
-    const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
-    // const conList = [] // this.props.user_menu.filter(item => url.indexOf(item.navigateName) > -1)
-    // for (let key of this.props.user_menu) {
-    //   // console.log('url=======', url, key)
-    //   for (let item of key.children) {
-    //     if (url === item.navigateName) {
-    //       conList.push(key)
-    //     }
-    //   }
-    // }
-    // console.log('conList======', conList, url)
-    // const screenHeight = process.browser ? document.documentElement.clientHeight : 1000
-    // const appConHeight = screenHeight - 126
-    console.log('conList======', conList)
+    const conList = [] // this.props.user_menu.filter(item => url.indexOf(item.navigateName) > -1)
+    let routeUrl = '/' + url.split('/')[1]
+    for (let item of this.props.user_menu) {
+      if (routeUrl === item.menu_url) {
+        conList.push(item)
+      }
+    }
     return (
-			// className={'appContent'} style={{ background: '#fff',minWidth: 1000 }}
       <div className={'leftBar'}>
         <div className={'logoBox'}>
           <img src={'/static/home/index_logo.png'} />
@@ -36,11 +26,6 @@ class ConLayout extends Component {
         <div className={'appContentLeft left'}>
           <Navigation url={url} data={conList[0] && conList[0].children} />
         </div>
-        {/* <div className={'right appContentRight'}>
-          <div className={'appConRightCon'} style={{ minHeight: appConHeight }}>
-            {this.props.children}
-          </div>
-        </div> */}
         <div className='clearfix' />
         <style jsx='true'>{`
           .leftBar{
@@ -122,7 +107,6 @@ class ConLayout extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log('state====', state)
   return {
     user_menu: state.user.user_menu
   }
