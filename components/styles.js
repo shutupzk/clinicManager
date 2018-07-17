@@ -1084,6 +1084,10 @@ export function styles() {
 					color: rgba(51, 51, 51, 1);
 					margin-left: 12px;
 				}
+				.itemTop span:nth-child(1):hover{
+					text-decoration: underline;
+    			color: rgba(42,205,200,1);
+				}
 				.itemTop span:nth-child(2) {
 					font-size: 14px;
 					font-family: MicrosoftYaHei;
@@ -1102,6 +1106,7 @@ export function styles() {
 					border-radius: 10px;
 					float: right;
 					text-align: center;
+					line-height: 20px;
 				}
 				.itemCenter {
 					flex: 1;
@@ -1173,6 +1178,10 @@ export function styles() {
 				.filterBox .boxLeft {
 					float: left;
 					flex: 9;
+				}
+				.filterBox .boxLeft .dateDiv{
+					float: left;
+					margin: -4px 10px;
 				}
 				.filterBox .boxLeft>input {
 					float: left;

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList } from '../../../../ducks'
+import { triagePatientsList, patientSelect } from '../../../../ducks'
 import moment from 'moment'
+import { DatePicker } from '../../../../components'
 import { getAgeByBirthday } from '../../../../utils'
 
 class RefundedScreen extends Component {
@@ -79,7 +80,11 @@ class RefundedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.treat_status === true ? '已收费' : '待收费'}</span>
@@ -145,7 +150,18 @@ class RefundedScreen extends Component {
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input type='date' placeholder='选择日期' />
+            <div className={'dateDiv'}>
+              <DatePicker
+                // placeholder={'开始日期'}
+                // value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
+                  if (date) {
+                    // this.setState({ start_date: date })
+                  }
+                }}
+              />
+            </div>
+            {/* <input type='date' placeholder='选择日期' /> */}
             <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>
@@ -168,4 +184,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(RefundedScreen)
+export default connect(mapStateToProps, { triagePatientsList, patientSelect })(RefundedScreen)

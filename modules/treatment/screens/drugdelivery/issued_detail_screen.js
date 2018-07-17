@@ -324,6 +324,8 @@ class IssuedDetailDrugScreen extends Component {
               width: 89px;
               height: 30px;
               line-height:35px
+              text-align: end;
+              margin-right: 5px;
             }
             .contentBox input {
               margin:0
@@ -331,7 +333,8 @@ class IssuedDetailDrugScreen extends Component {
               height: 30px;
               background: rgba(245, 248, 249, 1);
               border-radius: 4px;
-              padding-right: 5px
+              padding-right: 5px;
+              border: 1px solid #d8d8d8;
             }
           `}</style>
       </div>
@@ -370,7 +373,7 @@ class IssuedDetailDrugScreen extends Component {
                     <li>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</li>
                     <li>{doctor_name}</li>
                     <li>{opration_name}</li>
-                    <li>{project_name} ...</li>
+                    <li title={project_name}>{project_name} ...</li>
                     <li style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }} onClick={() => this.showRecordDetail(item.drug_delivery_record_id)}>
                       查看详情
                     </li>

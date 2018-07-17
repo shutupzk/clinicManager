@@ -298,7 +298,7 @@ class DrawnDetailDrugScreen extends Component {
                     <li>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</li>
                     <li>{doctor_name}</li>
                     <li>{opration_name}</li>
-                    <li>{project_name} ...</li>
+                    <li title={project_name}>{project_name} ...</li>
                     <li style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }} onClick={() => this.showRecordDetail(item.drug_delivery_refund_record_id)}>
                       查看详情
                     </li>

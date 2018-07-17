@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { PageCard, Confirm } from '../../../../components'
+import { PageCard, Confirm, DatePicker } from '../../../../components'
 // import moment from 'moment'
 import {
   queryMaterialOutstockRecord,
@@ -227,20 +227,26 @@ class OutboundMgtScreen extends Component {
     return (
       <div className={'filterBox'}>
         <div className={'boxLeft'}>
-          <input
-            placeholder={`出库开始日期`}
-            type='date'
-            onChange={e => {
-              this.setState({start_date: e.target.value})
-            }}
-          />
-          <input
-            placeholder={`出库结束日期`}
-            type='date'
-            onChange={e => {
-              this.setState({end_date: e.target.value})
-            }}
-          />
+          <div className={'dateDiv'}>
+            <DatePicker
+              placeholder={'开始日期'}
+              onChange={(date, str) => {
+                if (date) {
+                  this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
+                }
+              }}
+            />
+          </div>
+          <div className={'dateDiv'}>
+            <DatePicker
+              placeholder={'结束日期'}
+              onChange={(date, str) => {
+                if (date) {
+                  this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
+                }
+              }}
+            />
+          </div>
           <input
             type='text'
             placeholder={`出库单号`}

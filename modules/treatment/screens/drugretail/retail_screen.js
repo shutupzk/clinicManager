@@ -190,7 +190,7 @@ class RetailScreen extends Component {
                     <div>
                       <div>
                         <CustomSelect
-                          controlStyle={{ height: '38px' }}
+                          controlStyle={{ height: '38px', width: '100%' }}
                           value={item.clinic_drug_id || ''}
                           label={item.drug_name || ''}
                           mustOptionValue={!false}
@@ -236,12 +236,12 @@ class RetailScreen extends Component {
                         />
                       </div>
                     </div>
-                    <div>{item.specification}</div>
-                    <div>{item.manu_factory_name}</div>
-                    <div>{formatMoney(item.ret_price)}</div>
-                    <div>{item.serial}</div>
-                    <div>{item.eff_date && moment(item.eff_date).format('YYYYMMDD')}</div>
-                    <div>{item.stock_amount !== undefined ? item.stock_amount || 0 : ''}</div>
+                    <div className={'normalDiv'}>{item.specification}</div>
+                    <div className={'normalDiv'}>{item.manu_factory_name}</div>
+                    <div className={'normalDiv'}>{formatMoney(item.ret_price)}</div>
+                    <div className={'normalDiv'} title={item.serial}>{item.serial}</div>
+                    <div className={'normalDiv'}>{item.eff_date && moment(item.eff_date).format('YYYYMMDD')}</div>
+                    <div className={'normalDiv'}>{item.stock_amount !== undefined ? item.stock_amount || 0 : ''}</div>
                     <div>
                       <input
                         style={{
@@ -256,8 +256,8 @@ class RetailScreen extends Component {
                         onChange={e => this.setItemAmount(e.target.value, index)}
                       />
                     </div>
-                    <div>{item.packing_unit_name}</div>
-                    <div>{item.ret_price && formatMoney(item.ret_price * (item.amount || 0))}</div>
+                    <div className={'normalDiv'}>{item.packing_unit_name}</div>
+                    <div className={'normalDiv'}>{item.ret_price && formatMoney(item.ret_price * (item.amount || 0))}</div>
                     <div
                       style={{ color: 'red', cursor: 'pointer' }}
                       onClick={() => {
@@ -301,6 +301,11 @@ class RetailScreen extends Component {
             }
             .feeScheduleBox ul li div {
               flex: 1;
+            }
+            .normalDiv{
+              overflow: hidden;
+              text-overflow: ellipsis;
+              line-height: 26px;
             }
           `}
         </style>

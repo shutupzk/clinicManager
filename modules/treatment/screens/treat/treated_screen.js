@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { TreatmentTriageChecked } from '../../../../ducks'
+import { TreatmentTriageChecked, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-import { PageCard } from '../../../../components'
+import { PageCard, DatePicker } from '../../../../components'
 import TreatDetailScreen from './components/treat_detail_screen'
 
 class TreatedScreen extends Component {
@@ -58,7 +58,11 @@ class TreatedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>检查中</span>
@@ -131,22 +135,28 @@ class TreatedScreen extends Component {
             </div>
             <div className={'filterBox'}>
               <div className={'boxLeft'}>
-                <input
-                  type='date'
-                  placeholder='选择开始日期'
-                  value={this.state.start_date}
-                  onChange={e => {
-                    this.setState({ start_date: e.target.value })
-                  }}
-                />
-                <input
-                  type='date'
-                  placeholder='选择结束日期'
-                  value={this.state.end_date}
-                  onChange={e => {
-                    this.setState({ end_date: e.target.value })
-                  }}
-                />
+                <div className={'dateDiv'}>
+                  <DatePicker
+                    placeholder={'开始日期'}
+                    value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                    onChange={(date, str) => {
+                      if (date) {
+                        this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
+                      }
+                    }}
+                  />
+                </div>
+                <div className={'dateDiv'}>
+                  <DatePicker
+                    placeholder={'结束日期'}
+                    value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                    onChange={(date, str) => {
+                      if (date) {
+                        this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
+                      }
+                    }}
+                  />
+                </div>
                 <input
                   type='text'
                   placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
@@ -182,5 +192,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { TreatmentTriageChecked }
+  { TreatmentTriageChecked, patientSelect }
 )(TreatedScreen)
