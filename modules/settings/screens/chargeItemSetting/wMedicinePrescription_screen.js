@@ -18,7 +18,8 @@ class WMPrescriptionScreen extends Component {
       type: 0,
       drug_class_id: -1,
       showWay: 1,
-      clinic_drug_id: ''
+      clinic_drug_id: '',
+      checkedArray: []
     }
   }
 
@@ -59,6 +60,7 @@ class WMPrescriptionScreen extends Component {
     const { clinic_id, ClinicDrugList } = this.props
     const { status, keyword, drug_class_id } = this.state
     ClinicDrugList({ clinic_id, type: 0, drug_class_id, keyword, offset, limit, status })
+    this.setState({checkedArray: []})
   }
 
   // 获取药品分类列表
@@ -309,15 +311,60 @@ class WMPrescriptionScreen extends Component {
       this.getDrugsList({ offset: pageInfo.offset, limit: pageInfo.limit, drug_class_id })
     }
   }
+  // 设置选中表格行
+  setChecked(item, isCheck) {
+    let {checkedArray} = this.state
+    if (isCheck) {
+      if (checkedArray.indexOf(item) === -1) {
+        checkedArray.push(item)
+      }
+    } else {
+      for (let i = 0; i < checkedArray.length; i++) {
+        if (item.clinic_drug_id === checkedArray[i].clinic_drug_id) {
+          checkedArray.splice(i, 1)
+        }
+      }
+    }
+    this.setState({checkedArray})
+  }
   // 加载表格
   renderTable() {
     const { drugs, pageInfo } = this.props
-    console.log('drugs=====', drugs)
+    const {checkedArray} = this.state
+    console.log('drugs=====', drugs, checkedArray)
+    let allCheck = false
+    if (checkedArray.length === drugs.length) {
+      for (let key of drugs) {
+        for (let check of checkedArray) {
+          if (key.clinic_drug_id === check.clinic_drug_id) {
+            allCheck = true
+          }
+        }
+      }
+    }
+    // if (drugs === checkedArray) {
+    //   allCheck = true
+    // }
     return (
       <div className={'tableContent'}>
         <table>
           <thead>
             <tr>
+              <td style={{ flex: 0.3 }}>
+                <input
+                  type={'checkbox'}
+                  checked={allCheck}
+                  onChange={e => {
+                    if (e.target.checked) {
+                      for (let key of drugs) {
+                        this.setChecked(key, true)
+                      }
+                    } else {
+                      this.setState({checkedArray: []})
+                    }
+                  }}
+                />
+              </td>
               <td style={{ flex: 2 }}>处方医嘱名称</td>
               <td>规格</td>
               <td>包装单位</td>
@@ -331,8 +378,27 @@ class WMPrescriptionScreen extends Component {
           </thead>
           <tbody>
             {drugs.map((item, index) => {
+              let check = false
+              for (let key of checkedArray) {
+                if (item.clinic_drug_id === key.clinic_drug_id) {
+                  check = true
+                }
+              }
               return (
                 <tr key={index}>
+                  <td style={{ flex: 0.3 }}>
+                    <input
+                      type={'checkbox'}
+                      checked={check}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          this.setChecked(item, true)
+                        } else {
+                          this.setChecked(item, false)
+                        }
+                      }}
+                    />
+                  </td>
                   <td style={{ flex: 2 }}>{item.drug_name}</td>
                   <td>{item.specification}</td>
                   <td>{item.packing_unit_name}</td>
