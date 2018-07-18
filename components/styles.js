@@ -1108,6 +1108,22 @@ export function styles() {
 					text-align: center;
 					line-height: 20px;
 				}
+				.maskBoxBottom button{
+					background: rgba(255,255,255,1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					height: 32px;
+					cursor: pointer;
+					margin-left: 10px;
+					font-size: 14px;
+					font-family: MicrosoftYaHei;
+					color: rgba(0,0,0,0.65);
+					padding: 0 15px;
+				}
+				.maskBoxBottom button:hover {
+					background: rgba(42,205,200,1);
+					color: #FFFFFF;
+				}
 				.itemCenter {
 					flex: 1;
 					display: flex;
