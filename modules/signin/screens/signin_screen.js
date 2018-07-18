@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { styles } from '../../../components/styles'
 import { theme } from '../../../components'
-import { signin, RolesByPersonnel, saveUserMenu, queryClinicHassetPermissions } from '../../../ducks'
+import { signin, FunMenusByPersonnel, saveUserMenu, queryClinicHassetPermissions } from '../../../ducks'
 import { formatMenuList, getLastMenu } from '../../../utils'
 
 class SigninScreen extends Component {
@@ -33,14 +33,14 @@ class SigninScreen extends Component {
       return alert('登录失败：' + data.msg)
     } else {
       let user = data.data
-      this.RolesByPersonnel({ user })
-            // RolesByPersonnel({ id: user.id })
+      this.FunMenusByPersonnel({ user })
+            // FunMenusByPersonnel({ id: user.id })
     }
         // Router.push('/treatment/registration')
   }
-  async RolesByPersonnel ({ user }) {
-    const { RolesByPersonnel, saveUserMenu } = this.props
-    let data = await RolesByPersonnel({ id: user.id })
+  async FunMenusByPersonnel ({ user }) {
+    const { FunMenusByPersonnel, saveUserMenu } = this.props
+    let data = await FunMenusByPersonnel({ id: user.id })
     let user_menu = formatMenuList(null, JSON.parse(JSON.stringify(data)))
     console.log('user_menu ===', user_menu)
     saveUserMenu({ user_menu })
@@ -235,4 +235,4 @@ class SigninScreen extends Component {
   }
 }
 
-export default connect(null, { signin, RolesByPersonnel, saveUserMenu, queryClinicHassetPermissions })(SigninScreen)
+export default connect(null, { signin, FunMenusByPersonnel, saveUserMenu, queryClinicHassetPermissions })(SigninScreen)

@@ -103,7 +103,7 @@ class ConLayout extends Component {
           }
         `}</style>
       </div>
-		)
+    )
   }
 }
 const mapStateToProps = state => {
@@ -112,4 +112,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, null)(ConLayout)
+export default connect(
+  mapStateToProps,
+  null
+)(ConLayout)

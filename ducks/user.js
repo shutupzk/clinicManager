@@ -62,11 +62,11 @@ export const signout = () => async dispatch => {
     return e.message
   }
 }
-export const RolesByPersonnel = ({id}) => async dispatch => {
+export const FunMenusByPersonnel = ({id}) => async dispatch => {
   try {
     console.log('limit====', id)
-    const data = await request('/personnel/RolesByPersonnel', {id})
-    console.log('RolesByPersonnel=======', data)
+    const data = await request('/personnel/FunMenusByPersonnel', {id})
+    console.log('FunMenusByPersonnel=======', data)
     const docs = data.data || []
     return docs
   } catch (e) {
