@@ -1,31 +1,172 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { queryRoleList, PersonnelRoles, PersonnelAuthorizationAllocation } from '../../../../../ducks'
-import { Confirm } from '../../../../../components'
+import { queryRoleList, PersonnelRoles, PersonnelAuthorizationAllocation, queryDepartmentList, queryDoctorList, UpdatePersonnelUsername } from '../../../../../ducks'
+import { Confirm, Select } from '../../../../../components'
 
 class AddUserScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      hasRoles: []
+      hasRoles: [],
+      department_id: '-1'
     }
   }
 
   async componentWillMount() {
     this.queryRoleList()
+    this.queryDepartmentList({})
+    this.queryDoctorList({})
   }
 
   async queryRoleList() {
-    let { queryRoleList, clinic_id, PersonnelRoles, personnel = {} } = this.props
+    let { queryRoleList, clinic_id, PersonnelRoles, personnel = {}, pageType } = this.props
     queryRoleList({ clinic_id, limit: 1000 })
-    if (personnel.personnel_id) {
+    if (pageType === 2 && personnel.personnel_id) {
       let hasRoles = await PersonnelRoles({ id: personnel.personnel_id })
       this.setState({ hasRoles })
     }
   }
 
+  getDepartmentOptions() {
+    const { departments } = this.props
+    let options = [{ value: '-1', label: '全部科室' }]
+    for (let { id, name } of departments) {
+      options.push({
+        value: id,
+        label: name
+      })
+    }
+    return options
+  }
+
+  getDoctorOptions() {
+    const { doctors } = this.props
+    let options = []
+    for (let doctor of doctors) {
+      const { id, name, username } = doctor
+      if (username) continue
+      options.push({
+        value: id,
+        label: name,
+        ...doctor
+      })
+    }
+    return options
+  }
+
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
+      }
+    }
+    return null
+  }
+
+  queryDepartmentList({ keyword, limit = 10 }) {
+    const { queryDepartmentList, clinic_id } = this.props
+    queryDepartmentList({ clinic_id, keyword, limit })
+  }
+
+  queryDoctorList({ keyword, limit = 10, department_id }) {
+    const { queryDoctorList, clinic_id } = this.props
+    let param = {
+      clinic_id,
+      keyword,
+      limit: 1000,
+      personnel_type: 2
+    }
+    if (department_id && department_id !== '-1') {
+      param.department_id = department_id
+    }
+    queryDoctorList(param)
+  }
+
+  renderAddPersonel() {
+    let { pageType } = this.props
+    if (pageType !== 3) return null
+    const { department_id, personnel_id, username, password, repassword } = this.state
+    const departments = this.getDepartmentOptions()
+    const doctors = this.getDoctorOptions()
+    const doctor = this.getSelectValue(personnel_id, doctors)
+    return (
+      <div style={{ display: 'flex', direction: 'row', alignItems: 'center', width: '100%', height: '60px', marginBottom: '20px', fontSize: '18px' }}>
+        <div style={{ width: '200px' }}>
+          <Select
+            placeholder='选择科室'
+            options={departments}
+            value={this.getSelectValue(department_id, departments)}
+            onChange={e => {
+              let id = e.value
+              this.setState({ department_id: id, personnel_id: null }, () => {
+                this.queryDoctorList({ department_id: id, limit: 100 })
+              })
+            }}
+          />
+        </div>
+        <div style={{ width: '200px', margin: '12px 20px' }}>
+          <Select
+            placeholder='选择医生'
+            options={doctors}
+            value={doctor}
+            onChange={e => {
+              let id = e.value
+              this.setState({ personnel_id: id, username: '', password: '', repassword: '' })
+            }}
+          />
+        </div>
+        <div className='rightTopFilterLeft'>
+          <input
+            type='text'
+            value={username || ''}
+            placeholder={'账号'}
+            maxLength={12}
+            minLength={6}
+            onChange={e => {
+              this.setState({ username: e.target.value })
+            }}
+          />
+          <input
+            type='password'
+            value={password || ''}
+            maxLength={12}
+            minLength={6}
+            placeholder={'密码'}
+            onChange={e => {
+              this.setState({ password: e.target.value })
+            }}
+          />
+          <input
+            type='password'
+            maxLength={12}
+            minLength={6}
+            value={repassword || ''}
+            placeholder={'密码确认'}
+            onChange={e => {
+              this.setState({ repassword: e.target.value })
+            }}
+          />
+        </div>
+        <style jsx='true'>
+          {`
+            .rightTopFilterLeft > input {
+              width: 150px;
+              height: 40px;
+              margin-left: 10px;
+              background: rgba(255, 255, 255, 1);
+              border-radius: 4px;
+              padding: 0 5px 0 5px;
+              border: 1px solid #d9d9d9;
+            }
+          `}
+        </style>
+      </div>
+    )
+  }
+
   renderPersonel() {
-    let { personnel = {} } = this.props
+    let { personnel = {}, pageType } = this.props
+    if (pageType !== 2) return null
     return (
       <div style={{ display: 'flex', direction: 'row', alignItems: 'center', width: '100%', height: '60px', marginBottom: '20px', fontSize: '18px' }}>
         <div>科室/部门名称: {personnel.department_name}</div>
@@ -56,17 +197,40 @@ class AddUserScreen extends Component {
   }
 
   async submit() {
-    const { hasRoles } = this.state
-    const { PersonnelAuthorizationAllocation, personnel } = this.props
+    const { hasRoles, personnel_id, username, password, repassword } = this.state
+    const { PersonnelAuthorizationAllocation, personnel, UpdatePersonnelUsername, pageType } = this.props
     let items = []
     for (let role of hasRoles) {
       items.push({ role_id: role.role_id + '' })
     }
-    let err = await PersonnelAuthorizationAllocation({ id: personnel.personnel_id, items: JSON.stringify(items) })
-    if (err) {
-      return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+    if (pageType === 2) {
+      let err = await PersonnelAuthorizationAllocation({ id: personnel.personnel_id, items: JSON.stringify(items) })
+      if (err) {
+        return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+      } else {
+        this.refs.myAlert.alert('保存成功')
+      }
     } else {
-      this.refs.myAlert.alert('保存成功')
+      if (!personnel_id) {
+        return this.refs.myAlert.alert('保存失败', '请选择医生', null, 'Danger')
+      }
+      if (!username) {
+        return this.refs.myAlert.alert('保存失败', '请输入用户名', null, 'Danger')
+      }
+      if (password !== repassword) {
+        return this.refs.myAlert.alert('保存失败', '两次密码不一致', null, 'Danger')
+      }
+      let err = await UpdatePersonnelUsername({ personnel_id, username, password })
+      if (err) {
+        return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+      } else {
+        let err = await PersonnelAuthorizationAllocation({ id: personnel_id, items: JSON.stringify(items) })
+        if (err) {
+          return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
+        } else {
+          this.refs.myAlert.alert('保存成功')
+        }
+      }
     }
   }
 
@@ -79,6 +243,7 @@ class AddUserScreen extends Component {
           <span />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {this.renderPersonel()}
+            {this.renderAddPersonel()}
             <div style={{ fontSize: '18px', fontWeight: '400' }}>
               <label>选择权限组</label>
             </div>
@@ -244,7 +409,9 @@ class AddUserScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    roles: state.roles.array_data
+    roles: state.roles.array_data,
+    departments: state.departments.data,
+    doctors: state.doctors.array_data
   }
 }
 
@@ -253,6 +420,9 @@ export default connect(
   {
     queryRoleList,
     PersonnelRoles,
-    PersonnelAuthorizationAllocation
+    PersonnelAuthorizationAllocation,
+    queryDepartmentList,
+    queryDoctorList,
+    UpdatePersonnelUsername
   }
 )(AddUserScreen)

@@ -1,5 +1,5 @@
 import { user, signin, signout, FunMenusByPersonnel, saveUserMenu, MenubarList } from './user'
-import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete, PersonnelWithUsername, UpdatePersonnelStatus, PersonnelRoles, PersonnelAuthorizationAllocation } from './doctors'
+import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete, PersonnelWithUsername, UpdatePersonnelStatus, PersonnelRoles, PersonnelAuthorizationAllocation, UpdatePersonnelUsername } from './doctors'
 import {
   triagePatients,
   triagePatientsList,
@@ -556,5 +556,6 @@ export {
   PersonnelWithUsername,
   UpdatePersonnelStatus,
   PersonnelRoles,
-  PersonnelAuthorizationAllocation
+  PersonnelAuthorizationAllocation,
+  UpdatePersonnelUsername
 }
