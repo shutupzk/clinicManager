@@ -322,7 +322,6 @@ class LaboraReportScreen extends Component {
     const { LaboratoryTriageDetail } = this.props
     if (!showLaboraHistoryDetail) return null
     let { record = {}, laboras = [], selIndex, laboraDetails } = historyDetail
-    console.log('historyDetail ======', historyDetail)
     const array = laboraDetails[selIndex] || []
     return (
       <div className='mask'>

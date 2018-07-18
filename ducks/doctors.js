@@ -156,11 +156,25 @@ export const PersonnelUpdate = ({ personnel_id, clinic_id, is_appointment, depar
     return e.message
   }
 }
+
 export const UpdatePersonnelStatus = ({ personnel_id, status }) => async dispatch => {
   try {
     const data = await request('/personnel/UpdatePersonnelStatus', {
       personnel_id,
       status
+    })
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const UpdatePersonnelUsername = ({ personnel_id, username, password }) => async dispatch => {
+  try {
+    const data = await request('/personnel/UpdatePersonnelUsername', {
+      personnel_id, username, password
     })
     if (data.code === '200') return null
     return data.msg

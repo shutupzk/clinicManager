@@ -21,9 +21,10 @@ class UserRightsScreen extends Component {
   showView() {
     const { pageInfo } = this.props
     const { offset, limit } = pageInfo
-    const { personnel } = this.state
+    const { personnel, pageType } = this.state
     return (
       <AddUserScreen
+        pageType={pageType}
         personnel={personnel}
         backToList={() => {
           this.setState({ pageType: 1 })
@@ -59,15 +60,15 @@ class UserRightsScreen extends Component {
               查询
             </button>
           </div>
-          {/* <div className={'rightTopFilterRight'}>
+          <div className={'rightTopFilterRight'}>
             <button
               onClick={() => {
-                this.setState({ pageType: 2 })
+                this.setState({ pageType: 3 })
               }}
             >
               新增
             </button>
-          </div> */}
+          </div>
         </div>
         <div className={'contentTable'}>{this.renderTable()}</div>
         <style jsx='true'>{`
@@ -262,6 +263,7 @@ class UserRightsScreen extends Component {
   }
   render() {
     const { pageType } = this.state
+    const { offset, limit } = this.props.pageInfo
     return (
       <div className={'boxContent'}>
         <div className={'topTitle'}>
@@ -269,7 +271,13 @@ class UserRightsScreen extends Component {
           {pageType === 1 ? (
             ''
           ) : (
-            <div className='back2List' onClick={() => this.setState({ pageType: 1 })}>
+            <div
+              className='back2List'
+              onClick={() => {
+                this.setState({ pageType: 1 })
+                this.getDataList({ offset, limit })
+              }}
+            >
               {'<返回'}
             </div>
           )}

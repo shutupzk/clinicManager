@@ -60,7 +60,6 @@ class ScheduleListScreen extends Component {
 
   queryDoctorList({ keyword, limit = 10, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
-    console.log('department_id ========', department_id)
     let param = {
       clinic_id,
       keyword,
@@ -457,7 +456,6 @@ class ScheduleListScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state.schedules)
   return {
     clinic_id: state.user.data.clinic_id,
     scheduleDoctors: state.schedules.scheduleDoctors || [],
