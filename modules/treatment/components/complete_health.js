@@ -199,7 +199,7 @@ export default class CompleteHealth extends Component {
                   let bmi = ''
                   if (bodySign.height) {
                     let weight = e.target.value
-                    bmi = (weight / (bodySign.height * bodySign.height / 10000)).toFixed(2)
+                    bmi = (weight / ((bodySign.height * bodySign.height) / 10000)).toFixed(2)
                     this.setState({ BMI: bmi })
                   }
                   bodySign.bmi = bmi
@@ -217,7 +217,7 @@ export default class CompleteHealth extends Component {
                   let bmi = ''
                   if (bodySign.weight) {
                     let height = e.target.value
-                    bmi = (bodySign.weight / (height * height / 10000)).toFixed(2)
+                    bmi = (bodySign.weight / ((height * height) / 10000)).toFixed(2)
                     this.setState({ BMI: bmi })
                   }
                   bodySign.bmi = bmi
@@ -443,18 +443,20 @@ export default class CompleteHealth extends Component {
   // 保存诊前病历数据
   async submitPreMedicalRecords() {
     const { clinic_triage_patient_id, preMedicalRecords } = this.state
-    const { completePreMedicalRecord } = this.props
-    let error = await completePreMedicalRecord({ ...preMedicalRecords, clinic_triage_patient_id })
+    const { completePreMedicalRecord, PersonalMedicalRecordUpsert, patient } = this.props
+
+    let error = await PersonalMedicalRecordUpsert({ ...preMedicalRecords, patient_id: patient.patient_id })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     }
+    await completePreMedicalRecord({ ...preMedicalRecords, clinic_triage_patient_id })
     this.refs.myAlert.alert('保存成功')
   }
 
   // 显示诊前病历
   showPreMedicalRecords() {
     let { preMedicalRecords } = this.state
-    const {selSex} = this.props
+    const { patient } = this.props
     console.log('preMedicalRecords======', preMedicalRecords)
     return (
       <div>
@@ -533,83 +535,91 @@ export default class CompleteHealth extends Component {
                 }}
               />
             </li>
-            {selSex === 2 ? <li>
-              <label>月经史</label>
-              <input
-                type='text'
-                style={{ width: '170px' }}
-                placeholder='月经初潮年龄'
-                value={preMedicalRecords.menarche_age || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menarche_age')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '15px' }}
-                placeholder='月经经期开始时间'
-                value={preMedicalRecords.menstrual_period_start_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_period_start_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '5px' }}
-                placeholder='月经经期结束时间'
-                value={preMedicalRecords.menstrual_period_end_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_period_end_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '15px', marginTop: '10px' }}
-                placeholder='月经周期开始时间'
-                value={preMedicalRecords.menstrual_cycle_start_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '120px', marginLeft: '5px', marginTop: '10px' }}
-                placeholder='月经周期结束时间'
-                value={preMedicalRecords.menstrual_cycle_end_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '170px', marginTop: '10px' }}
-                placeholder='末次月经时间'
-                value={preMedicalRecords.menstrual_last_day || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'menstrual_last_day')
-                }}
-              />
-              <input
-                type='text'
-                style={{ width: '170px', marginLeft: '15px', marginTop: '10px' }}
-                placeholder='孕周'
-                value={preMedicalRecords.gestational_weeks || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'gestational_weeks')
-                }}
-              />
-            </li> : ''}
-            {selSex === 2 ? <li>
-              <label>生育史</label>
-              <input
-                type='text'
-                style={{ width: '661px' }}
-                value={preMedicalRecords.childbearing_history || ''}
-                onChange={e => {
-                  this.setPreMedicalRecords(e, 'childbearing_history')
-                }}
-              />
-            </li> : ''}
+            {patient.sex === 0 ? (
+              <li>
+                <label>月经史</label>
+                <input
+                  type='text'
+                  style={{ width: '170px' }}
+                  placeholder='月经初潮年龄'
+                  value={preMedicalRecords.menarche_age || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menarche_age')
+                  }}
+                />
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '15px' }}
+                  placeholder='月经经期开始时间'
+                  value={preMedicalRecords.menstrual_period_start_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_period_start_day')
+                  }}
+                />
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '5px' }}
+                  placeholder='月经经期结束时间'
+                  value={preMedicalRecords.menstrual_period_end_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_period_end_day')
+                  }}
+                />
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '15px', marginTop: '10px' }}
+                  placeholder='月经周期开始时间'
+                  value={preMedicalRecords.menstrual_cycle_start_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_cycle_start_day')
+                  }}
+                />
+                <input
+                  type='text'
+                  style={{ width: '120px', marginLeft: '5px', marginTop: '10px' }}
+                  placeholder='月经周期结束时间'
+                  value={preMedicalRecords.menstrual_cycle_end_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_cycle_end_day')
+                  }}
+                />
+                <input
+                  type='text'
+                  style={{ width: '170px', marginTop: '10px' }}
+                  placeholder='末次月经时间'
+                  value={preMedicalRecords.menstrual_last_day || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'menstrual_last_day')
+                  }}
+                />
+                <input
+                  type='text'
+                  style={{ width: '170px', marginLeft: '15px', marginTop: '10px' }}
+                  placeholder='孕周'
+                  value={preMedicalRecords.gestational_weeks || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'gestational_weeks')
+                  }}
+                />
+              </li>
+            ) : (
+              ''
+            )}
+            {patient.sex === 0 ? (
+              <li>
+                <label>生育史</label>
+                <input
+                  type='text'
+                  style={{ width: '661px' }}
+                  value={preMedicalRecords.childbearing_history || ''}
+                  onChange={e => {
+                    this.setPreMedicalRecords(e, 'childbearing_history')
+                  }}
+                />
+              </li>
+            ) : (
+              ''
+            )}
           </ul>
         </div>
         <div className={'bottomBtn'} style={{ width: '300px' }}>

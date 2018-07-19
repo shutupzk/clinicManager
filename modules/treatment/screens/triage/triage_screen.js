@@ -11,7 +11,9 @@ import {
   completePreMedicalRecord,
   completePreDiagnosis,
   GetHealthRecord,
-  patientSelect
+  patientSelect,
+  PersonalMedicalRecord,
+  PersonalMedicalRecordUpsert
 } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
@@ -21,6 +23,7 @@ class TriageScreen extends Component {
     super(props)
     this.state = {
       pageType: 1,
+      patient: {},
       keyword: '',
       selSex: 1
     }
@@ -60,7 +63,7 @@ class TriageScreen extends Component {
 
   // 显示分诊列表
   showTriageList() {
-    const { triagePatients, patient_page_info, patientSelect } = this.props
+    const { triagePatients, patient_page_info, patientSelect, PersonalMedicalRecord } = this.props
     return (
       <div>
         <div className={'filterBox'}>
@@ -91,13 +94,12 @@ class TriageScreen extends Component {
                       {
                         title: '完善健康档案',
                         onClick: async () => {
-                          let { clinic_triage_patient_id, sex } = patient
-                          console.log('patient=======', patient)
+                          let { clinic_triage_patient_id, sex, patient_id } = patient
                           let data = await this.props.GetHealthRecord({ clinic_triage_patient_id })
-                          const { body_sign, pre_medical_record, pre_diagnosis } = data
-                          console.log('data =====', data)
+                          let pre_medical_record = await PersonalMedicalRecord({ patient_id })
+                          const { body_sign, pre_diagnosis } = data
                           this.showCompleteHealthFile(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis)
-                          this.setState({ clinic_triage_patient_id, selSex: sex })
+                          this.setState({ clinic_triage_patient_id, selSex: sex, patient })
                         }
                       },
                       {
@@ -131,8 +133,8 @@ class TriageScreen extends Component {
   }
 
   render() {
-    const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id, completeBodySign, completePreMedicalRecord, completePreDiagnosis } = this.props
-    const { selSex } = this.state
+    const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id, completeBodySign, completePreMedicalRecord, completePreDiagnosis, PersonalMedicalRecordUpsert } = this.props
+    const { patient } = this.state
     return (
       <div>
         <div className={'childTopBar'}>
@@ -165,7 +167,7 @@ class TriageScreen extends Component {
           </span>
         </div>
         {this.showTriageList()}
-        <CompleteHealth ref='CompleteHealth' selSex={selSex} completeBodySign={completeBodySign} completePreMedicalRecord={completePreMedicalRecord} completePreDiagnosis={completePreDiagnosis} />
+        <CompleteHealth ref='CompleteHealth' patient={patient} completeBodySign={completeBodySign} completePreMedicalRecord={completePreMedicalRecord} completePreDiagnosis={completePreDiagnosis} PersonalMedicalRecordUpsert={PersonalMedicalRecordUpsert} />
         <ChooseDoctor
           ref='ChooseDoctor'
           triageDoctors={triageDoctors}
@@ -207,6 +209,8 @@ export default connect(
     completePreMedicalRecord,
     completePreDiagnosis,
     GetHealthRecord,
-    patientSelect
+    patientSelect,
+    PersonalMedicalRecord,
+    PersonalMedicalRecordUpsert
   }
 )(TriageScreen)
