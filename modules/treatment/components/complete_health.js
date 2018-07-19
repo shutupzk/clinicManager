@@ -475,7 +475,7 @@ export default class CompleteHealth extends Component {
                   checked={preMedicalRecords.has_allergic_history}
                   // value={!false}
                   onChange={e => {
-                    console.log('过敏史=======', e)
+                    // console.log('过敏史=======', e)
                     this.setPreMedicalRecords(true, 'has_allergic_history', 2)
                   }}
                 />是
@@ -489,6 +489,7 @@ export default class CompleteHealth extends Component {
                   // value={false}
                   onChange={e => {
                     this.setPreMedicalRecords(false, 'has_allergic_history', 2)
+                    this.setPreMedicalRecords('', 'allergic_history', 2)
                   }}
                 />否
               </label>

@@ -417,6 +417,7 @@ class MedicalRecordScreen extends Component {
                       labelKey='drug_name'
                       placeholder='搜索'
                       onChange={item => {
+                        // console.log('item=====', item)
                         this.setWItemValues(item, index)
                       }}
                       onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
