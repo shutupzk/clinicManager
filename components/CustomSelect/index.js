@@ -32,6 +32,7 @@ export default class CustomSelect extends Component {
     for (let option of options) {
       if (!withoutFitler) {
         let { value, label, py_code } = option
+        console.log('value, label, py_code=====', value, label, py_code)
         let pattern = new RegExp(this.state.label, 'gi')
         if (!pattern.test(value) && !pattern.test(label) && !pattern.test(py_code)) continue
       }
@@ -135,7 +136,7 @@ export default class CustomSelect extends Component {
             marginTop: '0px'
           }}
           placeholder={placeholder || ''}
-          value={label || value || ''}
+          value={label || ''}
           type='text'
           onChange={e => {
             let value = e.target.value
