@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
 function getLable(value, valueKey, labelKey, options = []) {
-  console.log('value, valueKey, labelKey, options', value, valueKey, labelKey, options)
   if (!value || !valueKey || !labelKey) return ''
   for (let option of options) {
     if (option[valueKey] === value) {
@@ -32,9 +31,12 @@ export default class CustomSelect extends Component {
     for (let option of options) {
       if (!withoutFitler) {
         let { value, label, py_code } = option
-        console.log('value, label, py_code=====', value, label, py_code)
-        let pattern = new RegExp(this.state.label, 'gi')
-        if (!pattern.test(value) && !pattern.test(label) && !pattern.test(py_code)) continue
+        try {
+          let pattern = new RegExp(this.state.label, 'gi')
+          if (!pattern.test(value) && !pattern.test(label) && !pattern.test(py_code)) continue
+        } catch (e) {
+          continue
+        }
       }
       array.push(option)
     }
@@ -113,7 +115,7 @@ export default class CustomSelect extends Component {
   }
 
   render() {
-    const { onInputChange, controlStyle, placeholder, mustOptionValue, value } = this.props
+    const { onInputChange, controlStyle, placeholder, mustOptionValue } = this.props
     const { onMouseOver, showOptions, label } = this.state
     let marginTop = controlStyle.marginTop || '0px'
     return (
@@ -140,7 +142,7 @@ export default class CustomSelect extends Component {
           type='text'
           onChange={e => {
             let value = e.target.value
-            this.setState({ showOptions: true, label: value })
+            this.setState({ showOptions: true, label: value, value: mustOptionValue ? '' : this.state.value })
             if (onInputChange) {
               onInputChange(value)
             }
