@@ -15,7 +15,8 @@ import {
   completePreDiagnosis,
   GetHealthRecord,
   TriagePatientDetail,
-  GetLastBodySign
+  GetLastBodySign,
+  RecptionPatientList
 } from './triage_patients'
 import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword, MemberPateintList, PatientGetByID, PersonalMedicalRecord, PatientUpdate, PersonalMedicalRecordUpsert } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
@@ -557,5 +558,6 @@ export {
   UpdatePersonnelStatus,
   PersonnelRoles,
   PersonnelAuthorizationAllocation,
-  UpdatePersonnelUsername
+  UpdatePersonnelUsername,
+  RecptionPatientList
 }
