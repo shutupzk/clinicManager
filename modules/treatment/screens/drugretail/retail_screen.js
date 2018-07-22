@@ -20,7 +20,8 @@ class RetailScreen extends Component {
       tradeNo: '', // 交易订单号
       showCode: false, // 展示授权码
       payStatus: '待提交', // 支付状态
-      authCode: ''
+      authCode: '',
+      yb_check: false // 允许输入医保金额
     }
 
     this.queryTimes = 0
@@ -75,11 +76,11 @@ class RetailScreen extends Component {
     let charge_money_int = charge_money ? Math.round(charge_money * 100) : 0
     let should_money = chargeTotal - discount_money - medical_money_int
     if (charge_money_int < should_money) return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
-    if (!pay_method) return this.refs.myAlert.alert('未选择支付方式', '', 'Warning')
+    if (!pay_method) return this.refs.myAlert.alert('未选择支付方式', '', null, 'Warning')
     if (pay_method === 1 || pay_method === 2) {
       this.setState({ showCode: true })
     } else if (pay_method === 3) {
-      this.refs.myAlert.alert('暂不支持该收款方式', '', 'Warning')
+      this.refs.myAlert.alert('暂不支持该收款方式', '', null, 'Warning')
     } else {
       this.payOrder()
     }
@@ -100,14 +101,23 @@ class RetailScreen extends Component {
       balance_money: chargeTotal - discount_money - medical_money_int,
       operation_id: this.props.personnel_id
     })
-
-    if (res && res.code === '200') {
-      this.setState({ payStatus: '缴费成功' })
-    } else if (res && res.code === '300') {
-      this.setState({ payStatus: '缴费中[待用户输密码]' })
-      this.interval = setInterval(() => this.tick(), 5000)
+    if (pay_method === 1 || pay_method === 2) {
+      if (res && res.code === '200') {
+        this.setState({ payStatus: '缴费成功' })
+      } else if (res && res.code === '300') {
+        this.setState({ payStatus: '缴费中[待用户输密码]' })
+        this.interval = setInterval(() => this.tick(), 5000)
+      } else {
+        this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || ''}]` })
+      }
     } else {
-      this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || ''}]` })
+      if (res && res.code === '200') {
+        this.refs.myAlert.alert('缴费成功', '', () => {
+          Router.push('/treatment/drugretail')
+        })
+      } else {
+        this.refs.myAlert.alert('缴费失败', `${(res && res.msg) || '未知原因'}`, null, 'Warning')
+      }
     }
   }
 
@@ -274,7 +284,9 @@ class RetailScreen extends Component {
                     <div className={'normalDiv'}>{item.specification}</div>
                     <div className={'normalDiv'}>{item.manu_factory_name}</div>
                     <div className={'normalDiv'}>{formatMoney(item.ret_price)}</div>
-                    <div className={'normalDiv'} title={item.serial}>{item.serial}</div>
+                    <div className={'normalDiv'} title={item.serial}>
+                      {item.serial}
+                    </div>
                     <div className={'normalDiv'}>{item.eff_date && moment(item.eff_date).format('YYYYMMDD')}</div>
                     <div className={'normalDiv'}>{item.stock_amount !== undefined ? item.stock_amount || 0 : ''}</div>
                     <div>
@@ -337,7 +349,7 @@ class RetailScreen extends Component {
             .feeScheduleBox ul li div {
               flex: 1;
             }
-            .normalDiv{
+            .normalDiv {
               overflow: hidden;
               text-overflow: ellipsis;
               line-height: 26px;

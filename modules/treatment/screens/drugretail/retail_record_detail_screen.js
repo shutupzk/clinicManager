@@ -6,7 +6,7 @@ import moment from 'moment'
 import { PageCard, Select, DatePicker } from '../../../../components'
 import { formatMoney } from '../../../../utils'
 
-class RetailRecordScreen extends Component {
+class RetailRecordDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -172,4 +172,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { DrugRetailList, SelectDrugRetail }
-)(RetailRecordScreen)
+)(RetailRecordDetailScreen)
