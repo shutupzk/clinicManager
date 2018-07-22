@@ -226,7 +226,7 @@ import {
   TreatmentTriagePatientRecordList
 } from './treatment_triage'
 
-import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail } from './drug_retail'
+import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail } from './drug_retail'
 
 // keys
 export {
@@ -560,6 +560,7 @@ export {
   createDrugRetailPaymentOrder,
   SelectDrugRetail,
   DrugRetailList,
+  DrugRetailDetail,
   MenubarList,
   PersonnelWithUsername,
   UpdatePersonnelStatus,
