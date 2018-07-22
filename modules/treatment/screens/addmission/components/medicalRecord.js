@@ -1197,7 +1197,7 @@ class MedicalRecordScreen extends Component {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }
     return (
-      <div style={{ width: '840px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF' }}>
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
         <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
         <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>门诊病历</div>
         <div className={'patientInfoRow'}>
@@ -1276,15 +1276,16 @@ class MedicalRecordScreen extends Component {
             <div>{this.state.cure_suggestion}</div>
           </div>
         </div>
-        <div className={'patientInfoRow'} style={{marginTop: '50px'}}>
+        <div className={'patientInfoRow'} style={{ marginTop: '50px' }}>
+          <div />
           <div />
           <div>
             <lable>医师</lable>
-            <div>{user.name}</div>
+            <div style={{ borderBottom: '1px solid #ffffff', marginLeft: '20px' }}>{user.name}</div>
           </div>
           <div>
             <lable>日期：</lable>
-            <div>{moment().format('YYYY年MM月DD日')}</div>
+            <div style={{ borderBottom: '1px solid #ffffff' }}>{moment().format('YYYY年MM月DD日')}</div>
           </div>
         </div>
         <style jsx='true'>
@@ -1650,7 +1651,7 @@ class MedicalRecordScreen extends Component {
                     存为模板
                   </button>
                   <button onClick={() => this.refs.printer.onPrint()}>打印病历</button>
-                  <Print ref='printer' lazyRender isIframe >
+                  <Print ref='printer' lazyRender isIframe>
                     {this.mrPrinter()}
                   </Print>
                 </div>
@@ -1834,7 +1835,6 @@ class MedicalRecordScreen extends Component {
             cursor: pointer;
           }
         `}</style>
-        {this.mrPrinter()}
       </div>
     )
   }
