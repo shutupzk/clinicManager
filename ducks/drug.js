@@ -3,6 +3,7 @@ const DRUG_PROJECT_ADD = 'DRUG_PROJECT_ADD'
 const DRUG_JSON_ADD = 'DRUG_JSON_ADD'
 const DIC_DRUG_ARRAY_ADD = 'DIC_DRUG_ARRAY_ADD'
 const DRUG_STOCK_ADD = 'DRUG_STOCK_ADD'
+const DRUG_CLEAR = 'DRUG_CLEAR'
 
 const initState = {
   data: [],
@@ -23,6 +24,8 @@ export function drugs(state = initState, action = {}) {
       return { ...state, drug_data: action.drug_data }
     case DRUG_STOCK_ADD:
       return { ...state, drug_stock_data: action.drug_data }
+    case DRUG_CLEAR:
+      return { ...state, json_data: {} }
     default:
       return state
   }
@@ -204,7 +207,7 @@ export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 20, type }
     return e.message
   }
 }
-export const ClinicDrugBatchSetting = (requestData) => async dispatch => {
+export const ClinicDrugBatchSetting = requestData => async dispatch => {
   try {
     // console.log('ClinicDrugBatchSetting====', requestData)
     const data = await request('/clinic_drug/ClinicDrugBatchSetting', requestData)
@@ -215,4 +218,8 @@ export const ClinicDrugBatchSetting = (requestData) => async dispatch => {
     console.log(e)
     return e.message
   }
+}
+
+export const clearLocalDrugData = () => dispatch => {
+  dispatch({ type: DRUG_CLEAR })
 }

@@ -4,18 +4,10 @@ import { Confirm, PageCard, MyCreatableSelect, ImageViewer, Upload, DatePicker }
 import { API_SERVER } from '../../../../../config'
 // import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
+import Print from 'rc-print'
 
-import {
-  createMedicalRecord,
-  queryMedicalRecord,
-  createMedicalRecordAsModel,
-  queryMedicalModelsByDoctor,
-  queryMedicalsByPatient,
-  queryChiefComplaints,
-  queryDictDiagnosisList,
-  FileUpload,
-  xhrFileUpload
-} from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList, FileUpload, xhrFileUpload, PersonalMedicalRecord } from '../../../../../ducks'
+import { getAgeByBirthday } from '../../../../../utils'
 // 病历
 class MedicalRecordScreen extends Component {
   constructor(props) {
@@ -55,14 +47,16 @@ class MedicalRecordScreen extends Component {
       diagnosisArray: [],
       imgWidth: 0,
       imgHeight: 0,
-      imgFiles: []
+      imgFiles: [],
+      pre_medical_record: {}
     }
   }
 
   async componentWillMount() {
-    const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints } = this.props
+    const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints, PersonalMedicalRecord, patient_id } = this.props
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
+    let pre_medical_record = await PersonalMedicalRecord({ patient_id })
     console.log('record====', record)
     let recordStr = ''
     // let
@@ -93,7 +87,7 @@ class MedicalRecordScreen extends Component {
         }
       }
     }
-    this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray })
+    this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray, pre_medical_record: pre_medical_record || {} })
   }
 
   async save() {
@@ -156,21 +150,7 @@ class MedicalRecordScreen extends Component {
 
   showSaveModel() {
     if (!this.state.saveAsModel) return null
-    let {
-      is_common,
-      name,
-      chief_complaint,
-      history_of_present_illness,
-      history_of_past_illness,
-      family_medical_history,
-      allergic_history,
-      allergic_reaction,
-      body_examination,
-      immunizations,
-      diagnosis,
-      cure_suggestion,
-      remark
-    } = this.state
+    let { is_common, name, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '680px', left: '324px' }}>
@@ -511,10 +491,7 @@ class MedicalRecordScreen extends Component {
                     <li>{visit_type_name}</li>
                     <li>{clinic_name}</li>
                     <li>{doctor_name}</li>
-                    <li
-                      style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }}
-                      onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}
-                    >
+                    <li style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }} onClick={() => this.setState({ ...this.state, choseHistoryId: this.state.choseHistoryId === item.id ? '' : item.id })}>
                       {this.state.choseHistoryId === item.id ? '收 起' : '展 开'}
                     </li>
                   </ul>
@@ -578,18 +555,7 @@ class MedicalRecordScreen extends Component {
     const { choseHistoryId } = this.state
     if (choseHistoryId !== item.id) return null
 
-    let {
-      morbidity_date,
-      chief_complaint,
-      history_of_present_illness,
-      history_of_past_illness,
-      family_medical_history,
-      allergic_history,
-      body_examination,
-      immunizations,
-      cure_suggestion,
-      remark
-    } = item
+    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, body_examination, immunizations, cure_suggestion, remark } = item
     return (
       <div className='medical_detail'>
         <div className='medical_detail_item'>
@@ -1086,7 +1052,7 @@ class MedicalRecordScreen extends Component {
               white-space: nowrap;
               text-overflow: ellipsis;
               // padding: 3px 15px 3px 3px;
-              padding:5px;
+              padding: 5px;
               height: 30px;
               text-align: left;
               display: block;
@@ -1181,11 +1147,11 @@ class MedicalRecordScreen extends Component {
     if (e.event !== undefined) {
       let event = e.event
       // console.log('event=====', e, file, event)
-      this.setState({showProgress: true, percent: event.percent})
+      this.setState({ showProgress: true, percent: event.percent })
     }
     // console.log('event=====', e)
     if (file.status === 'done') {
-      this.setState({showProgress: false, percent: 0})
+      this.setState({ showProgress: false, percent: 0 })
       // console.log('fileList====', e.file)
       if (e.file.response.url !== undefined) {
         let url = e.file.response.url
@@ -1202,12 +1168,12 @@ class MedicalRecordScreen extends Component {
     }
   }
   fileProgress() {
-    const {percent} = this.state
+    const { percent } = this.state
     return (
       <div className={'progress'}>
-        <div className={'percent'} style={{width: percent + '%'}} />
+        <div className={'percent'} style={{ width: percent + '%' }} />
         <style jsx>{`
-          .progress{
+          .progress {
             position: absolute;
             z-index: 1;
             width: 100%;
@@ -1216,11 +1182,155 @@ class MedicalRecordScreen extends Component {
             border: 1px solid #d8d8d8;
             border-radius: 4px;
           }
-          .percent{
+          .percent {
             height: 100%;
             background: #1ba798;
           }
         `}</style>
+      </div>
+    )
+  }
+  mrPrinter() {
+    let { user, triagePatients, clinic_triage_patient_id } = this.props
+    let triagePatient = {}
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    return (
+      <div style={{ width: '840px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF' }}>
+        <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+        <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>门诊病历</div>
+        <div className={'patientInfoRow'}>
+          <div>
+            <lable>姓名</lable>
+            <div>{triagePatient.patient_name}</div>
+          </div>
+          <div>
+            <lable>性别</lable>
+            <div>{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+          </div>
+          <div>
+            <lable>就诊id</lable>
+            <div>{}</div>
+          </div>
+        </div>
+        <div className={'patientInfoRow'}>
+          <div>
+            <lable>年龄</lable>
+            <div>{getAgeByBirthday(triagePatient.birthday)}</div>
+          </div>
+          <div />
+          <div />
+        </div>
+        <div className={'patientInfoRow'}>
+          <div>
+            <lable>职业</lable>
+            <div>{triagePatient.profession}</div>
+          </div>
+          <div>
+            <lable>电话</lable>
+            <div>{triagePatient.phone}</div>
+          </div>
+          <div>
+            <lable>证件号</lable>
+            <div>{triagePatient.cert_no}</div>
+          </div>
+        </div>
+        <div className={'patientInfoRow'}>
+          <div>
+            <lable>临床诊断</lable>
+            <div>{this.state.diagnosis}</div>
+          </div>
+        </div>
+        <div className={'recordDetail'}>
+          <div>
+            <label>主诉</label>
+            <div>{this.state.chief_complaint}</div>
+          </div>
+          <div>
+            <label>现病史</label>
+            <div>{this.state.history_of_present_illness}</div>
+          </div>
+          <div>
+            <label>既往史</label>
+            <div>{this.state.history_of_past_illness}</div>
+          </div>
+          <div>
+            <label>过敏史</label>
+            <div>{this.state.allergic_history}</div>
+          </div>
+          <div>
+            <label>个人史</label>
+            <div>{this.state.pre_medical_record.personal_medical_history}</div>
+          </div>
+          <div>
+            <label>家族史</label>
+            <div>{this.state.family_medical_history}</div>
+          </div>
+          <div>
+            <label>体格检查</label>
+            <div>{this.state.body_examination}</div>
+          </div>
+          <div>
+            <label>治疗意见</label>
+            <div>{this.state.cure_suggestion}</div>
+          </div>
+        </div>
+        <div className={'patientInfoRow'} style={{marginTop: '50px'}}>
+          <div />
+          <div>
+            <lable>医师</lable>
+            <div>{user.name}</div>
+          </div>
+          <div>
+            <lable>日期：</lable>
+            <div>{moment().format('YYYY年MM月DD日')}</div>
+          </div>
+        </div>
+        <style jsx='true'>
+          {`
+            .patientInfoRow {
+              width: 100%;
+              display: flex;
+            }
+            .patientInfoRow > div {
+              display: flex;
+              flex: 1;
+              align-items: center;
+              justify-content: center;
+              min-height: 50px;
+              font-size: 17px;
+            }
+            .patientInfoRow > div > div {
+              flex: 1;
+              display: flex;
+              margin: 10px 15px 10px 5px;
+              min-height: 30px;
+              align-items: center;
+              border-bottom: 1px solid #d8d8d8;
+              border-top: 1px solid #ffffff;
+            }
+            .recordDetail {
+              display: flex;
+              flex-direction: column;
+              margin: 30px 0 0 0;
+            }
+            .recordDetail > div {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+              font-size: 17px;
+              margin-top: 10px;
+            }
+            .recordDetail > div > label {
+              width: 120px;
+              font-weight: 500;
+            }
+            .recordDetail > div > div {
+              flex: 1;
+            }
+          `}
+        </style>
       </div>
     )
   }
@@ -1316,7 +1426,7 @@ class MedicalRecordScreen extends Component {
         </div>
         <div className='filterBox'>
           <div className='boxLeft'>
-            <div style={{float: 'left', margin: '-3px 0 0 15px'}}>
+            <div style={{ float: 'left', margin: '-3px 0 0 15px' }}>
               <DatePicker
                 // defaultValue={moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 // value={morbidity_date === '' ? moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD') : moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
@@ -1429,11 +1539,13 @@ class MedicalRecordScreen extends Component {
                 <li>
                   <label>上传文件</label>
                   {this.renderFiles()}
-                  <div style={{display: 'flex', alignItems: 'center', marginTop: '10px'}}>
-                    <Upload onChange={e => {
-                      this.showProgress(e)
-                      // console.log('Upload=====', e)
-                    }} />
+                  <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                    <Upload
+                      onChange={e => {
+                        this.showProgress(e)
+                        // console.log('Upload=====', e)
+                      }}
+                    />
                     <label>文件大小不能超过20M，支持图片、word、pdf文件</label>
                   </div>
                   {showProgress ? this.fileProgress() : ''}
@@ -1537,13 +1649,10 @@ class MedicalRecordScreen extends Component {
                   >
                     存为模板
                   </button>
-                  <button
-                    onClick={() => {
-                      this.setState({ saveAsModel: true })
-                    }}
-                  >
-                    打印病历
-                  </button>
+                  <button onClick={() => this.refs.printer.onPrint()}>打印病历</button>
+                  <Print ref='printer' lazyRender isIframe >
+                    {this.mrPrinter()}
+                  </Print>
                 </div>
               </div>
             </div>
@@ -1725,6 +1834,7 @@ class MedicalRecordScreen extends Component {
             cursor: pointer;
           }
         `}</style>
+        {this.mrPrinter()}
       </div>
     )
   }
@@ -1733,6 +1843,7 @@ class MedicalRecordScreen extends Component {
 const mapStateToProps = state => {
   return {
     operation_id: state.user.data.id,
+    user: state.user.data,
     triagePatients: state.triagePatients.data,
     clinic_triage_patient_id: state.triagePatients.selectId,
     triage_personnel_id: state.user.data.id,
@@ -1742,7 +1853,8 @@ const mapStateToProps = state => {
     medicalHistory: state.medicalRecords.history_medicals,
     medicalHistoryPage: state.medicalRecords.history_page_info,
     chief_complaints: state.medicalRecords.chief_complaints,
-    dic_diagnosis_data: state.diagnosisTreatments.dic_diagnosis_data
+    dic_diagnosis_data: state.diagnosisTreatments.dic_diagnosis_data,
+    patient_id: state.patients.selectId
   }
 }
 
@@ -1757,6 +1869,7 @@ export default connect(
     queryChiefComplaints,
     queryDictDiagnosisList,
     FileUpload,
-    xhrFileUpload
+    xhrFileUpload,
+    PersonalMedicalRecord
   }
 )(MedicalRecordScreen)
