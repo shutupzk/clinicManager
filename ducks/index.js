@@ -55,7 +55,8 @@ import {
   ClinicDrugDetail,
   ClinicDrugOnOff,
   ClinicDrugListWithStock,
-  ClinicDrugBatchSetting
+  ClinicDrugBatchSetting,
+  clearLocalDrugData
 } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, ExaminationUpdate, ExaminationOnOff, ExaminationDetail, queryExams } from './examination'
@@ -567,5 +568,6 @@ export {
   PersonnelRoles,
   PersonnelAuthorizationAllocation,
   UpdatePersonnelUsername,
-  RecptionPatientList
+  RecptionPatientList,
+  clearLocalDrugData
 }

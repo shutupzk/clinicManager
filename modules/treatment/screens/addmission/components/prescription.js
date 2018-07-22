@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Select, Confirm, PageCard, CustomSelect } from '../../../../../components'
 import moment from 'moment'
 import {
+  clearLocalDrugData,
   ClinicDrugList,
   PrescriptionWesternPatientCreate,
   PrescriptionWesternPatientGet,
@@ -42,9 +43,9 @@ class MedicalRecordScreen extends Component {
   }
 
   async componentDidMount() {
-    const { PrescriptionWesternPatientGet, PrescriptionChinesePatientGet, clinic_triage_patient_id } = this.props
+    const { PrescriptionWesternPatientGet, PrescriptionChinesePatientGet, clinic_triage_patient_id, clearLocalDrugData } = this.props
+    await clearLocalDrugData()
     let wPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
-    console.log('wPrescItemArray ======', wPrescItemArray)
     wPrescItemArray = wPrescItemArray || []
     let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
     let cPrescItemArray = []
@@ -506,13 +507,7 @@ class MedicalRecordScreen extends Component {
                 <div style={{ flex: 2 }}>{item.packing_unit_name}</div>
                 <div style={{ flex: 3 }}>
                   <div>
-                    <Select
-                      value={this.getSelectValue(item.fetch_address, this.getPharmacyOptions())}
-                      onChange={({ value }) => this.setWItemValue(value, index, 'fetch_address', 2)}
-                      placeholder='搜索'
-                      height={38}
-                      options={this.getPharmacyOptions()}
-                    />
+                    <Select value={this.getSelectValue(item.fetch_address, this.getPharmacyOptions())} onChange={({ value }) => this.setWItemValue(value, index, 'fetch_address', 2)} placeholder='搜索' height={38} options={this.getPharmacyOptions()} />
                   </div>
                 </div>
                 <div style={{ flex: 3 }}>
@@ -546,13 +541,14 @@ class MedicalRecordScreen extends Component {
           </div>
           <div className={'bottomRight'}>
             <button onClick={() => this.setState({ showSaveWmodel: true })}>存为模板</button>
-            <button>打印病历</button>
+            <button onClick={() => {}}>打印病历</button>
           </div>
         </div>
         {this.getStyle()}
       </div>
     )
   }
+
   // 添加中药处方药品
   addCPresc() {
     const { selIndex, cPrescItemArray } = this.state
@@ -874,13 +870,7 @@ class MedicalRecordScreen extends Component {
               </div>
               <div>
                 <div>
-                  <Select
-                    value={this.getSelectValue(info.fetch_address, this.getPharmacyOptions())}
-                    onChange={({ value }) => this.setCInfoValue(value, 'fetch_address', 2)}
-                    placeholder='搜索'
-                    height={38}
-                    options={this.getPharmacyOptions()}
-                  />
+                  <Select value={this.getSelectValue(info.fetch_address, this.getPharmacyOptions())} onChange={({ value }) => this.setCInfoValue(value, 'fetch_address', 2)} placeholder='搜索' height={38} options={this.getPharmacyOptions()} />
                 </div>
               </div>
               <div>
@@ -1870,9 +1860,10 @@ class MedicalRecordScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  // console.log('state.drugs ==========', state.drugs)
+  console.log('state.user.data ==========', state.user.data)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
+    user: state.user.data,
     personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,
@@ -1895,6 +1886,7 @@ export default connect(
   mapStateToProps,
   {
     ClinicDrugList,
+    clearLocalDrugData,
     PrescriptionWesternPatientCreate,
     PrescriptionWesternPatientGet,
     queryRouteAdministrationList,

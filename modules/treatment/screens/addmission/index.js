@@ -50,8 +50,9 @@ class AddmisionScreen extends Component {
   // 接诊
   async reception(patient) {
     const { triageReception, triagePatientsSelect, triage_personnel_id } = this.props
-    let { status, clinic_triage_patient_id } = patient
+    let { status, clinic_triage_patient_id, patient_id } = patient
     triagePatientsSelect({ clinic_triage_patient_id })
+    this.props.patientSelect({ patient_id })
     if (status === 20) {
       this.refs.myConfirm.confirm('确定接诊？', '', 'Success', async () => {
         let error = await triageReception({ clinic_triage_patient_id, recept_personnel_id: triage_personnel_id })
