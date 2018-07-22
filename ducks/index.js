@@ -215,6 +215,8 @@ import {
   TreatmentTriagePatientRecordList
 } from './treatment_triage'
 
+import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder } from './drug_retail'
+
 // keys
 export {
   user,
@@ -271,7 +273,8 @@ export {
   finances,
   examinationTriages,
   laboratoryTriages,
-  treatmentTriages
+  treatmentTriages,
+  drugRetail
 }
 
 // actions
@@ -540,5 +543,7 @@ export {
   PatientGetByID,
   PersonalMedicalRecord,
   PatientUpdate,
-  PersonalMedicalRecordUpsert
+  PersonalMedicalRecordUpsert,
+  createDrugRetailOrder,
+  createDrugRetailPaymentOrder
 }

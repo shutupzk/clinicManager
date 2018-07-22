@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
 import { CustomSelect, Confirm } from '../../../../components'
-import { ClinicDrugListWithStock } from '../../../../ducks'
-import { formatMoney, limitMoney, createTradeNo } from '../../../../utils'
+import { ClinicDrugListWithStock, createDrugRetailOrder, createDrugRetailPaymentOrder } from '../../../../ducks'
+import { formatMoney, limitMoney } from '../../../../utils'
 import moment from 'moment'
 
 class RetailScreen extends Component {
@@ -16,8 +16,18 @@ class RetailScreen extends Component {
       discount: '', //  折扣
       medical_money: '', // 医保收费
       charge_money: '', // 实际收费
-      pay_method: '' // 支付方式
+      pay_method: '', // 支付方式
+      tradeNo: '', // 交易订单号
+      showCode: false, // 展示授权码
+      payStatus: '待提交', // 支付状态
+      authCode: ''
     }
+
+    this.queryTimes = 0
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   // 添加药品出售项
@@ -26,8 +36,9 @@ class RetailScreen extends Component {
   }
 
   // 收费
-  charge() {
+  async charge() {
     const { itemArray } = this.state
+    let items = []
     let chargeTotal = 0
     for (let item of itemArray) {
       if (!item.drug_name) return this.refs.myAlert.alert('存在未选择药品的项目', null, null, 'Warning')
@@ -35,12 +46,29 @@ class RetailScreen extends Component {
       if (!item.amount) return this.refs.myAlert.alert('存在未填写数量的项目，请填写！', null, null, 'Warning')
       if (item.amount > item.stock_amount) return this.refs.myAlert.alert('存在销售数量大于库存的项目！', null, null, 'Warning')
       chargeTotal += item.ret_price * item.amount
+
+      items.push({ clinic_drug_id: item.clinic_drug_id + '', amount: item.amount, total_fee: item.ret_price * item.amount + '' })
     }
-    this.setState({ showCharge: true, chargeTotal })
+    let res = await this.props.createDrugRetailOrder({ items: JSON.stringify(items) })
+    if (!res || res.code !== '200') {
+      let msg = (res && res.msg) || '未知错误'
+      return this.refs.myAlert.alert('创建订单失败', msg, null, 'Warning')
+    }
+    this.setState({ showCharge: true, chargeTotal, tradeNo: res.data })
+  }
+
+  // 定时获取订单状态
+  async tick() {
+    this.queryTimes += 1
+    if (this.state.payStatus !== '缴费中[待用户输密码]') return clearInterval(this.interval)
+    if (this.queryTimes >= 7) {
+      clearInterval(this.interval)
+      this.setState({ payStatus: '支付超时！' })
+    }
   }
 
   // 结账
-  submit(tradeNo) {
+  submit() {
     let { selectType, discount, medical_money, charge_money, chargeTotal, pay_method } = this.state
     let discount_money = selectType === 1 && discount ? Math.round(chargeTotal * ((100 - discount) / 100)) : 0
     let medical_money_int = Math.round(medical_money * 100)
@@ -48,32 +76,39 @@ class RetailScreen extends Component {
     let should_money = chargeTotal - discount_money - medical_money_int
     if (charge_money_int < should_money) return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
     if (!pay_method) return this.refs.myAlert.alert('未选择支付方式', '', 'Warning')
+    if (pay_method === 1 || pay_method === 2) {
+      this.setState({ showCode: true })
+    } else if (pay_method === 3) {
+      this.refs.myAlert.alert('暂不支持该收款方式', '', 'Warning')
+    } else {
+      this.payOrder()
+    }
+  }
 
-    this.refs.myAlert.confirm('确定缴费？', '', 'Success', async () => {
-      // let res = await createPayment({
-      //   discount_money: discount_money,
-      //   derate_money: derate_money,
-      //   medical_money: medical_money_int,
-      //   on_credit_money: on_credit_money_int,
-      //   voucher_money: voucher_money_int,
-      //   bonus_points_money: bonus_points_money_int,
-      //   clinic_triage_patient_id: charge_unpay_selectId,
-      //   orders_ids: un_paid_orders_ids,
-      //   operation_id,
-      //   pay_method_code: pay_method,
-      //   balance_money: should_money
-      // })
-      // if (res && res.code === '200') {
-      //   this.refs.myAlert.alert(`提交成功！`, '创建缴费单成功！')
-      // } else if (res && res.code === '300') {
-      //   this.refs.myAlert.alert(`提交成功！`, '支付方式为现金或缴费金额为0，直接缴费！', async () => {
-      //     Router.push('/treatment/charge')
-      //   })
-      // } else {
-      //   let msg = (res && res.msg) || '未知错误'
-      //   this.refs.myAlert.alert(`提交失败！`, msg, null, 'Warning')
-      // }
+  async payOrder() {
+    let { tradeNo, medical_money, discount, pay_method, chargeTotal, authCode } = this.state
+    let discount_money = discount ? Math.round(chargeTotal * ((100 - discount) / 100)) : 0
+    let medical_money_int = Math.round(medical_money * 100)
+    let pay_method_map = { 1: 'alipay', 2: 'wechat', 3: 'bank', 4: 'cash' }
+    let res = await this.props.createDrugRetailPaymentOrder({
+      out_trade_no: tradeNo,
+      pay_method: pay_method_map[pay_method],
+      auth_code: authCode,
+      total_money: chargeTotal,
+      discount_money,
+      medical_money: medical_money_int,
+      balance_money: chargeTotal - discount_money - medical_money_int,
+      operation_id: this.props.personnel_id
     })
+
+    if (res && res.code === '200') {
+      this.setState({ payStatus: '缴费成功' })
+    } else if (res && res.code === '300') {
+      this.setState({ payStatus: '缴费中[待用户输密码]' })
+      this.interval = setInterval(() => this.tick(), 5000)
+    } else {
+      this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || ''}]` })
+    }
   }
 
   // 选择是折扣 还是 减免
@@ -313,7 +348,7 @@ class RetailScreen extends Component {
     if (!this.state.showCharge) return null
     const { chargeTotal } = this.state
 
-    const tradeNo = this.props.clinic_id + createTradeNo()
+    const tradeNo = this.state.tradeNo
     const orderTime = moment().format('YYYY-MM-DD HH:mm:ss')
 
     let { selectType, discount, medical_money } = this.state
@@ -321,8 +356,6 @@ class RetailScreen extends Component {
     let medical_money_int = Math.round(medical_money * 100)
 
     let should_money = chargeTotal - discount_money - medical_money_int
-
-    console.log(chargeTotal, discount_money, medical_money_int)
 
     return (
       <div className={'detailBox'}>
@@ -398,7 +431,7 @@ class RetailScreen extends Component {
               <button style={{ float: 'left' }} onClick={() => this.setState({ showCharge: false })}>
                 返回筛查收费项目
               </button>
-              <button style={{ float: 'right' }} onClick={() => this.submit(tradeNo)}>
+              <button style={{ float: 'right', marginLeft: '10px' }} onClick={() => this.submit()}>
                 确定收费
               </button>
             </div>
@@ -423,12 +456,61 @@ class RetailScreen extends Component {
     )
   }
 
+  // 展示授权码
+  renderAuthCode() {
+    if (!this.state.showCode) return null
+    return (
+      <div className='mask'>
+        <div className='doctorList' style={{ width: '800px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+          <div className='doctorList_top'>
+            <span>
+              {this.state.pay_method === 2 ? '微信' : '支付宝'}
+              {'当面付'}
+            </span>
+            <span onClick={() => this.setState({ showCode: false })}>x</span>
+          </div>
+          <div className='tableDIV' style={{ width: '100%', marginTop: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center' }}>
+              <span>付款码授权码，请用扫码枪扫码获取</span>
+              <input
+                style={{ background: 'rgba(255,255,255,1)', width: '80%', marginTop: '4px', height: '30px', borderRadius: '4px', border: '1px solid #d8d8d8' }}
+                value={this.state.authCode}
+                onChange={e => {
+                  this.setState({ authCode: e.target.value })
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', marginTop: '20px' }}>
+              <div>{this.state.payStatus}</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', marginTop: '40px' }}>
+              <div className='codeDiv'>{this.state ? <button onClick={() => this.payOrder()}>提交</button> : null}</div>
+            </div>
+          </div>
+        </div>
+        <style jsx='true'>{`
+          .codeDiv button {
+            width: 150px;
+            height: 40px;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            color: rgba(42, 205, 200, 1);
+            font-size: 14px;
+            border: 1px solid #2acdc8;
+            cursor: pointer;
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   // 加载
   render() {
     return (
       <div>
         {this.showContentData()}
         {this.renderBill()}
+        {this.renderAuthCode()}
         <Confirm ref='myAlert' />
       </div>
     )
@@ -445,5 +527,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { ClinicDrugListWithStock }
+  { ClinicDrugListWithStock, createDrugRetailOrder, createDrugRetailPaymentOrder }
 )(RetailScreen)
