@@ -2,23 +2,27 @@ import React, { Component } from 'react'
 // import Link from 'next/link'
 import { theme } from '../../../components'
 import Router from 'next/router'
+import { getLastMenu } from '../../../utils'
 
 export default class Navigation extends Component {
   constructor(props) {
     super(props)
     this.state = {}
   }
+
   renderLongMenu(children) {
     const { url } = this.props
-    // console.log('children=======', children)
     return (
       <div className={'childDiv'}>
         {children.map((item, index) => {
-          let navigateName = item.navigateName
+          let menu = getLastMenu(item)
+          let navigateName = menu.menu_url
           return (
-            // <Link key={item.navigateName} href={item.navigateName}>
+            // <Link key={item.menu_url} href={item.menu_url}>
             // </Link>
-            <div key={index} onClick={() => Router.push(navigateName)} className={'childItem ' + (navigateName === url ? 'sel' : '')}>{item.title}</div>
+            <div key={index} onClick={() => Router.push(navigateName)} className={'childItem ' + (navigateName === url ? 'sel' : '')}>
+              {item.menu_name}
+            </div>
           )
         })}
         <style jsx='true'>{`
@@ -41,24 +45,23 @@ export default class Navigation extends Component {
       <ul className='footNavUl'>
         {data &&
           data.map((item, itemKey) => {
-            // console.log('item======', item)
-            let itemUrl = item.navigateName.split('/')[2]
+            let itemUrl = item.menu_url.split('/')[2]
             let children = []
             if (item.children) {
               children = item.children
             }
-            // console.log('item=======', item)
+            let menu = getLastMenu(item)
+            let navigateName = menu.menu_url
             return (
               <div key={itemKey} className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
-                <div onClick={() => Router.push(item.navigateName)}>
+                <div onClick={() => Router.push(navigateName)}>
                   <i />
                   <img src={item.icon} />
-                  <a>{item.title}</a>
+                  <a>{item.menu_name}</a>
                 </div>
                 {children.length > 0 ? this.renderLongMenu(children) : ''}
               </div>
             )
-            // console.log('children=======', children)
           })}
         <style jsx global>{`
           .footNavUl {
@@ -101,7 +104,7 @@ export default class Navigation extends Component {
             height: auto;
             min-height: 50px;
           }
-          .footNavUl > div a{
+          .footNavUl > div a {
             color: rgba(102, 102, 102, 1);
           }
           .footNavUl div i {

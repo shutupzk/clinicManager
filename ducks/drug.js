@@ -204,3 +204,15 @@ export const queryDicDrugsList = ({ keyword = '', offset = 0, limit = 20, type }
     return e.message
   }
 }
+export const ClinicDrugBatchSetting = (requestData) => async dispatch => {
+  try {
+    // console.log('ClinicDrugBatchSetting====', requestData)
+    const data = await request('/clinic_drug/ClinicDrugBatchSetting', requestData)
+    // console.log(data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}

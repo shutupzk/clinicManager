@@ -298,16 +298,14 @@ class PendingDetailDrugScreen extends Component {
                   <div style={{ flex: 1 }}>{amount}</div>
                   <div style={{ flex: 2 }}>待发药</div>
                   <div>
-                    <textarea
-                      style={{ width: '90%', minHeight: '90%', height: this.state.textareaHeight[item.id] + 'px', resize: 'none', border: 'none' }}
-                      value={this.state.remarks[item.id]}
-                      onChange={e => {
-                        console.log('height=====', e.target.scrollHeight)
-                        this.setRemark(item.id, e.target.value)
-                        this.setTextareaHeight(item.id, e.target.scrollHeight - 4)
+                    <div
+                      style={{ width: '100%', lineHeight: '24px', minHeight: '100%' }}
+                      contentEditable
+                      onBlur={e => {
+                        // console.log('innerHtml======', e.target.innerHTML)
+                        this.setRemark(item.id, e.target.innerHTML)
                       }}
-                    />
-                    {/* </div> */}
+                    >{this.state.remarks[item.id]}</div>
                   </div>
                 </li>
               )
@@ -426,15 +424,18 @@ class PendingDetailDrugScreen extends Component {
               margin:0
               width: 89px;
               height: 30px;
-              line-height:35px
+              line-height:35px;
+              text-align: end;
+              margin-right: 5px;
             }
             .contentBox input {
-              margin:0
+              margin:0;
               width: 300px;
               height: 30px;
               background: rgba(245, 248, 249, 1);
               border-radius: 4px;
-              padding-right: 5px
+              padding-right: 5px;
+              border: 1px solid #d8d8d8;
             }
           `}</style>
       </div>
@@ -473,7 +474,7 @@ class PendingDetailDrugScreen extends Component {
                     <li>{moment(created_time).format('YYYY-MM-DD HH:mm:ss')}</li>
                     <li>{doctor_name}</li>
                     <li>{opration_name}</li>
-                    <li>{project_name} ...</li>
+                    <li title={project_name}>{project_name} ...</li>
                     <li style={{ cursor: 'pointer', color: 'rgba(42,205,200,1' }} onClick={() => this.showRecordDetail(item.drug_delivery_record_id)}>
                       查看详情
                     </li>
@@ -573,7 +574,8 @@ class PendingDetailDrugScreen extends Component {
                     <div style={{ flex: 1 }}>{item.amount}</div>
                     <div style={{ flex: 2 }}>{status_map[item.order_status]}</div>
                     <div>
-                      <textarea disabled style={{ width: '90%', resize: 'none', border: 'none' }} value={item.remark} />
+                      {item.remark}
+                      {/* <textarea disabled style={{ width: '90%', resize: 'none', border: 'none' }} value={item.remark} /> */}
                     </div>
                   </li>
                 )

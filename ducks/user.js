@@ -3,10 +3,12 @@ import localforage from 'localforage'
 const USER_SIGNIN = 'USER_SIGNIN'
 const USER_SIGNOUT = 'USER_SIGNOUT'
 const USER_MENU = 'USER_MENU'
+const ALL_MENU = 'ALL_MENU'
 
 const initState = {
   data: {},
-  user_menu: []
+  user_menu: [],
+  all_menu: []
 }
 
 export function user (state = initState, action = {}) {
@@ -17,6 +19,8 @@ export function user (state = initState, action = {}) {
       return { ...state, data: {} }
     case USER_MENU:
       return {...state, user_menu: action.user_menu}
+    case ALL_MENU:
+      return {...state, all_menu: action.data}
     default:
       return state
   }
@@ -58,18 +62,35 @@ export const signout = () => async dispatch => {
     return e.message
   }
 }
-export const RolesByPersonnel = ({id}) => async dispatch => {
+export const FunMenusByPersonnel = ({id}) => async dispatch => {
   try {
     console.log('limit====', id)
-    const data = await request('/personnel/RolesByPersonnel', {id})
-    console.log('RolesByPersonnel=======', data)
-    const docs = data.data || {}
+    const data = await request('/personnel/FunMenusByPersonnel', {id})
+    console.log('FunMenusByPersonnel=======', data)
+    const docs = data.data || []
     return docs
   } catch (e) {
     console.log(e)
-    return {} // e.message
+    return [] // e.message
   }
 }
+
+export const MenubarList = ({ascription}) => async dispatch => {
+  try {
+    const data = await request('/business/menubar/list', {ascription})
+    console.log('MenubarList=======', data)
+    const docs = data.data || []
+    dispatch({
+      type: ALL_MENU,
+      data: docs
+    })
+    return docs
+  } catch (e) {
+    console.log(e)
+    return []
+  }
+}
+
 export const saveUserMenu = ({user_menu}) => async dispatch => {
   try {
     // localforage.clear()

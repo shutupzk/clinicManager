@@ -62,6 +62,7 @@ export const getPatientByKeyword = ({ keyword }) => async dispatch => {
 }
 
 export const patientSelect = ({ patient_id }) => async dispatch => {
+  console.log('patient_id patientSelect ======', patient_id)
   try {
     dispatch({
       type: PATIENT_SELECT,

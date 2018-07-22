@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Confirm, PageCard, MyCreatableSelect, ImageViewer } from '../../../../../components'
+import { Confirm, PageCard, MyCreatableSelect, ImageViewer, Upload, DatePicker } from '../../../../../components'
 import { API_SERVER } from '../../../../../config'
 // import CreatableSelect from 'react-select/lib/Creatable'
 import moment from 'moment'
+
 import {
   createMedicalRecord,
   queryMedicalRecord,
@@ -20,6 +21,8 @@ class MedicalRecordScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      showProgress: false,
+      percent: 0,
       morbidity_date: '',
       chief_complaint: '',
       history_of_present_illness: '',
@@ -1082,8 +1085,9 @@ class MedicalRecordScreen extends Component {
               width: auto;
               white-space: nowrap;
               text-overflow: ellipsis;
-              padding: 3px 15px 3px 3px;
-              height: 20px;
+              // padding: 3px 15px 3px 3px;
+              padding:5px;
+              height: 30px;
               text-align: left;
               display: block;
               cursor: default;
@@ -1096,8 +1100,8 @@ class MedicalRecordScreen extends Component {
               height: 50px;
             }
             .filesBox ul li.imgLi img {
-              // width: 100%;
-              // height: 100%;
+              width: 100%;
+              height: 100%;
               opacity: 0.7;
             }
             .filesBox ul li span {
@@ -1109,9 +1113,11 @@ class MedicalRecordScreen extends Component {
               height: 12px;
               right: 0;
               text-align: center;
-              background: rgba(100, 100, 100, 0.3);
-              opacity: 0.7;
-              line-height: 12px;
+              background: #afb6ba;
+              color: #fff;
+              font-weight: bold;
+              /* opacity: 0.7; */
+              line-height: 10px;
             }
             .filesBox ul li span:hover {
               opacity: 1;
@@ -1166,10 +1172,62 @@ class MedicalRecordScreen extends Component {
       }
     }
   }
+  // 显示进度条
+  showProgress(e) {
+    const { uploadedFiles, imgFiles } = this.state
+    let array = uploadedFiles
+    let imgArray = imgFiles
+    let file = e.file
+    if (e.event !== undefined) {
+      let event = e.event
+      // console.log('event=====', e, file, event)
+      this.setState({showProgress: true, percent: event.percent})
+    }
+    // console.log('event=====', e)
+    if (file.status === 'done') {
+      this.setState({showProgress: false, percent: 0})
+      // console.log('fileList====', e.file)
+      if (e.file.response.url !== undefined) {
+        let url = e.file.response.url
+        let item = {
+          docName: file.name,
+          url
+        }
+        array.push(item)
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+          imgArray.push(item)
+        }
+        this.setState({ uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array) })
+      }
+    }
+  }
+  fileProgress() {
+    const {percent} = this.state
+    return (
+      <div className={'progress'}>
+        <div className={'percent'} style={{width: percent + '%'}} />
+        <style jsx>{`
+          .progress{
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            top: 75px;
+            height: 8px;
+            border: 1px solid #d8d8d8;
+            border-radius: 4px;
+          }
+          .percent{
+            height: 100%;
+            background: #1ba798;
+          }
+        `}</style>
+      </div>
+    )
+  }
   render() {
     let {
       uploadedFiles,
-      morbidity_date,
+      // morbidity_date,
       chief_complaint,
       history_of_present_illness,
       history_of_past_illness,
@@ -1183,9 +1241,11 @@ class MedicalRecordScreen extends Component {
       remark,
       showComplaint,
       selPage,
-      diagnosisArray
+      diagnosisArray,
+      showProgress
       // chooseDiagnosticTemplate
     } = this.state
+    // console.log('morbidity_date===', morbidity_date)
     const { changePage } = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
@@ -1256,14 +1316,27 @@ class MedicalRecordScreen extends Component {
         </div>
         <div className='filterBox'>
           <div className='boxLeft'>
-            <input
+            <div style={{float: 'left', margin: '-3px 0 0 15px'}}>
+              <DatePicker
+                // defaultValue={moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                // value={morbidity_date === '' ? moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD') : moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                format={'YYYY-MM-DD'}
+                // value={moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
+                  if (date) {
+                    this.setState({ morbidity_date: moment(date).format('YYYY-MM-DD') })
+                  }
+                }}
+              />
+            </div>
+            {/* <input
               type='date'
               placeholder='开始日期'
               value={morbidity_date}
               onChange={e => {
                 this.setState({ morbidity_date: e.target.value })
               }}
-            />
+            /> */}
             <button onClick={() => this.setMedicalModesl()}>选择模板</button>
             <button onClick={() => this.setHistroyMedicals()}>复制病历</button>
           </div>
@@ -1356,10 +1429,18 @@ class MedicalRecordScreen extends Component {
                 <li>
                   <label>上传文件</label>
                   {this.renderFiles()}
+                  <div style={{display: 'flex', alignItems: 'center', marginTop: '10px'}}>
+                    <Upload onChange={e => {
+                      this.showProgress(e)
+                      // console.log('Upload=====', e)
+                    }} />
+                    <label>文件大小不能超过20M，支持图片、word、pdf文件</label>
+                  </div>
+                  {showProgress ? this.fileProgress() : ''}
                   <ImageViewer ref='ImageViewer' images={images} />
-                  <div className={'chooseFile'}>
+                  {/* <div className={'chooseFile'}>
                     <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
-                      <input
+                      <inputz
                         multiple='multiple'
                         type='file'
                         onChange={e => {
@@ -1370,7 +1451,7 @@ class MedicalRecordScreen extends Component {
                     </form>
                     <button> + 添加文件</button>
                     <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
-                  </div>
+                  </div> */}
                 </li>
                 <li style={{ position: 'relative' }}>
                   <label>初步诊断</label>

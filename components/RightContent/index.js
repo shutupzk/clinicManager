@@ -1,21 +1,12 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import { MAINFUNCTION } from '../../config'
-// import canlendarStyles from './Wrapper'
-// import Link from 'next/link'
 import { theme } from '../../components'
 import { signout } from '../../ducks'
 import { connect } from 'react-redux'
-// import localforage from 'localforage'
-// import Navigation from './foot_navigation'
-// import ConLayout from '../common/con_layout'
-
+import { getLastMenu } from '../../utils'
 class RightContent extends Component {
   constructor(props) {
     super(props)
-    // console.log(window,window);
-    // let windowWidth = window.innerWidth;
-    // this.onWindowResize.bind(this);
     this.state = {
       showLogutBtn: false,
       windowWidth: 1920,
@@ -59,10 +50,6 @@ class RightContent extends Component {
       </div>
     )
   }
-  // 退出登录
-  // logout() {
-  //   Router.push('/login')
-  // }
   componentWillMount() {}
   componentDidMount() {
     this.setState({ windowWidth: window.innerWidth, windowHeight: window.innerHeight })
@@ -77,48 +64,29 @@ class RightContent extends Component {
   }
 
   render() {
-    // this.state.winWidth = window.innerWidth;
-    // const hideRightCon = this.props.hideRightCon || false
-    // const { showLogutBtn } = this.state
     const curUrl = this.props.url && this.props.url.pathname
-    // const imgstylenormal = { height: '.26rem', padding: '0 .1rem 0 .3rem', marginTop: '.16rem' }
-    // console.log('curUrl =========', curUrl)
-    // const url = (this.props.url && this.props.url.pathname) || '/'
-    // const conList = MAINFUNCTION.filter(item => url.indexOf(item.short_name) > -1)
-    // const winWidth = this.state.winWidth;
-    // console.log("winWidth"+winWidth);
-    // window.re();
-    // console.log("curUrl",this.props.url.pathname+"==="+curUrl);
-    // console.log('curUrl====', curUrl, curUrl.split('/')[1])
-    // const {user_menu} = this.props
+    const {user_menu} = this.props
     return (
       <div className={'rightContent'} style={{ width: this.state.windowWidth - 256 }}>
         <div className={'right_nav_menu'}>
           <ul className='left'>
-            {MAINFUNCTION.map((item, iKey) => {
+            {user_menu.map((item, iKey) => {
+              let menu = getLastMenu(item)
+              let navigateName = menu.menu_url
               return (
                 <li
-                  key={item.navigateName}
-                  className={curUrl.split('/')[1] === item.navigateName.split('/')[1] ? 'selLi' : ''}
+                  key={item.menu_url}
+                  className={curUrl.split('/')[1] === item.menu_url.split('/')[1] ? 'selLi' : ''}
                   onClick={() => {
-                    Router.push(item.navigateName)
+                    Router.push(navigateName)
                   }}
                 >
-                  {item.title}
-                  {/* <img src={'/static/home/u141.png'} /> */}
+                  {item.menu_name}
                 </li>
               )
             })}
             <div className='clearfix' />
           </ul>
-          {/* <div
-            style={{ float: 'right', cursor: 'pointer' }}
-            onClick={() => {
-              this.doSignout()
-            }}
-					>
-						注销
-					</div> */}
           <div className={'rightUserInfo'}>
             <span>
               <img src='/static/icons/doctor.svg' />

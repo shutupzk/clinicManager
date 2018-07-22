@@ -114,12 +114,12 @@ class InspectionPhysicianScreen extends Component {
             </button>
           </div>
         </div>
-        <div className={'rightTopFilter'}>
+        {/* <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
             <button onClick={() => {}}>批量设置折扣</button>
             <button onClick={() => {}}>批量设置有效期限</button>
           </div>
-        </div>
+        </div> */}
         <div className={'contentTable'}>{this.renderTable()}</div>
         <style jsx='true'>{`
           .contentCenterRight {

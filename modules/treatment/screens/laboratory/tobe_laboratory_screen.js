@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { LaboratoryTriageWaiting, LaboratoryTriageList, LaboratoryTriageUpdate } from '../../../../ducks'
+import { LaboratoryTriageWaiting, LaboratoryTriageList, LaboratoryTriageUpdate, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-import { PageCard, Confirm } from '../../../../components'
+import { PageCard, Confirm, DatePicker } from '../../../../components'
 
 class TobeLaboratoryScreen extends Component {
   constructor(props) {
@@ -58,7 +58,11 @@ class TobeLaboratoryScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => {
+                      let patient_id = patient.patient_id
+                      this.props.patientSelect({ patient_id })
+                      Router.push('/treatment/registration/list_detail')
+                    }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>待检验</span>
@@ -182,9 +186,10 @@ class TobeLaboratoryScreen extends Component {
             </div>
           </div>
           <div className={'maskBox_bottom'}>
-            <div>
-              <button onClick={() => this.setState({ showMask: false })}>取消</button>
+            <div className={'bottomBtn'}>
+              <button className={'addBtn'} onClick={() => this.setState({ showMask: false })}>取消</button>
               <button
+                className={'addBtn'}
                 onClick={() => {
                   this.determineExam()
                 }}
@@ -312,22 +317,28 @@ class TobeLaboratoryScreen extends Component {
         </div>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
-            <input
-              type='date'
-              placeholder='选择开始日期'
-              value={this.state.start_date}
-              onChange={e => {
-                this.setState({ start_date: e.target.value })
-              }}
-            />
-            <input
-              type='date'
-              placeholder='选择结束日期'
-              value={this.state.end_date}
-              onChange={e => {
-                this.setState({ end_date: e.target.value })
-              }}
-            />
+            <div className={'dateDiv'}>
+              <DatePicker
+                placeholder={'开始日期'}
+                value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
+                  if (date) {
+                    this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
+                  }
+                }}
+              />
+            </div>
+            <div className={'dateDiv'}>
+              <DatePicker
+                placeholder={'结束日期'}
+                value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
+                  if (date) {
+                    this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
+                  }
+                }}
+              />
+            </div>
             <input
               type='text'
               placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
@@ -362,5 +373,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { LaboratoryTriageWaiting, LaboratoryTriageList, LaboratoryTriageUpdate }
+  { LaboratoryTriageWaiting, LaboratoryTriageList, LaboratoryTriageUpdate, patientSelect }
 )(TobeLaboratoryScreen)

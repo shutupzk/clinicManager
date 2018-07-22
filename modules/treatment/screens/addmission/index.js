@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triagePatientsSelect, triageReception } from '../../../../ducks'
+import { RecptionPatientList, triagePatientsSelect, triageReception, patientSelect } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday } from '../../../../utils'
-import { PageCard, Confirm } from '../../../../components'
+import { PageCard, Confirm, DatePicker } from '../../../../components'
 class AddmisionScreen extends Component {
   constructor(props) {
     super(props)
@@ -27,39 +27,24 @@ class AddmisionScreen extends Component {
     this.commonQueryList({})
   }
 
-  quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit, startDate, endDate }) {
-    const { clinic_id, triagePatientsList } = this.props
-    let params = { clinic_id, is_today: false, offset, limit, keyword }
-    if (status_start && status_end) {
-      params.status_start = status_start
-      params.status_end = status_end
-    }
-
-    if (startDate && endDate) {
-      params.is_today = false
-      params.startDate = startDate
-      params.endDate = endDate
-    }
-
-    triagePatientsList(params)
+  quetryRecptionPatientList({ keyword, query_type, offset, limit, startDate, endDate }) {
+    const { clinic_id, RecptionPatientList, triage_personnel_id } = this.props
+    RecptionPatientList({ clinic_id, personnel_id: triage_personnel_id, query_type, offset, limit, startDate, endDate, keyword })
   }
 
   commonQueryList({ offset = 0, limit = 6, pageType }) {
     let { keyword1, keyword2, startDate, endDate } = this.state
     pageType = pageType || this.state.pageType
     let keyword = keyword1
-    let status_start = 20
-    let status_end = 30
+    let query_type = '1'
     if (pageType === 2) {
+      query_type = '1'
       keyword = keyword2
-      status_start = 40
-      status_end = 90
     }
     if (pageType === 1) {
-      startDate = null
-      endDate = null
+      query_type = '0'
     }
-    this.quetryTriagePatientsList({ keyword, status_start, status_end, offset, limit, startDate, endDate })
+    this.quetryRecptionPatientList({ keyword, query_type, offset, limit, startDate, endDate })
   }
 
   // 接诊
@@ -128,7 +113,16 @@ class AddmisionScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span>{patient.patient_name}</span>
+                    <span
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        let patient_id = patient.patient_id
+                        this.props.patientSelect({ patient_id })
+                        Router.push('/treatment/registration/list_detail')
+                      }}
+                    >
+                      {patient.patient_name}
+                    </span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{treat_status}</span>
@@ -164,7 +158,15 @@ class AddmisionScreen extends Component {
                   </div>
                   <div className={'itemBottom'}>
                     <span onClick={() => this.reception(patient)}> {pageType === 1 ? '接诊' : '查看'}</span>
-                    <span onClick={() => this.showCompleteHealthFile(patient.clinic_triage_patient_id)}>查看健康档案</span>
+                    <span
+                      onClick={() => {
+                        let patient_id = patient.patient_id
+                        this.props.patientSelect({ patient_id })
+                        Router.push('/treatment/registration/list_detail')
+                      }}
+                    >
+                      查看健康档案
+                    </span>
                     <span onClick={() => this.receptionOperation(patient.clinic_triage_patient_id)}>操作</span>
                   </div>
                 </li>
@@ -210,24 +212,28 @@ class AddmisionScreen extends Component {
     } else {
       return (
         <div className={'boxLeft'}>
-          <input
-            type='date'
-            placeholder='开始日期'
-            value={startDate}
-            onChange={e => {
-              this.setState({ startDate: e.target.value })
-            }}
-          />
-
-          <input
-            type='date'
-            placeholder='结束日期'
-            value={endDate}
-            onChange={e => {
-              this.setState({ endDate: e.target.value })
-            }}
-          />
-
+          <div className={'dateDiv'}>
+            <DatePicker
+              placeholder={'开始日期'}
+              value={moment(moment(startDate).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+              onChange={(date, str) => {
+                if (date) {
+                  this.setState({ startDate: moment(date).format('YYYY-MM-DD') })
+                }
+              }}
+            />
+          </div>
+          <div className={'dateDiv'}>
+            <DatePicker
+              placeholder={'结束日期'}
+              value={moment(moment(endDate).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+              onChange={(date, str) => {
+                if (date) {
+                  this.setState({ endDate: moment(date).format('YYYY-MM-DD') })
+                }
+              }}
+            />
+          </div>
           <input
             type='text'
             placeholder='搜索就诊人姓名/身份证号码/手机号码'
@@ -290,4 +296,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList, triagePatientsSelect, triageReception })(AddmisionScreen)
+export default connect(
+  mapStateToProps,
+  { RecptionPatientList, triagePatientsSelect, triageReception, patientSelect }
+)(AddmisionScreen)

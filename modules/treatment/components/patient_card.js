@@ -17,12 +17,16 @@ export default class PatientCard extends Component {
   }
 
   render() {
-    let { patient, buttons } = this.props
+    let { patient, buttons, onNameClick } = this.props
     buttons = buttons || []
     return (
       <div>
         <div className={'itemTop'}>
-          <span>{patient.patient_name}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => {
+            if (onNameClick) {
+              onNameClick()
+            }
+          }}>{patient.patient_name}</span>
           <span>{patient.sex === 0 ? '女' : '男'}</span>
           <span>{getAgeByBirthday(patient.birthday)}</span>
           <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>{status[patient.status]}</span>

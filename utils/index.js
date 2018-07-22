@@ -67,13 +67,17 @@ export const getAgeByBirthday = birthday => {
   let months = moment().diff(moment(birthday), 'month')
   if (months < 1) return `${days}天`
   if (months < 12) {
-    let d = moment().add(months * -1, 'month').diff(moment(birthday), 'day')
+    let d = moment()
+      .add(months * -1, 'month')
+      .diff(moment(birthday), 'day')
     if (d === 0) return `${months}月`
     return `${months}月${d}天`
   }
   let years = moment().diff(moment(birthday), 'year')
   if (years < 7) {
-    let y = moment().add(years * -1, 'year').diff(moment(birthday), 'month')
+    let y = moment()
+      .add(years * -1, 'year')
+      .diff(moment(birthday), 'month')
     if (y === 0) return `${years}岁`
     return `${years}岁${months % 12}月`
   }
@@ -97,7 +101,10 @@ export const limitMoney = money => {
   let value = ''
   value = money.replace(/[^\d.]/g, '')
   value = value.replace(/^\./g, '')
-  value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')
+  value = value
+    .replace('.', '$#$')
+    .replace(/\./g, '')
+    .replace('$#$', '.')
   let valus = value.split('.')
   if (valus[1] && valus[1].length > 2) value = valus[0] + '.' + valus[1].substr(0, 2)
   return value
@@ -178,13 +185,13 @@ export const checkIdCard = code => {
     tip = '地址编码错误'
     pass = false
   } else {
-        // 18位身份证需要验证最后一位校验位
+    // 18位身份证需要验证最后一位校验位
     if (code.length === 18) {
       code = code.split('')
-            // ∑(ai×Wi)(mod 11)
-            // 加权因子
+      // ∑(ai×Wi)(mod 11)
+      // 加权因子
       var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
-            // 校验位
+      // 校验位
       var parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2]
       var sum = 0
       var ai = 0
@@ -202,5 +209,179 @@ export const checkIdCard = code => {
       }
     }
   }
-  return {pass, tip}
+  return { pass, tip }
+}
+
+export const formatMenuList = (parentId, array, oldIds = []) => {
+  let fns = []
+  for (let obj of array) {
+    if (obj.parent_function_menu_id === parentId) {
+      if (oldIds.indexOf(parentId) === -1) {
+        obj.children = formatMenuList(obj.function_menu_id, array, [...oldIds, parentId])
+      }
+      fns.push(obj)
+    }
+  }
+  return fns.sort((a, b) => {
+    if (a.function_menu_id > b.function_menu_id) return 1
+    return -1
+  })
+}
+
+export const getUnHasMenuList = (list = [], allMenus = []) => {
+  let array = []
+  for (let obj of allMenus) {
+    let has = false
+    for (let item of list) {
+      if (obj.function_menu_id === item.function_menu_id) {
+        has = true
+        break
+      }
+    }
+    if (!has) {
+      array.push(obj)
+    }
+  }
+  let ids = {}
+  let fns = []
+  for (let obj of array) {
+    if (ids[obj.function_menu_id]) continue
+    ids[obj.function_menu_id] = obj.function_menu_id
+    fns.push(obj)
+    let parents = getMenuParents(obj, allMenus)
+    for (let item of parents) {
+      if (ids[item.function_menu_id]) continue
+      ids[item.function_menu_id] = item.function_menu_id
+      fns.push(item)
+    }
+  }
+  return fns
+}
+
+export const formatUnHasMemuList = (hasSet, allMenus) => {
+  let fns = getUnHasMenuList(hasSet, allMenus)
+  return formatMenuList(null, fns, [], 'formatUnHasMemuList')
+}
+
+export const addMenu = (menu, hasSet, allMenus) => {
+  let childs = getMenuChilds(menu, allMenus)
+  let parents = getMenuParents(menu, allMenus)
+  let ids = {}
+  let array = [...hasSet, ...childs, ...parents]
+  let result = []
+  for (let obj of array) {
+    if (!ids[obj.function_menu_id]) {
+      ids[obj.function_menu_id] = obj.function_menu_id
+      result.push(obj)
+    }
+  }
+  return result
+}
+
+export const getMenuParents = (menu, allMenus) => {
+  let patrents = []
+  getParents()
+  function getParents() {
+    for (let obj of allMenus) {
+      if (menu.parent_function_menu_id === obj.function_menu_id) {
+        menu = obj
+        patrents.push(obj)
+        break
+      }
+    }
+    if (menu.parent_function_menu_id) {
+      getParents()
+    }
+  }
+  return patrents
+}
+
+export const getMenuChilds = (menu, allMenus) => {
+  let childs = [menu]
+  let ids = {[menu.function_menu_id]: menu.function_menu_id}
+  getChilds()
+  function getChilds() {
+    let count = 0
+    let newArray = []
+    for (let obj of allMenus) {
+      if (ids[obj.parent_function_menu_id]) {
+        ids[obj.function_menu_id] = obj.function_menu_id
+        childs.push(obj)
+        count++
+      } else {
+        newArray.push(obj)
+      }
+    }
+    allMenus = newArray
+    if (count > 0) {
+      getChilds()
+    }
+  }
+  return childs
+}
+
+export const deleteMenu = (menu, hasSet) => {
+  let newHasSet = []
+  for (let obj of hasSet) {
+    if (obj.function_menu_id !== menu.function_menu_id) {
+      newHasSet.push(obj)
+    }
+  }
+  let array = delPatrent(menu, newHasSet)
+  array = delChild(menu, array)
+  return array
+}
+
+export const delChild = (menu, array) => {
+  let ids = {[menu.function_menu_id]: menu.function_menu_id}
+  delChilds()
+  function delChilds() {
+    let count = 0
+    let newArray = []
+    for (let obj of array) {
+      if (ids[obj.parent_function_menu_id]) {
+        ids[obj.function_menu_id] = obj.function_menu_id
+        count++
+      } else {
+        newArray.push(obj)
+      }
+    }
+    array = newArray
+    if (count > 0) {
+      delChilds()
+    }
+  }
+  return array
+}
+
+export const delPatrent = (menu, array) => {
+  if (!menu.parent_function_menu_id) return array
+  let count = 0
+  let patrent = {}
+  let newArray = []
+  for (let obj of array) {
+    if (obj.parent_function_menu_id === menu.parent_function_menu_id) {
+      count++
+    }
+    if (obj.function_menu_id === menu.parent_function_menu_id) {
+      patrent = obj
+    } else {
+      newArray.push(obj)
+    }
+  }
+  if (count === 0) {
+    if (newArray.length > 0) {
+      return delPatrent(patrent, newArray)
+    }
+    return newArray
+  } else {
+    return array
+  }
+}
+
+export const getLastMenu = (menu) => {
+  if (menu.children && menu.children.length) {
+    return getLastMenu(menu.children[0])
+  }
+  return menu
 }

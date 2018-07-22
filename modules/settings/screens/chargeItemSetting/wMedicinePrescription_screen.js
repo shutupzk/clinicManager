@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { ClinicDrugList, queryDrugClassList, ClinicDrugOnOff } from '../../../../ducks'
-import { PageCard, Select, Confirm } from '../../../../components'
+import { ClinicDrugList, queryDrugClassList, ClinicDrugOnOff, ClinicDrugBatchSetting } from '../../../../ducks'
+import { PageCard, Select, Confirm, style } from '../../../../components'
 import AddDrugScreen from './components/addDrugScreen'
 import { formatMoney } from '../../../../utils'
 
@@ -18,7 +18,11 @@ class WMPrescriptionScreen extends Component {
       type: 0,
       drug_class_id: -1,
       showWay: 1,
-      clinic_drug_id: ''
+      clinic_drug_id: '',
+      checkedArray: [],
+      showType: 0,
+      is_discount: true,
+      day_warning: 0
     }
   }
 
@@ -59,6 +63,7 @@ class WMPrescriptionScreen extends Component {
     const { clinic_id, ClinicDrugList } = this.props
     const { status, keyword, drug_class_id } = this.state
     ClinicDrugList({ clinic_id, type: 0, drug_class_id, keyword, offset, limit, status })
+    this.setState({checkedArray: []})
   }
 
   // 获取药品分类列表
@@ -176,7 +181,7 @@ class WMPrescriptionScreen extends Component {
   }
   // 加载右侧表格
   renderRightTable() {
-    // const {keyword, status} = this.state
+    const {showType} = this.state
     return (
       <div className={'contentCenterRight'}>
         <div className={'rightTopFilter'}>
@@ -224,11 +229,17 @@ class WMPrescriptionScreen extends Component {
         </div>
         <div className={'rightTopFilter'}>
           <div className={'rightTopFilterLeft'}>
-            <button onClick={() => {}}>批量设置折扣</button>
-            <button onClick={() => {}}>批量设置有效期限</button>
+            <button onClick={() => {
+              this.batchSetting(1)
+            }}>批量设置折扣</button>
+            <button onClick={() => {
+              this.batchSetting(2)
+            }}>批量设置有效期限</button>
           </div>
         </div>
         <div className={'contentTable'}>{this.renderTable()}</div>
+        {showType === 1 ? this.renderBatchDiscount() : ''}
+        {showType === 2 ? this.renderBatchDayWarning() : ''}
         <style jsx='true'>{`
           .contentCenterRight {
             flex: 4;
@@ -294,6 +305,164 @@ class WMPrescriptionScreen extends Component {
       </div>
     )
   }
+  batchBoxStyle() {
+    return (
+      <style jsx='1'>{`
+        .batchBox{
+          background: rgba(255,255,255,1);
+          box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.2);
+          position: absolute;
+          width: 330px;
+          height: 200px;
+        }
+        .boxBody{
+          display:flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+        }
+        .boxBody ul{
+          margin: 40px 0;
+          width: 100%;
+        }
+        .boxBody ul li{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .boxBody ul li span{
+          margin-right: 20px;
+        }
+        .boxBody ul li label{
+          margin-right: 10px
+        }
+      `}</style>
+    )
+  }
+  // 批量设置折扣
+  renderBatchDiscount() {
+    const {is_discount} = this.state
+    return (
+      <div className={'mask'}>
+        <div className={'batchBox'}>
+          <div className={'healthFile_top'}>
+            <span>批量设置折扣</span>
+            <span onClick={() => this.setState({showType: 0})}>×</span>
+          </div>
+          <div className={'boxBody'}>
+            <ul>
+              <li>
+                <span>是否允许折扣</span>
+                <label>
+                  <input
+                    type={'radio'}
+                    name={'is_discount'}
+                    checked={is_discount}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        this.setState({is_discount: true})
+                      }
+                    }}
+                  />是
+                </label>
+                <label>
+                  <input
+                    type={'radio'}
+                    name={'is_discount'}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        this.setState({is_discount: false})
+                      }
+                    }}
+                  />否
+                </label>
+              </li>
+            </ul>
+            <div className={'maskBoxBottom'}>
+              <button onClick={() => this.setState({showType: 0})}>取消</button>
+              <button onClick={() => {
+                this.ClinicDrugBatchSetting(1)
+              }}>确认</button>
+            </div>
+          </div>
+        </div>
+        {this.batchBoxStyle()}
+      </div>
+    )
+  }
+  // 批量设置有效期
+  renderBatchDayWarning() {
+    return (
+      <div className={'mask'}>
+        <div className={'batchBox'}>
+          <div className={'healthFile_top'}>
+            <span>批量设置效期预警时间</span>
+            <span onClick={() => this.setState({showType: 0})}>×</span>
+          </div>
+          <div className={'boxBody'}>
+            <ul>
+              <li>
+                <input type={'number'}
+                  onChange={e => {
+                    this.setState({day_warning: e.target.value})
+                  }}
+                />天
+              </li>
+            </ul>
+            <div className={'maskBoxBottom'}>
+              <button onClick={() => this.setState({showType: 0})}>取消</button>
+              <button onClick={() => {
+                this.ClinicDrugBatchSetting(2)
+              }}>确认</button>
+            </div>
+          </div>
+        </div>
+        {this.batchBoxStyle()}
+      </div>
+    )
+  }
+  // 批量设置方法
+  async ClinicDrugBatchSetting(type) {
+    const {ClinicDrugBatchSetting, pageInfo} = this.props
+    const {day_warning, is_discount, checkedArray} = this.state
+    let items = []
+    for (let item of checkedArray) {
+      let key = {
+        clinic_drug_id: item.clinic_drug_id + ''
+      }
+      items.push(key)
+    }
+    let requestData = {
+      items: JSON.stringify(items)
+    }
+    if (type === 1) {
+      requestData.is_discount = is_discount
+    } else {
+      requestData.day_warning = day_warning
+    }
+    // console.log('requestData====', requestData)
+    let error = await ClinicDrugBatchSetting(requestData)
+    if (error) {
+      this.refs.myAlert.alert('批量设置失败！', error)
+    } else {
+      this.getDrugsList({offset: pageInfo.offset, limit: pageInfo.limit})
+      this.setState({showType: 0, is_discount: true, day_warning: 0})
+    }
+  }
+  // 批量设置
+  batchSetting(type) {
+    const {checkedArray} = this.state
+    if (checkedArray.length > 0) {
+      if (type === 1) {
+        this.setState({showType: 1})
+      } else {
+        this.setState({showType: 2})
+      }
+    } else {
+      this.refs.myAlert.alert('请选择至少一条要设置的数据！')
+    }
+  }
   async ClinicDrugOnOff(clinic_drug_id, status) {
     const {clinic_id, ClinicDrugOnOff, pageInfo} = this.props
     const {drug_class_id} = this.state
@@ -309,15 +478,60 @@ class WMPrescriptionScreen extends Component {
       this.getDrugsList({ offset: pageInfo.offset, limit: pageInfo.limit, drug_class_id })
     }
   }
+  // 设置选中表格行
+  setChecked(item, isCheck) {
+    let {checkedArray} = this.state
+    if (isCheck) {
+      if (checkedArray.indexOf(item) === -1) {
+        checkedArray.push(item)
+      }
+    } else {
+      for (let i = 0; i < checkedArray.length; i++) {
+        if (item.clinic_drug_id === checkedArray[i].clinic_drug_id) {
+          checkedArray.splice(i, 1)
+        }
+      }
+    }
+    this.setState({checkedArray})
+  }
   // 加载表格
   renderTable() {
     const { drugs, pageInfo } = this.props
-    console.log('drugs=====', drugs)
+    const {checkedArray} = this.state
+    // console.log('drugs=====', drugs, checkedArray)
+    let allCheck = false
+    if (checkedArray.length === drugs.length) {
+      for (let key of drugs) {
+        for (let check of checkedArray) {
+          if (key.clinic_drug_id === check.clinic_drug_id) {
+            allCheck = true
+          }
+        }
+      }
+    }
+    // if (drugs === checkedArray) {
+    //   allCheck = true
+    // }
     return (
       <div className={'tableContent'}>
         <table>
           <thead>
             <tr>
+              <td style={{ flex: 0.3 }}>
+                <input
+                  type={'checkbox'}
+                  checked={allCheck}
+                  onChange={e => {
+                    if (e.target.checked) {
+                      for (let key of drugs) {
+                        this.setChecked(key, true)
+                      }
+                    } else {
+                      this.setState({checkedArray: []})
+                    }
+                  }}
+                />
+              </td>
               <td style={{ flex: 2 }}>处方医嘱名称</td>
               <td>规格</td>
               <td>包装单位</td>
@@ -331,8 +545,27 @@ class WMPrescriptionScreen extends Component {
           </thead>
           <tbody>
             {drugs.map((item, index) => {
+              let check = false
+              for (let key of checkedArray) {
+                if (item.clinic_drug_id === key.clinic_drug_id) {
+                  check = true
+                }
+              }
               return (
                 <tr key={index}>
+                  <td style={{ flex: 0.3 }}>
+                    <input
+                      type={'checkbox'}
+                      checked={check}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          this.setChecked(item, true)
+                        } else {
+                          this.setChecked(item, false)
+                        }
+                      }}
+                    />
+                  </td>
                   <td style={{ flex: 2 }}>{item.drug_name}</td>
                   <td>{item.specification}</td>
                   <td>{item.packing_unit_name}</td>
@@ -499,4 +732,9 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { ClinicDrugList, queryDrugClassList, ClinicDrugOnOff })(WMPrescriptionScreen)
+export default connect(mapStateToProps, {
+  ClinicDrugList,
+  queryDrugClassList,
+  ClinicDrugOnOff,
+  ClinicDrugBatchSetting
+})(WMPrescriptionScreen)

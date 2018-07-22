@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Select, Confirm, PageCard, ImageViewer } from '../../../../../components'
+import { Select, Confirm, PageCard, ImageViewer, Upload } from '../../../../../components'
 import { queryMedicalRecord, ExaminationTriageList, ExaminationTriageRecordCreate, ExaminationTriagePatientRecordList, FileUpload } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import { API_SERVER } from '../../../../../config'
@@ -20,7 +20,9 @@ class ExamDetailScreen extends Component {
       showRecord: false,
       imgWidth: 0,
       imgHeight: 0,
-      visible: false
+      visible: false,
+      showProgress: false,
+      percent: 0
     }
   }
 
@@ -453,13 +455,14 @@ class ExamDetailScreen extends Component {
             .filesBox ul li {
               position: relative;
               margin: 0 0 0 5px;
-              background: rgba(233, 233, 233, 0.8);
+              background: rgba(200, 200, 200, 0.8);
               border-radius: 4px;
               overflow: hidden;
               width: auto;
               white-space: nowrap;
               text-overflow: ellipsis;
-              padding: 3px 15px 3px 3px;
+              // padding: 3px 15px 3px 3px;
+              padding:5px;
               height: 20px;
               text-align: left;
               display: block;
@@ -473,8 +476,8 @@ class ExamDetailScreen extends Component {
               height: 60px;
             }
             .filesBox ul li.imgLi img {
-              // width: 100%;
-              // height: 100%;
+              width: 100%;
+              height: 100%;
               opacity: 0.7;
             }
             .filesBox ul li span {
@@ -486,9 +489,11 @@ class ExamDetailScreen extends Component {
               height: 12px;
               right: 0;
               text-align: center;
-              background: rgba(100, 100, 100, 0.3);
-              opacity: 0.7;
-              line-height: 12px;
+              background: #afb6ba;
+              color: #fff;
+              font-weight: bold;
+              /* opacity: 0.7; */
+              line-height: 10px;
             }
             .filesBox ul li span:hover {
               opacity: 1;
@@ -547,9 +552,62 @@ class ExamDetailScreen extends Component {
       }
     }
   }
-
+  // 显示进度条
+  showProgress(e) {
+    const { imgFiles, selIndex, exams } = this.state
+    let picture_examination = exams[selIndex].picture_examination
+    let uploadedFiles = picture_examination ? JSON.parse(picture_examination) : []
+    let array = uploadedFiles
+    let imgArray = imgFiles || []
+    let file = e.file
+    if (e.event !== undefined) {
+      let event = e.event
+      this.setState({showProgress: true, percent: event.percent})
+    }
+    // console.log('event=====', e)
+    if (file.status === 'done') {
+      // this.setState({})
+      if (e.file.response.url !== undefined) {
+        let url = e.file.response.url
+        let item = {
+          docName: file.name,
+          url
+        }
+        array.push(item)
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+          imgArray.push(item)
+        }
+        exams[selIndex].picture_examination = JSON.stringify(array)
+        this.setState({ exams, showProgress: false, percent: 0 })
+        // this.setState({ uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array) })
+      }
+    }
+  }
+  fileProgress() {
+    const {percent} = this.state
+    return (
+      <div className={'progress'}>
+        <div className={'percent'} style={{width: percent + '%'}} />
+        <style jsx>{`
+          .progress{
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            top: 75px;
+            height: 8px;
+            border: 1px solid #d8d8d8;
+            border-radius: 4px;
+          }
+          .percent{
+            height: 100%;
+            background: #1ba798;
+          }
+        `}</style>
+      </div>
+    )
+  }
   renderContent() {
-    const { selIndex, exams } = this.state
+    const { selIndex, exams, showProgress } = this.state
     const data = exams[selIndex]
     if (!data) return null
     let images = []
@@ -567,8 +625,16 @@ class ExamDetailScreen extends Component {
             <label>检查图片</label>
             <div style={{ width: '100%', height: '120px' }}>
               {this.renderFiles(data.picture_examination, 'ImageViewer2')}
+              <div style={{display: 'flex', alignItems: 'center', marginTop: '10px'}}>
+                <Upload accept={'image/*'} onChange={e => {
+                  this.showProgress(e)
+                  // console.log('Upload=====', e)
+                }} />
+                <label>文件大小不能超过20M，支持图片、word、pdf文件</label>
+              </div>
+              {showProgress ? this.fileProgress() : ''}
               <ImageViewer ref='ImageViewer2' images={images} />
-              <div className={'chooseFile'}>
+              {/* <div className={'chooseFile'}>
                 <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
                   <input
                     multiple='multiple'
@@ -581,7 +647,7 @@ class ExamDetailScreen extends Component {
                 </form>
                 <button> + 添加文件</button>
                 <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
-              </div>
+              </div> */}
             </div>
           </li>
           <li>

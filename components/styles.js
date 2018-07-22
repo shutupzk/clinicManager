@@ -1084,6 +1084,10 @@ export function styles() {
 					color: rgba(51, 51, 51, 1);
 					margin-left: 12px;
 				}
+				.itemTop span:nth-child(1):hover{
+					text-decoration: underline;
+    			color: rgba(42,205,200,1);
+				}
 				.itemTop span:nth-child(2) {
 					font-size: 14px;
 					font-family: MicrosoftYaHei;
@@ -1102,6 +1106,23 @@ export function styles() {
 					border-radius: 10px;
 					float: right;
 					text-align: center;
+					line-height: 20px;
+				}
+				.maskBoxBottom button{
+					background: rgba(255,255,255,1);
+					border-radius: 4px;
+					border: 1px solid #d9d9d9;
+					height: 32px;
+					cursor: pointer;
+					margin-left: 10px;
+					font-size: 14px;
+					font-family: MicrosoftYaHei;
+					color: rgba(0,0,0,0.65);
+					padding: 0 15px;
+				}
+				.maskBoxBottom button:hover {
+					background: rgba(42,205,200,1);
+					color: #FFFFFF;
 				}
 				.itemCenter {
 					flex: 1;
@@ -1167,9 +1188,16 @@ export function styles() {
 					margin-left: 66px;
 					display: flex;
 				}
+				.filterBox a{
+					color: rgba(102,102,102,1);
+				}
 				.filterBox .boxLeft {
 					float: left;
 					flex: 9;
+				}
+				.filterBox .boxLeft .dateDiv{
+					float: left;
+					margin: -4px 10px;
 				}
 				.filterBox .boxLeft>input {
 					float: left;

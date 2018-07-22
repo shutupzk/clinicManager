@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import Router from 'next/router'
 import { queryClinicList, clinicSelect } from '../../../../ducks'
-import { Confirm, PageCard } from '../../../../components'
+import { Confirm, PageCard, DatePicker } from '../../../../components'
 
 class BusinessClinicListScreen extends Component {
   constructor(props) {
@@ -41,22 +41,36 @@ class BusinessClinicListScreen extends Component {
         <div className={'bussinessTitle'}>业务管理</div>
         <div className={'filterBox'} style={{ marginBottom: '20px', marginLeft: '21px' }}>
           <div className={'boxLeft'}>
-            <input
-              type='date'
-              placeholder='开始日期'
-              value={this.state.start_date}
-              onChange={e => {
-                this.setState({ start_date: e.target.value })
-              }}
-            />
-            <input
+            <div>
+              <DatePicker
+                // type='date'
+                // placeholder='开始日期'
+                // value={this.state.start_date}
+                format={'YYYY-MM-DD'}
+                onChange={e => {
+                  this.setState({ start_date: e.target.value })
+                }}
+              />
+            </div>
+            <div>
+              <DatePicker
+                // type='date'
+                // placeholder='开始日期'
+                // value={this.state.start_date}
+                format={'YYYY-MM-DD'}
+                onChange={e => {
+                  this.setState({ end_date: e.target.value })
+                }}
+              />
+            </div>
+            {/* <input
               type='date'
               placeholder='结束日期'
               value={this.state.end_date}
               onChange={e => {
                 this.setState({ end_date: e.target.value })
               }}
-            />
+            /> */}
             <input
               type='text'
               placeholder='搜索诊所名称/诊所编码'
@@ -121,6 +135,10 @@ class BusinessClinicListScreen extends Component {
             font-family: MicrosoftYaHei;
             color: rgba(102, 102, 102, 1);
             line-height: 24px;
+          }
+          .boxLeft>div{
+            float: left;
+            margin: -4px 0 0 20px;
           }
         `}</style>
       </div>

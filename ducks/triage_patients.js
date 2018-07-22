@@ -60,10 +60,41 @@ export const triagePatientsList = ({
     console.log('data ======== ', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
-    // let json = {}
-    // for (let doc of docs) {
-    //   json[doc.clinic_triage_patient_id] = doc
-    // }
+    dispatch({
+      type: TRIAGE_PATIENTS_ADD,
+      data: docs,
+      page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const RecptionPatientList = ({
+  clinic_id,
+  personnel_id,
+  query_type,
+  keyword,
+  startDate,
+  endDate,
+  offset = 0,
+  limit = 6
+}) => async dispatch => {
+  try {
+    const data = await request('/triage/RecptionPatientList', {
+      clinic_id,
+      personnel_id,
+      query_type,
+      keyword,
+      startDate,
+      endDate,
+      offset,
+      limit
+    })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
     dispatch({
       type: TRIAGE_PATIENTS_ADD,
       data: docs,
