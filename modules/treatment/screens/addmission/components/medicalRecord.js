@@ -1196,142 +1196,131 @@ class MedicalRecordScreen extends Component {
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
     }
+    const patientInfoRowStyle = {
+      display: 'flex',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '50px'
+    }
+    const patientInfoRowDivStyle = {
+      flex: 1,
+      display: 'flex',
+      margin: '10px 15px 10px 5px',
+      minHeight: '30px',
+      alignItems: 'center',
+      borderBottom: '1px solid #d8d8d8',
+      borderTop: '1px solid #ffffff'
+    }
+    const recordDetailDiv = {
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'row',
+      fontSize: '17px',
+      marginTop: '10px'
+    }
+    const recordDetailDivLable = {
+      width: '120px',
+      fontWeight: '500'
+    }
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
         <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
         <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>门诊病历</div>
-        <div className={'patientInfoRow'}>
-          <div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
             <lable>姓名</lable>
-            <div>{triagePatient.patient_name}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.patient_name}</div>
           </div>
-          <div>
+          <div style={patientInfoRowStyle}>
             <lable>性别</lable>
-            <div>{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
           </div>
-          <div>
+          <div style={patientInfoRowStyle}>
             <lable>就诊id</lable>
-            <div>{}</div>
+            <div style={patientInfoRowDivStyle}>{}</div>
           </div>
         </div>
-        <div className={'patientInfoRow'}>
-          <div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
             <lable>年龄</lable>
-            <div>{getAgeByBirthday(triagePatient.birthday)}</div>
+            <div style={patientInfoRowDivStyle}>{getAgeByBirthday(triagePatient.birthday)}</div>
           </div>
           <div />
           <div />
         </div>
-        <div className={'patientInfoRow'}>
-          <div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
             <lable>职业</lable>
-            <div>{triagePatient.profession}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.profession}</div>
           </div>
-          <div>
+          <div style={patientInfoRowStyle}>
             <lable>电话</lable>
-            <div>{triagePatient.phone}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.phone}</div>
           </div>
-          <div>
+          <div style={patientInfoRowStyle}>
             <lable>证件号</lable>
-            <div>{triagePatient.cert_no}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.cert_no}</div>
           </div>
         </div>
-        <div className={'patientInfoRow'}>
-          <div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
             <lable>临床诊断</lable>
-            <div>{this.state.diagnosis}</div>
+            <div style={patientInfoRowDivStyle}>{this.state.diagnosis}</div>
           </div>
         </div>
-        <div className={'recordDetail'}>
-          <div>
-            <label>主诉</label>
-            <div>{this.state.chief_complaint}</div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            margin: '30px 0 0 0'
+          }}
+        >
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>主诉</label>
+            <div style={{ flex: 1 }}>{this.state.chief_complaint}</div>
           </div>
-          <div>
-            <label>现病史</label>
-            <div>{this.state.history_of_present_illness}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>现病史</label>
+            <div style={{ flex: 1 }}>{this.state.history_of_present_illness}</div>
           </div>
-          <div>
-            <label>既往史</label>
-            <div>{this.state.history_of_past_illness}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>既往史</label>
+            <div style={{ flex: 1 }}>{this.state.history_of_past_illness}</div>
           </div>
-          <div>
-            <label>过敏史</label>
-            <div>{this.state.allergic_history}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>过敏史</label>
+            <div style={{ flex: 1 }}>{this.state.allergic_history}</div>
           </div>
-          <div>
-            <label>个人史</label>
-            <div>{this.state.pre_medical_record.personal_medical_history}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>个人史</label>
+            <div style={{ flex: 1 }}>{this.state.pre_medical_record.personal_medical_history}</div>
           </div>
-          <div>
-            <label>家族史</label>
-            <div>{this.state.family_medical_history}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>家族史</label>
+            <div style={{ flex: 1 }}>{this.state.family_medical_history}</div>
           </div>
-          <div>
-            <label>体格检查</label>
-            <div>{this.state.body_examination}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>体格检查</label>
+            <div style={{ flex: 1 }}>{this.state.body_examination}</div>
           </div>
-          <div>
-            <label>治疗意见</label>
-            <div>{this.state.cure_suggestion}</div>
+          <div style={recordDetailDiv}>
+            <label style={recordDetailDivLable}>治疗意见</label>
+            <div style={{ flex: 1 }}>{this.state.cure_suggestion}</div>
           </div>
         </div>
-        <div className={'patientInfoRow'} style={{ marginTop: '50px' }}>
-          <div />
-          <div />
-          <div>
+        <div style={{ marginTop: '50px', width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle} />
+          <div style={patientInfoRowStyle} />
+          <div style={patientInfoRowStyle}>
             <lable>医师</lable>
             <div style={{ borderBottom: '1px solid #ffffff', marginLeft: '20px' }}>{user.name}</div>
           </div>
-          <div>
+          <div style={patientInfoRowStyle}>
             <lable>日期：</lable>
             <div style={{ borderBottom: '1px solid #ffffff' }}>{moment().format('YYYY年MM月DD日')}</div>
           </div>
         </div>
-        <style jsx='true'>
-          {`
-            .patientInfoRow {
-              width: 100%;
-              display: flex;
-            }
-            .patientInfoRow > div {
-              display: flex;
-              flex: 1;
-              align-items: center;
-              justify-content: center;
-              min-height: 50px;
-              font-size: 17px;
-            }
-            .patientInfoRow > div > div {
-              flex: 1;
-              display: flex;
-              margin: 10px 15px 10px 5px;
-              min-height: 30px;
-              align-items: center;
-              border-bottom: 1px solid #d8d8d8;
-              border-top: 1px solid #ffffff;
-            }
-            .recordDetail {
-              display: flex;
-              flex-direction: column;
-              margin: 30px 0 0 0;
-            }
-            .recordDetail > div {
-              width: 100%;
-              display: flex;
-              flex-direction: row;
-              font-size: 17px;
-              margin-top: 10px;
-            }
-            .recordDetail > div > label {
-              width: 120px;
-              font-weight: 500;
-            }
-            .recordDetail > div > div {
-              flex: 1;
-            }
-          `}
-        </style>
       </div>
     )
   }
