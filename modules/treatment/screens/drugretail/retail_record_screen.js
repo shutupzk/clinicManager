@@ -47,7 +47,7 @@ class RetailRecordScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {datas.map((patient, index) => {
-              let statusColor = patient.refund_money > 0 ? '#F24A01' : '#31B0B3'
+              let statusColor = patient.refund_money * -1 < 0 ? '#F24A01' : '#31B0B3'
               let payMap = { cash: '现金', bank: '银行卡', wechat: '微信', alipay: '支付宝' }
               return (
                 <li key={index}>
@@ -55,7 +55,7 @@ class RetailRecordScreen extends Component {
                     <span>药品零售</span>
                     <span />
                     <span />
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.refund_money > 0 ? '已退费' : '已收费'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.refund_money < 0 ? '已退费' : '已收费'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>
