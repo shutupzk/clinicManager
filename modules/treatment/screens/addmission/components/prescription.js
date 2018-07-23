@@ -16,8 +16,12 @@ import {
   PrescriptionWesternPatientModelList,
   PrescriptionChinesePatientModelCreate,
   PrescriptionChinesePatientModelList,
-  queryReceiveRecords
+  queryReceiveRecords,
+  GetLastBodySign,
+  PatientGetByID
 } from '../../../../../ducks'
+import { getAgeByBirthday } from '../../../../../utils'
+import Print from 'rc-print'
 
 const places = [{ value: 0, label: '本诊所' }, { value: 1, label: '外购' }, { value: 2, label: '代购' }]
 const visitType = {
@@ -27,7 +31,7 @@ const visitType = {
 }
 
 // 处方
-class MedicalRecordScreen extends Component {
+class PrescriptionScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -38,14 +42,18 @@ class MedicalRecordScreen extends Component {
       selItem: 'wPresc',
       selIndex: 0,
       showSaveWmodel: false,
-      selPage: 2
+      selPage: 2,
+      body_sign: {},
+      patient: {}
     }
   }
 
   async componentDidMount() {
-    const { PrescriptionWesternPatientGet, PrescriptionChinesePatientGet, clinic_triage_patient_id, clearLocalDrugData } = this.props
+    const { PrescriptionWesternPatientGet, PrescriptionChinesePatientGet, clinic_triage_patient_id, clearLocalDrugData, patient_id, GetLastBodySign, PatientGetByID } = this.props
     await clearLocalDrugData()
     let wPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+    let body_sign = await GetLastBodySign({ patient_id })
+    let patient = await PatientGetByID({ patient_id })
     wPrescItemArray = wPrescItemArray || []
     let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
     let cPrescItemArray = []
@@ -60,7 +68,7 @@ class MedicalRecordScreen extends Component {
     }
     let wPrescItemArrayStr = JSON.stringify(wPrescItemArray)
     let cPrescItemArrayStr = JSON.stringify(cPrescItemArray)
-    this.setState({ wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr })
+    this.setState({ wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr, body_sign, patient })
   }
 
   ClinicDrugList(keyword, type = 0) {
@@ -541,10 +549,106 @@ class MedicalRecordScreen extends Component {
           </div>
           <div className={'bottomRight'}>
             <button onClick={() => this.setState({ showSaveWmodel: true })}>存为模板</button>
-            <button onClick={() => {}}>打印病历</button>
+            <button onClick={() => this.refs.wprinter.onPrint()}>打印病历</button>
+            <Print ref='wprinter' lazyRender isIframe>
+              {this.wpPrinter()}
+            </Print>
           </div>
         </div>
         {this.getStyle()}
+      </div>
+    )
+  }
+
+  wpPrinter() {
+    let { user, triagePatients, clinic_triage_patient_id, medicalRecord } = this.props
+    let triagePatient = {}
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    let { wPrescItemArray = [], body_sign = {}, patient = {} } = this.state
+    let orderSn = ''
+    if (wPrescItemArray && wPrescItemArray.length > 0) {
+      orderSn = wPrescItemArray[0].order_sn
+    }
+    const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px', borderBottom: '2px solid #101010' }
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }} >
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+          <div style={{ width: '200px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <label style={{ fontSize: '20px', fontWeight: '400' }}>门诊</label>
+            <label style={{ fontSize: '25px', fontWeight: '500' }}>处方笺</label>
+          </div>
+        </div>
+        <div style={borderBottomDiv}>
+          <div style={patientInfoRow}>
+            <div style={patientInfoRow} />
+            <div style={patientInfoRow} />
+            <div style={patientInfoRow}>处方编号：{orderSn}</div>
+          </div>
+        </div>
+        <div style={borderBottomDiv}>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
+            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
+            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
+            <div style={patientInforRowItem}>病历号：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
+            <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{patient.province + ' ' + patient.city + ' ' + patient.district + ' ' + patient.address}</div>
+            <div style={patientInforRowItem}>电话：{patient.phone}</div>
+          </div>
+        </div>
+        <div style={borderBottomDiv}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', fontSize: '20px', marginLeft: '20px' }}>Rp</div>
+          <div style={{ ...patientInfoRow, fontWeight: '500' }}>
+            <div style={patientInforRowItem} />
+            <div style={{ ...patientInforRowItem, flex: 7 }}>药品名</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>规格</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>药品名</div>
+          </div>
+          {wPrescItemArray.map((item, index) => {
+            return (
+              <div style={patientInfoRow} key={index}>
+                <div style={patientInforRowItem}>{index + 1}</div>
+                <div style={{ ...patientInforRowItem, flex: 7 }}>
+                  <label>{item.drug_name}</label>
+                  <label>
+                    用法：{item.route_administration_name} 1次{item.once_dose} {item.once_dose_unit_name} {item.frequency_name} 共{item.eff_day}天
+                  </label>
+                </div>
+                <div style={{ ...patientInforRowItem, flex: 3 }}>{item.specification}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>
+                  共{item.amount}
+                  {item.packing_unit_name}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>医师签名：{triagePatient.doctor_name}</div>
+          </div>
+          <div style={{ ...patientInfoRow, marginTop: '20px' }}>
+            <div style={patientInforRowItem}>审核药师：</div>
+            <div style={patientInforRowItem}>发药药师：</div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -899,10 +1003,112 @@ class MedicalRecordScreen extends Component {
             >
               存为模板
             </button>
-            <button>打印病历</button>
+            <button onClick={() => this.refs.cprinter.onPrint()}>打印病历</button>
+            <Print ref='cprinter' lazyRender isIframe>
+              {this.cpPrinter()}
+            </Print>
           </div>
         </div>
         {this.getStyle()}
+      </div>
+    )
+  }
+
+  cpPrinter() {
+    let { user, triagePatients, clinic_triage_patient_id, medicalRecord } = this.props
+    let triagePatient = {}
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    let { cPrescItemArray = [], body_sign = {}, patient = {}, selIndex } = this.state
+    let array = []
+    let info = {}
+    if (cPrescItemArray[selIndex] !== undefined) {
+      array = cPrescItemArray[selIndex].data || []
+      info = cPrescItemArray[selIndex].info || {}
+    }
+    let orderSn = info.order_sn || ''
+    const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px', borderBottom: '2px solid #101010' }
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }} >
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+          <div style={{ width: '200px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <label style={{ fontSize: '20px', fontWeight: '400' }}>门诊</label>
+            <label style={{ fontSize: '25px', fontWeight: '500' }}>处方笺</label>
+          </div>
+        </div>
+        <div style={borderBottomDiv}>
+          <div style={patientInfoRow}>
+            <div style={patientInfoRow} />
+            <div style={patientInfoRow} />
+            <div style={patientInfoRow}>处方编号：{orderSn}</div>
+          </div>
+        </div>
+        <div style={borderBottomDiv}>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
+            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
+            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
+            <div style={patientInforRowItem}>病历号：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
+            <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{patient.province + ' ' + patient.city + ' ' + patient.district + ' ' + patient.address}</div>
+            <div style={patientInforRowItem}>电话：{patient.phone}</div>
+          </div>
+        </div>
+        <div style={borderBottomDiv}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', fontSize: '20px', marginLeft: '20px' }}>Rp</div>
+          <div style={{ ...patientInfoRow, fontWeight: '500' }}>
+            <div style={patientInforRowItem} />
+            <div style={{ ...patientInforRowItem, flex: 7 }}>药品名</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>规格</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>药品名</div>
+          </div>
+          {array.map((item, index) => {
+            return (
+              <div style={patientInfoRow} key={index}>
+                <div style={patientInforRowItem}>{index + 1}</div>
+                <div style={{ ...patientInforRowItem, flex: 7 }}>
+                  <label>{item.drug_name}</label>
+                  <label>
+                    用法：1次 {item.once_dose} {item.once_dose_unit_name}
+                  </label>
+                </div>
+                <div style={{ ...patientInforRowItem, flex: 3 }}>{item.specification}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>
+                  共{item.amount}
+                  {item.packing_unit_name}
+                </div>
+              </div>
+            )
+          })}
+          <div style={{ ...patientInfoRow, margin: '30px' }}>
+            <div style={patientInforRowItem} >共{info.amount || ''}剂 {info.frequency_name || ''} {info.route_administration_name || ''}</div>
+          </div>
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>医师签名：{triagePatient.doctor_name}</div>
+          </div>
+          <div style={{ ...patientInfoRow, marginTop: '20px' }}>
+            <div style={patientInforRowItem}>审核药师：</div>
+            <div style={patientInforRowItem}>发药药师：</div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -1868,6 +2074,7 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,
     triagePatients: state.triagePatients.data,
+    patient_id: state.patients.selectId,
     drugs: state.drugs.json_data,
     prescriptionWesternPatients: state.prescriptionWesternPatients.data,
     routeAdministrationss: state.routeAdministrationss.data,
@@ -1898,6 +2105,8 @@ export default connect(
     PrescriptionWesternPatientModelList,
     PrescriptionChinesePatientModelCreate,
     PrescriptionChinesePatientModelList,
-    queryReceiveRecords
+    queryReceiveRecords,
+    GetLastBodySign,
+    PatientGetByID
   }
-)(MedicalRecordScreen)
+)(PrescriptionScreen)

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
 import { queryTreatmentList, queryDoseUnitList, TreatmentPatientCreate, TreatmentPatientGet, TreatmentPatientModelCreate, TreatmentPatientModelList } from '../../../../../ducks'
+import { getAgeByBirthday, formatMoney } from '../../../../../utils'
+import Print from 'rc-print'
 
 // 病历
 class TreatmentScreen extends Component {
@@ -105,7 +107,7 @@ class TreatmentScreen extends Component {
   }
 
   async submit() {
-    const { TreatmentPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { TreatmentPatientCreate, personnel_id, clinic_triage_patient_id, changePage, TreatmentPatientGet } = this.props
     const { treatments, selPage } = this.state
     let items = []
     for (let { clinic_treatment_id, times, illustration } of treatments) {
@@ -123,7 +125,8 @@ class TreatmentScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
-        this.setState({ treatmentsStr: JSON.stringify(treatments) })
+        const treatments = await TreatmentPatientGet({ clinic_triage_patient_id })
+        this.setState({ treatments, treatmentsStr: JSON.stringify(treatments) })
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -460,6 +463,77 @@ class TreatmentScreen extends Component {
       changePage(pageType)
     }
   }
+
+  printerContent() {
+    let { user, triagePatients, clinic_triage_patient_id, medicalRecord } = this.props
+    let triagePatient = {}
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    let { treatments = [] } = this.state
+    const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px' }
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
+    let amont = 0
+    let createTime = ''
+    for (let item of treatments) {
+      amont += item.price * item.times
+      createTime = item.created_time
+    }
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name} 治疗单</div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '1px solid #d8d8d8', borderTop: '1px solid #d8d8d8' }}>
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
+            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
+            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+            <div style={patientInforRowItem}>病案号：{clinic_triage_patient_id}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
+          </div>
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '2px solid #101010' }}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', borderBottom: '2px solid #101010' }}>
+            <div style={{ ...patientInforRowItem, flex: 6 }}>项目名称</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>单价（￥）</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>单位</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>次数</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>金额（￥）</div>
+            <div style={{ ...patientInforRowItem, flex: 4 }}>说明</div>
+          </div>
+          {treatments.map((item, index) => {
+            return (
+              <div style={{ ...patientInfoRow, marginTop: '5px' }} key={index}>
+                <div style={{ ...patientInforRowItem, flex: 6 }}>{item.treatment_name}</div>
+                <div style={{ ...patientInforRowItem, flex: 3 }}>{formatMoney(item.price)}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{item.unit_name}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{item.times}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{formatMoney(item.price * item.times)}</div>
+                <div style={{ ...patientInforRowItem, flex: 4 }}>{item.illustration}</div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
+          <div style={{ ...patientInfoRow }}>
+            <div style={patientInforRowItem}>合计金额：{formatMoney(amont)}</div>
+            <div style={patientInforRowItem}>开单医师：{triagePatient.doctor_name}</div>
+            <div style={patientInforRowItem}>开单日期：{moment(createTime).format('YYYY-MM-DD')}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { treatments, selPage } = this.state
     const { medicalRecord, changePage } = this.props
@@ -572,11 +646,12 @@ class TreatmentScreen extends Component {
                         <div style={{ width: '100%' }}>
                           <Select
                             value={this.getSelectValue(treatments[index].clinic_treatment_id, nameOptions)}
-                            onChange={({ value, unit_id, label, unit_name }) => {
+                            onChange={({ value, unit_id, label, unit_name, price }) => {
                               this.setItemValue(value, index, 'clinic_treatment_id', 2)
                               this.setItemValue(label, index, 'treatment_name', 2)
                               this.setItemValue(unit_id, index, 'unit_id', 2)
                               this.setItemValue(unit_name, index, 'unit_name', 2)
+                              this.setItemValue(price, index, 'price', 2)
                             }}
                             placeholder='搜索名称'
                             height={38}
@@ -595,10 +670,7 @@ class TreatmentScreen extends Component {
                         <input maxLength='500' value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div
-                          onClick={() => this.removeColumn(index)}
-                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                        >
+                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
                           删除
                         </div>
                       </div>
@@ -616,7 +688,10 @@ class TreatmentScreen extends Component {
               </div>
               <div className={'bottomRight'}>
                 <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button>
-                <button style={{ width: '80px' }}>打印治疗单</button>
+                <button onClick={() => this.refs.wprinter.onPrint()}>打印治疗单</button>
+                <Print ref='wprinter' lazyRender isIframe>
+                  {this.printerContent()}
+                </Print>
               </div>
             </div>
           </div>
@@ -676,8 +751,10 @@ class TreatmentScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
+    triagePatients: state.triagePatients.data,
     treatments: state.treatments.data,
     personnel_id: state.user.data.id,
+    user: state.user.data,
     doseUnits: state.doseUnits.data,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,

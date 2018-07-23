@@ -29,10 +29,21 @@ export const examinationModelList = ({ keyword = '', is_common = '', operation_i
     if (data.code !== '200') return []
     let docs = data.data || []
     let page_info = data.page_info
+    let json = {}
+    for (let doc of docs) {
+      let array = doc.items || []
+      for (let obj of array) {
+        json[obj.clinic_examination_id] = { ...obj, name: obj.examination_name }
+      }
+    }
     dispatch({
       type: EXAMNIATION_MODEL_ADD,
       data: docs,
       page_info
+    })
+    dispatch({
+      type: 'EXAM_PROJECT_ADD',
+      data: json
     })
 
     return null
