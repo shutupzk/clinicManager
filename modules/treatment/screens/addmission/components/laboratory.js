@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Select, Confirm, PageCard } from '../../../../../components'
 import moment from 'moment'
 import { queryLaboratoryList, LaboratoryPatientCreate, LaboratoryPatientGet, LaboratoryPatientModelCreate, LaboratoryPatientModelList } from '../../../../../ducks'
+import { getAgeByBirthday, formatMoney } from '../../../../../utils'
+import Print from 'rc-print'
 
 // 病历
 class LaboratoryScreen extends Component {
@@ -18,7 +20,6 @@ class LaboratoryScreen extends Component {
   async componentDidMount() {
     const { LaboratoryPatientGet, clinic_triage_patient_id } = this.props
     const laboratories = await LaboratoryPatientGet({ clinic_triage_patient_id })
-    console.log('laboratories =====', laboratories)
     this.setState({ laboratories, laboratoriesStr: JSON.stringify(laboratories) })
   }
 
@@ -86,9 +87,8 @@ class LaboratoryScreen extends Component {
   }
 
   async submit() {
-    const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { LaboratoryPatientCreate, personnel_id, clinic_triage_patient_id, changePage, LaboratoryPatientGet } = this.props
     const { laboratories, selPage } = this.state
-    console.log('laboratories ========', laboratories)
     let items = []
     for (let item of laboratories) {
       let obj = {}
@@ -101,7 +101,6 @@ class LaboratoryScreen extends Component {
       }
       items.push(obj)
     }
-    console.log('items ========', items)
     let error = await LaboratoryPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
@@ -110,7 +109,8 @@ class LaboratoryScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
-        this.setState({laboratoriesStr: JSON.stringify(laboratories)})
+        const laboratories = await LaboratoryPatientGet({ clinic_triage_patient_id })
+        this.setState({ laboratories, laboratoriesStr: JSON.stringify(laboratories) })
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -466,6 +466,71 @@ class LaboratoryScreen extends Component {
       changePage(pageType)
     }
   }
+
+  printerContent() {
+    let { user, triagePatients, clinic_triage_patient_id, medicalRecord } = this.props
+    let triagePatient = {}
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    let { laboratories = [] } = this.state
+    const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px' }
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
+    let amont = 0
+    let createTime = ''
+    for (let item of laboratories) {
+      amont += item.price * item.times
+      createTime = item.created_time
+    }
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name} 检验申请单</div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '1px solid #d8d8d8', borderTop: '1px solid #d8d8d8' }}>
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
+            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
+            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+            <div style={patientInforRowItem}>病案号：{clinic_triage_patient_id}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
+          </div>
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '2px solid #101010' }}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', borderBottom: '2px solid #101010' }}>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>项目名称</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>单价（￥）</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>说明</div>
+          </div>
+          {laboratories.map((item, index) => {
+            return (
+              <div style={{ ...patientInfoRow, marginTop: '5px' }} key={index}>
+                <div style={{ ...patientInforRowItem, flex: 3 }}>{item.laboratory_name}</div>
+                <div style={{ ...patientInforRowItem, flex: 1 }}>{formatMoney(item.price)}</div>
+                <div style={{ ...patientInforRowItem, flex: 3 }}>{item.illustration}</div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
+          <div style={{ ...patientInfoRow }}>
+            <div style={patientInforRowItem}>合计金额：{formatMoney(amont)}</div>
+            <div style={patientInforRowItem}>开单医师：{triagePatient.doctor_name}</div>
+            <div style={patientInforRowItem}>开单日期：{moment(createTime).format('YYYY-MM-DD')}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { laboratories, selPage } = this.state
     const { medicalRecord, changePage } = this.props
@@ -612,8 +677,10 @@ class LaboratoryScreen extends Component {
                 </button>
               </div>
               <div className={'bottomRight'}>
-                {/* <button onClick={() => this.setState({ showSaveModel: true })}>存为模板</button> */}
-                <button>打印申请单</button>
+                <button onClick={() => this.refs.wprinter.onPrint()}>打印申请单</button>
+                <Print ref='wprinter' lazyRender isIframe>
+                  {this.printerContent()}
+                </Print>
               </div>
             </div>
           </div>
@@ -673,7 +740,9 @@ class LaboratoryScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
+    triagePatients: state.triagePatients.data,
     personnel_id: state.user.data.id,
+    user: state.user.data,
     laboratories: state.laboratories.data,
     clinic_id: state.user.data.clinic_id,
     medicalRecord: state.medicalRecords.data,

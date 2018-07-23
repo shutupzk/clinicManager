@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm } from '../../../../../components'
 import { queryMaterialList, MaterialPatientCreate, MaterialPatientGet } from '../../../../../ducks'
+import { getAgeByBirthday, formatMoney } from '../../../../../utils'
+import Print from 'rc-print'
+import moment from 'moment'
 
 // 材料费
 class MaterialScreen extends Component {
@@ -85,13 +88,13 @@ class MaterialScreen extends Component {
 
   setItemValues(data, index) {
     const { eaterials } = this.state
-    let array = [...eaterials] // [...treatments]
+    let array = [...eaterials] // [...eaterials]
     array[index] = { ...array[index], ...data }
     this.setState({ eaterials: array })
   }
 
   async submit() {
-    const { MaterialPatientCreate, personnel_id, clinic_triage_patient_id, changePage } = this.props
+    const { MaterialPatientCreate, personnel_id, clinic_triage_patient_id, changePage, MaterialPatientGet } = this.props
     const { eaterials, selPage } = this.state
     let items = []
     for (let item of eaterials) {
@@ -105,6 +108,7 @@ class MaterialScreen extends Component {
       }
       items.push(obj)
     }
+    console.log(' items ======= ', items)
     let error = await MaterialPatientCreate({ personnel_id, clinic_triage_patient_id, items })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
@@ -113,7 +117,8 @@ class MaterialScreen extends Component {
         this.refs.myAlert.alert('保存成功')
         changePage(selPage)
       } else {
-        this.setState({ eaterialsStr: JSON.stringify(eaterials) })
+        const eaterials = await MaterialPatientGet({ clinic_triage_patient_id })
+        this.setState({ eaterials, eaterialsStr: JSON.stringify(eaterials) })
         return this.refs.myAlert.alert('保存成功')
       }
     }
@@ -131,6 +136,77 @@ class MaterialScreen extends Component {
       changePage(pageType)
     }
   }
+
+  printerContent() {
+    let { user, triagePatients, clinic_triage_patient_id, medicalRecord } = this.props
+    let triagePatient = {}
+    for (let tp of triagePatients) {
+      if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
+    }
+    let { eaterials = [] } = this.state
+    const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px' }
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
+    let amont = 0
+    let createTime = ''
+    for (let item of eaterials) {
+      amont += item.price * item.amount
+      createTime = item.created_time
+    }
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name} 材料清单</div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '1px solid #d8d8d8', borderTop: '1px solid #d8d8d8' }}>
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
+            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
+            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+            <div style={patientInforRowItem}>病案号：{clinic_triage_patient_id}</div>
+          </div>
+          <div style={patientInfoRow}>
+            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
+          </div>
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '2px solid #101010' }}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', borderBottom: '2px solid #101010' }}>
+            <div style={{ ...patientInforRowItem, flex: 6 }}>项目名称</div>
+            <div style={{ ...patientInforRowItem, flex: 3 }}>单价（￥）</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>单位</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>次数</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>金额（￥）</div>
+            <div style={{ ...patientInforRowItem, flex: 4 }}>说明</div>
+          </div>
+          {eaterials.map((item, index) => {
+            return (
+              <div style={{ ...patientInfoRow, marginTop: '5px' }} key={index}>
+                <div style={{ ...patientInforRowItem, flex: 6 }}>{item.name}</div>
+                <div style={{ ...patientInforRowItem, flex: 3 }}>{formatMoney(item.price)}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{item.unit_name}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{item.amount}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{formatMoney(item.price * item.amount)}</div>
+                <div style={{ ...patientInforRowItem, flex: 4 }}>{item.illustration}</div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
+          <div style={{ ...patientInfoRow }}>
+            <div style={patientInforRowItem}>合计金额：{formatMoney(amont)}</div>
+            <div style={patientInforRowItem}>开单医师：{triagePatient.doctor_name}</div>
+            <div style={patientInforRowItem}>开单日期：{moment(createTime).format('YYYY-MM-DD')}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { eaterials, selPage } = this.state
     const { medicalRecord, changePage } = this.props
@@ -282,7 +358,10 @@ class MaterialScreen extends Component {
                 </button>
               </div>
               <div className={'bottomRight'}>
-                <button>打印清单</button>
+                <button onClick={() => this.refs.wprinter.onPrint()}>打印清单</button>
+                <Print ref='wprinter' lazyRender isIframe>
+                  {this.printerContent()}
+                </Print>
               </div>
             </div>
           </div>
@@ -455,9 +534,10 @@ class MaterialScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state.materials)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
+    triagePatients: state.triagePatients.data,
+    user: state.user.data,
     personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     materials: state.materials.data,
