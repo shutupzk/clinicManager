@@ -1,160 +1,142 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Router from 'next/router'
-import { DrugRetailList, SelectDrugRetail } from '../../../../ducks'
+// // import Router from 'next/router'
+import { DrugRetailDetail } from '../../../../ducks'
 import moment from 'moment'
-import { PageCard, Select, DatePicker } from '../../../../components'
 import { formatMoney } from '../../../../utils'
 
 class RetailRecordDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      start_date: moment()
-        .add(-7, 'd')
-        .format('YYYY-MM-DD'),
-      end_date: moment()
-        .add(1, 'd')
-        .format('YYYY-MM-DD'),
-      keyword: ''
+      allSelect: false, // 全选
+      refund: false // 退费
     }
   }
 
-  getOptions() {
-    return [{ value: '', label: '收费/退费' }, { value: 'in', label: '收费' }, { value: 'out', label: '退费' }]
-  }
-
-  showOptions(key) {
-    let map = { in: { value: 'in', label: '收费' }, out: { value: 'out', label: '退费' }, '': { value: '', label: '收费/退费' } }
-    return map[key]
-  }
-
-  getTobeChargeData({ offset, limit }) {
-    const { DrugRetailList } = this.props
-    let { start_date, end_date, keyword } = this.state
-    DrugRetailList({ start_date, end_date, offset, limit, refundStatus: keyword === 'out' ? 2 : 1 })
-  }
-
   componentDidMount() {
-    this.getTobeChargeData({})
+    const { select_out_trade_no } = this.props
+    this.props.DrugRetailDetail({ out_trade_no: select_out_trade_no })
   }
 
-  // 显示待收费
-  showTobeCharged() {
-    const { datas, page } = this.props
+  render() {
+    const { data_detail } = this.props
+    let refundMoney = 0
+    const { items, refund, pay } = data_detail
+    for (let re of refund) {
+      refundMoney += re.refund_money * 1
+    }
+
+    let paymethod = { cash: '现金', bank: '银行卡', wechat: '微信', alipay: '支付宝' }
+
+    const { allSelect } = this.state
     return (
-      <div>
-        <div className={'listContent'}>
+      <div className={'detailBox'}>
+        <div className='topTitle'>
+          <span>零售药品详情</span>
+        </div>
+
+        <div className={'filterBox'}>
+          <div>费用合计：{formatMoney(pay.total_money)}元</div>
+          <div>折扣金额：{formatMoney(pay.discount_money)}元</div>
+          <div>医保金额：{formatMoney(pay.medical_money)}元</div>
+          <div>实收费用：{formatMoney(pay.balance_money)}元</div>
+          <div>已退费用：{formatMoney(refundMoney)}元</div>
+        </div>
+
+        <div className={'toatalFeeBox'}>
+          <h4>缴费交易信息</h4>
           <ul>
-            {datas.map((patient, index) => {
-              let statusColor = patient.refund_money > 0 ? '#F24A01' : '#31B0B3'
-              let payMap = { cash: '现金', bank: '银行卡', wechat: '微信', alipay: '支付宝' }
+            <li>支付时间： {pay && moment(pay.pay_time).format('YYYY-MM-DD HH:mm:ss')}</li>
+            <li>交易订单号：{pay.out_trade_no}</li>
+            <li>交易方式： {paymethod[pay.pay_method]}</li>
+            <li>交易金额： {formatMoney(pay.balance_money)}</li>
+            <li>第三方交易号</li>
+          </ul>
+        </div>
+
+        {/* <div className={'toatalFeeBox'}>
+          <h4>退费交易信息</h4>
+          <ul>
+            <li>折扣金额：元</li>
+
+            <li />
+            <li />
+          </ul>
+
+          <ul>
+            <li>折扣金额：元</li>
+
+            <li />
+            <li />
+          </ul>
+        </div> */}
+
+        <div className={'feeScheduleBox'}>
+          <ul>
+            <li>
+              <div>
+                <input type={'checkbox'} checked={allSelect} onChange={() => this.changeAllSelect()} />
+              </div>
+              <div>序号</div>
+              <div>药品名称</div>
+              <div>规格</div>
+              <div>零售价</div>
+              <div>批号</div>
+              <div>有效日期</div>
+              <div>数量</div>
+              <div>单位</div>
+            </li>
+            {items.map((item, iKey) => {
+              let checked = true
               return (
-                <li key={index}>
-                  <div className={'itemTop'}>
-                    <span>药品零售</span>
-                    <span />
-                    <span />
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.refund_money > 0 ? '已退费' : '已收费'}</span>
+                <li key={iKey}>
+                  <div>
+                    <input type={'checkbox'} checked={checked} onChange={() => {}} />
                   </div>
-                  <div className={'itemCenter'}>
-                    <span>
-                      <a>支付方式：</a>
-                      <a>{payMap[patient.pay_method] || '未知'}</a>
-                    </span>
-                    <span>
-                      <a>收费人员：</a>
-                      <a>{patient.name}</a>
-                    </span>
-                    <span>
-                      <a style={{ color: 'rgb(153, 153, 153)' }}>收费时间：</a>
-                      <a style={{ color: 'rgb(153, 153, 153)' }}>{moment(patient.pay_time).format('YYYY-MM-DD HH:mm:ss')}</a>
-                    </span>
-                  </div>
-                  <div className={'itemBottom'}>
-                    <span onClick={() => this.gotoChargeDetail(patient.out_trade_no)}>
-                      ￥{formatMoney(patient.balance_money)}
-                      {patient.refund_money ? `（退费￥${formatMoney(patient.refund_money)}）` : ''}
-                    </span>
-                  </div>
+                  <div>{iKey + 1}</div>
+                  <div>{item.name}</div>
+                  <div>{item.specification}</div>
+                  <div>{formatMoney(item.ret_price)}</div>
+                  <div>{item.serial}</div>
+                  <div>{moment(item.eff_date).format('YYYY-MM-DD')}</div>
+                  <div>{item.amount}</div>
+                  <div>{item.packing_unit_name}</div>
                 </li>
               )
             })}
           </ul>
         </div>
-        <div className={'pagination'} />
-        <PageCard
-          offset={page.offset}
-          limit={page.limit}
-          total={page.total}
-          onItemClick={({ offset, limit }) => {
-            this.getTobeChargeData({ offset, limit })
-          }}
-        />
-      </div>
-    )
-  }
 
-  // 收费详情
-  gotoChargeDetail(out_trade_no) {
-    this.props.SelectDrugRetail({ out_trade_no })
-    Router.push('/treatment/drugretail/detail')
-  }
-  // 加载
-  render() {
-    return (
-      <div>
-        <div className={'childTopBar'}>
-          <span className={'sel'}>已售列表</span>
-          <span onClick={() => Router.push('/treatment/drugretail/sell')}>药品零售</span>
-        </div>
-        <div className={'filterBox'}>
-          <div className={'boxLeft'}>
-            <div className={'dateDiv'}>
-              <DatePicker
-                placeholder={'开始日期'}
-                value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
-                onChange={(date, str) => {
-                  if (date) {
-                    this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
-                  }
-                }}
-              />
-            </div>
-            <div className={'dateDiv'}>
-              <DatePicker
-                placeholder={'结束日期'}
-                value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
-                onChange={(date, str) => {
-                  if (date) {
-                    this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
-                  }
-                }}
-              />
-            </div>
-            <div
-              style={{
-                float: 'left',
-                margin: '14px',
-                marginLeft: '20px',
-                marginRight: '40px',
-                width: '120px'
-              }}
-            >
-              <Select
-                value={this.showOptions(this.state.in_out)}
-                placeholder={'收费/退费'}
-                options={this.getOptions()}
-                onChange={({ value }) => {
-                  this.setState({ keyword: value })
-                }}
-                height={32}
-              />
-            </div>
-            <button onClick={() => this.getTobeChargeData({})}>查询</button>
-          </div>
-        </div>
-        {this.showTobeCharged()}
+        <style jsx='true'>{`
+          .filterBox {
+            margin: 20px 0 0 65px;
+            display: flex;
+            line-height: 60px;
+            font-size: 14px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+          }
+          .filterBox div {
+            flex: 1;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+          }
+          .topTitle {
+            font-size: 20px;
+            font-family: MicrosoftYaHei;
+            color: rgba(102, 102, 102, 1);
+            margin: 26px 0 0 20px;
+            height: 20px;
+            line-height: 20px;
+            display: flex;
+          }
+          .topTitle span {
+            flex: 9;
+          }
+        `}</style>
       </div>
     )
   }
@@ -162,14 +144,12 @@ class RetailRecordDetailScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    personnel_id: state.user.data.id,
-    clinic_id: state.user.data.clinic_id,
-    datas: state.drugRetail.data,
-    page: state.drugRetail.page_info
+    select_out_trade_no: state.drugRetail.select_out_trade_no,
+    data_detail: state.drugRetail.data_detail
   }
 }
 
 export default connect(
   mapStateToProps,
-  { DrugRetailList, SelectDrugRetail }
+  { DrugRetailDetail }
 )(RetailRecordDetailScreen)

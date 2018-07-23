@@ -1,11 +1,17 @@
 import { request } from './request'
 const DRUG_RETAIL_ADD = 'DRUG_RETAIL_ADD'
 const DRUG_RETAIL_SELECT = 'DRUG_RETAIL_SELECT'
+const DRUG_RETAIL_DETAIL = 'DRUG_RETAIL_DETAIL'
 
 const initState = {
   data: [],
   page_info: {},
-  select_out_trade_no: null
+  select_out_trade_no: null,
+  data_detail: {
+    items: [], // 数据
+    refund: [], // 退费交易信息
+    pay: {} // 支付交易信息
+  }
 }
 
 export function drugRetail(state = initState, action = {}) {
@@ -14,6 +20,8 @@ export function drugRetail(state = initState, action = {}) {
       return { ...state, data: action.data, page_info: action.page_info }
     case DRUG_RETAIL_SELECT:
       return { ...state, select_out_trade_no: action.select_out_trade_no }
+    case DRUG_RETAIL_DETAIL:
+      return { ...state, data_detail: action.data_detail }
     default:
       return state
   }
@@ -66,4 +74,24 @@ export const SelectDrugRetail = ({ out_trade_no }) => dispatch => {
     type: DRUG_RETAIL_SELECT,
     select_out_trade_no: out_trade_no
   })
+}
+
+export const DrugRetailDetail = ({ out_trade_no }) => async dispatch => {
+  try {
+    const data = await request('/drugRetail/detail', { out_trade_no })
+    console.log(data)
+    const data_detail = {
+      items: data.data || [],
+      refund: data.refundMap || [],
+      pay: data.payrecordMap || {}
+    }
+    dispatch({
+      type: DRUG_RETAIL_DETAIL,
+      data_detail
+    })
+    return data
+  } catch (e) {
+    console.log(e)
+    return null
+  }
 }
