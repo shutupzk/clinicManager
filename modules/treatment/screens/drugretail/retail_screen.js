@@ -214,8 +214,6 @@ class RetailScreen extends Component {
                 <div>规格</div>
                 <div>生成厂商</div>
                 <div>零售价</div>
-                <div>批号</div>
-                <div>有效期</div>
                 <div>库存数量</div>
                 <div>数量</div>
                 <div>单位</div>
@@ -284,10 +282,6 @@ class RetailScreen extends Component {
                     <div className={'normalDiv'}>{item.specification}</div>
                     <div className={'normalDiv'}>{item.manu_factory_name}</div>
                     <div className={'normalDiv'}>{formatMoney(item.ret_price)}</div>
-                    <div className={'normalDiv'} title={item.serial}>
-                      {item.serial}
-                    </div>
-                    <div className={'normalDiv'}>{item.eff_date && moment(item.eff_date).format('YYYYMMDD')}</div>
                     <div className={'normalDiv'}>{item.stock_amount !== undefined ? item.stock_amount || 0 : ''}</div>
                     <div>
                       <input
