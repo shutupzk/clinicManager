@@ -174,19 +174,20 @@ class BaseInfoScreen extends Component {
               <label>
                 生日：<b style={{ color: 'red' }}> *</b>
               </label>
-              <DatePicker
-                value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
-                onChange={(date, str) => {
-                  let newPatient = patient
-                  console.log('date======', date)
-                  if (date) {
-                    newPatient.birthday = moment(date).format('YYYY-MM-DD')
-                    console.log('newPatient.birthday====', newPatient.birthday)
-                    newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
-                    this.setState({ patientInfo: newPatient })
-                  }
-                }}
-              />
+              <div>
+                <DatePicker
+                  style={{ width: '120px', marginTop: '17px' }}
+                  value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                  onChange={(date, str) => {
+                    let newPatient = patient
+                    if (date) {
+                      newPatient.birthday = moment(date).format('YYYY-MM-DD')
+                      newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
+                      this.setState({ patientInfo: newPatient })
+                    }
+                  }}
+                />
+              </div>
             </li>
             <li style={{ width: '24%' }}>
               <label>
@@ -493,22 +494,30 @@ class BaseInfoScreen extends Component {
             保存
           </button>
         </div>
-        <style jsx='true'>{`
-          .formList {
-            margin: 20px 66px 33px 66px;
-          }
-          textarea {
-            width: 100%;
-            height: 70px;
-            background: rgba(245, 248, 249, 1);
-            border-radius: 4px;
-            resize: none;
-            margin-top: 10px;
-            border: 1px solid #d8d8d8;
-          }
-        `}</style>
+        {this.style()}
         <Confirm ref='myAlert' />
       </div>
+    )
+  }
+  style() {
+    return (
+      <style jsx='true'>{`
+        .ant-input{
+          height:40px;
+        }
+        .formList {
+          margin: 20px 66px 33px 66px;
+        }
+        textarea {
+          width: 100%;
+          height: 70px;
+          background: rgba(245, 248, 249, 1);
+          border-radius: 4px;
+          resize: none;
+          margin-top: 10px;
+          border: 1px solid #d8d8d8;
+        }
+      `}</style>
     )
   }
 }

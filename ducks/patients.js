@@ -196,3 +196,163 @@ export const PersonalMedicalRecord = ({ patient_id }) => async dispatch => {
     return {}
   }
 }
+
+export const UpsertPatientHeight = ({ patient_id, items }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, items })
+  try {
+    const data = await request('/patient/UpsertPatientHeight', { patient_id, items })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const UpsertPatientWeight = ({ patient_id, items }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, items })
+  try {
+    const data = await request('/patient/UpsertPatientWeight', { patient_id, items })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const UpsertPatientBloodPressure = ({ patient_id, items }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, items })
+  try {
+    const data = await request('/patient/UpsertPatientBloodPressure', { patient_id, items })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const UpsertPatientVision = ({ patient_id, items }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, items })
+  try {
+    const data = await request('/patient/UpsertPatientVision', { patient_id, items })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const PatientHeightList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/patient/PatientHeightList', { patient_id, offset, limit })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    if (data.code !== '200') {
+      return { error: data.message }
+    }
+    return { error: null, docs, page_info }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}
+
+export const PatientWeightList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/patient/PatientWeightList', { patient_id, offset, limit })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    if (data.code !== '200') {
+      return { error: data.message }
+    }
+    return { error: null, docs, page_info }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}
+
+export const PatientBmiList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/patient/PatientBmiList', { patient_id, offset, limit })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    if (data.code !== '200') {
+      return { error: data.message }
+    }
+    return { error: null, docs, page_info }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}
+
+export const PatientBloodPressureList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/patient/PatientBloodPressureList', { patient_id, offset, limit })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    if (data.code !== '200') {
+      return { error: data.message }
+    }
+    return { error: null, docs, page_info }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}
+
+export const PatientVisionList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/patient/PatientVisionList', { patient_id, offset, limit, start_date, end_date })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    if (data.code !== '200') {
+      return { error: data.message }
+    }
+    return { error: null, docs, page_info }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}
+
+export const PatientBloodSugarListByDate = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
+  try {
+    const data = await request('/patient/PatientBloodSugarListByDate', { patient_id, offset, limit, start_date, end_date })
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+    if (data.code !== '200') {
+      return { error: data.message }
+    }
+    return { error: null, docs, page_info }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}

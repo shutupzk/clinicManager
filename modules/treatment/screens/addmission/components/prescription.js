@@ -619,7 +619,7 @@ class PrescriptionScreen extends Component {
             <div style={patientInforRowItem} />
             <div style={{ ...patientInforRowItem, flex: 7 }}>药品名</div>
             <div style={{ ...patientInforRowItem, flex: 3 }}>规格</div>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>药品名</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>总量</div>
           </div>
           {wPrescItemArray.map((item, index) => {
             return (
@@ -1076,7 +1076,7 @@ class PrescriptionScreen extends Component {
             <div style={patientInforRowItem} />
             <div style={{ ...patientInforRowItem, flex: 7 }}>药品名</div>
             <div style={{ ...patientInforRowItem, flex: 3 }}>规格</div>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>药品名</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>总量</div>
           </div>
           {array.map((item, index) => {
             return (
