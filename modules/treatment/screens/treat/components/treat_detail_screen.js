@@ -27,10 +27,11 @@ class TreatDetailScreen extends Component {
   }
 
   render() {
+    const {order_status} = this.props
     return (
       <div className={'detail'}>
         <div className={'detail_title'}>
-          <span>治疗</span>
+          <span>{order_status === '30' ? '已治疗' : '治疗中'}</span>
           <span onClick={() => this.props.back2List()}>{'<返回'}</span>
         </div>
         {this.renderDoctorInfo()}
