@@ -114,12 +114,12 @@ class RetailScreen extends Component {
     })
     if (pay_method === 1 || pay_method === 2) {
       if (res && res.code === '200') {
-        this.setState({ payStatus: '缴费成功' })
+        this.setState({ payStatus: '支付成功' })
       } else if (res && res.code === '300') {
         this.setState({ payStatus: '缴费中[待用户输密码]', showLoading: true })
         this.interval = setInterval(() => this.tick(), 5000)
       } else {
-        this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || ''}]` })
+        this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || '未知原因'}]` })
       }
     } else {
       if (res && res.code === '200') {
