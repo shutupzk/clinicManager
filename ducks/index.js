@@ -106,7 +106,7 @@ import {
 } from './laboratory_triage'
 import { treatmentTriages, TreatmentTriageList, TreatmentTriageWaiting, TreatmentTriageChecked, TreatmentTriageChecking, TreatmentTriageRecordCreate, TreatmentTriageRecordList, TreatmentTriageUpdate, TreatmentTriagePatientRecordList } from './treatment_triage'
 
-import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail } from './drug_retail'
+import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail, DrugRetailRefund, DrugRetailPaymentStatus } from './drug_retail'
 
 // keys
 export {
@@ -441,6 +441,8 @@ export {
   SelectDrugRetail,
   DrugRetailList,
   DrugRetailDetail,
+  DrugRetailRefund,
+  DrugRetailPaymentStatus,
   MenubarList,
   PersonnelWithUsername,
   UpdatePersonnelStatus,

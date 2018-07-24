@@ -70,7 +70,7 @@ class MedicalRecordScreen extends Component {
         files = JSON.parse(record.files)
         for (let j = 0; j < files.length; j++) {
           let url = files[j].url
-          if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+          if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg' || url.split('.')[1] === 'jpeg') {
             imgArray.push(files[j])
           }
         }

@@ -79,7 +79,6 @@ export const SelectDrugRetail = ({ out_trade_no }) => dispatch => {
 export const DrugRetailDetail = ({ out_trade_no }) => async dispatch => {
   try {
     const data = await request('/drugRetail/detail', { out_trade_no })
-    console.log(data)
     const data_detail = {
       items: data.data || [],
       refund: data.refundMap || [],
@@ -90,6 +89,29 @@ export const DrugRetailDetail = ({ out_trade_no }) => async dispatch => {
       data_detail
     })
     return data
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const DrugRetailRefund = ({ out_trade_no, items, operation_id }) => async dispatch => {
+  try {
+    const data = await request('/drugRetail/refund', { out_trade_no, items: JSON.stringify(items), operation_id })
+    if (data.code === '200') return null
+    return data.msg || '未知错误'
+  } catch (e) {
+    console.log(e)
+    return e
+  }
+}
+
+export const DrugRetailPaymentStatus = ({ out_trade_no }) => async dispatch => {
+  try {
+    const data = await request('/drugRetail/payment/status', { out_trade_no })
+    console.log(data)
+    if (data.code === '200') return data.data
+    return null
   } catch (e) {
     console.log(e)
     return null
