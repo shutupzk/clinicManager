@@ -159,7 +159,7 @@ class RetailRecordDetailScreen extends Component {
                 <li>退费时间：{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</li>
                 <li>退费订单号：{item.refund_trade_no}</li>
                 <li>退费方式：原路退回</li>
-                <li>退费金额：{item.refund_money}</li>
+                <li>退费金额：{formatMoney(item.refund_money)}</li>
                 <li>第三方退费单号：</li>
               </ul>
             )

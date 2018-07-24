@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { CustomSelect, Confirm } from '../../../../components'
-import { ClinicDrugListWithStock, createDrugRetailOrder, createDrugRetailPaymentOrder } from '../../../../ducks'
+import { CustomSelect, Confirm, Loading } from '../../../../components'
+import { ClinicDrugListWithStock, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailPaymentStatus } from '../../../../ducks'
 import { formatMoney, limitMoney } from '../../../../utils'
 import moment from 'moment'
 
@@ -21,7 +21,8 @@ class RetailScreen extends Component {
       showCode: false, // 展示授权码
       payStatus: '待提交', // 支付状态
       authCode: '',
-      yb_check: false // 允许输入医保金额
+      yb_check: false, // 允许输入医保金额
+      showLoading: false // showLoading
     }
 
     this.queryTimes = 0
@@ -66,6 +67,16 @@ class RetailScreen extends Component {
       clearInterval(this.interval)
       this.setState({ payStatus: '支付超时！' })
     }
+
+    const res = await this.props.DrugRetailPaymentStatus({ out_trade_no: this.state.tradeNo })
+
+    if (res && res.trade_status === 'SUCCESS') {
+      this.setState({ payStatus: '支付成功', showLoading: false })
+    }
+
+    if (res && res.trade_status === 'CLOSE') {
+      this.setState({ payStatus: '已关闭/已撤销' })
+    }
   }
 
   // 结账
@@ -105,7 +116,7 @@ class RetailScreen extends Component {
       if (res && res.code === '200') {
         this.setState({ payStatus: '缴费成功' })
       } else if (res && res.code === '300') {
-        this.setState({ payStatus: '缴费中[待用户输密码]' })
+        this.setState({ payStatus: '缴费中[待用户输密码]', showLoading: true })
         this.interval = setInterval(() => this.tick(), 5000)
       } else {
         this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || ''}]` })
@@ -495,7 +506,16 @@ class RetailScreen extends Component {
               <div>{this.state.payStatus}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', marginTop: '40px' }}>
-              <div className='codeDiv'>{this.state ? <button onClick={() => this.payOrder()}>提交</button> : null}</div>
+              {this.state.payStatus === '待提交' && (
+                <div className='codeDiv'>
+                  <button onClick={() => this.payOrder()}>提交</button>
+                </div>
+              )}
+              {this.state.payStatus === '支付成功' && (
+                <div className='codeDiv'>
+                  <button onClick={() => Router.push('/treatment/drugretail')}>确定</button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -523,6 +543,7 @@ class RetailScreen extends Component {
         {this.renderBill()}
         {this.renderAuthCode()}
         <Confirm ref='myAlert' />
+        <Loading {...this.state} />
       </div>
     )
   }
@@ -538,5 +559,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { ClinicDrugListWithStock, createDrugRetailOrder, createDrugRetailPaymentOrder }
+  { ClinicDrugListWithStock, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailPaymentStatus }
 )(RetailScreen)
