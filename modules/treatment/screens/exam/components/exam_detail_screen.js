@@ -397,7 +397,7 @@ class ExamDetailScreen extends Component {
             {uploadedFiles.map((item, index) => {
               let fileNameArray = item.docName.split('.')
               let suffix = fileNameArray[fileNameArray.length - 1]
-              if (suffix === 'png' || suffix === 'jpg') {
+              if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>
                     <img
@@ -543,7 +543,7 @@ class ExamDetailScreen extends Component {
           url
         }
         array.push(item)
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg' || url.split('.')[1] === 'jpeg') {
           imgArray.push(item)
         }
         exams[selIndex].picture_examination = JSON.stringify(array)
@@ -574,7 +574,7 @@ class ExamDetailScreen extends Component {
           url
         }
         array.push(item)
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg' || url.split('.')[1] === 'jpeg') {
           imgArray.push(item)
         }
         exams[selIndex].picture_examination = JSON.stringify(array)

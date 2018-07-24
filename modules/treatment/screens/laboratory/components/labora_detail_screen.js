@@ -224,7 +224,11 @@ class LaboraDetailScreen extends Component {
     const { showLaboraHistoryDetail, historyDetail } = this.state
     if (!showLaboraHistoryDetail) return null
     let { record = {}, laboras = [], selIndex, laboraDetails } = historyDetail
-    const array = laboraDetails[selIndex]
+    let array = laboraDetails[selIndex]
+    if (array === undefined) {
+      array = []
+    }
+    console.log('laboras=====', laboras, array, laboraDetails, selIndex, historyDetail)
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
@@ -233,17 +237,22 @@ class LaboraDetailScreen extends Component {
             <span onClick={() => this.setState({ showLaboraHistoryDetail: false, showExamHistory: true })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'}>
+            <div className={'filterBox'} style={{fontSize: '14px'}}>
               <div>
                 <div>开单医生：{historyDetail.doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div>
+              <div style={{flex: 1.5}}>
                 <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div />
+              <div>
+                <div>报告医生：{historyDetail.doctor_name}</div>
+              </div>
+              <div style={{flex: 1.5}}>
+                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              </div>
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -267,8 +276,8 @@ class LaboraDetailScreen extends Component {
                         const { laboratory_patient_id, clinic_laboratory_id } = item
                         let detail = await LaboratoryTriageDetail({ laboratory_patient_id, clinic_laboratory_id })
                         let resultsData = detail.resultsData || []
-                        let array = [...resultsData]
-                        laboraDetails[index] = array
+                        array = [...resultsData]
+                        // laboraDetails[index] = array
                         this.setState({ historyDetail: { ...historyDetail, selIndex: index } })
                       }}
                     >
@@ -284,17 +293,30 @@ class LaboraDetailScreen extends Component {
                   <div style={{ flex: 1 }}>序号</div>
                   <div style={{ flex: 3 }}>项目</div>
                   <div style={{ flex: 2 }}>结果</div>
+                  <div style={{ flex: 2 }}>异常标志</div>
                   <div style={{ flex: 2 }}>单位</div>
                   <div style={{ flex: 2 }}>性质</div>
                   <div style={{ flex: 3 }}>参考值</div>
                 </li>
                 {array.map((item, index) => {
-                  const { reference } = this.getReference(item)
+                  const { reference, data_type, reference_min, reference_max } = this.getReference(item)
+                  // const { reference, reference_min, reference_max, data_type } = this.getReference(item)
+                  let is_normal = ''
+                  if (data_type === 2) {
+                    if (item.result_inspection * 1 < reference_min) {
+                      is_normal = '偏低'
+                    } else if (item.result_inspection * 1 > reference_max) {
+                      is_normal = '偏高'
+                    } else {
+                      is_normal = '正常'
+                    }
+                  }
                   return (
                     <li key={index}>
                       <div style={{ flex: 1 }}>{index + 1}</div>
                       <div style={{ flex: 3 }}>{item.name}</div>
                       <div style={{ flex: 2 }}>{item.result_inspection}</div>
+                      <div style={{ flex: 2, color: is_normal === '偏高' ? 'red' : is_normal === '偏低' ? 'blue' : '#505050' }}>{is_normal}</div>
                       <div style={{ flex: 2 }}>{item.unit_name}</div>
                       <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
                       <div style={{ flex: 3 }}>{reference}</div>
@@ -302,16 +324,21 @@ class LaboraDetailScreen extends Component {
                   )
                 })}
               </ul>
-              {this.getStyle()}
+            </div>
+            <div className={'detailBottom'}>
+              <label>备注</label>
+              <textarea readOnly value={laboras[selIndex].remark} />
             </div>
           </div>
         </div>
+        {this.getStyle()}
       </div>
     )
   }
 
   renderDoctorInfo() {
     const { triagePatient } = this.props
+    console.log('triagePatient=====', triagePatient)
     return (
       <div className={'filterBox'}>
         <div>
@@ -323,7 +350,13 @@ class LaboraDetailScreen extends Component {
         <div>
           <div>开单时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
-        <div />
+        {/* <div /> */}
+        <div>
+          <div>报告医生：{triagePatient.doctor_name}</div>
+        </div>
+        <div style={{flex: 1.5}}>
+          <div>报告时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
+        </div>
       </div>
     )
   }
@@ -610,7 +643,7 @@ class LaboraDetailScreen extends Component {
           {this.getStyle()}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', margin: '10px 10px 10px 10px' }}>
-          <label>结论</label>
+          <label>备注</label>
           <textarea
             style={{ resize: 'none', width: '100%', height: '100px', background: 'rgba(245, 248, 249, 1)', borderRadius: '4px', border: '1px solid #d8d8d8' }}
             value={data.remark || ''}
@@ -794,6 +827,19 @@ class LaboraDetailScreen extends Component {
           }
           .tableDIV ul li > div:nth-child(1) {
             flex: 3;
+          }
+          .detailBottom{
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
+          }
+          .detailBottom textarea{
+            resize: none;
+            width: 100%;
+            height: 100px;
+            background: rgb(245, 248, 249);
+            border-radius: 4px;
+            border: 1px solid rgb(216, 216, 216);
           }
         `}
       </style>
