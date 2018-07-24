@@ -3,8 +3,8 @@ import React from 'react'
 
 function Loading(props) {
   return (
-    <div className='mask' style={{ background: 'unset', zIndex: 10000 }}>
-      {props.showLoading ? (
+    props.showLoading && (
+      <div className='mask' style={{ background: 'unset', zIndex: 10000 }}>
         <div>
           {/* <div className='loading'>
             <img src='/static/icons/loading.gif' width='100' />
@@ -160,10 +160,8 @@ function Loading(props) {
             }
           `}</style>
         </div>
-      ) : (
-        ''
-      )}
-    </div>
+      </div>
+    )
   )
 }
 
