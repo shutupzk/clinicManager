@@ -18,46 +18,32 @@ import {
   GetLastBodySign,
   RecptionPatientList
 } from './triage_patients'
-import { patients, getPatientByCertNo, patientSelect, getPatientByKeyword, MemberPateintList, PatientGetByID, PersonalMedicalRecord, PatientUpdate, PersonalMedicalRecordUpsert } from './patients'
+import {
+  patients,
+  getPatientByCertNo,
+  patientSelect,
+  getPatientByKeyword,
+  MemberPateintList,
+  PatientGetByID,
+  PersonalMedicalRecord,
+  PatientUpdate,
+  PersonalMedicalRecordUpsert,
+  UpsertPatientHeight,
+  UpsertPatientWeight,
+  UpsertPatientBloodPressure,
+  UpsertPatientVision,
+  PatientHeightList,
+  PatientWeightList,
+  PatientBmiList,
+  PatientBloodPressureList,
+  PatientVisionList,
+  PatientBloodSugarListByDate
+} from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
-import {
-  schedules,
-  queryScheduleDepartments,
-  queryScheduleDoctors,
-  queryDoctorsWithSchedule,
-  copyScheduleByDate,
-  openScheduleByDate,
-  createOneSchedule,
-  deleteOneUnOpenScheduleByID,
-  stopScheduleByID,
-  querySchedules,
-  RemoveScheduleByID
-} from './schedules'
-import {
-  medicalRecords,
-  createMedicalRecord,
-  createMedicalRecordAsModel,
-  MedicalRecordModelUpdate,
-  MedicalRecordModelDelete,
-  queryMedicalRecord,
-  queryMedicalModels,
-  queryMedicalsByPatient,
-  queryMedicalModelsByDoctor,
-  queryChiefComplaints
-} from './medicRecord'
-import {
-  drugs,
-  ClinicDrugCreate,
-  ClinicDrugList,
-  queryDicDrugsList,
-  ClinicDrugUpdate,
-  ClinicDrugDetail,
-  ClinicDrugOnOff,
-  ClinicDrugListWithStock,
-  ClinicDrugBatchSetting,
-  clearLocalDrugData
-} from './drug'
+import { schedules, queryScheduleDepartments, queryScheduleDoctors, queryDoctorsWithSchedule, copyScheduleByDate, openScheduleByDate, createOneSchedule, deleteOneUnOpenScheduleByID, stopScheduleByID, querySchedules, RemoveScheduleByID } from './schedules'
+import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, MedicalRecordModelUpdate, MedicalRecordModelDelete, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor, queryChiefComplaints } from './medicRecord'
+import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff, ClinicDrugListWithStock, ClinicDrugBatchSetting, clearLocalDrugData } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, ExaminationUpdate, ExaminationOnOff, ExaminationDetail, queryExams } from './examination'
 import { materials, materialCreate, MaterialUpdate, MaterialOnOff, MaterialDetail, queryMaterialList } from './material'
@@ -79,129 +65,32 @@ import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, Prescrip
 import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
 import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
 import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate, LaboratoryItemUpdate, LaboratoryItemOnOff, LaboratoryItemDetail, queryLaboItemsList } from './laboratory_item'
-import {
-  prescriptionWesternPatientModels,
-  PrescriptionWesternPatientModelList,
-  PrescriptionWesternPatientModelCreate,
-  PrescriptionWesternPatientModelUpdate,
-  PrescriptionWesternPatientModelDetail,
-  PrescriptionWesternPatientModelDelete
-} from './prescription_western_patient_model'
-import {
-  prescriptionChinesePatientModels,
-  PrescriptionChinesePatientModelList,
-  PrescriptionChinesePatientModelCreate,
-  PrescriptionChinesePatientModelUpdate,
-  PrescriptionChinesePatientModelDetail,
-  PrescriptionChinesePatientModelDelete
-} from './prescription_chinese_patient_model'
+import { prescriptionWesternPatientModels, PrescriptionWesternPatientModelList, PrescriptionWesternPatientModelCreate, PrescriptionWesternPatientModelUpdate, PrescriptionWesternPatientModelDetail, PrescriptionWesternPatientModelDelete } from './prescription_western_patient_model'
+import { prescriptionChinesePatientModels, PrescriptionChinesePatientModelList, PrescriptionChinesePatientModelCreate, PrescriptionChinesePatientModelUpdate, PrescriptionChinesePatientModelDetail, PrescriptionChinesePatientModelDelete } from './prescription_chinese_patient_model'
 import { receiveRecords, queryReceiveRecords } from './receive_records'
-import {
-  diagnosisTreatments,
-  queryDiagnosisTreatmentList,
-  diagnosisTreatmentCreate,
-  DiagnosisTreatmentUpdate,
-  DiagnosisTreatmentOnOff,
-  DiagnosisTreatmentDetail,
-  queryDictDiagnosisList
-} from './diagnosisTreatment'
-import {
-  treatmentPatientModels,
-  TreatmentPatientModelList,
-  TreatmentPatientModelUpdate,
-  TreatmentPatientModelDetail,
-  TreatmentPatientModelDelete,
-  TreatmentPatientModelCreate
-} from './treatment_models'
+import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate, DiagnosisTreatmentUpdate, DiagnosisTreatmentOnOff, DiagnosisTreatmentDetail, queryDictDiagnosisList } from './diagnosisTreatment'
+import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelUpdate, TreatmentPatientModelDetail, TreatmentPatientModelDelete, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, ExaminationPatientModelUpdate, ExaminationPatientModelDetail, ExaminationPatientModelDelete, examinationModelCreate } from './examination_models'
-import {
-  laboratoryPatientModels,
-  LaboratoryPatientModelCreate,
-  LaboratoryPatientModelUpdate,
-  LaboratoryPatientModelDetail,
-  LaboratoryPatientModelDelete,
-  LaboratoryPersonalPatientModelList,
-  LaboratoryPatientModelList
-} from './laboratory_model'
+import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPatientModelUpdate, LaboratoryPatientModelDetail, LaboratoryPatientModelDelete, LaboratoryPersonalPatientModelList, LaboratoryPatientModelList } from './laboratory_model'
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate, queryClinicCode, clinicSelect } from './clinic'
 import { roles, queryRoleList, roleCreate, roleSelect, RoleUpdate, RoleDetail, RoleAllocation, RoleFunctionUnset, PersonnelsByRole } from './role'
 import { menus, queryMenuGetByClinicID, menuSelect } from './business'
-import {
-  drugStocks,
-  queryDrugInstockRecord,
-  createDrugInstock,
-  drugStockSelect,
-  queryInstockWayList,
-  querySupplierList,
-  queryDrugInstockRecordDetail,
-  DrugInstockCheck,
-  DrugInstockUpdate,
-  DrugInstockRecordDelete
-} from './drug_stock'
+import { drugStocks, queryDrugInstockRecord, createDrugInstock, drugStockSelect, queryInstockWayList, querySupplierList, queryDrugInstockRecordDetail, DrugInstockCheck, DrugInstockUpdate, DrugInstockRecordDelete } from './drug_stock'
 import { drugClasses, queryDrugClassList } from './drug_class'
-import {
-  drugOutStocks,
-  queryDrugOutstockRecord,
-  createDrugOutstock,
-  DrugOutstockUpdate,
-  DrugOutstockRecordDelete,
-  drugOutStockSelect,
-  queryDrugOutstockRecordDetail,
-  DrugOutstockCheck,
-  queryOutstockWayList,
-  queryDrugStockList
-} from './drug_outstock'
-import {
-  materailStocks,
-  queryMaterialInstockRecord,
-  createMaterialInstock,
-  MaterialInstockUpdate,
-  MaterialInstockRecordDelete,
-  materialStockSelect,
-  queryMaterialInstockRecordDetail,
-  MaterialInstockCheck
-} from './material_stock'
-import {
-  materialOutStocks,
-  queryMaterialOutstockRecord,
-  createMaterialOutstock,
-  MaterialOutstockUpdate,
-  MaterialOutstockRecordDelete,
-  materialOutStockSelect,
-  queryMaterialOutstockRecordDetail,
-  MaterialOutstockCheck,
-  queryMaterialStockList
-} from './material_outstock'
+import { drugOutStocks, queryDrugOutstockRecord, createDrugOutstock, DrugOutstockUpdate, DrugOutstockRecordDelete, drugOutStockSelect, queryDrugOutstockRecordDetail, DrugOutstockCheck, queryOutstockWayList, queryDrugStockList } from './drug_outstock'
+import { materailStocks, queryMaterialInstockRecord, createMaterialInstock, MaterialInstockUpdate, MaterialInstockRecordDelete, materialStockSelect, queryMaterialInstockRecordDetail, MaterialInstockCheck } from './material_stock'
+import { materialOutStocks, queryMaterialOutstockRecord, createMaterialOutstock, MaterialOutstockUpdate, MaterialOutstockRecordDelete, materialOutStockSelect, queryMaterialOutstockRecordDetail, MaterialOutstockCheck, queryMaterialStockList } from './material_outstock'
 import { clinicPermissions, queryClinicHassetPermissions, queryClinicUnsetPermissions, createClinicPermissions } from './clinic_permission'
 import { drugDeliveryPending, queryDrugPendingTraigeList, drugPendingTraigeSelect, queryDrugDeliveryList } from './drug_delivery_pending'
 import { drugDeliveryIssued, queryDrugIssuedTraigeList, drugIssuedTraigeSelect } from './drug_delivery_issued'
 import { drugDeliveryRefund, queryDrugRefundTraigeList, drugRefundTraigeSelect } from './drug_delivery_refund'
-import {
-  drugDelivery,
-  queryDrugDeliveryRecordList,
-  drugDeliverySelect,
-  drugDeliveryCreate,
-  queryDrugDeliveryRecordDetail,
-  drugDeliveryRecover,
-  queryDrugDeliveryRefundRecordList,
-  queryDrugDeliveryRefundRecordDetail
-} from './drug_delivery'
+import { drugDelivery, queryDrugDeliveryRecordList, drugDeliverySelect, drugDeliveryCreate, queryDrugDeliveryRecordDetail, drugDeliveryRecover, queryDrugDeliveryRefundRecordList, queryDrugDeliveryRefundRecordDetail } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
 import { finances, queryFinanceList, queryFinanceMonthList, queryFinanceItemList, queryFinanceCredit } from './finance'
 import { FileUpload, xhrFileUpload } from './files'
-import {
-  examinationTriages,
-  ExaminationTriageList,
-  ExaminationTriageWaiting,
-  ExaminationTriageChecked,
-  ExaminationTriageChecking,
-  ExaminationTriageRecordCreate,
-  ExaminationTriageUpdate,
-  ExaminationTriageRecordList,
-  ExaminationTriagePatientRecordList
-} from './examination_triage'
+import { examinationTriages, ExaminationTriageList, ExaminationTriageWaiting, ExaminationTriageChecked, ExaminationTriageChecking, ExaminationTriageRecordCreate, ExaminationTriageUpdate, ExaminationTriageRecordList, ExaminationTriagePatientRecordList } from './examination_triage'
 import {
   laboratoryTriages,
   LaboratoryTriageList,
@@ -215,17 +104,7 @@ import {
   LaboratoryTriageRecordDetail,
   LaboratoryTriagePatientRecordList
 } from './laboratory_triage'
-import {
-  treatmentTriages,
-  TreatmentTriageList,
-  TreatmentTriageWaiting,
-  TreatmentTriageChecked,
-  TreatmentTriageChecking,
-  TreatmentTriageRecordCreate,
-  TreatmentTriageRecordList,
-  TreatmentTriageUpdate,
-  TreatmentTriagePatientRecordList
-} from './treatment_triage'
+import { treatmentTriages, TreatmentTriageList, TreatmentTriageWaiting, TreatmentTriageChecked, TreatmentTriageChecking, TreatmentTriageRecordCreate, TreatmentTriageRecordList, TreatmentTriageUpdate, TreatmentTriagePatientRecordList } from './treatment_triage'
 
 import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail } from './drug_retail'
 
@@ -569,5 +448,15 @@ export {
   PersonnelAuthorizationAllocation,
   UpdatePersonnelUsername,
   RecptionPatientList,
-  clearLocalDrugData
+  clearLocalDrugData,
+  UpsertPatientHeight,
+  UpsertPatientWeight,
+  UpsertPatientBloodPressure,
+  UpsertPatientVision,
+  PatientHeightList,
+  PatientWeightList,
+  PatientBmiList,
+  PatientBloodPressureList,
+  PatientVisionList,
+  PatientBloodSugarListByDate
 }
