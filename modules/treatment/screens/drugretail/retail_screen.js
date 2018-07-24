@@ -66,7 +66,7 @@ class RetailScreen extends Component {
     if (this.state.payStatus !== '缴费中[待用户输密码]') return clearInterval(this.interval)
     if (this.queryTimes >= 7) {
       clearInterval(this.interval)
-      this.setState({ payStatus: '支付超时！' })
+      this.setState({ payStatus: '支付超时！', showLoading: false })
     }
 
     const res = await this.props.DrugRetailPaymentStatus({ out_trade_no: this.state.tradeNo })
@@ -76,7 +76,7 @@ class RetailScreen extends Component {
     }
 
     if (res && res.trade_status === 'CLOSE') {
-      this.setState({ payStatus: '已关闭/已撤销' })
+      this.setState({ payStatus: '已关闭/已撤销', showLoading: false })
     }
   }
 
@@ -101,7 +101,7 @@ class RetailScreen extends Component {
   async payOrder() {
     if (this.disabled) return
     this.disabled = true
-    this.setState({showLoading: true})
+    this.setState({ showLoading: true })
     let { tradeNo, medical_money, discount, pay_method, chargeTotal, authCode } = this.state
     let discount_money = discount ? Math.round(chargeTotal * ((100 - discount) / 100)) : 0
     let medical_money_int = Math.round(medical_money * 100)
@@ -117,7 +117,7 @@ class RetailScreen extends Component {
       operation_id: this.props.personnel_id
     })
     this.disabled = false
-    this.setState({showLoading: false})
+    this.setState({ showLoading: false })
     if (pay_method === 1 || pay_method === 2) {
       if (res && res.code === '200') {
         this.setState({ payStatus: '支付成功' })
