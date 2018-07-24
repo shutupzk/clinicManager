@@ -22,10 +22,11 @@ class RetailScreen extends Component {
       payStatus: '待提交', // 支付状态
       authCode: '',
       yb_check: false, // 允许输入医保金额
-      showLoading: false // showLoading
+      showLoading: false
     }
 
     this.queryTimes = 0
+    this.disabled = false
   }
 
   componentWillUnmount() {
@@ -98,6 +99,9 @@ class RetailScreen extends Component {
   }
 
   async payOrder() {
+    if (this.disabled) return
+    this.disabled = true
+    this.setState({showLoading: true})
     let { tradeNo, medical_money, discount, pay_method, chargeTotal, authCode } = this.state
     let discount_money = discount ? Math.round(chargeTotal * ((100 - discount) / 100)) : 0
     let medical_money_int = Math.round(medical_money * 100)
@@ -112,6 +116,8 @@ class RetailScreen extends Component {
       balance_money: chargeTotal - discount_money - medical_money_int,
       operation_id: this.props.personnel_id
     })
+    this.disabled = false
+    this.setState({showLoading: false})
     if (pay_method === 1 || pay_method === 2) {
       if (res && res.code === '200') {
         this.setState({ payStatus: '支付成功' })
