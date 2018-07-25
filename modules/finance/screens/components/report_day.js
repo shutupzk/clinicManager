@@ -60,7 +60,7 @@ class ReportDayScreen extends Component {
               <div>材料费</div>
               <div>药品零售</div>
               <div>其他费用</div>
-              <div>交易时间</div>
+              <div style={{ flex: 2 }}>交易时间</div>
               <div>操作员</div>
               <div style={{ flex: 2 }}>接诊科室</div>
               <div>接诊医生</div>
@@ -78,7 +78,7 @@ class ReportDayScreen extends Component {
               <div>{formatMoney(finances_page.material_fee)}</div>
               <div>{formatMoney(finances_page.retail_fee)}</div>
               <div>{formatMoney(finances_page.other_fee)}</div>
-              <div />
+              <div style={{ flex: 2 }} />
               <div />
               <div style={{ flex: 2 }} />
               <div />
@@ -98,7 +98,7 @@ class ReportDayScreen extends Component {
                   <div>{formatMoney(item.material_fee)}</div>
                   <div>{formatMoney(item.retail_fee)}</div>
                   <div>{formatMoney(item.other_fee)}</div>
-                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
+                  <div style={{ flex: 2 }}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div>{item.operation}</div>
                   <div style={{ flex: 2 }}>{item.departmentname}</div>
                   <div>{item.doctorname}</div>
@@ -149,7 +149,7 @@ class ReportDayScreen extends Component {
               <div>挂账</div>
               <div>卡券</div>
               <div>减免</div>
-              <div>交易时间</div>
+              <div style={{ flex: 2 }}>交易时间</div>
               <div>操作员</div>
               <div style={{ flex: 2 }}>接诊科室</div>
               <div>接诊医生</div>
@@ -169,7 +169,7 @@ class ReportDayScreen extends Component {
               <div>{formatMoney(finances_page.on_credit_money)}</div>
               <div>{formatMoney(finances_page.discount_money || 0 + finances_page.voucher_money || 0)}</div>
               <div>{formatMoney(finances_page.derate_money)}</div>
-              <div />
+              <div style={{ flex: 2 }} />
               <div />
               <div style={{ flex: 2 }} />
               <div />
@@ -191,7 +191,7 @@ class ReportDayScreen extends Component {
                   <div>{formatMoney(item.on_credit_money)}</div>
                   <div>{formatMoney(item.discount_money + item.voucher_money)}</div>
                   <div>{formatMoney(item.derate_money)}</div>
-                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
+                  <div style={{ flex: 2 }}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div>{item.operation}</div>
                   <div style={{ flex: 2 }}>{item.departmentname}</div>
                   <div>{item.doctorname}</div>

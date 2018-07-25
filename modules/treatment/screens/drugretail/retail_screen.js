@@ -16,7 +16,7 @@ class RetailScreen extends Component {
       discount: '', //  折扣
       medical_money: '', // 医保收费
       charge_money: '', // 实际收费
-      pay_method: '', // 支付方式
+      pay_method: 4, // 支付方式
       tradeNo: '', // 交易订单号
       showCode: false, // 展示授权码
       payStatus: '待提交', // 支付状态
