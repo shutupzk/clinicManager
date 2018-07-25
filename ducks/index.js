@@ -16,7 +16,8 @@ import {
   GetHealthRecord,
   TriagePatientDetail,
   GetLastBodySign,
-  RecptionPatientList
+  RecptionPatientList,
+  TriagePatientVisitDetail
 } from './triage_patients'
 import {
   patients,
@@ -32,17 +33,32 @@ import {
   UpsertPatientWeight,
   UpsertPatientBloodPressure,
   UpsertPatientVision,
+  UpsertPatientBloodSugar,
   PatientHeightList,
   PatientWeightList,
   PatientBmiList,
   PatientBloodPressureList,
   PatientVisionList,
-  PatientBloodSugarListByDate
+  PatientBloodSugarList
 } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
 import { schedules, queryScheduleDepartments, queryScheduleDoctors, queryDoctorsWithSchedule, copyScheduleByDate, openScheduleByDate, createOneSchedule, deleteOneUnOpenScheduleByID, stopScheduleByID, querySchedules, RemoveScheduleByID } from './schedules'
-import { medicalRecords, createMedicalRecord, createMedicalRecordAsModel, MedicalRecordModelUpdate, MedicalRecordModelDelete, queryMedicalRecord, queryMedicalModels, queryMedicalsByPatient, queryMedicalModelsByDoctor, queryChiefComplaints } from './medicRecord'
+import {
+  medicalRecords,
+  createMedicalRecord,
+  createMedicalRecordAsModel,
+  MedicalRecordModelUpdate,
+  MedicalRecordModelDelete,
+  queryMedicalRecord,
+  queryMedicalModels,
+  queryMedicalsByPatient,
+  queryMedicalModelsByDoctor,
+  queryChiefComplaints,
+  MedicalRecordRenew,
+  MedicalRecordRenewUpdate,
+  MedicalRecordRenewDelete
+} from './medicRecord'
 import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff, ClinicDrugListWithStock, ClinicDrugBatchSetting, clearLocalDrugData } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
 import { examinations, examinationCreate, queryExaminationList, ExaminationUpdate, ExaminationOnOff, ExaminationDetail, queryExams } from './examination'
@@ -455,10 +471,15 @@ export {
   UpsertPatientWeight,
   UpsertPatientBloodPressure,
   UpsertPatientVision,
+  UpsertPatientBloodSugar,
   PatientHeightList,
   PatientWeightList,
   PatientBmiList,
   PatientBloodPressureList,
   PatientVisionList,
-  PatientBloodSugarListByDate
+  PatientBloodSugarList,
+  TriagePatientVisitDetail,
+  MedicalRecordRenew,
+  MedicalRecordRenewUpdate,
+  MedicalRecordRenewDelete
 }

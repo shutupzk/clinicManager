@@ -261,6 +261,22 @@ export const UpsertPatientVision = ({ patient_id, items }) => async dispatch => 
   }
 }
 
+export const UpsertPatientBloodSugar = ({ patient_id, items }) => async dispatch => {
+  console.log('patient_id ======== ', { patient_id, items })
+  try {
+    const data = await request('/patient/UpsertPatientBloodSugar', { patient_id, items })
+    console.log(data)
+    if (data.code === '200') {
+      return null
+    } else {
+      return data.msg
+    }
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const PatientHeightList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
   console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
   try {
@@ -341,10 +357,10 @@ export const PatientVisionList = ({ patient_id, offset, limit, start_date, end_d
   }
 }
 
-export const PatientBloodSugarListByDate = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
+export const PatientBloodSugarList = ({ patient_id, offset, limit, start_date, end_date }) => async dispatch => {
   console.log('patient_id ======== ', { patient_id, offset, limit, start_date, end_date })
   try {
-    const data = await request('/patient/PatientBloodSugarListByDate', { patient_id, offset, limit, start_date, end_date })
+    const data = await request('/patient/PatientBloodSugarList', { patient_id, offset, limit, start_date, end_date })
     const docs = data.data || []
     const page_info = data.page_info || {}
     if (data.code !== '200') {

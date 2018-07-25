@@ -411,3 +411,14 @@ export const GetLastBodySign = ({ patient_id }) => async dispatch => {
     return {}
   }
 }
+
+export const TriagePatientVisitDetail = ({ clinic_triage_patient_id }) => async dispatch => {
+  try {
+    const data = await request('/triage/TriagePatientVisitDetail', { clinic_triage_patient_id })
+    if (data.code !== '200') return {}
+    return data.data || {}
+  } catch (e) {
+    console.log(e)
+    return {}
+  }
+}
