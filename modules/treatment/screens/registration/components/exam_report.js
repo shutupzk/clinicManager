@@ -319,7 +319,7 @@ class ExamReportScreen extends Component {
           <ul>
             {uploadedFiles.map((item, index) => {
               let suffix = item.docName.split('.')[1]
-              if (suffix === 'png' || suffix === 'jpg') {
+              if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>
                     <img
@@ -423,17 +423,22 @@ class ExamReportScreen extends Component {
             <span onClick={() => this.setState({ showExamHistoryDetail: false })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'}>
+            <div className={'filterBox'} style={{fontSize: '14px'}}>
               <div>
                 <div>开单医生：{historyDetail.doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div>
+              <div style={{flex: 1.5}}>
                 <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div />
+              <div>
+                <div>报告医生：{historyDetail.doctor_name}</div>
+              </div>
+              <div style={{flex: 1.5}}>
+                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              </div>
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>

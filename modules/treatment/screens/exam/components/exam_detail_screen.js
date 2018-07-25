@@ -35,10 +35,11 @@ class ExamDetailScreen extends Component {
   }
 
   render() {
+    const {order_status} = this.props
     return (
       <div className={'detail'}>
         <div className={'detail_title'}>
-          <span>检查</span>
+          <span>{order_status === '30' ? '已检查' : '检查中'}</span>
           <span onClick={() => this.props.back2List()}>{'<返回'}</span>
         </div>
         {this.renderDoctorInfo()}
@@ -207,17 +208,22 @@ class ExamDetailScreen extends Component {
             <span onClick={() => this.setState({ showExamHistoryDetail: false, showExamHistory: true })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'}>
+            <div className={'filterBox'} style={{fontSize: '14px'}}>
               <div>
                 <div>开单医生：{historyDetail.doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div>
+              <div style={{flex: 1.5}}>
                 <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div />
+              <div>
+                <div>报告医生：{historyDetail.doctor_name}</div>
+              </div>
+              <div style={{flex: 1.5}}>
+                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              </div>
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -281,7 +287,8 @@ class ExamDetailScreen extends Component {
   }
 
   renderDoctorInfo() {
-    const { triagePatient } = this.props
+    const { triagePatient, order_status } = this.props
+    console.log('triagePatient=====', triagePatient, order_status)
     return (
       <div className={'filterBox'}>
         <div>
@@ -291,9 +298,15 @@ class ExamDetailScreen extends Component {
           <div>开单科室：{triagePatient.department_name}</div>
         </div>
         <div>
-          <div>开单时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
+          <div>开单时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
-        <div />
+        {order_status === 30 ? <div>
+          <div>报告医生：{triagePatient.doctor_name}</div>
+        </div> : ''}
+        {order_status === 30 ? <div>
+          <div>报告时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
+        </div> : ''}
+        {order_status === 20 ? <div /> : ''}
       </div>
     )
   }
@@ -607,6 +620,8 @@ class ExamDetailScreen extends Component {
     )
   }
   renderContent() {
+    const { order_status } = this.props
+    console.log('order_status=====', order_status)
     const { selIndex, exams, showProgress } = this.state
     const data = exams[selIndex]
     if (!data) return null
@@ -677,6 +692,11 @@ class ExamDetailScreen extends Component {
             <button>取消</button>
           </div>
         </div>
+        {order_status === 30 ? <div>
+          <button
+            style={{float: 'right', marginRight: '20px'}}
+          >打印报告</button>
+        </div> : ''}
         {this.getStyle()}
       </div>
     )
