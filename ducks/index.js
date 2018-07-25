@@ -88,7 +88,7 @@ import { drugDeliveryIssued, queryDrugIssuedTraigeList, drugIssuedTraigeSelect }
 import { drugDeliveryRefund, queryDrugRefundTraigeList, drugRefundTraigeSelect } from './drug_delivery_refund'
 import { drugDelivery, queryDrugDeliveryRecordList, drugDeliverySelect, drugDeliveryCreate, queryDrugDeliveryRecordDetail, drugDeliveryRecover, queryDrugDeliveryRefundRecordList, queryDrugDeliveryRefundRecordDetail } from './drug_delivery'
 import { DiagnosisTreatmentPatientCreate } from './diagnosis_treatment_patient'
-import { finances, queryFinanceList, queryFinanceMonthList, queryFinanceItemList, queryFinanceCredit } from './finance'
+import { finances, queryFinanceList, queryFinanceMonthList, queryFinanceItemList, queryFinanceCredit, queryFinanceListAnalysis } from './finance'
 import { FileUpload, xhrFileUpload } from './files'
 import { examinationTriages, ExaminationTriageList, ExaminationTriageWaiting, ExaminationTriageChecked, ExaminationTriageChecking, ExaminationTriageRecordCreate, ExaminationTriageUpdate, ExaminationTriageRecordList, ExaminationTriagePatientRecordList } from './examination_triage'
 import {
@@ -399,6 +399,7 @@ export {
   queryDrugDeliveryRefundRecordDetail,
   FileUpload,
   queryFinanceList,
+  queryFinanceListAnalysis,
   queryFinanceMonthList,
   queryFinanceItemList,
   queryFinanceCredit,
