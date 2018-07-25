@@ -267,6 +267,19 @@ class LaboraReportScreen extends Component {
           .tableDIV ul li > div:nth-child(1) {
             flex: 3;
           }
+          .detailBottom{
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
+          }
+          .detailBottom textarea{
+            resize: none;
+            width: 100%;
+            height: 100px;
+            background: rgb(245, 248, 249);
+            border-radius: 4px;
+            border: 1px solid rgb(216, 216, 216);
+          }
         `}
       </style>
     )
@@ -331,17 +344,22 @@ class LaboraReportScreen extends Component {
             <span onClick={() => this.setState({ showLaboraHistoryDetail: false })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'}>
+            <div className={'filterBox'} style={{fontSize: '14px'}}>
               <div>
                 <div>开单医生：{historyDetail.doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div>
+              <div style={{flex: 1.5}}>
                 <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div />
+              <div>
+                <div>报告医生：{historyDetail.doctor_name}</div>
+              </div>
+              <div style={{flex: 1.5}}>
+                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              </div>
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -382,17 +400,29 @@ class LaboraReportScreen extends Component {
                   <div style={{ flex: 1 }}>序号</div>
                   <div style={{ flex: 3 }}>项目</div>
                   <div style={{ flex: 2 }}>结果</div>
+                  <div style={{ flex: 2 }}>异常标志</div>
                   <div style={{ flex: 2 }}>单位</div>
                   <div style={{ flex: 2 }}>性质</div>
                   <div style={{ flex: 3 }}>参考值</div>
                 </li>
                 {array.map((item, index) => {
-                  const { reference } = this.getReference(item)
+                  const { reference, data_type, reference_min, reference_max } = this.getReference(item)
+                  let is_normal = ''
+                  if (data_type === 2) {
+                    if (item.result_inspection * 1 < reference_min) {
+                      is_normal = '偏低'
+                    } else if (item.result_inspection * 1 > reference_max) {
+                      is_normal = '偏高'
+                    } else {
+                      is_normal = '正常'
+                    }
+                  }
                   return (
                     <li key={index}>
                       <div style={{ flex: 1 }}>{index + 1}</div>
                       <div style={{ flex: 3 }}>{item.name}</div>
                       <div style={{ flex: 2 }}>{item.result_inspection}</div>
+                      <div style={{ flex: 2, color: is_normal === '偏高' ? 'red' : is_normal === '偏低' ? 'blue' : '#505050' }}>{is_normal}</div>
                       <div style={{ flex: 2 }}>{item.unit_name}</div>
                       <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
                       <div style={{ flex: 3 }}>{reference}</div>
@@ -400,10 +430,14 @@ class LaboraReportScreen extends Component {
                   )
                 })}
               </ul>
-              {this.getStyle()}
+            </div>
+            <div className={'detailBottom'}>
+              <label>备注</label>
+              <textarea readOnly value={laboras[selIndex].remark} />
             </div>
           </div>
         </div>
+        {this.getStyle()}
       </div>
     )
   }
