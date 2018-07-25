@@ -4,6 +4,7 @@ import { Confirm, PageCard } from '../../../../../components'
 import { queryMedicalRecord, TreatmentTriageList, TreatmentTriageRecordCreate, TreatmentTriagePatientRecordList } from '../../../../../ducks'
 import { getAgeByBirthday, formatMoney } from '../../../../../utils'
 import moment from 'moment'
+import Print from 'rc-print'
 
 // 治疗
 class TreatDetailScreen extends Component {
@@ -464,10 +465,149 @@ class TreatDetailScreen extends Component {
             <button>取消</button>
           </div>
         </div>
+        <div>
+          <button
+            style={{float: 'right', marginRight: '20px'}}
+            onClick={() => this.refs.printer.onPrint()}
+          >打印治疗单</button>
+          <Print ref='printer' lazyRender isIframe>
+            {this.mrPrinter()}
+            {/* <div>aaaaaa</div> */}
+          </Print>
+        </div>
       </div>
     )
   }
-
+  mrPrinter() {
+    let { user, triagePatient } = this.props
+    console.log('triagePatient=====', triagePatient)
+    const patientInfoRowStyle = {
+      display: 'flex',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '50px'
+    }
+    const patientInfoRowDivStyle = {
+      flex: 1,
+      display: 'flex',
+      margin: '10px 15px 10px 5px',
+      minHeight: '30px',
+      alignItems: 'center',
+      borderBottom: '1px solid #d8d8d8',
+      borderTop: '1px solid #ffffff'
+    }
+    // const recordDetailDiv = {
+    //   width: '100%',
+    //   display: 'flex',
+    //   flexDirection: 'row',
+    //   fontSize: '17px',
+    //   marginTop: '10px'
+    // }
+    // const recordDetailDivLable = {
+    //   width: '120px',
+    //   fontWeight: '500'
+    // }
+    const { treatments } = this.state
+    console.log('treatments======', treatments)
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center' }}>
+            <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+            <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>检验报告单</div>
+          </div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>姓名：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.patient_name}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>性别：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>年龄：</lable>
+            <div style={patientInfoRowDivStyle}>{getAgeByBirthday(triagePatient.birthday)}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>病案号：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>科室：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.department_name}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>初步诊断：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.diagnosis}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
+            <ul>
+              <li style={{fontWeight: 'bold'}}>
+                <div style={{ flex: 3 }}>项目名称</div>
+                <div style={{ flex: 2 }}>单价（￥）</div>
+                <div style={{ flex: 2 }}>单位</div>
+                <div style={{ flex: 2 }}>次数</div>
+                <div style={{ flex: 2 }}>金额（￥）</div>
+                <div style={{ flex: 3, borderRight: '1px solid #d8d8d8' }}>说明</div>
+              </li>
+              {treatments.map((item, index) => {
+                return (
+                  <li key={index}>
+                    <div style={{ flex: 3 }}>
+                      <div style={{ width: '100%' }}>
+                        {item.clinic_treatment_name}
+                      </div>
+                    </div>
+                    <div style={{ flex: 2 }}>
+                      <div style={{ width: '100%' }}>
+                        {item.price || ''}
+                      </div>
+                    </div>
+                    <div style={{ flex: 2 }}>{item.unit_name}</div>
+                    <div style={{ flex: 2 }}>{item.total_times}</div>
+                    <div style={{ flex: 2 }}>
+                      <div style={{ width: '100%' }}>
+                        {item.price || ''}
+                      </div>
+                    </div>
+                    <div style={{ flex: 3 }}>{item.illustration}</div>
+                  </li>
+                )
+              })}
+            </ul>
+            {this.getStyle()}
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>合计金额（￥）：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>开单医生：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>开单日期：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
   getStyle() {
     return (
       <style jsx='true'>
@@ -642,6 +782,7 @@ class TreatDetailScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    user: state.user.data,
     operation_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     patient_record_data: state.treatmentTriages.patient_record_data,

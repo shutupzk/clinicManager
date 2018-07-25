@@ -54,6 +54,28 @@ export const queryFinanceList = ({ start_date, end_date, patientName, oprationNa
   }
 }
 
+export const queryFinanceListAnalysis = ({ start_date, end_date, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    const data = await request('/charge/business/transaction/analysis', {
+      start_date,
+      end_date,
+      offset,
+      limit
+    })
+    const json = data.data || []
+    const page_info = data.page_info || { offset, limit, total: 0 }
+    dispatch({
+      type: FINANCE_ADD,
+      data: json,
+      page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const queryFinanceMonthList = ({ start_date, end_date, offset = 0, limit = 10 }) => async dispatch => {
   try {
     const data = await request('/charge/business/transaction/month', {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { queryFinanceList } from '../../../../../ducks'
+import { queryFinanceListAnalysis } from '../../../../../ducks'
 import { PageCard } from '../../../../../components'
 import { formatMoney } from '../../../../../utils'
 import ReactEcharts from 'echarts-for-react'
@@ -111,9 +111,9 @@ class AnalyslsTypeScreen extends Component {
   }
 
   queryContentData({ offset = 0, limit = 10 }) {
-    const { queryFinanceList } = this.props
+    const { queryFinanceListAnalysis } = this.props
     const { start_date, end_date } = this.state
-    queryFinanceList({ start_date, end_date, offset, limit })
+    queryFinanceListAnalysis({ start_date, end_date, offset, limit })
   }
 
   showContent() {
@@ -313,5 +313,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryFinanceList }
+  { queryFinanceListAnalysis }
 )(AnalyslsTypeScreen)

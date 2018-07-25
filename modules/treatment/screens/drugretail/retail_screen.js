@@ -16,7 +16,7 @@ class RetailScreen extends Component {
       discount: '', //  折扣
       medical_money: '', // 医保收费
       charge_money: '', // 实际收费
-      pay_method: '', // 支付方式
+      pay_method: 4, // 支付方式
       tradeNo: '', // 交易订单号
       showCode: false, // 展示授权码
       payStatus: '待提交', // 支付状态
@@ -83,12 +83,12 @@ class RetailScreen extends Component {
   // 结账
   submit() {
     let { selectType, discount, medical_money, charge_money, chargeTotal, pay_method } = this.state
+    if (!pay_method) return this.refs.myAlert.alert('未选择支付方式', '', null, 'Warning')
     let discount_money = selectType === 1 && discount ? Math.round(chargeTotal * ((100 - discount) / 100)) : 0
     let medical_money_int = Math.round(medical_money * 100)
     let charge_money_int = charge_money ? Math.round(charge_money * 100) : 0
     let should_money = chargeTotal - discount_money - medical_money_int
-    if (charge_money_int < should_money) return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
-    if (!pay_method) return this.refs.myAlert.alert('未选择支付方式', '', null, 'Warning')
+    if (pay_method === 4 && charge_money_int < should_money) return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
     if (pay_method === 1 || pay_method === 2) {
       this.setState({ showCode: true })
     } else if (pay_method === 3) {
@@ -445,16 +445,18 @@ class RetailScreen extends Component {
                 现金
               </button>
             </div>
-            <div className={'receipt'}>
-              <div>
-                <label>实际收款</label>
-                <input type='text' value={this.state.charge_money} onChange={e => this.setState({ charge_money: limitMoney(e.target.value) })} />
+            {this.state.pay_method === 4 && (
+              <div className={'receipt'}>
+                <div>
+                  <label>实际收款</label>
+                  <input type='text' value={this.state.charge_money} onChange={e => this.setState({ charge_money: limitMoney(e.target.value) })} />
+                </div>
+                <div>
+                  <label>找零</label>
+                  <input type='text' disabled value={this.state.charge_money ? formatMoney(Math.round(this.state.charge_money * 100) - should_money) : ''} />
+                </div>
               </div>
-              <div>
-                <label>找零</label>
-                <input type='text' disabled value={this.state.charge_money ? formatMoney(Math.round(this.state.charge_money * 100) - should_money) : ''} />
-              </div>
-            </div>
+            )}
             <div className={'bottomBtn'}>
               <button style={{ float: 'left' }} onClick={() => this.setState({ showCharge: false })}>
                 返回筛查收费项目

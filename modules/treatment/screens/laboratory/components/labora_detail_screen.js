@@ -4,6 +4,7 @@ import { Select, Confirm, PageCard } from '../../../../../components'
 import { queryMedicalRecord, LaboratoryTriageList, LaboratoryTriageDetail, LaboratoryTriageRecordCreate, LaboratoryTriagePatientRecordList, queryLaboratoryItemList } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import moment from 'moment'
+import Print from 'rc-print'
 
 // 检验
 class LaboraDetailScreen extends Component {
@@ -56,10 +57,11 @@ class LaboraDetailScreen extends Component {
   }
 
   render() {
+    const {order_status} = this.props
     return (
       <div className={'detail'}>
         <div className={'detail_title'}>
-          <span>检验</span>
+          <span>{order_status === '30' ? '已检验' : '检验中'}</span>
           <span onClick={() => this.props.back2List()}>{'<返回'}</span>
         </div>
         {this.renderDoctorInfo()}
@@ -337,8 +339,8 @@ class LaboraDetailScreen extends Component {
   }
 
   renderDoctorInfo() {
-    const { triagePatient } = this.props
-    console.log('triagePatient=====', triagePatient)
+    const { triagePatient, order_status } = this.props
+    console.log('triagePatient=====', triagePatient, order_status)
     return (
       <div className={'filterBox'}>
         <div>
@@ -348,15 +350,17 @@ class LaboraDetailScreen extends Component {
           <div>开单科室：{triagePatient.department_name}</div>
         </div>
         <div>
-          <div>开单时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
+          <div>开单时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
-        {/* <div /> */}
-        <div>
-          <div>报告医生：{triagePatient.doctor_name}</div>
-        </div>
-        <div style={{flex: 1.5}}>
-          <div>报告时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
-        </div>
+        {order_status === 30 || order_status === '30' ? <div>
+          <div>报告医生：{}</div>
+        </div> : ''}
+        {order_status === 30 || order_status === '30' ? <div>
+          <div>报告时间：
+            {/* {moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')} */}
+          </div>
+        </div> : ''}
+        {order_status === 20 || order_status === '20' ? <div /> : ''}
       </div>
     )
   }
@@ -562,6 +566,7 @@ class LaboraDetailScreen extends Component {
   }
 
   renderContent() {
+    const { order_status } = this.props
     const { selIndex, laboraDetails, laboras } = this.state
     const array = laboraDetails[selIndex]
     if (!array || !array.length) return null
@@ -657,6 +662,183 @@ class LaboraDetailScreen extends Component {
           <div>
             <button onClick={() => this.save()}>保存</button>
             <button>取消</button>
+          </div>
+        </div>
+        {order_status === '30' ? <div>
+          <button
+            style={{float: 'right', marginRight: '20px'}}
+            onClick={() => this.refs.printer.onPrint()}
+          >打印报告</button>
+          <Print ref='printer' lazyRender isIframe>
+            {this.mrPrinter()}
+            {/* <div>aaaaaa</div> */}
+          </Print>
+        </div> : ''}
+      </div>
+    )
+  }
+  mrPrinter() {
+    let { user, triagePatient } = this.props
+    console.log('triagePatient=====', triagePatient)
+    const patientInfoRowStyle = {
+      display: 'flex',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '50px'
+    }
+    const patientInfoRowDivStyle = {
+      flex: 1,
+      display: 'flex',
+      margin: '10px 15px 10px 5px',
+      minHeight: '30px',
+      alignItems: 'center',
+      borderBottom: '1px solid #d8d8d8',
+      borderTop: '1px solid #ffffff'
+    }
+    // const recordDetailDiv = {
+    //   width: '100%',
+    //   display: 'flex',
+    //   flexDirection: 'row',
+    //   fontSize: '17px',
+    //   marginTop: '10px'
+    // }
+    // const recordDetailDivLable = {
+    //   width: '120px',
+    //   fontWeight: '500'
+    // }
+    const { selIndex, laboraDetails, laboras } = this.state
+    let array = laboraDetails[selIndex]
+    if (array === undefined) {
+      array = []
+    }
+    let data = laboras[selIndex]
+    console.log('data======', data, array)
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center' }}>
+            <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+            <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>检验报告单</div>
+          </div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>姓名：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.patient_name}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>性别：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>年龄：</lable>
+            <div style={patientInfoRowDivStyle}>{getAgeByBirthday(triagePatient.birthday)}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>标本种类：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>病案号：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>科室：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.department_name}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>备注：</lable>
+            <div style={patientInfoRowDivStyle}>{data.remark || ''}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>初步诊断：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.diagnosis}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
+            <ul>
+              <li style={{fontWeight: 'bold'}}>
+                <div style={{ flex: 3 }}>检验项目</div>
+                <div style={{ flex: 2 }}>结果</div>
+                <div style={{ flex: 2 }}>异常标志</div>
+                <div style={{ flex: 2 }}>单位</div>
+                <div style={{ flex: 2 }}>性质</div>
+                <div style={{ flex: 3, borderRight: '1px solid #d8d8d8' }}>参考值</div>
+              </li>
+              {array.map((item, index) => {
+                // let nameOptions = this.getNameOptions(index)
+                const { reference, reference_min, reference_max, data_type } = this.getReference(item)
+                let is_normal = ''
+                if (data_type === 2) {
+                  if (item.result_inspection * 1 < reference_min) {
+                    is_normal = '偏低'
+                  } else if (item.result_inspection * 1 > reference_max) {
+                    is_normal = '偏高'
+                  } else {
+                    is_normal = '正常'
+                  }
+                }
+                return (
+                  <li key={index}>
+                    <div style={{ flex: 3 }}>
+                      <div style={{ width: '100%' }}>
+                        {item.name}
+                      </div>
+                    </div>
+                    <div style={{ flex: 2 }}>
+                      <div style={{ width: '100%' }}>
+                        {item.result_inspection || ''}
+                      </div>
+                    </div>
+                    <div style={{ flex: 2, color: is_normal === '偏高' ? 'red' : is_normal === '偏低' ? 'blue' : '#505050' }}>{is_normal}</div>
+                    <div style={{ flex: 2 }}>{item.unit_name}</div>
+                    <div style={{ flex: 2 }}>{item.data_type === 1 ? '定性' : '定量'}</div>
+                    <div style={{ flex: 3 }}>{reference}</div>
+                  </li>
+                )
+              })}
+            </ul>
+            {this.getStyle()}
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>送检医生：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>送检人员：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>审核人员：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>接收时间：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>报告时间：</lable>
+            <div style={patientInfoRowDivStyle}>{}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>注：</lable>
+            <div style={patientInfoRowDivStyle}>{'此检验报告仅对本次标本负责，如有疑问，请立即与检验科联系，谢谢合作'}</div>
           </div>
         </div>
       </div>
@@ -853,7 +1035,8 @@ const mapStateToProps = state => {
     clinic_id: state.user.data.clinic_id,
     patient_record_data: state.laboratoryTriages.patient_record_data,
     patient_record_page_info: state.laboratoryTriages.patient_record_page_info,
-    laboItemData: state.laboratoryItems.data
+    laboItemData: state.laboratoryItems.data,
+    user: state.user.data
   }
 }
 
