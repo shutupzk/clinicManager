@@ -86,6 +86,7 @@ class AddmisionScreen extends Component {
   showTriageList() {
     const { pageType } = this.state
     const { triagePatients, patient_page_info } = this.props
+    // console.log('triagePatients====', triagePatients)
     return (
       <div>
         <div className={'listContent'}>
@@ -118,6 +119,7 @@ class AddmisionScreen extends Component {
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
                         let patient_id = patient.patient_id
+                        // console.log('patient_id====', patient_id)
                         this.props.patientSelect({ patient_id })
                         Router.push('/treatment/registration/list_detail')
                       }}

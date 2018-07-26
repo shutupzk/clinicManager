@@ -61,6 +61,7 @@ class LaboratoriedScreen extends Component {
                   <div className={'itemTop'}>
                     <span style={{ cursor: 'pointer' }} onClick={() => {
                       let patient_id = patient.patient_id
+                      // console.log('patient_id====', patient_id)
                       this.props.patientSelect({ patient_id })
                       Router.push('/treatment/registration/list_detail')
                     }}>{patient.patient_name}</span>
