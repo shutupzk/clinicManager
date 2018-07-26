@@ -37,9 +37,9 @@ export const createDrugRetailOrder = ({ items }) => async dispatch => {
   }
 }
 
-export const createDrugRetailPaymentOrder = ({ out_trade_no, pay_method, auth_code, total_money, discount_money, medical_money, balance_money, operation_id }) => async dispatch => {
+export const createDrugRetailPaymentOrder = ({ record_sn, pay_method, auth_code, total_money, discount_money, medical_money, balance_money, operation_id }) => async dispatch => {
   try {
-    const data = await request('/drugRetail/createPaymentOrder', { out_trade_no, pay_method, auth_code, total_money, discount_money, medical_money, balance_money, operation_id })
+    const data = await request('/drugRetail/createPaymentOrder', { record_sn, pay_method, auth_code, total_money, discount_money, medical_money, balance_money, operation_id })
     console.log(data)
     return data
   } catch (e) {

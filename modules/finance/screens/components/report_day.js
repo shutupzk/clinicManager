@@ -85,9 +85,11 @@ class ReportDayScreen extends Component {
               <div />
             </li>
             {finances.map((item, iKey) => {
+              console.log(item)
+              const patientname = item.record_type === 2 ? '药品零售' : item.patientname
               return (
                 <li key={iKey}>
-                  <div>{item.patientname}</div>
+                  <div>{patientname}</div>
                   <div>{item.clinic_patient_id}</div>
                   <div>{formatMoney(item.total_money)}</div>
                   <div>{formatMoney(item.traditional_medical_fee)}</div>
@@ -177,9 +179,10 @@ class ReportDayScreen extends Component {
               <div />
             </li>
             {finances.map((item, iKey) => {
+              const patientname = item.record_type === 2 ? '药品零售' : item.patientname
               return (
                 <li key={iKey}>
-                  <div>{item.patientname}</div>
+                  <div>{patientname}</div>
                   <div>{item.clinic_patient_id}</div>
                   <div>{formatMoney(item.total_money)}</div>
                   <div>{formatMoney(item.balance_money)}</div>

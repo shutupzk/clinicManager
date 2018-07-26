@@ -59,6 +59,10 @@ class RetailRecordScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
+                      <a>交易单号：</a>
+                      <a>{patient.out_trade_no}</a>
+                    </span>
+                    <span>
                       <a>支付方式：</a>
                       <a>{payMap[patient.pay_method] || '未知'}</a>
                     </span>

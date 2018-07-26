@@ -147,7 +147,7 @@ class RetailRecordDetailScreen extends Component {
             <li>交易订单号：{pay.out_trade_no}</li>
             <li>交易方式： {paymethod[pay.pay_method]}</li>
             <li>交易金额： {formatMoney(pay.balance_money)}</li>
-            <li>第三方交易号</li>
+            <li>第三方交易号：{pay.trade_no}</li>
           </ul>
         </div>
 
@@ -157,10 +157,10 @@ class RetailRecordDetailScreen extends Component {
             return (
               <ul key={iKey}>
                 <li>退费时间：{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</li>
-                <li>退费订单号：{item.refund_trade_no}</li>
+                <li>退费订单号：{item.out_refund_no}</li>
                 <li>退费方式：原路退回</li>
                 <li>退费金额：{formatMoney(item.refund_money)}</li>
-                <li>第三方退费单号：</li>
+                <li>第三方退费单号：{item.refund_no}</li>
               </ul>
             )
           })}
