@@ -408,50 +408,50 @@ class ExamDetailScreen extends Component {
         <div className={'filesBox'}>
           <ul>
             {uploadedFiles.map((item, index) => {
-              let fileNameArray = item.docName.split('.')
-              let suffix = fileNameArray[fileNameArray.length - 1]
-              if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
-                return (
-                  <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>
-                    <img
-                      src={API_SERVER + item.url}
-                      onClick={e => {
-                        this.refs[viewer].show(index)
+              // let fileNameArray = item.docName.split('.')
+              // let suffix = fileNameArray[fileNameArray.length - 1].toLowerCase()
+              // if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
+              return (
+                <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>
+                  <img
+                    src={API_SERVER + item.url}
+                    onClick={e => {
+                      this.refs[viewer].show(index)
+                    }}
+                  />
+                  {showDelete ? (
+                    <span
+                      onClick={() => {
+                        let array = uploadedFiles
+                        array.splice(index, 1)
+                        exams[selIndex].picture_examination = JSON.stringify(array)
+                        this.setState({ exams })
                       }}
-                    />
-                    {showDelete ? (
-                      <span
-                        onClick={() => {
-                          let array = uploadedFiles
-                          array.splice(index, 1)
-                          exams[selIndex].picture_examination = JSON.stringify(array)
-                          this.setState({ exams })
-                        }}
-                      >
-                        ×
-                      </span>
-                    ) : null}
-                  </li>
-                )
-              } else {
-                return (
-                  <li key={index} title={item.docName}>
-                    {item.docName}
-                    {showDelete ? (
-                      <span
-                        onClick={() => {
-                          let array = uploadedFiles
-                          array.splice(index, 1)
-                          exams[selIndex].picture_examination = JSON.stringify(array)
-                          this.setState({ exams })
-                        }}
-                      >
-                        ×
-                      </span>
-                    ) : null}
-                  </li>
-                )
-              }
+                    >
+                      ×
+                    </span>
+                  ) : null}
+                </li>
+              )
+              // } else {
+              //   return (
+              //     <li key={index} title={item.docName}>
+              //       {item.docName}
+              //       {showDelete ? (
+              //         <span
+              //           onClick={() => {
+              //             let array = uploadedFiles
+              //             array.splice(index, 1)
+              //             exams[selIndex].picture_examination = JSON.stringify(array)
+              //             this.setState({ exams })
+              //           }}
+              //         >
+              //           ×
+              //         </span>
+              //       ) : null}
+              //     </li>
+              //   )
+              // }
             })}
           </ul>
           <style jsx>{`
@@ -549,13 +549,15 @@ class ExamDetailScreen extends Component {
       //     console.log('ok=====', data)
       //   }
       // })
+      console.log('url====', url)
       if (url) {
         let item = {
           docName: files[0].name,
           url
         }
         array.push(item)
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg' || url.split('.')[1] === 'jpeg') {
+        let suffix = url.split('.')[1].toLowerCase()
+        if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
           imgArray.push(item)
         }
         exams[selIndex].picture_examination = JSON.stringify(array)
@@ -576,7 +578,7 @@ class ExamDetailScreen extends Component {
       let event = e.event
       this.setState({ showProgress: true, percent: event.percent })
     }
-    // console.log('event=====', e)
+    console.log('event=====', e)
     if (file.status === 'done') {
       // this.setState({})
       if (e.file.response.url !== undefined) {
@@ -586,7 +588,8 @@ class ExamDetailScreen extends Component {
           url
         }
         array.push(item)
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg' || url.split('.')[1] === 'jpeg') {
+        let suffix = file.type.split('/')[0] // url.split('.')[1].toLowerCase()
+        if (suffix === 'image') {
           imgArray.push(item)
         }
         exams[selIndex].picture_examination = JSON.stringify(array)
