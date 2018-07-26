@@ -667,7 +667,6 @@ class LaboraDetailScreen extends Component {
   }
   mrPrinter() {
     let { user, triagePatient } = this.props
-    console.log('triagePatient=====', triagePatient)
     const patientInfoRowStyle = {
       display: 'flex',
       flex: 1,
