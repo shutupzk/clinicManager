@@ -43,7 +43,6 @@ class ReportDayScreen extends Component {
   // 按业务类型
   showTypeContent() {
     const { finances, finances_page } = this.props
-    console.log('finances=====', finances)
     return (
       <div>
         <div className={'feeScheduleBox'}>
@@ -85,7 +84,6 @@ class ReportDayScreen extends Component {
               <div />
             </li>
             {finances.map((item, iKey) => {
-              console.log(item)
               const patientname = item.record_type === 2 ? '药品零售' : item.patientname
               return (
                 <li key={iKey}>
@@ -133,7 +131,6 @@ class ReportDayScreen extends Component {
   // 按收费方式
   showMethodContent() {
     const { finances, finances_page } = this.props
-    console.log('finances=====', finances)
     return (
       <div>
         <div className={'feeScheduleBox'}>
