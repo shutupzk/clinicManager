@@ -17,6 +17,7 @@ class RetailScreen extends Component {
       medical_money: '', // 医保收费
       charge_money: '', // 实际收费
       pay_method: 4, // 支付方式
+      recordSn: '', // 系统交易号
       tradeNo: '', // 交易订单号
       showCode: false, // 展示授权码
       payStatus: '待提交', // 支付状态
@@ -24,7 +25,6 @@ class RetailScreen extends Component {
       yb_check: false, // 允许输入医保金额
       showLoading: false
     }
-
     this.queryTimes = 0
     this.disabled = false
   }
@@ -57,7 +57,7 @@ class RetailScreen extends Component {
       let msg = (res && res.msg) || '未知错误'
       return this.refs.myAlert.alert('创建订单失败', msg, null, 'Warning')
     }
-    this.setState({ showCharge: true, chargeTotal, tradeNo: res.data })
+    this.setState({ showCharge: true, chargeTotal, recordSn: res.data })
   }
 
   // 定时获取订单状态
@@ -102,11 +102,12 @@ class RetailScreen extends Component {
     if (this.disabled) return
     this.disabled = true
     this.setState({ showLoading: true })
-    let { tradeNo, medical_money, discount, pay_method, chargeTotal, authCode } = this.state
+    let { tradeNo, medical_money, discount, pay_method, chargeTotal, authCode, recordSn } = this.state
     let discount_money = discount ? Math.round(chargeTotal * ((100 - discount) / 100)) : 0
     let medical_money_int = Math.round(medical_money * 100)
     let pay_method_map = { 1: 'alipay', 2: 'wechat', 3: 'bank', 4: 'cash' }
     let res = await this.props.createDrugRetailPaymentOrder({
+      record_sn: recordSn,
       out_trade_no: tradeNo,
       pay_method: pay_method_map[pay_method],
       auth_code: authCode,
@@ -122,7 +123,7 @@ class RetailScreen extends Component {
       if (res && res.code === '200') {
         this.setState({ payStatus: '支付成功' })
       } else if (res && res.code === '300') {
-        this.setState({ payStatus: '缴费中[待用户输密码]', showLoading: true })
+        this.setState({ payStatus: '缴费中[待用户输密码]', showLoading: true, tradeNo: res.data })
         this.interval = setInterval(() => this.tick(), 5000)
       } else {
         this.setState({ payStatus: '缴费失败' + `[${(res && res.msg) || '未知原因'}]` })
@@ -376,7 +377,7 @@ class RetailScreen extends Component {
     if (!this.state.showCharge) return null
     const { chargeTotal } = this.state
 
-    const tradeNo = this.state.tradeNo
+    const recordSn = this.state.recordSn
     const orderTime = moment().format('YYYY-MM-DD HH:mm:ss')
 
     let { selectType, discount, medical_money } = this.state
@@ -397,7 +398,7 @@ class RetailScreen extends Component {
           </div>
           <div className={'topRight'}>
             <div>业务类型：药品零售</div>
-            <div>订单号：{tradeNo}</div>
+            <div>订单号：{recordSn}</div>
             <div>下单日期：{orderTime}</div>
           </div>
         </div>
@@ -497,7 +498,7 @@ class RetailScreen extends Component {
               {this.state.pay_method === 2 ? '微信' : '支付宝'}
               {'当面付'}
             </span>
-            <span onClick={() => this.setState({ showCode: false })}>x</span>
+            <span onClick={() => this.setState({ showCode: false, payStatus: '待提交', authCode: '' })}>x</span>
           </div>
           <div className='tableDIV' style={{ width: '100%', marginTop: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center' }}>
