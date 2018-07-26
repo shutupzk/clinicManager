@@ -921,7 +921,7 @@ class VisitInfoScreen extends Component {
                       <div style={{ display: 'flex', flexDirection: 'column', width: '100%', borderLeft: '1px solid #e8e8e8', borderRight: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8' }}>
                         {medical_records.map((item, aindex) => {
                           return (
-                            <div>
+                            <div key={aindex}>
                               <div style={{ display: 'flex', height: '40px', justifyContent: 'center', borderTop: aindex === 0 ? null : '1px solid #e8e8e8' }} key={aindex}>
                                 <div style={{ flex: 1, margin: '10px', display: 'flex' }}>
                                   <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}>续写病历：</label>
