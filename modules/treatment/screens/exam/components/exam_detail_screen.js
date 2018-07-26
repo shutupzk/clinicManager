@@ -35,11 +35,11 @@ class ExamDetailScreen extends Component {
   }
 
   render() {
-    const {order_status} = this.props
+    const { order_status } = this.props
     return (
       <div className={'detail'}>
         <div className={'detail_title'}>
-          <span>{order_status === '30' ? '已检查' : '检查中'}</span>
+          <span>{order_status === 30 ? '已检查' : '检查中'}</span>
           <span onClick={() => this.props.back2List()}>{'<返回'}</span>
         </div>
         {this.renderDoctorInfo()}
@@ -151,10 +151,10 @@ class ExamDetailScreen extends Component {
                 <div style={{ flex: 1 }} />
               </li>
               {patient_record_data.map((item, index) => {
-                const { finish_time, clinic_examination_name, clinic_name, clinic_triage_patient_id, department_name, doctor_name } = item
+                const { order_time, clinic_examination_name, clinic_name, clinic_triage_patient_id, department_name, order_doctor_name } = item
                 return (
                   <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                    <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                    <div style={{ flex: 2 }}>{moment(order_time).format('YYYY-MM-DD HH:mm')}</div>
                     <div style={{ flex: 2 }}>{clinic_name}</div>
                     <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_examination_name}</div>
                     <div
@@ -162,7 +162,7 @@ class ExamDetailScreen extends Component {
                       onClick={async () => {
                         let record = await queryMedicalRecord(clinic_triage_patient_id)
                         let exams = await ExaminationTriageList({ clinic_triage_patient_id, order_status: '30' })
-                        this.setState({ showExamHistoryDetail: true, showExamHistory: false, historyDetail: { record, exams, finish_time, department_name, doctor_name, selIndex: 0 } })
+                        this.setState({ showExamHistoryDetail: true, showExamHistory: false, historyDetail: { record, exams, order_time, department_name, order_doctor_name, selIndex: 0 } })
                       }}
                     >
                       查看报告
@@ -208,22 +208,17 @@ class ExamDetailScreen extends Component {
             <span onClick={() => this.setState({ showExamHistoryDetail: false, showExamHistory: true })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'} style={{fontSize: '14px'}}>
+            <div className={'filterBox'} style={{ fontSize: '14px' }}>
               <div>
-                <div>开单医生：{historyDetail.doctor_name}</div>
+                <div>开单医生：{historyDetail.order_doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div style={{flex: 1.5}}>
-                <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              <div style={{ flex: 1.5 }}>
+                <div>开单时间：{moment(historyDetail.order_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div>
-                <div>报告医生：{historyDetail.doctor_name}</div>
-              </div>
-              <div style={{flex: 1.5}}>
-                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
-              </div>
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -250,8 +245,16 @@ class ExamDetailScreen extends Component {
             <div className={'detailContent formList'}>
               <ul>
                 <li>
+                  <div style={{ display: 'flex', margin: '20px 0 20px 0', fontSize: '20px' }}>
+                    报告时间：
+                    <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(data.report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
+                    报告人：
+                    <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{data.report_doctor_name}</label>
+                  </div>
+                </li>
+                <li>
                   <label>检查图片</label>
-                  <div style={{ width: '100%', height: '120px' }}>
+                  <div style={{ width: '100%', height: '170px' }}>
                     {<ImageViewer ref='ImageViewer1' images={images} />}
                     {this.renderFiles(data.picture_examination, 'ImageViewer1', false)}
                   </div>
@@ -292,7 +295,7 @@ class ExamDetailScreen extends Component {
     return (
       <div className={'filterBox'}>
         <div>
-          <div>开单医生：{triagePatient.doctor_name}</div>
+          <div>开单医生：{triagePatient.order_doctor_name}</div>
         </div>
         <div>
           <div>开单科室：{triagePatient.department_name}</div>
@@ -300,13 +303,8 @@ class ExamDetailScreen extends Component {
         <div>
           <div>开单时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
-        {order_status === 30 ? <div>
-          <div>报告医生：{triagePatient.doctor_name}</div>
-        </div> : ''}
-        {order_status === 30 ? <div>
-          <div>报告时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
-        </div> : ''}
-        {order_status === 20 ? <div /> : ''}
+        <div />
+        <div />
       </div>
     )
   }
@@ -323,9 +321,9 @@ class ExamDetailScreen extends Component {
         <div>
           <div>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
         </div>
-        {/* <div>
-          <div>就诊ID：123125366</div>
-        </div> */}
+        <div>
+          <div>就诊ID：{triagePatient.clinic_triage_patient_id}</div>
+        </div>
         <div>
           <div>手机号码：{triagePatient.phone}</div>
         </div>
@@ -458,7 +456,7 @@ class ExamDetailScreen extends Component {
             .filesBox {
               width: 100%;
               position: absolute;
-              top: 60px;
+              top: 70px;
             }
             .filesBox ul {
               display: flex;
@@ -475,7 +473,7 @@ class ExamDetailScreen extends Component {
               white-space: nowrap;
               text-overflow: ellipsis;
               // padding: 3px 15px 3px 3px;
-              padding:5px;
+              padding: 5px;
               height: 20px;
               text-align: left;
               display: block;
@@ -485,13 +483,12 @@ class ExamDetailScreen extends Component {
               margin: 0;
             }
             .filesBox ul li.imgLi {
-              width: 60px;
-              height: 60px;
+              width: 100px;
+              height: 100px;
             }
             .filesBox ul li.imgLi img {
               width: 100%;
               height: 100%;
-              opacity: 0.7;
             }
             .filesBox ul li span {
               position: absolute;
@@ -575,7 +572,7 @@ class ExamDetailScreen extends Component {
     let file = e.file
     if (e.event !== undefined) {
       let event = e.event
-      this.setState({showProgress: true, percent: event.percent})
+      this.setState({ showProgress: true, percent: event.percent })
     }
     // console.log('event=====', e)
     if (file.status === 'done') {
@@ -597,12 +594,12 @@ class ExamDetailScreen extends Component {
     }
   }
   fileProgress() {
-    const {percent} = this.state
+    const { percent } = this.state
     return (
       <div className={'progress'}>
-        <div className={'percent'} style={{width: percent + '%'}} />
+        <div className={'percent'} style={{ width: percent + '%' }} />
         <style jsx>{`
-          .progress{
+          .progress {
             position: absolute;
             z-index: 1;
             width: 100%;
@@ -611,7 +608,7 @@ class ExamDetailScreen extends Component {
             border: 1px solid #d8d8d8;
             border-radius: 4px;
           }
-          .percent{
+          .percent {
             height: 100%;
             background: #1ba798;
           }
@@ -621,7 +618,6 @@ class ExamDetailScreen extends Component {
   }
   renderContent() {
     const { order_status } = this.props
-    console.log('order_status=====', order_status)
     const { selIndex, exams, showProgress } = this.state
     const data = exams[selIndex]
     if (!data) return null
@@ -637,32 +633,29 @@ class ExamDetailScreen extends Component {
       <div className={'detailContent formList'}>
         <ul>
           <li>
+            <div style={{ display: 'flex', margin: '20px 0 20px 0', fontSize: '20px' }}>
+              报告时间：
+              <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(exams[selIndex].report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
+              报告人：
+              <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{exams[selIndex].report_doctor_name}</label>
+            </div>
+          </li>
+          <li>
             <label>检查图片</label>
-            <div style={{ width: '100%', height: '120px' }}>
+            <div style={{ width: '100%', height: '170px' }}>
               {this.renderFiles(data.picture_examination, 'ImageViewer2')}
-              <div style={{display: 'flex', alignItems: 'center', marginTop: '10px'}}>
-                <Upload accept={'image/*'} onChange={e => {
-                  this.showProgress(e)
-                  // console.log('Upload=====', e)
-                }} />
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                <Upload
+                  accept={'image/*'}
+                  onChange={e => {
+                    this.showProgress(e)
+                    // console.log('Upload=====', e)
+                  }}
+                />
                 <label>文件大小不能超过20M，支持图片、word、pdf文件</label>
               </div>
               {showProgress ? this.fileProgress() : ''}
               <ImageViewer ref='ImageViewer2' images={images} />
-              {/* <div className={'chooseFile'}>
-                <form ref='myForm' method={'post'} encType={'multipart/form-data'}>
-                  <input
-                    multiple='multiple'
-                    type='file'
-                    onChange={e => {
-                      // console.log('文件=====', e.target.files)
-                      this.FileUpload(e.target.files, data.picture_examination)
-                    }}
-                  />
-                </form>
-                <button> + 添加文件</button>
-                <a>文件大小不能超过20M，支持图片、word、pdf文件</a>
-              </div> */}
             </div>
           </li>
           <li>
@@ -692,11 +685,13 @@ class ExamDetailScreen extends Component {
             <button>取消</button>
           </div>
         </div>
-        {order_status === 30 ? <div>
-          <button
-            style={{float: 'right', marginRight: '20px'}}
-          >打印报告</button>
-        </div> : ''}
+        {order_status === 30 ? (
+          <div>
+            <button style={{ float: 'right', marginRight: '20px' }}>打印报告</button>
+          </div>
+        ) : (
+          ''
+        )}
         {this.getStyle()}
       </div>
     )

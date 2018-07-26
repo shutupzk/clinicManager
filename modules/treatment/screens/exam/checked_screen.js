@@ -50,7 +50,6 @@ class CheckedScreen extends Component {
   // 显示待收费
   showTobeCharged() {
     const { checked_data, pageInfo } = this.props
-    console.log('checked_data====', checked_data)
     return (
       <div>
         <div className={'listContent'}>
@@ -71,7 +70,7 @@ class CheckedScreen extends Component {
                   <div className={'itemCenter'}>
                     <span>
                       <a>门诊ID：</a>
-                      <a>{patient.cert_no}</a>
+                      <a>{patient.clinic_triage_patient_id}</a>
                     </span>
                     <span>
                       <a>接诊科室：</a>
@@ -79,7 +78,7 @@ class CheckedScreen extends Component {
                     </span>
                     <span>
                       <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
+                      <a>{patient.order_doctor_name}</a>
                     </span>
                     <span>
                       <a style={{ color: 'rgb(153, 153, 153)' }}>更新时间：</a>
@@ -188,7 +187,6 @@ class CheckedScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
     clinic_id: state.user.data.clinic_id,
     checked_data: state.examinationTriages.checked_data,

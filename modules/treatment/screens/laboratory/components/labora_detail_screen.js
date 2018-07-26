@@ -28,7 +28,6 @@ class LaboraDetailScreen extends Component {
     if (laboras && laboras.length) {
       this.LaboratoryTriageDetail(laboras, 0)
     }
-    console.log('laboras ======', laboras)
     this.setState({ record, laboras })
   }
 
@@ -57,7 +56,7 @@ class LaboraDetailScreen extends Component {
   }
 
   render() {
-    const {order_status} = this.props
+    const { order_status } = this.props
     return (
       <div className={'detail'}>
         <div className={'detail_title'}>
@@ -173,10 +172,10 @@ class LaboraDetailScreen extends Component {
                 <div style={{ flex: 1 }} />
               </li>
               {patient_record_data.map((item, index) => {
-                const { finish_time, clinic_laboratory_name, clinic_name, clinic_triage_patient_id, department_name, doctor_name } = item
+                const { order_time, clinic_laboratory_name, clinic_name, clinic_triage_patient_id, department_name, order_doctor_name } = item
                 return (
                   <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                    <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                    <div style={{ flex: 2 }}>{moment(order_time).format('YYYY-MM-DD HH:mm')}</div>
                     <div style={{ flex: 2 }}>{clinic_name}</div>
                     <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_laboratory_name}</div>
                     <div
@@ -195,7 +194,7 @@ class LaboraDetailScreen extends Component {
                         this.setState({
                           showLaboraHistoryDetail: true,
                           showLaboraHistory: false,
-                          historyDetail: { record, laboras, finish_time, department_name, doctor_name, selIndex: 0, laboraDetails }
+                          historyDetail: { record, laboras, order_time, department_name, order_doctor_name, selIndex: 0, laboraDetails }
                         })
                       }}
                     >
@@ -230,31 +229,26 @@ class LaboraDetailScreen extends Component {
     if (array === undefined) {
       array = []
     }
-    console.log('laboras=====', laboras, array, laboraDetails, selIndex, historyDetail)
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px', background: '#FFFFFF' }}>
           <div className='doctorList_top'>
             <span>报告详情</span>
             <span onClick={() => this.setState({ showLaboraHistoryDetail: false, showExamHistory: true })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'} style={{fontSize: '14px'}}>
+            <div className={'filterBox'} style={{ fontSize: '14px' }}>
               <div>
-                <div>开单医生：{historyDetail.doctor_name}</div>
+                <div>开单医生：{historyDetail.order_doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div style={{flex: 1.5}}>
-                <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              <div style={{ flex: 1.5 }}>
+                <div>开单时间：{moment(historyDetail.order_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div>
-                <div>报告医生：{historyDetail.doctor_name}</div>
-              </div>
-              <div style={{flex: 1.5}}>
-                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
-              </div>
+              <div />
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -288,6 +282,12 @@ class LaboraDetailScreen extends Component {
                   )
                 })}
               </div>
+            </div>
+            <div style={{ display: 'flex', margin: '20px 0 20px 10px', fontSize: '20px' }}>
+              报告时间：
+              <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(laboras[selIndex].report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
+              报告人：
+              <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{laboras[selIndex].report_doctor_name}</label>
             </div>
             <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
               <ul>
@@ -339,12 +339,11 @@ class LaboraDetailScreen extends Component {
   }
 
   renderDoctorInfo() {
-    const { triagePatient, order_status } = this.props
-    console.log('triagePatient=====', triagePatient, order_status)
+    const { triagePatient } = this.props
     return (
       <div className={'filterBox'}>
         <div>
-          <div>开单医生：{triagePatient.doctor_name}</div>
+          <div>开单医生：{triagePatient.order_doctor_name}</div>
         </div>
         <div>
           <div>开单科室：{triagePatient.department_name}</div>
@@ -352,15 +351,8 @@ class LaboraDetailScreen extends Component {
         <div>
           <div>开单时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
-        {order_status === 30 || order_status === '30' ? <div>
-          <div>报告医生：{}</div>
-        </div> : ''}
-        {order_status === 30 || order_status === '30' ? <div>
-          <div>报告时间：
-            {/* {moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')} */}
-          </div>
-        </div> : ''}
-        {order_status === 20 || order_status === '20' ? <div /> : ''}
+        <div />
+        <div />
       </div>
     )
   }
@@ -377,9 +369,9 @@ class LaboraDetailScreen extends Component {
         <div>
           <div>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
         </div>
-        {/* <div>
-          <div>就诊ID：123125366</div>
-        </div> */}
+        <div>
+          <div>就诊ID：{triagePatient.clinic_triage_patient_id}</div>
+        </div>
         <div>
           <div>手机号码：{triagePatient.phone}</div>
         </div>
@@ -466,7 +458,6 @@ class LaboraDetailScreen extends Component {
       obj.is_normal = is_normal
       items.push(obj)
     }
-    console.log('items =======', items)
     let error = await LaboratoryTriageRecordCreate({ clinic_triage_patient_id, laboratory_patient_id, operation_id, remark, items: JSON.stringify(items) })
     if (error) {
       return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
@@ -477,20 +468,9 @@ class LaboraDetailScreen extends Component {
 
   getNameOptions(index) {
     const { laboItemData } = this.props
-    console.log('getNameOptions ====', laboItemData)
-    // let datas = this.state.laboItemData || []
     let array = []
     for (let key in laboItemData) {
       const { clinic_laboratory_item_id, name } = laboItemData[key]
-      // let has = false
-      // for (let i = 0; i < datas.length; i++) {
-      //   let obj = datas[i]
-      //   if (obj.clinic_laboratory_id === clinic_laboratory_id && index !== i) {
-      //     has = true
-      //     break
-      //   }
-      // }
-      // if (has) continue
       array.push({
         value: clinic_laboratory_item_id,
         label: name,
@@ -570,10 +550,15 @@ class LaboraDetailScreen extends Component {
     const { selIndex, laboraDetails, laboras } = this.state
     const array = laboraDetails[selIndex]
     if (!array || !array.length) return null
-    console.log('array =====', array)
     let data = laboras[selIndex]
     return (
       <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 40px 0', background: 'rgba(255, 255, 255, 1)' }}>
+        <div style={{ display: 'flex', margin: '20px 0 20px 10px', fontSize: '20px' }}>
+          报告时间：
+          <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(laboras[selIndex].report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
+          报告人：
+          <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{laboras[selIndex].report_doctor_name}</label>
+        </div>
         <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
           <ul>
             <li>
@@ -664,16 +649,19 @@ class LaboraDetailScreen extends Component {
             <button>取消</button>
           </div>
         </div>
-        {order_status === '30' ? <div>
-          <button
-            style={{float: 'right', marginRight: '20px'}}
-            onClick={() => this.refs.printer.onPrint()}
-          >打印报告</button>
-          <Print ref='printer' lazyRender isIframe>
-            {this.mrPrinter()}
-            {/* <div>aaaaaa</div> */}
-          </Print>
-        </div> : ''}
+        {order_status === '30' ? (
+          <div>
+            <button style={{ float: 'right', marginRight: '20px' }} onClick={() => this.refs.printer.onPrint()}>
+              打印报告
+            </button>
+            <Print ref='printer' lazyRender isIframe>
+              {this.mrPrinter()}
+              {/* <div>aaaaaa</div> */}
+            </Print>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     )
   }
@@ -713,7 +701,6 @@ class LaboraDetailScreen extends Component {
       array = []
     }
     let data = laboras[selIndex]
-    console.log('data======', data, array)
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
         <div style={{ display: 'flex', width: '100%' }}>
@@ -767,7 +754,7 @@ class LaboraDetailScreen extends Component {
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
             <ul>
-              <li style={{fontWeight: 'bold'}}>
+              <li style={{ fontWeight: 'bold' }}>
                 <div style={{ flex: 3 }}>检验项目</div>
                 <div style={{ flex: 2 }}>结果</div>
                 <div style={{ flex: 2 }}>异常标志</div>
@@ -791,14 +778,10 @@ class LaboraDetailScreen extends Component {
                 return (
                   <li key={index}>
                     <div style={{ flex: 3 }}>
-                      <div style={{ width: '100%' }}>
-                        {item.name}
-                      </div>
+                      <div style={{ width: '100%' }}>{item.name}</div>
                     </div>
                     <div style={{ flex: 2 }}>
-                      <div style={{ width: '100%' }}>
-                        {item.result_inspection || ''}
-                      </div>
+                      <div style={{ width: '100%' }}>{item.result_inspection || ''}</div>
                     </div>
                     <div style={{ flex: 2, color: is_normal === '偏高' ? 'red' : is_normal === '偏低' ? 'blue' : '#505050' }}>{is_normal}</div>
                     <div style={{ flex: 2 }}>{item.unit_name}</div>
@@ -1010,12 +993,12 @@ class LaboraDetailScreen extends Component {
           .tableDIV ul li > div:nth-child(1) {
             flex: 3;
           }
-          .detailBottom{
+          .detailBottom {
             display: flex;
             flex-direction: column;
             margin: 10px 0;
           }
-          .detailBottom textarea{
+          .detailBottom textarea {
             resize: none;
             width: 100%;
             height: 100px;

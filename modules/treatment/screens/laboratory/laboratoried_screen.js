@@ -71,7 +71,7 @@ class LaboratoriedScreen extends Component {
                   <div className={'itemCenter'}>
                     <span>
                       <a>门诊ID：</a>
-                      <a>{patient.cert_no}</a>
+                      <a>{patient.clinic_triage_patient_id}</a>
                     </span>
                     <span>
                       <a>接诊科室：</a>
@@ -79,7 +79,7 @@ class LaboratoriedScreen extends Component {
                     </span>
                     <span>
                       <a>接诊医生：</a>
-                      <a>{patient.doctor_name}</a>
+                      <a>{patient.order_doctor_name}</a>
                     </span>
                     <span>
                       <a style={{ color: 'rgb(153, 153, 153)' }}>更新时间：</a>
