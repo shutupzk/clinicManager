@@ -992,8 +992,8 @@ class MedicalRecordScreen extends Component {
         <div className={'filesBox'}>
           <ul>
             {uploadedFiles.map((item, index) => {
-              let fileNameArray = item.docName.split('.').toLowerCase()
-              let suffix = fileNameArray[fileNameArray.length - 1]
+              let fileNameArray = item.docName.split('.')
+              let suffix = fileNameArray[fileNameArray.length - 1].toLowerCase()
               if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName}>
