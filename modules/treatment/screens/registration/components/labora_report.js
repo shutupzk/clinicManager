@@ -55,10 +55,10 @@ class LaboraReportScreen extends Component {
               <div style={{ flex: 1 }} />
             </li>
             {patient_record_data.map((item, index) => {
-              const { finish_time, clinic_laboratory_name, clinic_name, clinic_triage_patient_id, department_name, doctor_name } = item
+              const { order_time, clinic_laboratory_name, clinic_name, clinic_triage_patient_id, department_name, order_doctor_name } = item
               return (
                 <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                  <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                  <div style={{ flex: 2 }}>{moment(order_time).format('YYYY-MM-DD HH:mm')}</div>
                   <div style={{ flex: 2 }}>{clinic_name}</div>
                   <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_laboratory_name}</div>
                   <div
@@ -76,7 +76,7 @@ class LaboraReportScreen extends Component {
                       }
                       this.setState({
                         showLaboraHistoryDetail: true,
-                        historyDetail: { record, laboras, finish_time, department_name, doctor_name, selIndex: 0, laboraDetails }
+                        historyDetail: { record, laboras, order_time, department_name, order_doctor_name, selIndex: 0, laboraDetails, clinic_triage_patient_id }
                       })
                     }}
                   >
@@ -267,12 +267,12 @@ class LaboraReportScreen extends Component {
           .tableDIV ul li > div:nth-child(1) {
             flex: 3;
           }
-          .detailBottom{
+          .detailBottom {
             display: flex;
             flex-direction: column;
             margin: 10px 0;
           }
-          .detailBottom textarea{
+          .detailBottom textarea {
             resize: none;
             width: 100%;
             height: 100px;
@@ -287,14 +287,14 @@ class LaboraReportScreen extends Component {
 
   // 就诊信息
   showVisitInfo() {
-    const { patientInfo } = this.state
+    const { patientInfo, historyDetail } = this.state
     return (
       <div className={'detailBox'}>
         <div className={'blankBox patientInfo'}>
           <div>就诊人姓名：{patientInfo.name}</div>
           <div style={{ flex: 1 }}>性别：{patientInfo.sex === 0 ? '女' : '男'}</div>
           <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
-          <div>就诊ID：</div>
+          <div>就诊ID：{historyDetail.clinic_triage_patient_id}</div>
           <div>手机号码：{patientInfo.phone}</div>
         </div>
         <div className={'blankBox'}>{this.renderLobroaHistory()}</div>
@@ -308,7 +308,7 @@ class LaboraReportScreen extends Component {
   }
 
   renderPatientInfo() {
-    const { patientInfo } = this.state
+    const { patientInfo, historyDetail } = this.state
     return (
       <div className={'filterBox'}>
         <div>
@@ -320,9 +320,9 @@ class LaboraReportScreen extends Component {
         <div>
           <div>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
         </div>
-        {/* <div>
-          <div>就诊ID：123125366</div>
-        </div> */}
+        <div>
+          <div>就诊ID：{historyDetail.clinic_triage_patient_id}</div>
+        </div>
         <div>
           <div>手机号码：{patientInfo.phone}</div>
         </div>
@@ -338,28 +338,24 @@ class LaboraReportScreen extends Component {
     const array = laboraDetails[selIndex] || []
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+        <div className='doctorList' style={{ width: '1200px', left: 'unset', height: 'unset', minHeight: '500px', background: '#FFFFFF' }}>
           <div className='doctorList_top'>
             <span>报告详情</span>
             <span onClick={() => this.setState({ showLaboraHistoryDetail: false })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'} style={{fontSize: '14px'}}>
+            <div className={'filterBox'} style={{ fontSize: '14px' }}>
               <div>
-                <div>开单医生：{historyDetail.doctor_name}</div>
+                <div>开单医生：{historyDetail.order_doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div style={{flex: 1.5}}>
-                <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              <div style={{ flex: 1.5 }}>
+                <div>开单时间：{moment(historyDetail.order_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div>
-                <div>报告医生：{historyDetail.doctor_name}</div>
-              </div>
-              <div style={{flex: 1.5}}>
-                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
-              </div>
+              <div />
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -393,6 +389,12 @@ class LaboraReportScreen extends Component {
                   )
                 })}
               </div>
+            </div>
+            <div style={{ display: 'flex', margin: '20px 0 20px 10px', fontSize: '20px' }}>
+              报告时间：
+              <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(laboras[selIndex].report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
+              报告人：
+              <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{laboras[selIndex].report_doctor_name}</label>
             </div>
             <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
               <ul>

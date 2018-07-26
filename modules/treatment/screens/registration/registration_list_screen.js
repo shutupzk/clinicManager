@@ -83,14 +83,14 @@ class RegistrationListScreen extends Component {
         <div className={'listContent'}>
           <ul>
             {triagePatients.map((patient, index) => {
-              let statusColor = patient.status === 20 ? '#F24A01' : '#31B0B3'
+              let statusColor = patient.status >= 20 ? '#F24A01' : '#31B0B3'
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
                     <span>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status === 20 ? '已分诊' : '待分诊'}</span>
+                    <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>{patient.status >= 20 ? '已分诊' : '待分诊'}</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>

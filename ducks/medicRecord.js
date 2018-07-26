@@ -28,14 +28,16 @@ export function medicalRecords(state = initState, action = {}) {
   }
 }
 
-export const queryMedicalRecord = clinic_triage_patient_id => async dispatch => {
+export const queryMedicalRecord = (clinic_triage_patient_id, noDisPatch) => async dispatch => {
   try {
     const data = await request('/medicalRecord/findByTriageId', { clinic_triage_patient_id })
     const doc = data.data || {}
-    dispatch({
-      type: MEDICAL_RECORD_ADD,
-      data: doc
-    })
+    if (!noDisPatch) {
+      dispatch({
+        type: MEDICAL_RECORD_ADD,
+        data: doc
+      })
+    }
     return doc
   } catch (e) {
     console.log(e)
@@ -234,16 +236,55 @@ export const MedicalRecordModelUpdate = ({
   }
 }
 
-export const MedicalRecordModelDelete = ({medical_record_model_id}) => async dispatch => {
+export const MedicalRecordModelDelete = ({ medical_record_model_id }) => async dispatch => {
   try {
     console.log('limit====', medical_record_model_id)
-    const data = await request('/medicalRecord/model/delete', {medical_record_model_id})
+    const data = await request('/medicalRecord/model/delete', { medical_record_model_id })
     console.log('MedicalRecordModelDelete=======', data)
     if (data.code === '200') return null
     return data.msg
   } catch (e) {
     console.log(e)
     return {} // e.message
+  }
+}
+
+export const MedicalRecordRenew = ({ clinic_triage_patient_id, chief_complaint, files, operation_id }) => async dispatch => {
+  try {
+    console.log('limit====', clinic_triage_patient_id, chief_complaint, files)
+    const data = await request('/medicalRecord/renew', { clinic_triage_patient_id, chief_complaint, files, operation_id })
+    console.log('MedicalRecordRenew=======', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const MedicalRecordRenewUpdate = ({ medical_record_id, chief_complaint, files, operation_id }) => async dispatch => {
+  try {
+    console.log('limit====', medical_record_id, chief_complaint, files)
+    const data = await request('/medicalRecord/MedicalRecordRenewUpdate', { medical_record_id, chief_complaint, files, operation_id })
+    console.log('MedicalRecordRenewUpdate=======', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const MedicalRecordRenewDelete = ({ medical_record_id }) => async dispatch => {
+  try {
+    console.log('limit====', medical_record_id)
+    const data = await request('/medicalRecord/MedicalRecordRenewDelete', { medical_record_id })
+    console.log('MedicalRecordRenewDelete=======', data)
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
   }
 }
 

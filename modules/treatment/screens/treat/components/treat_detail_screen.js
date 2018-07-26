@@ -54,7 +54,7 @@ class TreatDetailScreen extends Component {
     if (!showRecord) return null
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+        <div className='doctorList' style={{ width: '1200px', left: 'unset', height: 'unset', minHeight: '500px' }}>
           <div className='doctorList_top'>
             <span>查看病历</span>
             <span onClick={() => this.setState({ showRecord: false })}>x</span>
@@ -130,7 +130,7 @@ class TreatDetailScreen extends Component {
     const { patient_record_data, patient_record_page_info, queryMedicalRecord, TreatmentTriageList } = this.props
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+        <div className='doctorList' style={{ width: '1200px', left: 'unset', height: 'unset', minHeight: '500px' }}>
           <div className='doctorList_top'>
             <span>查看历史记录</span>
             <span onClick={() => this.setState({ showTreatHistory: false })}>x</span>
@@ -144,10 +144,10 @@ class TreatDetailScreen extends Component {
                 <div style={{ flex: 1 }} />
               </li>
               {patient_record_data.map((item, index) => {
-                const { finish_time, clinic_treatment_name, clinic_name, clinic_triage_patient_id, department_name, doctor_name } = item
+                const { order_time, clinic_treatment_name, clinic_name, clinic_triage_patient_id, department_name, order_doctor_name } = item
                 return (
                   <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                    <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                    <div style={{ flex: 2 }}>{moment(order_time).format('YYYY-MM-DD HH:mm')}</div>
                     <div style={{ flex: 2 }}>{clinic_name}</div>
                     <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_treatment_name}</div>
                     <div
@@ -158,7 +158,7 @@ class TreatDetailScreen extends Component {
                         this.setState({
                           showTreatHistoryDetail: true,
                           showTreatHistory: false,
-                          historyDetail: { record, treatments, finish_time, department_name, doctor_name }
+                          historyDetail: { record, treatments, order_time, department_name, order_doctor_name }
                         })
                       }}
                     >
@@ -192,7 +192,7 @@ class TreatDetailScreen extends Component {
     const array = treatments
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
+        <div className='doctorList' style={{ width: '1200px', left: 'unset', height: 'unset', minHeight: '500px' }}>
           <div className='doctorList_top'>
             <span>报告详情</span>
             <span onClick={() => this.setState({ showTreatHistoryDetail: false, showTreatHistory: true })}>x</span>
@@ -200,14 +200,16 @@ class TreatDetailScreen extends Component {
           <div className={'detail'}>
             <div className={'filterBox'}>
               <div>
-                <div>开单医生：{historyDetail.doctor_name}</div>
+                <div>开单医生：{historyDetail.order_doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
               <div>
-                <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                <div>开单时间：{moment(historyDetail.order_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
+              <div />
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -259,14 +261,15 @@ class TreatDetailScreen extends Component {
     return (
       <div className={'filterBox'}>
         <div>
-          <div>开单医生：{triagePatient.doctor_name}</div>
+          <div>开单医生：{triagePatient.order_doctor_name}</div>
         </div>
         <div>
           <div>开单科室：{triagePatient.department_name}</div>
         </div>
         <div>
-          <div>开单时间：{moment(triagePatient.register_time).format('YYYY-MM-DD HH:mm')}</div>
+          <div>开单时间：{moment(triagePatient.order_time).format('YYYY-MM-DD HH:mm')}</div>
         </div>
+        <div />
         <div />
       </div>
     )
@@ -284,9 +287,9 @@ class TreatDetailScreen extends Component {
         <div>
           <div>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
         </div>
-        {/* <div>
-          <div>就诊ID：123125366</div>
-        </div> */}
+        <div>
+          <div>就诊ID：{triagePatient.clinic_triage_patient_id}</div>
+        </div>
         <div>
           <div>手机号码：{triagePatient.phone}</div>
         </div>
@@ -508,8 +511,12 @@ class TreatDetailScreen extends Component {
     //   width: '120px',
     //   fontWeight: '500'
     // }
-    const { treatments } = this.state
+    const { treatments, record } = this.state
     console.log('treatments======', treatments)
+    let amount = 0
+    for (let item of treatments) {
+      amount += item.price * item.total_times
+    }
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
         <div style={{ display: 'flex', width: '100%' }}>
@@ -537,7 +544,7 @@ class TreatDetailScreen extends Component {
           </div>
           <div style={patientInfoRowStyle}>
             <lable>病案号：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.clinic_triage_patient_id}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
@@ -549,7 +556,7 @@ class TreatDetailScreen extends Component {
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
             <lable>初步诊断：</lable>
-            <div style={patientInfoRowDivStyle}>{triagePatient.diagnosis}</div>
+            <div style={patientInfoRowDivStyle}>{record.diagnosis}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
@@ -573,14 +580,14 @@ class TreatDetailScreen extends Component {
                     </div>
                     <div style={{ flex: 2 }}>
                       <div style={{ width: '100%' }}>
-                        {item.price || ''}
+                        {formatMoney(item.price)}
                       </div>
                     </div>
                     <div style={{ flex: 2 }}>{item.unit_name}</div>
                     <div style={{ flex: 2 }}>{item.total_times}</div>
                     <div style={{ flex: 2 }}>
                       <div style={{ width: '100%' }}>
-                        {item.price || ''}
+                        {formatMoney(item.price * item.total_times)}
                       </div>
                     </div>
                     <div style={{ flex: 3 }}>{item.illustration}</div>
@@ -593,16 +600,16 @@ class TreatDetailScreen extends Component {
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
-            <lable>合计金额（￥）：</lable>
+            <lable>合计金额（￥）：{formatMoney(amount)}</lable>
             <div style={patientInfoRowDivStyle}>{}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>开单医生：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.order_doctor_name}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>开单日期：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{moment(triagePatient.order_time).format('YYYY-MM-DD')}</div>
           </div>
         </div>
       </div>

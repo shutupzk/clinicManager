@@ -56,10 +56,10 @@ class ExamReportScreen extends Component {
               <div style={{ flex: 1 }} />
             </li>
             {patient_record_data.map((item, index) => {
-              const { finish_time, clinic_examination_name, clinic_name, clinic_triage_patient_id, department_name, doctor_name } = item
+              const { order_time, clinic_examination_name, clinic_name, clinic_triage_patient_id, department_name, order_doctor_name } = item
               return (
                 <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                  <div style={{ flex: 2 }}>{moment(finish_time).format('YYYY-MM-DD HH:mm')}</div>
+                  <div style={{ flex: 2 }}>{moment(order_time).format('YYYY-MM-DD HH:mm')}</div>
                   <div style={{ flex: 2 }}>{clinic_name}</div>
                   <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{clinic_examination_name}</div>
                   <div
@@ -67,7 +67,7 @@ class ExamReportScreen extends Component {
                     onClick={async () => {
                       let record = await queryMedicalRecord(clinic_triage_patient_id)
                       let exams = await ExaminationTriageList({ clinic_triage_patient_id, order_status: '30' })
-                      this.setState({ showExamHistoryDetail: true, historyDetail: { record, exams, finish_time, department_name, doctor_name, selIndex: 0 } })
+                      this.setState({ showExamHistoryDetail: true, historyDetail: { record, exams, order_time, department_name, order_doctor_name, selIndex: 0, clinic_triage_patient_id } })
                     }}
                   >
                     查看报告
@@ -285,7 +285,7 @@ class ExamReportScreen extends Component {
   }
 
   renderPatientInfo() {
-    const { patientInfo } = this.state
+    const { patientInfo, historyDetail } = this.state
     return (
       <div className={'filterBox'}>
         <div>
@@ -297,9 +297,9 @@ class ExamReportScreen extends Component {
         <div>
           <div>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
         </div>
-        {/* <div>
-          <div>就诊ID：123125366</div>
-        </div> */}
+        <div>
+          <div>就诊ID：{historyDetail.clinic_triage_patient_id}</div>
+        </div>
         <div>
           <div>手机号码：{patientInfo.phone}</div>
         </div>
@@ -369,13 +369,12 @@ class ExamReportScreen extends Component {
               margin: 0;
             }
             .filesBox ul li.imgLi {
-              width: 60px;
-              height: 60px;
+              width: 100px;
+              height: 100px;
             }
             .filesBox ul li.imgLi img {
-              // width: 100%;
-              // height: 100%;
-              opacity: 0.7;
+              width: 100%;
+              height: 100%;
             }
             .filesBox ul li span {
               position: absolute;
@@ -423,22 +422,18 @@ class ExamReportScreen extends Component {
             <span onClick={() => this.setState({ showExamHistoryDetail: false })}>x</span>
           </div>
           <div className={'detail'}>
-            <div className={'filterBox'} style={{fontSize: '14px'}}>
+            <div className={'filterBox'} style={{ fontSize: '14px' }}>
               <div>
-                <div>开单医生：{historyDetail.doctor_name}</div>
+                <div>开单医生：{historyDetail.order_doctor_name}</div>
               </div>
               <div>
                 <div>开单科室：{historyDetail.department_name}</div>
               </div>
-              <div style={{flex: 1.5}}>
-                <div>开单时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
+              <div style={{ flex: 1.5 }}>
+                <div>开单时间：{moment(historyDetail.order_time).format('YYYY-MM-DD HH:mm')}</div>
               </div>
-              <div>
-                <div>报告医生：{historyDetail.doctor_name}</div>
-              </div>
-              <div style={{flex: 1.5}}>
-                <div>报告时间：{moment(historyDetail.finish_time).format('YYYY-MM-DD HH:mm')}</div>
-              </div>
+              <div />
+              <div />
             </div>
             {this.renderPatientInfo()}
             <div className={'filterBox'}>
@@ -465,8 +460,16 @@ class ExamReportScreen extends Component {
             <div className={'detailContent formList'}>
               <ul>
                 <li>
+                  <div style={{ display: 'flex', margin: '20px 0 20px 0', fontSize: '20px' }}>
+                    报告时间：
+                    <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(exams[selIndex].report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
+                    报告人：
+                    <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{exams[selIndex].report_doctor_name}</label>
+                  </div>
+                </li>
+                <li>
                   <label>检查图片</label>
-                  <div style={{ height: '100px' }}>
+                  <div style={{ height: '150px' }}>
                     {this.renderFiles(data.picture_examination)}
                     {<ImageViewer ref='ImageViewer' images={images} />}
                   </div>

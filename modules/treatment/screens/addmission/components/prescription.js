@@ -569,7 +569,7 @@ class PrescriptionScreen extends Component {
     let { wPrescItemArray = [], body_sign = {}, patient = {} } = this.state
     let orderSn = ''
     if (wPrescItemArray && wPrescItemArray.length > 0) {
-      orderSn = wPrescItemArray[0].order_sn
+      orderSn = wPrescItemArray[0].order_sn || ''
     }
     const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px', borderBottom: '2px solid #101010' }
     const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
@@ -609,7 +609,7 @@ class PrescriptionScreen extends Component {
             <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{patient.province + ' ' + patient.city + ' ' + patient.district + ' ' + patient.address}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patientInfo.province || '') + ' ' + (patientInfo.city || '') + ' ' + (patientInfo.district || '') + ' ' + (patientInfo.address || '')}</div>
             <div style={patientInforRowItem}>电话：{patient.phone}</div>
           </div>
         </div>
@@ -1066,7 +1066,7 @@ class PrescriptionScreen extends Component {
             <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{patient.province + ' ' + patient.city + ' ' + patient.district + ' ' + patient.address}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patientInfo.province || '') + ' ' + (patientInfo.city || '') + ' ' + (patientInfo.district || '') + ' ' + (patientInfo.address || '')}</div>
             <div style={patientInforRowItem}>电话：{patient.phone}</div>
           </div>
         </div>

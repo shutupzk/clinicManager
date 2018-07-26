@@ -1246,7 +1246,7 @@ class MedicalRecordScreen extends Component {
           </div>
           <div style={patientInfoRowStyle}>
             <lable>就诊id</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{clinic_triage_patient_id}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
@@ -1332,6 +1332,7 @@ class MedicalRecordScreen extends Component {
       </div>
     )
   }
+
   render() {
     let {
       uploadedFiles,
