@@ -68,7 +68,8 @@ class MedicalRecordScreen extends Component {
         files = JSON.parse(record.files)
         for (let j = 0; j < files.length; j++) {
           let url = files[j].url
-          if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg' || url.split('.')[1] === 'jpeg') {
+          let suffix = url.split('.')[url.split('.').length - 1].toLowerCase()
+          if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
             imgArray.push(files[j])
           }
         }
@@ -988,6 +989,7 @@ class MedicalRecordScreen extends Component {
   renderFiles() {
     const { uploadedFiles } = this.state
     // console.log('uploadedFiles==', uploadedFiles)
+    // let viewUrl = 'http://office.qingshanboke.com/Default.aspx?url='
     if (uploadedFiles.length === 0) {
       return null
     } else {
@@ -1020,7 +1022,16 @@ class MedicalRecordScreen extends Component {
               } else {
                 return (
                   <li key={index} title={item.docName}>
-                    {item.docName}
+                    {suffix === 'pdf' ? <a
+                      style={{width: '100%', height: '100%'}}
+                      href={API_SERVER + item.url}
+                      target={'_blank'}>{item.docName}
+                    </a> : <a
+                      style={{width: '100%', height: '100%'}}
+                      href={API_SERVER + item.url}
+                      target={'_blank'}
+                      >{item.docName}</a>
+                    }
                     <span
                       onClick={() => {
                         let array = uploadedFiles
@@ -1134,7 +1145,8 @@ class MedicalRecordScreen extends Component {
           url
         }
         array.push(item)
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+        let suffix = url.split('.')[url.split('.').length - 1].toLowerCase()
+        if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
           imgArray.push(item)
         }
         this.setState({ uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array) })
@@ -1163,7 +1175,8 @@ class MedicalRecordScreen extends Component {
           url
         }
         array.push(item)
-        if (url.split('.')[1] === 'png' || url.split('.')[1] === 'jpg') {
+        let suffix = url.split('.')[url.split('.').length - 1].toLowerCase()
+        if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
           imgArray.push(item)
         }
         this.setState({ uploadedFiles: array, imgFiles: imgArray, files: JSON.stringify(array) })
@@ -1544,6 +1557,7 @@ class MedicalRecordScreen extends Component {
                   {this.renderFiles()}
                   <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
                     <Upload
+                      accept={'image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
                       onChange={e => {
                         this.showProgress(e)
                         // console.log('Upload=====', e)
