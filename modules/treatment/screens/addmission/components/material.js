@@ -99,6 +99,9 @@ class MaterialScreen extends Component {
     let items = []
     for (let item of eaterials) {
       let obj = {}
+      if (!item.stock_amount || item.stock_amount * 1 < 1) {
+        return this.refs.myAlert.alert('保存失败', '库存为0 ，请您重新选择', null, 'Danger')
+      }
       for (let key in item) {
         if (item[key] === 0) {
           obj[key] = item[key] + ''
@@ -179,7 +182,7 @@ class MaterialScreen extends Component {
             <div style={{ ...patientInforRowItem, flex: 6 }}>项目名称</div>
             <div style={{ ...patientInforRowItem, flex: 3 }}>单价（￥）</div>
             <div style={{ ...patientInforRowItem, flex: 2 }}>单位</div>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>次数</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>数量</div>
             <div style={{ ...patientInforRowItem, flex: 2 }}>金额（￥）</div>
             <div style={{ ...patientInforRowItem, flex: 4 }}>说明</div>
           </div>
@@ -296,7 +299,7 @@ class MaterialScreen extends Component {
                   <div>规格</div>
                   <div>单位</div>
                   <div>库存</div>
-                  <div>次数</div>
+                  <div>数量</div>
                   <div>说明</div>
                   <div>
                     <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
@@ -495,7 +498,7 @@ class MaterialScreen extends Component {
             margin-top: -23px;
           }
           .formListBottom .bottomRight button {
-            width: 80px;
+            min-width: 80px;
             height: 26px;
             border-radius: 15px;
             border: 1px solid #2acdc8;

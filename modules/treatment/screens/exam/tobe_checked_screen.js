@@ -149,7 +149,7 @@ class TobeCheckedScreen extends Component {
                 就诊人姓名：{selItem.patient_name}&nbsp;&nbsp;&nbsp;{selItem.sex === 0 ? '女' : '男'}
               </div>
               <div>年龄：{getAgeByBirthday(selItem.birthday)}</div>
-              <div>门诊ID： </div>
+              <div>门诊ID：{selItem.clinic_triage_patient_id} </div>
             </div>
             <div className={'centerCotent'}>
               <table>
@@ -194,7 +194,7 @@ class TobeCheckedScreen extends Component {
                   this.determineExam()
                 }}
               >
-                保存
+                确认
               </button>
             </div>
           </div>

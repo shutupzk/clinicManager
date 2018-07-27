@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
-import { queryRoleList } from '../../../../ducks'
-import { PageCard } from '../../../../components'
+import { queryRoleList, RoleDelete } from '../../../../ducks'
+import { PageCard, Confirm } from '../../../../components'
 import AddRoleScreen from './components/addRoleScreen'
 import AssignUsersScreen from './components/assignUsersScreen'
 import moment from 'moment'
@@ -225,7 +225,15 @@ class PermissionGroupScreen extends Component {
                         分配
                       </div>
                       <div className={'divideLine'}>|</div>
-                      <div>删除</div>
+                      <div onClick={async () => {
+                        this.refs.myAlert.confirm('提示', '确认删除？', 'Warning', async () => {
+                          let error = await this.props.RoleDelete({ role_id: item.role_id })
+                          if (error) {
+                            return this.refs.myAlert.alert('创建角色失败', error, null, 'Danger')
+                          }
+                          this.getDataList({ offset: pageInfo.offset, limit: pageInfo.limit })
+                        })
+                      }}>删除</div>
                     </div>
                   </td>
                 </tr>
@@ -350,6 +358,7 @@ class PermissionGroupScreen extends Component {
             cursor: pointer;
           }
         `}</style>
+        <Confirm ref='myAlert' />
       </div>
     )
   }
@@ -366,6 +375,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    queryRoleList
+    queryRoleList, RoleDelete
   }
 )(PermissionGroupScreen)

@@ -702,7 +702,7 @@ class VisitInfoScreen extends Component {
             <table>
               <thead>
                 <tr>
-                  <td>就诊时间</td>
+                  <td style={{ flex: 2 }}>就诊时间</td>
                   <td>就诊类型</td>
                   <td>接诊诊所</td>
                   <td>接诊科室</td>
@@ -722,7 +722,7 @@ class VisitInfoScreen extends Component {
                   <table>
                     <tbody>
                       <tr key={index}>
-                        <td>{moment(item.registion_time).format('YYYY-MM-DD hh:mm')}</td>
+                        <td style={{ flex: 2 }}>{moment(item.registion_time).format('YYYY-MM-DD hh:mm')}</td>
                         <td>{this.getVisitType(item.visit_type)}</td>
                         <td>{item.clinic_name}</td>
                         <td>{item.department_name}</td>

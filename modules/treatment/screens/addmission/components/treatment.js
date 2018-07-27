@@ -413,7 +413,7 @@ class TreatmentScreen extends Component {
             margin-top: -23px;
           }
           .formListBottom .bottomRight button {
-            width: 70px;
+            min-width: 70px;
             height: 26px;
             border-radius: 15px;
             border: 1px solid #2acdc8;

@@ -6,7 +6,7 @@ import { API_SERVER } from '../../../../../config'
 import moment from 'moment'
 import Print from 'rc-print'
 
-import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList, FileUpload, xhrFileUpload, PersonalMedicalRecord, GetHealthRecord } from '../../../../../ducks'
+import { createMedicalRecord, queryMedicalRecord, createMedicalRecordAsModel, queryMedicalModelsByDoctor, queryMedicalsByPatient, queryChiefComplaints, queryDictDiagnosisList, FileUpload, xhrFileUpload, PersonalMedicalRecord, GetHealthRecord, PatientGetByID } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 // 病历
 class MedicalRecordScreen extends Component {
@@ -53,10 +53,11 @@ class MedicalRecordScreen extends Component {
   }
 
   async componentWillMount() {
-    const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints, PersonalMedicalRecord, patient_id, GetHealthRecord } = this.props
+    const { queryMedicalRecord, clinic_triage_patient_id, queryChiefComplaints, PersonalMedicalRecord, patient_id, GetHealthRecord, PatientGetByID } = this.props
     await queryChiefComplaints()
     let record = await queryMedicalRecord(clinic_triage_patient_id)
     let pre_medical_record = await PersonalMedicalRecord({ patient_id })
+    let pateint = await PatientGetByID({ patient_id })
     let recordStr = ''
     let files = []
     let imgArray = []
@@ -89,7 +90,7 @@ class MedicalRecordScreen extends Component {
       record = { ...record, ...pre_medical_record, ...pre_diagnosis }
       console.log('record ====', record)
     }
-    this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray, pre_medical_record: pre_medical_record || {} })
+    this.setState({ ...this.state, ...record, recordStr, imgFiles: imgArray, uploadedFiles: files, diagnosisArray, pre_medical_record: pre_medical_record || {}, pateint })
   }
 
   async save() {
@@ -1194,6 +1195,7 @@ class MedicalRecordScreen extends Component {
   }
   mrPrinter() {
     let { user, triagePatients, clinic_triage_patient_id } = this.props
+    let { pateint = {} } = this.state
     let triagePatient = {}
     for (let tp of triagePatients) {
       if (tp.clinic_triage_patient_id === clinic_triage_patient_id) triagePatient = tp
@@ -1262,7 +1264,7 @@ class MedicalRecordScreen extends Component {
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
             <lable>职业</lable>
-            <div style={patientInfoRowDivStyle}>{triagePatient.profession}</div>
+            <div style={patientInfoRowDivStyle}>{pateint.profession}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>电话</lable>
@@ -1270,7 +1272,7 @@ class MedicalRecordScreen extends Component {
           </div>
           <div style={patientInfoRowStyle}>
             <lable>证件号</lable>
-            <div style={patientInfoRowDivStyle}>{triagePatient.cert_no}</div>
+            <div style={patientInfoRowDivStyle}>{pateint.cert_no}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
@@ -1823,7 +1825,7 @@ class MedicalRecordScreen extends Component {
             margin-top: -23px;
           }
           .formListBottom .bottomRight button {
-            width: 70px;
+            min-width: 70px;
             height: 26px;
             border-radius: 15px;
             border: 1px solid #2acdc8;
@@ -1871,6 +1873,7 @@ export default connect(
     FileUpload,
     xhrFileUpload,
     PersonalMedicalRecord,
-    GetHealthRecord
+    GetHealthRecord,
+    PatientGetByID
   }
 )(MedicalRecordScreen)

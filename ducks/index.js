@@ -91,7 +91,7 @@ import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPatien
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
 import { clinics, clinicCreate, queryClinicList, clinicUpdateStatus, clinicUpdate, queryClinicCode, clinicSelect } from './clinic'
-import { roles, queryRoleList, roleCreate, roleSelect, RoleUpdate, RoleDetail, RoleAllocation, RoleFunctionUnset, PersonnelsByRole } from './role'
+import { roles, queryRoleList, roleCreate, roleSelect, RoleUpdate, RoleDetail, RoleAllocation, RoleFunctionUnset, PersonnelsByRole, RoleDelete } from './role'
 import { menus, queryMenuGetByClinicID, menuSelect } from './business'
 import { drugStocks, queryDrugInstockRecord, createDrugInstock, drugStockSelect, queryInstockWayList, querySupplierList, queryDrugInstockRecordDetail, DrugInstockCheck, DrugInstockUpdate, DrugInstockRecordDelete } from './drug_stock'
 import { drugClasses, queryDrugClassList } from './drug_class'
@@ -482,5 +482,6 @@ export {
   TriagePatientVisitDetail,
   MedicalRecordRenew,
   MedicalRecordRenewUpdate,
-  MedicalRecordRenewDelete
+  MedicalRecordRenewDelete,
+  RoleDelete
 }

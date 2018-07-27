@@ -85,6 +85,7 @@ export const roleCreate = ({ clinic_id, name, items }) => async dispatch => {
     return e.message
   }
 }
+
 export const RoleUpdate = ({ role_id, clinic_id, name, items }) => async dispatch => {
   try {
     console.log('RoleUpdate', {
@@ -103,6 +104,21 @@ export const RoleUpdate = ({ role_id, clinic_id, name, items }) => async dispatc
     return e.message
   }
 }
+
+export const RoleDelete = ({ role_id }) => async dispatch => {
+  try {
+    const data = await request('/role/delete', { role_id })
+    console.log(
+      data
+    )
+    if (data.code === '200') return null
+    return data.msg
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
 export const RoleDetail = ({role_id}) => async dispatch => {
   try {
     console.log('limit====', role_id)

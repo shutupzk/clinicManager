@@ -282,7 +282,7 @@ class PrescriptionScreen extends Component {
   }
 
   async prescriptionWesternPatientCreate() {
-    const { wPrescItemArray } = this.state
+    const { PrescriptionWesternPatientGet, clinic_triage_patient_id } = this.props
     let err = this.checkPresW()
     if (err) {
       return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
@@ -291,7 +291,8 @@ class PrescriptionScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
     } else {
-      this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray) })
+      let wPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+      this.setState({ wPrescItemArrayStr: JSON.stringify(wPrescItemArray), wPrescItemArray })
       return this.refs.myAlert.alert('保存成功')
     }
   }
@@ -549,7 +550,7 @@ class PrescriptionScreen extends Component {
           </div>
           <div className={'bottomRight'}>
             <button onClick={() => this.setState({ showSaveWmodel: true })}>存为模板</button>
-            <button onClick={() => this.refs.wprinter.onPrint()}>打印病历</button>
+            <button onClick={() => this.refs.wprinter.onPrint()}>打印处方</button>
             <Print ref='wprinter' lazyRender isIframe>
               {this.wpPrinter()}
             </Print>
@@ -669,14 +670,25 @@ class PrescriptionScreen extends Component {
   }
 
   async prescriptionChinesePatientCreate() {
-    const { selIndex, cPrescItemArray } = this.state
+    const { selIndex } = this.state
+    const { PrescriptionChinesePatientGet, clinic_triage_patient_id } = this.props
     let err = this.checkPresC(selIndex)
     if (err) return this.refs.myAlert.alert('保存失败', err, null, 'Danger')
-    let { error, id } = await this.saveOnePrescriptionChinesePatient(selIndex)
+    let { error } = await this.saveOnePrescriptionChinesePatient(selIndex)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
     } else {
-      cPrescItemArray[selIndex].info.id = id
+      let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+      let cPrescItemArray = []
+      for (let obj of array) {
+        let data = obj.items
+        let info = { ...obj }
+        delete info.items
+        cPrescItemArray.push({
+          info,
+          data
+        })
+      }
       this.setState({ cPrescItemArrayStr: JSON.stringify(cPrescItemArray), cPrescItemArray })
       return this.refs.myAlert.alert('保存成功')
     }
@@ -1003,7 +1015,7 @@ class PrescriptionScreen extends Component {
             >
               存为模板
             </button>
-            <button onClick={() => this.refs.cprinter.onPrint()}>打印病历</button>
+            <button onClick={() => this.refs.cprinter.onPrint()}>打印处方</button>
             <Print ref='cprinter' lazyRender isIframe>
               {this.cpPrinter()}
             </Print>
@@ -2028,7 +2040,7 @@ class PrescriptionScreen extends Component {
           margin-top: -23px;
         }
         .formListBottom .bottomRight button {
-          width: 80px;
+          min-width: 80px;
           height: 26px;
           border-radius: 15px;
           border: 1px solid #2acdc8;

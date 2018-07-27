@@ -246,7 +246,7 @@ export default class RelatedItemsScreen extends Component {
               <div>单位</div>
               {/* <div>参考值</div> */}
               <div>默认结果</div>
-              <div onClick={() => { this.addColumn() }}>增加</div>
+              <div style={{ width: '80px', color: 'rgba(42,205,200,1)', cursor: 'pointer' }} onClick={() => { this.addColumn() }}>增加</div>
             </li>
             {relateInfo.items.map((item, index) => {
               return (
@@ -290,7 +290,7 @@ export default class RelatedItemsScreen extends Component {
                       }}
                     />
                   </div>
-                  <div onClick={() => { this.removeColumn(index) }}>删除</div>
+                  <div style={{ width: '80px', color: 'red', cursor: 'pointer', textAlign: 'center' }} onClick={() => { this.removeColumn(index) }}>删除</div>
                 </li>
               )
             })}

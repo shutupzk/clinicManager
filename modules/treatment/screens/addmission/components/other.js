@@ -162,7 +162,7 @@ class OtherScreen extends Component {
           <div style={{ width: '200px' }}>
             <img src='/static/login/login_logo.png' />
           </div>
-          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name} 治疗单</div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name} 其他收费清单</div>
           <div style={{ width: '200px' }} />
         </div>
         <div style={{ ...borderBottomDiv, borderBottom: '1px solid #d8d8d8', borderTop: '1px solid #d8d8d8' }}>
@@ -477,7 +477,7 @@ class OtherScreen extends Component {
               margin-top: -23px;
             }
             .formListBottom .bottomRight button {
-              width: 80px;
+              min-width: 80px;
               height: 26px;
               border-radius: 15px;
               border: 1px solid #2acdc8;

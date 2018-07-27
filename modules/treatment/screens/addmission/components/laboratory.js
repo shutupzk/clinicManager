@@ -416,7 +416,7 @@ class LaboratoryScreen extends Component {
             margin-top: -23px;
           }
           .formListBottom .bottomRight button {
-            width: 80px;
+            min-width: 80px;
             height: 26px;
             border-radius: 15px;
             border: 1px solid #2acdc8;
