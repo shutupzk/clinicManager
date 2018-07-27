@@ -318,7 +318,7 @@ class ExamReportScreen extends Component {
         <div className={'filesBox'}>
           <ul>
             {uploadedFiles.map((item, index) => {
-              let suffix = item.docName.split('.')[1]
+              let suffix = item.docName.split('.')[1].toLowerCase()
               if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>

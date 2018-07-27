@@ -525,7 +525,7 @@ class TreatDetailScreen extends Component {
           </div>
           <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center' }}>
             <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
-            <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>检验报告单</div>
+            <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>治疗单</div>
           </div>
           <div style={{ width: '200px' }} />
         </div>

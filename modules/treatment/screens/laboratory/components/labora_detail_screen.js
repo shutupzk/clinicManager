@@ -229,6 +229,7 @@ class LaboraDetailScreen extends Component {
     if (array === undefined) {
       array = []
     }
+    // const {order_status} = this.props
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px', background: '#FFFFFF' }}>
@@ -553,12 +554,12 @@ class LaboraDetailScreen extends Component {
     let data = laboras[selIndex]
     return (
       <div style={{ display: 'flex', flexDirection: 'column', padding: '0 0 40px 0', background: 'rgba(255, 255, 255, 1)' }}>
-        <div style={{ display: 'flex', margin: '20px 0 20px 10px', fontSize: '20px' }}>
+        {order_status === '30' || order_status === 30 ? <div style={{ display: 'flex', margin: '20px 0 20px 10px', fontSize: '20px' }}>
           报告时间：
           <label style={{ margin: '0 50px 0 5px', fontWeight: '400' }}>{moment(laboras[selIndex].report_time).format('YYYY-MM-DD HH:mm:ss')}</label>
           报告人：
           <label style={{ margin: '0 20px 0 5px', fontWeight: '400' }}>{laboras[selIndex].report_doctor_name}</label>
-        </div>
+        </div> : ''}
         <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
           <ul>
             <li>
@@ -649,9 +650,12 @@ class LaboraDetailScreen extends Component {
             <button>取消</button>
           </div>
         </div>
-        {order_status === '30' ? (
+        {order_status === 30 || order_status === '30' ? (
           <div>
-            <button style={{ float: 'right', marginRight: '20px' }} onClick={() => this.refs.printer.onPrint()}>
+            <button
+              style={{ float: 'right', marginRight: '20px' }}
+              onClick={() => this.refs.printer.onPrint()}
+            >
               打印报告
             </button>
             <Print ref='printer' lazyRender isIframe>
@@ -700,6 +704,7 @@ class LaboraDetailScreen extends Component {
       array = []
     }
     let data = laboras[selIndex]
+    console.log('triagePatient====', triagePatient, data, array)
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
         <div style={{ display: 'flex', width: '100%' }}>
@@ -727,13 +732,13 @@ class LaboraDetailScreen extends Component {
           </div>
           <div style={patientInfoRowStyle}>
             <lable>标本种类：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{data.laboratory_sample}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
             <lable>病案号：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{data.clinic_triage_patient_id}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>科室：</lable>
@@ -796,11 +801,11 @@ class LaboraDetailScreen extends Component {
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
             <lable>送检医生：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{data.report_doctor_name}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>送检人员：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{data.report_doctor_name}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>审核人员：</lable>
@@ -814,7 +819,7 @@ class LaboraDetailScreen extends Component {
           </div>
           <div style={patientInfoRowStyle}>
             <lable>报告时间：</lable>
-            <div style={patientInfoRowDivStyle}>{}</div>
+            <div style={patientInfoRowDivStyle}>{moment(data.report_time).format('YYYY-MM-DD HH:mm')}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>

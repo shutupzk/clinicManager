@@ -609,7 +609,7 @@ class PrescriptionScreen extends Component {
             <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patientInfo.province || '') + ' ' + (patientInfo.city || '') + ' ' + (patientInfo.district || '') + ' ' + (patientInfo.address || '')}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patient.province || '') + ' ' + (patient.city || '') + ' ' + (patient.district || '') + ' ' + (patient.address || '')}</div>
             <div style={patientInforRowItem}>电话：{patient.phone}</div>
           </div>
         </div>
@@ -1066,7 +1066,7 @@ class PrescriptionScreen extends Component {
             <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patientInfo.province || '') + ' ' + (patientInfo.city || '') + ' ' + (patientInfo.district || '') + ' ' + (patientInfo.address || '')}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patient.province || '') + ' ' + (patient.city || '') + ' ' + (patient.district || '') + ' ' + (patient.address || '')}</div>
             <div style={patientInforRowItem}>电话：{patient.phone}</div>
           </div>
         </div>
