@@ -58,7 +58,7 @@ const foreachJsonKey = (oldkey, json, fkey, tKey) => {
 }
 
 export const getAgeByBirthday = birthday => {
-  if (!birthday) return '未知'
+  if (!birthday) return ''
   let days = moment().diff(moment(birthday), 'day')
   if (days < 1) {
     let hours = moment().diff(moment(birthday), 'h')
