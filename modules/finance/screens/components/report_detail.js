@@ -70,26 +70,59 @@ class ReportDetailScreen extends Component {
               <div>费用合计</div>
               <div>折后金额</div>
             </li>
+            {/* <li style={{ background: 'rgba(247,247,247,1)' }}>
+              <div style={{ flex: 2 }}>合计</div>
+              <div />
+              <div />
+              <div />
+              <div />
+              <div />
+              <div style={{ flex: 2 }} />
+              <div />
+              <div style={{ flex: 2 }} />
+              <div />
+              <div />
+              <div style={{ flex: 3 }} />
+              <div />
+              <div />
+              <div />
+              <div>费用合计</div>
+              <div>折后金额</div>
+            </li> */}
             {finances.map((item, iKey) => {
+              let sexMap = { 1: '男', 0: '女' }
+              let { charge_project_type, record_type, visit_date, name, price, total, fee, unit, amount } = item
+
+              if (record_type === 2) {
+                charge_project_type = '药品零售'
+                visit_date = item.created_time
+                name = item.drug_name
+                price = item.drug_price
+                total = item.drug_total
+                fee = item.drug_total
+                unit = item.drug_unit
+                amount = item.drug_mount
+              }
+
               return (
                 <li key={iKey}>
                   <div style={{ flex: 2 }}>{item.out_trade_no}</div>
                   <div>{item.patientname}</div>
-                  <div>{item.sex === 1 ? '男' : '女'}</div>
+                  <div>{sexMap[item.sex]}</div>
                   <div>{getAgeByBirthday(item.birthday)}</div>
                   <div>{item.phone}</div>
-                  <div>{moment(item.visit_date).format('YYYY-MM-DD')}</div>
+                  <div>{moment(visit_date).format('YYYY-MM-DD')}</div>
                   <div style={{ flex: 2 }}>{item.deptname}</div>
                   <div>{item.doctorname}</div>
                   <div style={{ flex: 2 }}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div>{item.operarion}</div>
-                  <div>{item.charge_project_type}</div>
-                  <div style={{ flex: 3 }}>{item.name}</div>
-                  <div>{item.unit}</div>
-                  <div>{item.amount}</div>
-                  <div>{formatMoney(item.price)}</div>
-                  <div>{formatMoney(item.total)}</div>
-                  <div>{formatMoney(item.fee)}</div>
+                  <div>{charge_project_type}</div>
+                  <div style={{ flex: 3 }}>{name}</div>
+                  <div>{unit}</div>
+                  <div>{amount}</div>
+                  <div>{formatMoney(price)}</div>
+                  <div>{formatMoney(total)}</div>
+                  <div>{formatMoney(fee)}</div>
                 </li>
               )
             })}
