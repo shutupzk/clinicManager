@@ -361,14 +361,14 @@ export const completePreMedicalRecord = ({
   }
 }
 
-export const completePreDiagnosis = ({ clinic_triage_patient_id, chief_complaint, history_of_rresent_illness, history_of_past_illness, physical_examination, remark }) => async dispatch => {
+export const completePreDiagnosis = ({ clinic_triage_patient_id, chief_complaint, history_of_present_illness, history_of_past_illness, body_examination, remark }) => async dispatch => {
   try {
     const data = await request('/triage/completePreDiagnosis', {
       clinic_triage_patient_id,
       chief_complaint,
-      history_of_rresent_illness,
+      history_of_present_illness,
       history_of_past_illness,
-      physical_examination,
+      body_examination,
       remark
     })
     if (data.code !== '200') return data.msg

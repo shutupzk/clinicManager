@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, patientSelect } from '../../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, patientSelect, completeBodySign, completePreMedicalRecord, completePreDiagnosis, PersonalMedicalRecordUpsert, GetHealthRecord, PersonalMedicalRecord, GetLastBodySign } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
@@ -49,7 +49,7 @@ class TriageRecordScreen extends Component {
 
   // 显示分诊列表
   showTriageList() {
-    const { triagePatients, patient_page_info, patientSelect } = this.props
+    const { triagePatients, patient_page_info, patientSelect, GetLastBodySign, PersonalMedicalRecord } = this.props
     console.log('triagePatients ======', triagePatients)
     return (
       <div>
@@ -81,10 +81,14 @@ class TriageRecordScreen extends Component {
                         ? [
                           {
                             title: '完善健康档案',
-                            onClick: () => {
-                              let { clinic_triage_patient_id } = patient
-                              this.showCompleteHealthFile(clinic_triage_patient_id)
-                              this.setState({ clinic_triage_patient_id })
+                            onClick: async () => {
+                              let { clinic_triage_patient_id, sex, patient_id } = patient
+                              let data = await this.props.GetHealthRecord({ clinic_triage_patient_id })
+                              let pre_medical_record = await PersonalMedicalRecord({ patient_id })
+                              let l_body_sign = await GetLastBodySign({ patient_id })
+                              const { body_sign, pre_diagnosis } = data
+                              this.showCompleteHealthFile(clinic_triage_patient_id, { ...body_sign, l_body_sign }, pre_medical_record, pre_diagnosis)
+                              this.setState({ clinic_triage_patient_id, selSex: sex, patient })
                             }
                           },
                           {
@@ -120,12 +124,13 @@ class TriageRecordScreen extends Component {
     )
   }
 
-  showCompleteHealthFile(clinic_triage_patient_id) {
-    this.refs.CompleteHealth.show(clinic_triage_patient_id)
+  showCompleteHealthFile(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis) {
+    this.refs.CompleteHealth.show(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis)
   }
 
   render() {
-    const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id } = this.props
+    const { triageDoctors, doctor_page_info, departments, clinic_id, triage_personnel_id, completeBodySign, completePreMedicalRecord, completePreDiagnosis, PersonalMedicalRecordUpsert } = this.props
+    const { patient } = this.state
     return (
       <div>
         <div className={'childTopBar'}>
@@ -158,7 +163,7 @@ class TriageRecordScreen extends Component {
           </span>
         </div>
         {this.showTriageList()}
-        <CompleteHealth ref='CompleteHealth' />
+        <CompleteHealth ref='CompleteHealth' patient={patient} completeBodySign={completeBodySign} completePreMedicalRecord={completePreMedicalRecord} completePreDiagnosis={completePreDiagnosis} PersonalMedicalRecordUpsert={PersonalMedicalRecordUpsert} />
         <ChooseDoctor
           ref='ChooseDoctor'
           triageDoctors={triageDoctors}
@@ -190,5 +195,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, patientSelect }
+  { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, patientSelect, completeBodySign, completePreMedicalRecord, completePreDiagnosis, PersonalMedicalRecordUpsert, GetHealthRecord, PersonalMedicalRecord, GetLastBodySign }
 )(TriageRecordScreen)

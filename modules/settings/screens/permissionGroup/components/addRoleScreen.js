@@ -10,7 +10,6 @@ import { queryClinicHassetPermissions, RoleDetail, roleCreate, RoleUpdate, RoleF
 // import {limitMoney} from '../../../../../utils'
 import { formatMenuList, formatUnHasMemuList, deleteMenu, addMenu } from '../../../../../utils'
 
-// 病历
 class AddRoleScreen extends Component {
   constructor(props) {
     super(props)
@@ -66,7 +65,7 @@ class AddRoleScreen extends Component {
         {this.renderBaseInfoBlank()}
         <div className={'bottomBtn'}>
           <div>
-            <button>取消</button>
+            <button onClick={() => this.props.backToList()}>取消</button>
             <button
               onClick={() => {
                 if (showWay === 2) {
@@ -184,130 +183,129 @@ class AddRoleScreen extends Component {
               />
               {this.state.nameFailed || roleInfo.name === '' || !roleInfo.name ? <div style={{ color: 'red', fontSize: '12px' }}>此为必填项</div> : ''}
             </li>
-            <li style={{ width: '49%' }}>
-              <span>业务分配</span>
-              <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
-                {unsets.map((item, iKey) => {
-                  return (
-                    <div key={iKey} className={'boxContentList'}>
-                      <div
-                        style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}
-                      >
-                        <input
-                          type={'checkBox'}
-                          checked={false}
-                          onChange={e => {
-                            this.addFunc(item)
-                          }}
-                        />
-                        <span>{item.menu_name}</span>
-                      </div>
-                      <ul>
-                        {item.children.map((func, funkey) => {
-                          return (
-                            <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
-                              <div className={'boxContentList'}>
-                                <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
-                                  <input
-                                    type={'checkBox'}
-                                    checked={false}
-                                    onChange={e => {
-                                      this.addFunc(func)
-                                    }}
-                                  />
-                                  <label>{func.menu_name}</label>
-                                </div>
-                                <ul>
-                                  {func.children.map((func, funkey) => {
-                                    return (
-                                      <li key={funkey}>
-                                        <div className={'boxContentList'}>
-                                          <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
-                                            <input
-                                              type={'checkBox'}
-                                              checked={false}
-                                              onChange={e => {
-                                                this.addFunc(func)
-                                              }}
-                                            />
-                                            <label>{func.menu_name}</label>
+            <li style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+              <div style={{ flex: 1 }}>
+                <span>权限分组</span>
+                <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                  {unsets.map((item, iKey) => {
+                    return (
+                      <div key={iKey} className={'boxContentList'}>
+                        <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}>
+                          <input
+                            type={'checkBox'}
+                            checked={false}
+                            onChange={e => {
+                              this.addFunc(item)
+                            }}
+                          />
+                          <span>{item.menu_name}</span>
+                        </div>
+                        <ul>
+                          {item.children.map((func, funkey) => {
+                            return (
+                              <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
+                                <div className={'boxContentList'}>
+                                  <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
+                                    <input
+                                      type={'checkBox'}
+                                      checked={false}
+                                      onChange={e => {
+                                        this.addFunc(func)
+                                      }}
+                                    />
+                                    <label>{func.menu_name}</label>
+                                  </div>
+                                  <ul>
+                                    {func.children.map((func, funkey) => {
+                                      return (
+                                        <li key={funkey}>
+                                          <div className={'boxContentList'}>
+                                            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
+                                              <input
+                                                type={'checkBox'}
+                                                checked={false}
+                                                onChange={e => {
+                                                  this.addFunc(func)
+                                                }}
+                                              />
+                                              <label>{func.menu_name}</label>
+                                            </div>
                                           </div>
-                                        </div>
-                                      </li>
-                                    )
-                                  })}
-                                </ul>
-                              </div>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                  )
-                })}
+                                        </li>
+                                      )
+                                    })}
+                                  </ul>
+                                </div>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-            </li>
-            <li style={{ width: '49%' }}>
-              <span>业务已分配</span>
-              <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
-                {sets.map((item, iKey) => {
-                  return (
-                    <div key={iKey} className={'boxContentList'}>
-                      <div
-                        style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}
-                      >
-                        <input
-                          type={'checkBox'}
-                          checked
-                          onChange={e => {
-                            this.delFunc(item)
-                          }}
-                        />
-                        <span>{item.menu_name}</span>
-                      </div>
-                      <ul>
-                        {item.children.map((func, funkey) => {
-                          return (
-                            <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
-                              <div className={'boxContentList'}>
-                                <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
-                                  <input
-                                    type={'checkBox'}
-                                    checked
-                                    onChange={e => {
-                                      this.delFunc(func)
-                                    }}
-                                  />
-                                  <label>{func.menu_name}</label>
-                                </div>
-                                <ul>
-                                  {func.children.map((func, funkey) => {
-                                    return (
-                                      <li key={funkey}>
-                                        <div className={'boxContentList'}>
-                                          <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
-                                            <input
-                                              type={'checkBox'}
-                                              checked
-                                              onChange={e => {
-                                                this.delFunc(func)
-                                              }}
-                                            />
-                                            <label>{func.menu_name}</label>
+              <div style={{width: '20px'}} />
+              <div style={{ flex: 1 }}>
+                <span>选择已分配</span>
+                <div className={'boxContentItem'} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                  {sets.map((item, iKey) => {
+                    return (
+                      <div key={iKey} className={'boxContentList'}>
+                        <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '14px', fontFamily: 'PingFangSC-Regular', fontWeight: '600', marginBottom: '5px', marginTop: '5px' }}>
+                          <input
+                            type={'checkBox'}
+                            checked
+                            onChange={e => {
+                              this.delFunc(item)
+                            }}
+                          />
+                          <span>{item.menu_name}</span>
+                        </div>
+                        <ul>
+                          {item.children.map((func, funkey) => {
+                            return (
+                              <li key={funkey} style={{ width: func.children.length > 0 ? '100%' : '25%' }}>
+                                <div className={'boxContentList'}>
+                                  <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '13px', fontWeight: '400', marginBottom: '5px', marginTop: '5px' }}>
+                                    <input
+                                      type={'checkBox'}
+                                      checked
+                                      onChange={e => {
+                                        this.delFunc(func)
+                                      }}
+                                    />
+                                    <label>{func.menu_name}</label>
+                                  </div>
+                                  <ul>
+                                    {func.children.map((func, funkey) => {
+                                      return (
+                                        <li key={funkey}>
+                                          <div className={'boxContentList'}>
+                                            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', fontSize: '12px', fontWeight: '250', marginBottom: '5px', marginTop: '5px' }}>
+                                              <input
+                                                type={'checkBox'}
+                                                checked
+                                                onChange={e => {
+                                                  this.delFunc(func)
+                                                }}
+                                              />
+                                              <label>{func.menu_name}</label>
+                                            </div>
                                           </div>
-                                        </div>
-                                      </li>
-                                    )
-                                  })}
-                                </ul>
-                              </div>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                  )
-                })}
+                                        </li>
+                                      )
+                                    })}
+                                  </ul>
+                                </div>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </li>
           </ul>
@@ -420,7 +418,7 @@ class AddRoleScreen extends Component {
         }
         .bottomBtn {
           // background:#909090;
-          width: 1098px;
+          width: 100%;
           margin: 0 0 30px 0;
           display: flex;
           align-items: center;

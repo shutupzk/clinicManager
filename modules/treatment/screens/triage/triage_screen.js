@@ -1,20 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import {
-  triagePatientsList,
-  triageDoctorsList,
-  triagePatient,
-  queryDepartmentList,
-  queryDoctorList,
-  completeBodySign,
-  completePreMedicalRecord,
-  completePreDiagnosis,
-  GetHealthRecord,
-  patientSelect,
-  PersonalMedicalRecord,
-  PersonalMedicalRecordUpsert
-} from '../../../../ducks'
+import { triagePatientsList, triageDoctorsList, triagePatient, queryDepartmentList, queryDoctorList, completeBodySign, completePreMedicalRecord, completePreDiagnosis, GetHealthRecord, patientSelect, PersonalMedicalRecord, PersonalMedicalRecordUpsert, GetLastBodySign } from '../../../../ducks'
 import { PageCard } from '../../../../components'
 import { CompleteHealth, PatientCard, ChooseDoctor } from '../../components'
 
@@ -63,7 +50,7 @@ class TriageScreen extends Component {
 
   // 显示分诊列表
   showTriageList() {
-    const { triagePatients, patient_page_info, patientSelect, PersonalMedicalRecord } = this.props
+    const { triagePatients, patient_page_info, patientSelect, PersonalMedicalRecord, GetLastBodySign } = this.props
     return (
       <div>
         <div className={'filterBox'}>
@@ -97,8 +84,9 @@ class TriageScreen extends Component {
                           let { clinic_triage_patient_id, sex, patient_id } = patient
                           let data = await this.props.GetHealthRecord({ clinic_triage_patient_id })
                           let pre_medical_record = await PersonalMedicalRecord({ patient_id })
+                          let l_body_sign = await GetLastBodySign({ patient_id })
                           const { body_sign, pre_diagnosis } = data
-                          this.showCompleteHealthFile(clinic_triage_patient_id, body_sign, pre_medical_record, pre_diagnosis)
+                          this.showCompleteHealthFile(clinic_triage_patient_id, { ...body_sign, ...l_body_sign }, pre_medical_record, pre_diagnosis)
                           this.setState({ clinic_triage_patient_id, selSex: sex, patient })
                         }
                       },
@@ -211,6 +199,7 @@ export default connect(
     GetHealthRecord,
     patientSelect,
     PersonalMedicalRecord,
-    PersonalMedicalRecordUpsert
+    PersonalMedicalRecordUpsert,
+    GetLastBodySign
   }
 )(TriageScreen)

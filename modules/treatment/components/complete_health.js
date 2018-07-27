@@ -280,7 +280,7 @@ export default class CompleteHealth extends Component {
               </div>
               <input
                 type='text'
-                value={bodySign.temperature}
+                value={bodySign.temperature || ''}
                 style={{ width: '200px', marginLeft: '10px' }}
                 placeholder='请填写温度数值'
                 onChange={e => {
@@ -681,9 +681,9 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '70px' }}
                 placeholder='请填写现病史'
-                value={preDiagnosisRecords.history_of_rresent_illness || ''}
+                value={preDiagnosisRecords.history_of_present_illness || ''}
                 onChange={e => {
-                  this.setPreDiagnosisRecords(e, 'history_of_rresent_illness')
+                  this.setPreDiagnosisRecords(e, 'history_of_present_illness')
                 }}
               />
             </li>
@@ -703,9 +703,9 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '70px' }}
                 placeholder='请填写体格检查'
-                value={preDiagnosisRecords.physical_examination || ''}
+                value={preDiagnosisRecords.body_examination || ''}
                 onChange={e => {
-                  this.setPreDiagnosisRecords(e, 'physical_examination')
+                  this.setPreDiagnosisRecords(e, 'body_examination')
                 }}
               />
             </li>
