@@ -647,7 +647,7 @@ class LaboraDetailScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button onClick={() => this.save()}>保存</button>
-            <button>取消</button>
+            <button onClick={() => this.props.back2List()}>取消</button>
           </div>
         </div>
         {order_status === 30 || order_status === '30' ? (

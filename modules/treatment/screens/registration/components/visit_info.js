@@ -84,6 +84,7 @@ class VisitInfoScreen extends Component {
   renderFiles(picture_examination) {
     if (!picture_examination) return null
     let uploadedFiles = JSON.parse(picture_examination)
+    // let viewUrl = 'https://view.officeapps.live.com/op/view.aspx?src='
     if (uploadedFiles.length === 0) {
       return null
     } else {
@@ -92,7 +93,7 @@ class VisitInfoScreen extends Component {
           <ul>
             {uploadedFiles.map((item, index) => {
               let fileNameArray = item.docName.split('.')
-              let suffix = fileNameArray[fileNameArray.length - 1]
+              let suffix = fileNameArray[fileNameArray.length - 1].toLowerCase()
               if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName} style={{ flexDirection: 'row' }}>
@@ -109,7 +110,16 @@ class VisitInfoScreen extends Component {
               } else {
                 return (
                   <li key={index} title={item.docName}>
-                    {item.docName}
+                    {suffix === 'pdf' ? <a
+                      style={{width: '100%', height: '100%'}}
+                      href={API_SERVER + item.url}
+                      target={'_blank'}>{item.docName}
+                    </a> : <a
+                      style={{width: '100%', height: '100%'}}
+                      href={API_SERVER + item.url}
+                      target={'_blank'}
+                      >{item.docName}</a>
+                    }
                   </li>
                 )
               }
@@ -517,6 +527,7 @@ class VisitInfoScreen extends Component {
   renderUploadFiles() {
     const { uploadedFiles } = this.state
     // console.log('uploadedFiles==', uploadedFiles)
+    // let viewUrl = 'https://view.officeapps.live.com/op/view.aspx?src='
     if (uploadedFiles.length === 0) {
       return null
     } else {
@@ -525,7 +536,7 @@ class VisitInfoScreen extends Component {
           <ul>
             {uploadedFiles.map((item, index) => {
               let fileNameArray = item.docName.split('.')
-              let suffix = fileNameArray[fileNameArray.length - 1]
+              let suffix = fileNameArray[fileNameArray.length - 1].toLowerCase()
               if (suffix === 'png' || suffix === 'jpg' || suffix === 'jpeg') {
                 return (
                   <li className={'imgLi'} key={index} title={item.docName}>
@@ -551,7 +562,16 @@ class VisitInfoScreen extends Component {
               } else {
                 return (
                   <li key={index} title={item.docName}>
-                    {item.docName}
+                    {suffix === 'pdf' ? <a
+                      style={{width: '100%', height: '100%'}}
+                      href={API_SERVER + item.url}
+                      target={'_blank'}>{item.docName}
+                    </a> : <a
+                      style={{width: '100%', height: '100%'}}
+                      href={API_SERVER + item.url}
+                      target={'_blank'}
+                      >{item.docName}</a>
+                    }
                     <span
                       onClick={() => {
                         let array = uploadedFiles
@@ -640,6 +660,7 @@ class VisitInfoScreen extends Component {
             />
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
               <Upload
+                accept={'image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
                 onChange={e => {
                   this.showProgress(e)
                 }}
@@ -728,8 +749,8 @@ class VisitInfoScreen extends Component {
                         <td>{item.department_name}</td>
                         <td>{item.doctor_name}</td>
                         <td>{}</td>
-                        <td>{item.chief_complaint}</td>
-                        <td>{item.diagnosis}</td>
+                        <td title={item.chief_complaint}>{item.chief_complaint}</td>
+                        <td title={item.diagnosis}>{item.diagnosis}</td>
                         <td style={{ flex: 2 }} className={'operTd'}>
                           <div>
                             <div
@@ -1060,7 +1081,8 @@ class VisitInfoScreen extends Component {
           .detailDiv > div {
             margin: 0 20px 0 20px;
             margin-bottom: 5px;
-            width: 100%;
+            // width: 100%;
+            width: auto;
             display: flex;
           }
           .detailDiv > div > div {

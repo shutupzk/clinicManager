@@ -247,7 +247,7 @@ class AddExaminationScreen extends Component {
         {showType ? this.chooseOrgan() : ''}
         <div className={'bottomBtn'}>
           <div>
-            <button>取消</button>
+            <button onClick={() => this.props.back2List()}>取消</button>
             <button
               onClick={() => {
                 if (showWay === 2) {

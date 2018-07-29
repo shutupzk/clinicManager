@@ -298,7 +298,7 @@ export default class RelatedItemsScreen extends Component {
         </div>
         <div className={'formBottom'}>
           <div>
-            <button>取消</button>
+            <button onClick={() => this.props.back2List()}>取消</button>
             <button onClick={() => { this.submit() }}>保存</button>
           </div>
         </div>

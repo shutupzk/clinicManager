@@ -51,7 +51,7 @@ class AddLaboratoryScreen extends Component {
         {this.renderBaseInfoBlank()}
         <div className={'bottomBtn'}>
           <div>
-            <button>取消</button>
+            <button onClick={() => this.props.back2List()}>取消</button>
             <button onClick={() => {
               if (showWay === 2) {
                 this.LaboratoryUpdate()

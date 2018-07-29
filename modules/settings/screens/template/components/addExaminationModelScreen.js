@@ -406,7 +406,7 @@ class AddExaminationModelScreen extends Component {
         </div>
         <div className={'bottomBtn'}>
           <div>
-            <button>取消</button>
+            <button onClick={() => this.props.backToList()}>取消</button>
             <button
               onClick={() => {
                 if (showWay === 2) {

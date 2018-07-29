@@ -687,7 +687,7 @@ class ExamDetailScreen extends Component {
         <div className={'bottomBtn'}>
           <div>
             <button onClick={() => this.save()}>保存</button>
-            <button>取消</button>
+            <button onClick={() => this.props.back2List()}>取消</button>
           </div>
         </div>
         {/* {this.mrPrinter()} */}
