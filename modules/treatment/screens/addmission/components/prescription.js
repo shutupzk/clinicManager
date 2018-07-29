@@ -1315,8 +1315,29 @@ class PrescriptionScreen extends Component {
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
                       onClick={() => {
-                        let newArray = [...wPrescItemArray, ...items]
-                        this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                        let newArray = wPrescItemArray // [...wPrescItemArray, ...items]
+                        // console.log('wPrescItemArray======', wPrescItemArray, items)
+                        if (wPrescItemArray.length > 0) {
+                          let idArray = []
+                          for (let i = 0; i < wPrescItemArray.length; i++) {
+                            idArray.push(wPrescItemArray[i].clinic_drug_id)
+                          }
+                          for (let j = 0; j < items.length; j++) {
+                            // console.log(idArray.indexOf(items[j].clinic_drug_id))
+                            if (idArray.indexOf(items[j].clinic_drug_id) === -1) {
+                              newArray.push(items[j])
+                              this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                            } else {
+                              this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
+                                this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                              })
+                            }
+                          }
+                        } else {
+                          newArray = [...items]
+                          this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                        }
+                        // console.log('wPrescItemArray======', wPrescItemArray, items)
                       }}
                     >
                       选择
@@ -1555,10 +1576,35 @@ class PrescriptionScreen extends Component {
                         let array = item.items || []
                         let newObj = { ...cPrescItemArray[selIndex] }
                         newObj.info = { ...newObj.info, ...info }
-                        newObj.data = [...newObj.data, ...array]
+                        // newObj.data = [...newObj.data, ...array]
                         let newArray = [...cPrescItemArray]
                         newArray[selIndex] = newObj
-                        this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                        // console.log('newObj=====', cPrescItemArray[selIndex], newObj)
+                        let newArrayItem = cPrescItemArray[selIndex].data // [...wPrescItemArray, ...items]
+                        // console.log('cPrescItemArray======', cPrescItemArray[selIndex], array)
+                        if (newArrayItem.length > 0) {
+                          let idArray = []
+                          for (let i = 0; i < newArrayItem.length; i++) {
+                            idArray.push(newArrayItem[i].clinic_drug_id)
+                          }
+                          for (let j = 0; j < array.length; j++) {
+                            // console.log(idArray.indexOf(items[j].clinic_drug_id))
+                            if (idArray.indexOf(array[j].clinic_drug_id) === -1) {
+                              newArrayItem.push(items[j])
+                              newArray[selIndex].data = newArrayItem
+                              this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                            } else {
+                              this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
+                                this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                              })
+                            }
+                          }
+                        } else {
+                          newObj.data = [...newObj.data, ...array]
+                          newArray[selIndex] = newObj
+                          this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                        }
+                        // this.setState({ cPrescItemArray: newArray, showCmodelList: false })
                       }}
                     >
                       选择
