@@ -18,7 +18,8 @@ import {
   PrescriptionChinesePatientModelList,
   queryReceiveRecords,
   GetLastBodySign,
-  PatientGetByID
+  PatientGetByID,
+  PrescriptionChinesePatientDelete
 } from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import Print from 'rc-print'
@@ -254,19 +255,31 @@ class PrescriptionScreen extends Component {
   }
   // 删除中药处方项
   removecPrescItem(index) {
-    const { selIndex, cPrescItemArray } = this.state
-    let array = [...cPrescItemArray]
-    array.splice(index, 1)
-    index = selIndex - 1
-    if (index < 0) {
-      index = 0
-    }
-    let selItem = 'cPresc' + index
-    // console.log('array=========', array, index, selItem)
-    if (array.length === 0) {
-      selItem = 'wPresc'
-    }
-    this.setState({ cPrescItemArray: array, selIndex: index, selItem: selItem })
+    const { PrescriptionChinesePatientDelete, clinic_triage_patient_id, personnel_id } = this.props
+    this.refs.myAlert.confirm('提示', '确定删除该处方？', 'Warning', async () => {
+      let { selIndex, cPrescItemArray } = this.state
+      let id = cPrescItemArray[selIndex].info.id
+      if (id) {
+        let { error } = await PrescriptionChinesePatientDelete({ id, clinic_triage_patient_id, personnel_id })
+        if (error) {
+          return this.refs.myAlert.alert('删除失败', error, null, 'Danger')
+        }
+      }
+
+      let array = [...cPrescItemArray]
+      array.splice(index, 1)
+      index = selIndex - 1
+      if (index < 0) {
+        index = 0
+      }
+      let selItem = 'cPresc' + index
+      // console.log('array=========', array, index, selItem)
+      if (array.length === 0) {
+        selItem = 'wPresc'
+      }
+      let cPrescItemArrayStr = JSON.stringify(array)
+      this.setState({ cPrescItemArray: array, cPrescItemArrayStr, selIndex: index, selItem: selItem })
+    })
   }
   // 添加西药处方药品
   addWestMedicinePres() {
@@ -578,7 +591,7 @@ class PrescriptionScreen extends Component {
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
         <div style={{ display: 'flex', width: '100%' }}>
-          <div style={{ width: '200px' }} >
+          <div style={{ width: '200px' }}>
             <img src='/static/login/login_logo.png' />
           </div>
           <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
@@ -1046,7 +1059,7 @@ class PrescriptionScreen extends Component {
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
         <div style={{ display: 'flex', width: '100%' }}>
-          <div style={{ width: '200px' }} >
+          <div style={{ width: '200px' }}>
             <img src='/static/login/login_logo.png' />
           </div>
           <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
@@ -1109,7 +1122,9 @@ class PrescriptionScreen extends Component {
             )
           })}
           <div style={{ ...patientInfoRow, margin: '30px' }}>
-            <div style={patientInforRowItem} >共{info.amount || ''}剂 {info.frequency_name || ''} {info.route_administration_name || ''}</div>
+            <div style={patientInforRowItem}>
+              共{info.amount || ''}剂 {info.frequency_name || ''} {info.route_administration_name || ''}
+            </div>
           </div>
         </div>
         <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
@@ -2165,6 +2180,7 @@ export default connect(
     PrescriptionChinesePatientModelList,
     queryReceiveRecords,
     GetLastBodySign,
-    PatientGetByID
+    PatientGetByID,
+    PrescriptionChinesePatientDelete
   }
 )(PrescriptionScreen)
