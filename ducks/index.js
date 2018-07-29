@@ -77,7 +77,7 @@ import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, Prescrip
 import { frequencies, queryFrequencyList } from './frequencys'
 import { routeAdministrationss, queryRouteAdministrationList } from './route_administrations'
 import { doseForms, queryDoseFormList } from './dose_form'
-import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet } from './prescription_chinese_patient'
+import { prescriptionChinesePatients, PrescriptionChinesePatientCreate, PrescriptionChinesePatientGet, PrescriptionChinesePatientDelete } from './prescription_chinese_patient'
 import { cuvetteColors, queryCuvetteColorList } from './cuvette_color'
 import { laboratorySamples, queryLaboratorySampleList } from './laboratory_sample'
 import { laboratoryItems, queryLaboratoryItemList, laboratoryItemCreate, LaboratoryItemUpdate, LaboratoryItemOnOff, LaboratoryItemDetail, queryLaboItemsList } from './laboratory_item'
@@ -484,5 +484,6 @@ export {
   MedicalRecordRenew,
   MedicalRecordRenewUpdate,
   MedicalRecordRenewDelete,
+  PrescriptionChinesePatientDelete,
   RoleDelete
 }

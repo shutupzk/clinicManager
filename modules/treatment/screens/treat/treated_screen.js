@@ -65,7 +65,7 @@ class TreatedScreen extends Component {
                     }}>{patient.patient_name}</span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
-                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>检查中</span>
+                    <span style={{ color: '#31B0B3', border: '1px solid #31B0B3' }}>已治疗</span>
                   </div>
                   <div className={'itemCenter'}>
                     <span>

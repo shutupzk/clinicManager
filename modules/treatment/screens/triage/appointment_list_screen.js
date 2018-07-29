@@ -22,6 +22,7 @@ class AppointmentListScreen extends Component {
   componentDidMount() {
     this.queryDepartmentList({ limit: 100 })
     this.queryDoctorsList({ limit: 100, personnel_type: 2 })
+    this.queryAppointmentsByDate({})
   }
   queryDoctorsList({ keyword, limit = 100, department_id }) {
     const { queryDoctorList, clinic_id } = this.props
