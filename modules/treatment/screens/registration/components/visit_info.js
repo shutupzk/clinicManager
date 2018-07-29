@@ -749,8 +749,8 @@ class VisitInfoScreen extends Component {
                         <td>{item.department_name}</td>
                         <td>{item.doctor_name}</td>
                         <td>{}</td>
-                        <td>{item.chief_complaint}</td>
-                        <td>{item.diagnosis}</td>
+                        <td title={item.chief_complaint}>{item.chief_complaint}</td>
+                        <td title={item.diagnosis}>{item.diagnosis}</td>
                         <td style={{ flex: 2 }} className={'operTd'}>
                           <div>
                             <div
@@ -1081,7 +1081,8 @@ class VisitInfoScreen extends Component {
           .detailDiv > div {
             margin: 0 20px 0 20px;
             margin-bottom: 5px;
-            width: 100%;
+            // width: 100%;
+            width: auto;
             display: flex;
           }
           .detailDiv > div > div {
