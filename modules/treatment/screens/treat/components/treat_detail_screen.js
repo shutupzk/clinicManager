@@ -353,12 +353,12 @@ class TreatDetailScreen extends Component {
     if (error) {
       return this.refs.myAlert.alert('保存失败', error, null, 'Danger')
     } else {
-      this.refs.myAlert.alert('保存成功')
       let treatments = await TreatmentTriageList({ clinic_triage_patient_id, order_status })
       if (treatments.length === 0) {
         this.props.back2List()
       } else {
         this.setState({ treatments })
+        this.refs.myAlert.alert('保存成功')
       }
     }
   }
