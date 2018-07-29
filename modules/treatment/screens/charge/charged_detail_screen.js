@@ -99,7 +99,7 @@ class ChargedDetailScreen extends Component {
       typeMap[item.charge_project_type_id] = formatMoney(item.type_charge_total)
     }
 
-    let payMethodMap = { 1: '银行卡', 2: '支付宝', 3: '微信', 4: '现金' }
+    let payMethodMap = { 1: '支付宝', 2: '微信', 3: '银行卡', 4: '现金' }
 
     return (
       <div className={'detailBox'}>
@@ -128,10 +128,10 @@ class ChargedDetailScreen extends Component {
             <li>代金券：{formatMoney(paid_orders_page.voucher_money)}元</li>
             <li />
             <li />
-            <li>缴费时间：{moment(paid_orders_page.updated_time).format('YYYY-MM-DD HH:mm:ss')}</li>
-            <li>订单号：{paid_orders_page.out_trade_no}</li>
-            <li>支付方式：{payMethodMap[paid_orders_page.pay_method_code]}</li>
-            <li>第三方订单号：{paid_orders_page.trade_no}</li>
+            <li style={{ width: '25%' }}>缴费时间：{moment(paid_orders_page.updated_time).format('YYYY-MM-DD HH:mm:ss')}</li>
+            <li style={{ width: '25%' }}>订单号：{paid_orders_page.out_trade_no}</li>
+            <li style={{ width: '20%' }}>支付方式：{payMethodMap[paid_orders_page.pay_method_code]}</li>
+            <li style={{ width: '30%' }}>第三方订单号：{paid_orders_page.trade_no}</li>
           </ul>
         </div>
         <div className={'toatalFeeBox'}>
@@ -151,7 +151,7 @@ class ChargedDetailScreen extends Component {
           <ul>
             <li>
               <div>序号</div>
-              <div style={{flex: 3}}>收费名称</div>
+              <div style={{ flex: 3 }}>收费名称</div>
               <div>单价</div>
               <div>数量</div>
               <div>金额</div>
@@ -164,7 +164,7 @@ class ChargedDetailScreen extends Component {
               return (
                 <li key={iKey}>
                   <div>{iKey + 1}</div>
-                  <div style={{flex: 3}}>{item.name}</div>
+                  <div style={{ flex: 3 }}>{item.name}</div>
                   <div>{formatMoney(item.price)}</div>
                   <div>{item.amount}</div>
                   <div>{formatMoney(item.total)}</div>
@@ -412,4 +412,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryPaidOrders, createPayment })(ChargedDetailScreen)
+export default connect(
+  mapStateToProps,
+  { queryPaidOrders, createPayment }
+)(ChargedDetailScreen)
