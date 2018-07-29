@@ -239,7 +239,8 @@ export const createPayment = ({
   orders_ids,
   operation_id,
   pay_method_code,
-  balance_money
+  balance_money,
+  auth_code
 }) => async dispatch => {
   try {
     const data = await request('/charge/payment/create', {
@@ -253,9 +254,23 @@ export const createPayment = ({
       orders_ids,
       operation_id,
       pay_method_code,
-      balance_money
+      balance_money,
+      auth_code
     })
     return data
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const queryPaymentStatus = ({ out_trade_no }) => async dispatch => {
+  try {
+    const data = await request('/charge/payment/query', {
+      out_trade_no
+    })
+    if (data.code === '200') return data.data
+    return null
   } catch (e) {
     console.log(e)
     return null

@@ -109,7 +109,6 @@ export const DrugRetailRefund = ({ out_trade_no, items, operation_id }) => async
 export const DrugRetailPaymentStatus = ({ out_trade_no }) => async dispatch => {
   try {
     const data = await request('/drugRetail/payment/status', { out_trade_no })
-    console.log(data)
     if (data.code === '200') return data.data
     return null
   } catch (e) {
