@@ -49,6 +49,26 @@ export const PrescriptionChinesePatientCreate = ({
   }
 }
 
+export const PrescriptionChinesePatientDelete = ({
+  id,
+  clinic_triage_patient_id,
+  personnel_id
+}) => async dispatch => {
+  try {
+    const data = await request('/triage/PrescriptionChinesePatientDelete', {
+      id,
+      clinic_triage_patient_id,
+      personnel_id
+    })
+    console.log('data ======', data)
+    if (data.code !== '200') return { error: data.msg }
+    return { id: data.data }
+  } catch (e) {
+    console.log(e)
+    return { error: e.message }
+  }
+}
+
 export const PrescriptionChinesePatientGet = ({ clinic_triage_patient_id }) => async dispatch => {
   try {
     const data = await request('/triage/PrescriptionChinesePatientGet', {
