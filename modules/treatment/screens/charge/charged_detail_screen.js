@@ -89,6 +89,11 @@ class ChargedDetailScreen extends Component {
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
+              {/* {refundStatus && (
+                <div>
+                  <input type={'checkbox'} checked={allSelect} onChange={() => this.changeAllSelect()} />
+                </div>
+              )} */}
               <div>序号</div>
               <div style={{ flex: 3 }}>收费名称</div>
               <div>单价</div>
@@ -102,6 +107,7 @@ class ChargedDetailScreen extends Component {
             {paid_orders.map((item, iKey) => {
               return (
                 <li key={iKey}>
+                  {/* {refundStatus && <div>{item.amount > 0 && <input type={'checkbox'} checked={checked} onChange={() => this.checkItem(item.record_id, checked, item.amount)} />}</div>} */}
                   <div>{iKey + 1}</div>
                   <div style={{ flex: 3 }}>{item.name}</div>
                   <div>{formatMoney(item.price)}</div>
@@ -124,8 +130,11 @@ class ChargedDetailScreen extends Component {
             this.props.queryPaidOrders({ mz_paid_record_id: this.props.charge_paid_triage_selectId, offset, limit })
           }}
         />
+        <div className={'feeScheduleBottom'} style={{ color: 'red' }}>
+          {refundStatus && '注：如原收费单据含有优惠，则退费时只可全额退药退款。'}
+        </div>
         <div className={'feeScheduleBottom'}>
-          <button>打印</button>
+          {!refundStatus ? <button>打印</button> : <button onClick={() => this.setState({ refundStatus: false })}>取消</button>}
           {!refundStatus ? <button onClick={() => this.setState({ refundStatus: true })}>退费</button> : <button onClick={() => this.submit()}>确定</button>}
         </div>
         <style jsx='true'>{`
