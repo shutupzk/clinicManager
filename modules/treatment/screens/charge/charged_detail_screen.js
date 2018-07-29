@@ -1,75 +1,16 @@
 import React, { Component } from 'react'
-import Router from 'next/router'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { getAgeByBirthday, formatMoney, createTradeNo, limitMoney } from '../../../../utils'
-import { queryPaidOrders, createPayment } from '../../../../ducks'
-import { PageCard, Confirm } from '../../../../components'
+import { getAgeByBirthday, formatMoney } from '../../../../utils'
+import { queryPaidOrders } from '../../../../ducks'
+import { PageCard } from '../../../../components'
 
 class ChargedDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 1,
-      yb_check: false, // 医保
-      gz_check: false, // 挂账
-      jf_check: false, // 积分
-      djq_check: false, // 抵金券
-      pay_method: 4, // 支付方式,默认现金
-      selectType: 0,
-      discount: '', //  折扣
-      derate: '', // 减免金额
-      bonus_points_money: '', // 抵金券
-      on_credit_money: '', // 挂账
-      medical_money: '', // 医保金额
-      voucher_money: '', // 抵金券
-      charge_money: '' // 收费金额
+      refundStatus: false // 退费状态
     }
-  }
-  async submit() {
-    const { un_paid_orders_page, un_paid_orders_ids, charge_unpay_selectId, createPayment, operation_id } = this.props
-    const { pay_method } = this.state
-    let { selectType, discount, derate, bonus_points_money, on_credit_money, medical_money, voucher_money, charge_money } = this.state
-    let derate_money = selectType === 2 && derate ? Math.round(derate * 100) : 0
-    let discount_money = selectType === 1 && discount ? Math.round(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
-    let bonus_points_money_int = Math.round(bonus_points_money * 100)
-    let on_credit_money_int = Math.round(on_credit_money * 100)
-    let medical_money_int = Math.round(medical_money * 100)
-    let voucher_money_int = Math.round(voucher_money * 100)
-    let charge_money_int = charge_money ? Math.round(charge_money * 100) : 0
-    let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
-    if (charge_money_int < should_money) {
-      return this.refs.myAlert.alert('提交失败', '收费金额小于应收金额，请检查后重新提交！', '', 'Warning')
-    }
-
-    this.refs.myAlert.confirm('确定缴费？', '', 'Success', async () => {
-      let res = await createPayment({
-        discount_money: discount_money,
-        derate_money: derate_money,
-        medical_money: medical_money_int,
-        on_credit_money: on_credit_money_int,
-        voucher_money: voucher_money_int,
-        bonus_points_money: bonus_points_money_int,
-        clinic_triage_patient_id: charge_unpay_selectId,
-        orders_ids: un_paid_orders_ids,
-        operation_id,
-        pay_method_code: pay_method,
-        balance_money: should_money
-      })
-      if (res && res.code === '200') {
-        this.refs.myAlert.alert(`提交成功！`, '创建缴费单成功！')
-      } else if (res && res.code === '300') {
-        this.refs.myAlert.alert(`提交成功！`, '支付方式为现金或缴费金额为0，直接缴费！', async () => {
-          Router.push('/treatment/charge')
-        })
-      } else {
-        let msg = (res && res.msg) || '未知错误'
-        this.refs.myAlert.alert(`提交失败！`, msg, null, 'Warning')
-      }
-    })
-  }
-  back() {
-    Router.push('/treatment')
   }
 
   componentDidMount() {
@@ -77,21 +18,19 @@ class ChargedDetailScreen extends Component {
     queryPaidOrders({ mz_paid_record_id: charge_paid_triage_selectId })
   }
 
-  // 改变显示内容
-  changeContent({ type }) {
-    this.setState({ pageType: type })
+  submit() {
+    console.log('提交')
   }
+
   // 费用详情
   renderFeeDetails() {
-    if (this.state.pageType !== 1) return ''
-
     const { charge_paid_triage, charge_paid_triage_selectId, paid_orders, paid_orders_page, paid_orders_type } = this.props
+    const { refundStatus } = this.state
     let triagePatient = {}
     for (let tp of charge_paid_triage) {
       if (tp.mz_paid_record_id === charge_paid_triage_selectId) triagePatient = tp
     }
     const { birthday, patient_name, phone, visit_date, sex } = triagePatient
-
     const { charge_total, discount_total, charge_total_fee, total, offset, limit } = paid_orders_page
 
     let typeMap = {}
@@ -187,7 +126,7 @@ class ChargedDetailScreen extends Component {
         />
         <div className={'feeScheduleBottom'}>
           <button>打印</button>
-          <button>退费</button>
+          {!refundStatus ? <button onClick={() => this.setState({ refundStatus: true })}>退费</button> : <button onClick={() => this.submit()}>确定</button>}
         </div>
         <style jsx='true'>{`
           .filterBox {
@@ -207,196 +146,8 @@ class ChargedDetailScreen extends Component {
     )
   }
 
-  // 结账
-  renderBill() {
-    if (this.state.pageType !== 2) return ''
-
-    const { un_paid_orders_page, charge_unpay, charge_unpay_selectId, clinic_id } = this.props
-    let triagePatient = {}
-    for (let tp of charge_unpay) {
-      if (tp.clinic_triage_patient_id === charge_unpay_selectId) triagePatient = tp
-    }
-
-    const tradeNo = clinic_id + createTradeNo()
-    const orderTime = moment().format('YYYY-MM-DD HH:mm:ss')
-
-    let { selectType, discount, derate, bonus_points_money, on_credit_money, medical_money, voucher_money } = this.state
-    let derate_money = selectType === 2 && derate ? Math.round(derate * 100) : 0
-    let discount_money = selectType === 1 && discount ? Math.round(un_paid_orders_page.charge_total_fee * ((100 - discount) / 100)) : 0
-    let bonus_points_money_int = Math.round(bonus_points_money * 100)
-    let on_credit_money_int = Math.round(on_credit_money * 100)
-    let medical_money_int = Math.round(medical_money * 100)
-    let voucher_money_int = Math.round(voucher_money * 100)
-
-    let should_money = un_paid_orders_page.charge_total_fee - derate_money - discount_money - bonus_points_money_int - on_credit_money_int - medical_money_int - voucher_money_int
-
-    return (
-      <div className={'detailBox'}>
-        <div className={'detailBoxTop'}>
-          <div className={'topLeft'}>
-            <div>
-              <b>{formatMoney(un_paid_orders_page.charge_total_fee)}</b>
-              <a>元</a>
-            </div>
-            <div>应收金额</div>
-          </div>
-          <div className={'topRight'}>
-            <div>业务类型：门诊缴费</div>
-            <div>订单号：{tradeNo}</div>
-            <div>下单日期：{orderTime}</div>
-            <div>就诊日期：{moment(triagePatient.visit_date).format('YYYY-MM-DD')}</div>
-            <div>就诊人姓名：{triagePatient.patient_name}</div>
-            <div>接诊医生：{triagePatient.doctor_name}</div>
-            <div>接诊科室：{triagePatient.department_name}</div>
-          </div>
-        </div>
-        <div className={'detailBoxCenter'}>
-          <ul>
-            <li>
-              <label>
-                <input type='radio' name='radio' checked={this.state.selectType === 1} onClick={() => this.selectType(1)} />
-                是否有折扣
-              </label>
-              <div>
-                <input type='text' disabled={this.state.selectType !== 1} value={this.state.discount} onChange={e => this.setDiscount(e.target.value)} />%
-              </div>
-            </li>
-            <li>
-              <label>
-                <input type='radio' name='radio' checked={this.state.selectType === 2} onClick={() => this.selectType(2)} />
-                是否有减免
-              </label>
-              <div>
-                <input type='text' disabled={this.state.selectType !== 2} value={this.state.derate} onChange={e => this.setDerate(e.target.value)} />元
-              </div>
-            </li>
-            <li>
-              <label>
-                <input type='checkbox' checked={this.state.yb_check} onClick={() => this.setCheck(1)} />
-                医保支付
-              </label>
-              <div>
-                <input
-                  type='text'
-                  value={this.state.medical_money}
-                  disabled={!this.state.yb_check}
-                  onChange={e => {
-                    this.setState({ medical_money: limitMoney(e.target.value) })
-                  }}
-                />元
-              </div>
-            </li>
-            <li>
-              <label>
-                <input type='checkbox' checked={this.state.gz_check} onClick={() => this.setCheck(2)} />
-                挂账金额
-              </label>
-              <div>
-                <input
-                  type='text'
-                  value={this.state.on_credit_money}
-                  disabled={!this.state.gz_check}
-                  onChange={e => {
-                    this.setState({ on_credit_money: limitMoney(e.target.value) })
-                  }}
-                />元
-              </div>
-            </li>
-            <li>
-              <label>
-                <input type='checkbox' checked={this.state.jf_check} onClick={() => this.setCheck(3)} />
-                积分
-              </label>
-              <div>
-                <input
-                  type='text'
-                  value={this.state.bonus_points_money}
-                  disabled={!this.state.jf_check}
-                  onChange={e => {
-                    this.setState({ bonus_points_money: limitMoney(e.target.value) })
-                  }}
-                />元
-              </div>
-            </li>
-            <li>
-              <label>
-                <input type='checkbox' checked={this.state.djq_check} onClick={() => this.setCheck(4)} />
-                抵金券
-              </label>
-              <div>
-                <input
-                  type='text'
-                  value={this.state.voucher_money}
-                  disabled={!this.state.djq_check}
-                  onChange={e => {
-                    this.setState({ voucher_money: limitMoney(e.target.value) })
-                  }}
-                />元
-              </div>
-            </li>
-          </ul>
-          <div className={'checkoutPay'}>
-            <span>还需支付 {formatMoney(should_money)} 元</span>
-            <div className={'payType'}>
-              <button className={this.state.pay_method === 1 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 1 })}>
-                支付宝
-              </button>
-              <button className={this.state.pay_method === 2 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 2 })}>
-                微信
-              </button>
-              <button className={this.state.pay_method === 3 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 3 })}>
-                银行卡
-              </button>
-              <button className={this.state.pay_method === 4 ? 'sel' : ''} onClick={() => this.setState({ pay_method: 4 })}>
-                现金
-              </button>
-            </div>
-            <div className={'receipt'}>
-              <div>
-                <label>实际收款</label>
-                <input type='text' value={this.state.charge_money} onChange={e => this.setState({ charge_money: limitMoney(e.target.value) })} />
-              </div>
-              <div>
-                <label>找零</label>
-                <input type='text' disabled value={this.state.charge_money ? formatMoney(Math.round(this.state.charge_money * 100) - should_money) : ''} />
-              </div>
-            </div>
-            <div className={'bottomBtn'}>
-              <button style={{ float: 'left' }} onClick={() => this.setState({ pageType: 1 })}>
-                返回筛查收费项目
-              </button>
-              <button style={{ float: 'right' }} onClick={() => this.submit()}>
-                确定收费
-              </button>
-            </div>
-          </div>
-        </div>
-        <Confirm ref='myAlert' />
-        <style jsx='true'>{`
-          .filterBox {
-            margin: 20px 0 0 65px;
-            display: flex;
-            line-height: 60px;
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(102, 102, 102, 1);
-            min-height: 60px;
-          }
-          .filterBox div {
-            flex: 1;
-            text-align: center;
-          }
-        `}</style>
-      </div>
-    )
-  }
   render() {
-    return (
-      <div>
-        {this.renderFeeDetails()}
-        {this.renderBill()}
-      </div>
-    )
+    return <div>{this.renderFeeDetails()}</div>
   }
 }
 
@@ -414,5 +165,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryPaidOrders, createPayment }
+  { queryPaidOrders }
 )(ChargedDetailScreen)
