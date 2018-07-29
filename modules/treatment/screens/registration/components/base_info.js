@@ -374,9 +374,9 @@ class BaseInfoScreen extends Component {
             <li style={{ width: '99%' }}>
               <label>接种疫苗</label>
               <textarea
-                value={preMedicalRecords.vaccination || ''}
+                value={preMedicalRecords.immunizations || ''}
                 onChange={e => {
-                  this.setPreMedicalRecords(e, 'vaccination')
+                  this.setPreMedicalRecords(e, 'immunizations')
                 }}
               />
             </li>

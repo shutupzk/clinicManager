@@ -530,9 +530,9 @@ export default class CompleteHealth extends Component {
               <textarea
                 style={{ height: '35px' }}
                 placeholder='请填写接种疫苗'
-                value={preMedicalRecords.vaccination || ''}
+                value={preMedicalRecords.immunizations || ''}
                 onChange={e => {
-                  this.setPreMedicalRecords(e, 'vaccination')
+                  this.setPreMedicalRecords(e, 'immunizations')
                 }}
               />
             </li>
