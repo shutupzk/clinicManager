@@ -3,12 +3,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Router from 'next/router'
 import {
-  examinationModelList,
+  examinationReportList,
   queryDoctorList,
-  ExaminationPatientModelDelete
+  ExaminationReportModelDelete
 } from '../../../../ducks'
 import { PageCard, Select, Confirm } from '../../../../components'
-import AddExaminationModelScreen from './components/addExaminationModelScreen'
+import AddExaminationReportModelScreen from './components/addExaminationReportModelScreen'
 import moment from 'moment'
 
 class CheckReportTemplateScreen extends Component {
@@ -25,7 +25,7 @@ class CheckReportTemplateScreen extends Component {
       relateItem: {},
       alertType: 0,
       showWay: 1,
-      examination_patient_model_id: ''
+      selModel: {}
     }
   }
 
@@ -33,14 +33,14 @@ class CheckReportTemplateScreen extends Component {
     this.getDataList({ offset: 0, limit: 10 })
   }
   showView() {
-    let { pageType, showWay, examination_patient_model_id } = this.state
+    let { pageType, showWay, selModel } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddExaminationModelScreen
+      2: <AddExaminationReportModelScreen
         drugType={1}
         showWay={showWay}
-        examination_patient_model_id={examination_patient_model_id}
-        backToList={() => {
+        selModel={selModel}
+        back2List={() => {
           this.setState({pageType: 1})
           this.getDataList({offset: 0, limit: 10})
         }} />
@@ -49,7 +49,7 @@ class CheckReportTemplateScreen extends Component {
   }
   // 获取药品列表
   getDataList({ offset = 0, limit = 10 }) {
-    const {clinic_id, examinationModelList} = this.props
+    const {clinic_id, examinationReportList} = this.props
     const {is_common, keyword, operation_id} = this.state
     let requestData = {
       clinic_id,
@@ -64,7 +64,7 @@ class CheckReportTemplateScreen extends Component {
       requestData.operation_id = operation_id
     }
     // console.log('requestData======', requestData)
-    examinationModelList(requestData, true)
+    examinationReportList(requestData, true)
   }
   // 状态筛选
   getStatusOptions() {
@@ -136,7 +136,7 @@ class CheckReportTemplateScreen extends Component {
                 }}
               />
             </div>
-            <div style={{width: '120px', marginLeft: '10px'}}>
+            {/* <div style={{width: '120px', marginLeft: '10px'}}>
               <Select
                 placeholder={'模板类型'}
                 height={32}
@@ -145,7 +145,7 @@ class CheckReportTemplateScreen extends Component {
                   this.setState({is_common: value})
                 }}
               />
-            </div>
+            </div> */}
             <button onClick={() => { this.getDataList({offset: 0, limit: 10}) }}>查询</button>
           </div>
           <div className={'rightTopFilterRight'}>
@@ -241,28 +241,28 @@ class CheckReportTemplateScreen extends Component {
   }
   // 加载表格
   renderTable() {
-    const { examinationModels, pageInfo } = this.props
-    console.log('examinationModels=====', examinationModels)
+    const { examinationReportModels, pageInfo } = this.props
+    console.log('examinationReportModels=====', examinationReportModels)
     return (
       <div className={'tableContent'}>
         <table>
           <thead>
             <tr>
               <td style={{flex: 2}}>模板名称</td>
-              <td style={{flex: 2}}>检查项目</td>
-              <td>模板类型</td>
+              <td style={{flex: 2}}>描述</td>
+              <td style={{flex: 2}}>结论</td>
               <td style={{flex: 2}}>创建时间</td>
               <td>创建人员</td>
               <td style={{flex: 2}}>操作</td>
             </tr>
           </thead>
           <tbody>
-            {examinationModels.map((item, index) => {
+            {examinationReportModels.map((item, index) => {
               return (
                 <tr key={index}>
                   <td style={{flex: 2}}>{item.model_name}</td>
-                  <td style={{flex: 2}}>{item.items.length > 0 ? this.itemsDetail(item.items) : ''}</td>
-                  <td>{item.is_common ? '通用' : '个人'}</td>
+                  <td style={{flex: 2}}><div>{item.conclusion_examination}</div></td>
+                  <td style={{flex: 2}}><div>{item.result_examination}</div></td>
                   <td style={{flex: 2}}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
                   <td>{item.operation_name}</td>
                   <td style={{flex: 2}} className={'operTd'}>
@@ -270,13 +270,13 @@ class CheckReportTemplateScreen extends Component {
                       <div onClick={() => {
                         this.setState({
                           pageType: 2,
-                          examination_patient_model_id: item.examination_patient_model_id,
+                          selModel: item,
                           showWay: 2
                         })
                       }}>修改</div>
                       <div className={'divideLine'}>|</div>
                       <div onClick={() => {
-                        this.ExaminationPatientModelDelete(item.examination_patient_model_id)
+                        this.ExaminationReportModelDelete(item.examination_report_model_id)
                       }}>删除</div>
                     </div>
                   </td>
@@ -310,24 +310,25 @@ class CheckReportTemplateScreen extends Component {
             box-shadow: 1px 1px 0px 0px rgba(232,232,232,1) 
           }
           .tableContent table tr{
-            height:40px; 
+            height:auto; 
             display: flex;
             border-bottom:1px solid #e8e8e8;
             border-right:1px solid #e8e8e8;
-            align-items: center;
+            // align-items: center;
           }
           .tableContent table tr td{
             border-left:1px solid #e8e8e8;
-            height:40px; 
+            height:auto; 
             // display: flex;
             align-items: center;
             flex:1;
+            display: flex;
             justify-content: center;
             line-height: 40px;
             text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
           }
           .operTd>div{
             margin:0 auto;
@@ -348,15 +349,15 @@ class CheckReportTemplateScreen extends Component {
     )
   }
   // 删除
-  ExaminationPatientModelDelete(examination_patient_model_id) {
-    const {ExaminationPatientModelDelete, pageInfo, examinationModels} = this.props
+  ExaminationReportModelDelete(examination_report_model_id) {
+    const {ExaminationReportModelDelete, pageInfo, examinationReportModels} = this.props
     this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
-      let error = await ExaminationPatientModelDelete({examination_patient_model_id})
+      let error = await ExaminationReportModelDelete({examination_report_model_id})
       if (error) {
         return this.refs.myAlert.alert('删除失败', error)
       } else {
         this.refs.myAlert.alert('删除成功')
-        if (examinationModels.length > 1) {
+        if (examinationReportModels.length > 1) {
           this.getDataList({ offset: pageInfo.offset, limit: 10 })
         } else if (pageInfo.offset > 0) {
           this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
@@ -380,15 +381,14 @@ class CheckReportTemplateScreen extends Component {
     )
   }
   render() {
-    const {pageType, alertType} = this.state
+    const {pageType} = this.state
     return (
       <div className={'boxContent'}>
         <div className={'topTitle'}>
-          <span>检查模板</span>
+          <span>检查报告模板</span>
           {pageType === 1 ? '' : <div className='back2List' onClick={() => this.setState({pageType: 1})}>{'<返回'}</div>}
         </div>
         {pageType === 1 ? this.renderList() : this.showView()}
-        {alertType === 1 ? this.relatedItems() : ''}
         <style jsx='true'>{`
           .boxContent{
             // background:#909090;
@@ -423,14 +423,14 @@ class CheckReportTemplateScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    examinationModels: state.examinationModels.data,
-    pageInfo: state.examinationModels.page_info,
+    examinationReportModels: state.examinationReportModels.data,
+    pageInfo: state.examinationReportModels.page_info,
     doctors: state.doctors.data
   }
 }
 
 export default connect(mapStateToProps, {
-  examinationModelList,
+  examinationReportList,
   queryDoctorList,
-  ExaminationPatientModelDelete
+  ExaminationReportModelDelete
 })(CheckReportTemplateScreen)
