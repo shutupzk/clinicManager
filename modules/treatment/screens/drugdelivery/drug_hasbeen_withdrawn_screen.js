@@ -59,7 +59,7 @@ class DrugHasBeenWithdrawnScreen extends Component {
                   <div className={'itemCenter'}>
                     <span>
                       <a>病人ID：</a>
-                      <a>{patient.cert_no}</a>
+                      <a>{patient.patient_id}</a>
                     </span>
                     <span>
                       <a>接诊科室：</a>

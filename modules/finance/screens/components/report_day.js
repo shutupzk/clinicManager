@@ -43,7 +43,6 @@ class ReportDayScreen extends Component {
   // 按业务类型
   showTypeContent() {
     const { finances, finances_page } = this.props
-    console.log('finances====', finances)
     return (
       <div>
         <div className={'feeScheduleBox'}>
@@ -89,7 +88,7 @@ class ReportDayScreen extends Component {
               return (
                 <li key={iKey}>
                   <div>{patientname}</div>
-                  <div>{item.clinic_patient_id}</div>
+                  <div>{item.patient_id}</div>
                   <div>{formatMoney(item.total_money)}</div>
                   <div>{formatMoney(item.traditional_medical_fee)}</div>
                   <div>{formatMoney(item.western_medicine_fee)}</div>
@@ -182,7 +181,7 @@ class ReportDayScreen extends Component {
               return (
                 <li key={iKey}>
                   <div>{patientname}</div>
-                  <div>{item.clinic_patient_id}</div>
+                  <div>{item.patient_id}</div>
                   <div>{formatMoney(item.total_money)}</div>
                   <div>{formatMoney(item.balance_money)}</div>
                   <div>{formatMoney(item.cash)}</div>

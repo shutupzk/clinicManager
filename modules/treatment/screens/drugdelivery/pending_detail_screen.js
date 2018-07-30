@@ -149,7 +149,7 @@ class PendingDetailDrugScreen extends Component {
           <div style={{ flex: 2 }}>就诊人姓名：{patient_name}</div>
           <div style={{ flex: 1 }}>性别：{sex === 1 ? '男' : '女'}</div>
           <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(birthday)}</div>
-          <div style={{ flex: 2 }}>病人ID：{triagePatient.cert_no}</div>
+          <div style={{ flex: 2 }}>病人ID：{triagePatient.patient_id}</div>
           <div style={{ flex: 2 }}>手机号码：{phone}</div>
           <div style={{ flex: 3 }}>就诊日期：{moment(visit_date).format('YYYY年MM月DD日')}</div>
         </div>

@@ -288,7 +288,7 @@ class TreatDetailScreen extends Component {
           <div>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
         </div>
         <div>
-          <div>病人ID：{triagePatient.clinic_triage_patient_id}</div>
+          <div>病人ID：{triagePatient.patient_id}</div>
         </div>
         <div>
           <div>手机号码：{triagePatient.phone}</div>
@@ -547,8 +547,8 @@ class TreatDetailScreen extends Component {
             <div style={patientInfoRowDivStyle}>{getAgeByBirthday(triagePatient.birthday)}</div>
           </div>
           <div style={patientInfoRowStyle}>
-            <lable>病案号：</lable>
-            <div style={patientInfoRowDivStyle}>{triagePatient.clinic_triage_patient_id}</div>
+            <lable>病人ID：</lable>
+            <div style={patientInfoRowDivStyle}>{triagePatient.patient_id}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
