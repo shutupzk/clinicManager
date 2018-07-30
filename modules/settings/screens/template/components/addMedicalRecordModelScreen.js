@@ -505,6 +505,16 @@ class AddMedicalRecordModelScreen extends Component {
               />
             </li>
             <li>
+              <label>个人史</label>
+              <textarea
+                placeholder={'personal_medical_history'}
+                value={modelInfo.personal_medical_history}
+                onChange={e => {
+                  this.setItemValue(e, 'personal_medical_history')
+                }}
+              />
+            </li>
+            <li>
               <label>体格检查</label>
               <textarea
                 placeholder={'body_examination'}

@@ -101,6 +101,7 @@ export const createMedicalRecord = ({
   diagnosis,
   cure_suggestion,
   remark,
+  personal_medical_history,
   files
 }) => async dispatch => {
   try {
@@ -119,6 +120,7 @@ export const createMedicalRecord = ({
       diagnosis,
       cure_suggestion,
       remark,
+      personal_medical_history,
       files
     })
     dispatch({
@@ -137,6 +139,7 @@ export const createMedicalRecord = ({
         immunizations,
         diagnosis,
         cure_suggestion,
+        personal_medical_history,
         remark,
         files
       }
@@ -164,6 +167,7 @@ export const createMedicalRecordAsModel = ({
   diagnosis,
   cure_suggestion,
   remark,
+  personal_medical_history,
   files
 }) => async dispatch => {
   try {
@@ -182,6 +186,7 @@ export const createMedicalRecordAsModel = ({
       immunizations,
       diagnosis,
       cure_suggestion,
+      personal_medical_history,
       remark
     })
     if (data.code === '200') return null
@@ -207,6 +212,7 @@ export const MedicalRecordModelUpdate = ({
   diagnosis,
   cure_suggestion,
   remark,
+  personal_medical_history,
   files
 }) => async dispatch => {
   try {
@@ -226,6 +232,7 @@ export const MedicalRecordModelUpdate = ({
       immunizations,
       diagnosis,
       cure_suggestion,
+      personal_medical_history,
       remark
     })
     console.log('data====', data)

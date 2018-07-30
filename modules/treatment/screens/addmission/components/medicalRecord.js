@@ -27,6 +27,7 @@ class MedicalRecordScreen extends Component {
       diagnosis: '',
       cure_suggestion: '',
       remark: '',
+      personal_medical_history: '',
       files: '',
       saveAsModel: false,
       showMedicalModels: false,
@@ -63,6 +64,7 @@ class MedicalRecordScreen extends Component {
     let imgArray = []
     let diagnosisArray = []
     if (record.id) {
+      console.log('record=====', record)
       recordStr = JSON.stringify(record)
       if (record.files !== '') {
         files = JSON.parse(record.files)
@@ -154,7 +156,7 @@ class MedicalRecordScreen extends Component {
 
   showSaveModel() {
     if (!this.state.saveAsModel) return null
-    let { is_common, name, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark } = this.state
+    let { is_common, name, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, allergic_reaction, body_examination, immunizations, diagnosis, cure_suggestion, remark, personal_medical_history } = this.state
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '900px', height: '680px', left: '324px' }}>
@@ -257,6 +259,15 @@ class MedicalRecordScreen extends Component {
                   value={immunizations}
                   onChange={e => {
                     this.setState({ immunizations: e.target.value })
+                  }}
+                />
+              </li>
+              <li>
+                <label>个人史</label>
+                <input
+                  value={personal_medical_history}
+                  onChange={e => {
+                    this.setState({ personal_medical_history: e.target.value })
                   }}
                 />
               </li>
@@ -559,7 +570,7 @@ class MedicalRecordScreen extends Component {
     const { choseHistoryId } = this.state
     if (choseHistoryId !== item.id) return null
 
-    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, body_examination, immunizations, cure_suggestion, remark } = item
+    let { morbidity_date, chief_complaint, history_of_present_illness, history_of_past_illness, family_medical_history, allergic_history, body_examination, immunizations, cure_suggestion, remark, personal_medical_history } = item
     return (
       <div className='medical_detail'>
         <div className='medical_detail_item'>
@@ -589,6 +600,10 @@ class MedicalRecordScreen extends Component {
         <div className='medical_detail_item'>
           <span>疫苗接种史：</span>
           <input readOnly type='text' value={immunizations} />
+        </div>
+        <div className='medical_detail_item'>
+          <span>个人史：</span>
+          <input readOnly type='text' value={personal_medical_history} />
         </div>
         <div className='medical_detail_item'>
           <span>体格检查：</span>
@@ -1319,7 +1334,7 @@ class MedicalRecordScreen extends Component {
           </div>
           <div style={recordDetailDiv}>
             <label style={recordDetailDivLable}>个人史</label>
-            <div style={{ flex: 1 }}>{this.state.pre_medical_record.personal_medical_history}</div>
+            <div style={{ flex: 1 }}>{this.state.personal_medical_history}</div>
           </div>
           <div style={recordDetailDiv}>
             <label style={recordDetailDivLable}>家族史</label>
@@ -1365,13 +1380,15 @@ class MedicalRecordScreen extends Component {
       // diagnosis,
       cure_suggestion,
       remark,
+      // pre_medical_record,
+      personal_medical_history,
       showComplaint,
       selPage,
       diagnosisArray,
       showProgress
       // chooseDiagnosticTemplate
     } = this.state
-    // console.log('morbidity_date===', morbidity_date)
+    console.log('state===', this.state)
     const { changePage } = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
@@ -1541,7 +1558,17 @@ class MedicalRecordScreen extends Component {
                     }}
                   />
                 </li>
-                <li style={{ height: '58px' }} />
+                <li>
+                  <label>个人史</label>
+                  <input
+                    type='text'
+                    value={personal_medical_history}
+                    onChange={e => {
+                      this.setState({ personal_medical_history: e.target.value })
+                    }}
+                  />
+                </li>
+                {/* <li style={{ height: '58px' }} /> */}
                 <li style={{ width: '100%' }}>
                   <label>体格检查</label>
                   <textarea

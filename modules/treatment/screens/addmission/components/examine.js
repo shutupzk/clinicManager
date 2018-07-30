@@ -199,8 +199,28 @@ class ExamineScreen extends Component {
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
                       onClick={() => {
-                        let newArray = [...examines, ...items]
-                        this.setState({ examines: newArray, showModelList: false })
+                        // let newArray = [...examines, ...items]
+                        // this.setState({ examines: newArray, showModelList: false })
+                        let newArray = examines
+                        if (examines.length > 0) {
+                          let idArray = []
+                          for (let i = 0; i < examines.length; i++) {
+                            idArray.push(examines[i].clinic_examination_id)
+                          }
+                          for (let j = 0; j < items.length; j++) {
+                            if (idArray.indexOf(items[j].clinic_examination_id) === -1) {
+                              newArray.push(items[j])
+                              this.setState({ examines: newArray, showModelList: false })
+                            } else {
+                              this.refs.myAlert.confirm('提示', '模板中存在与已选择的检查项目相同，是否覆盖？', 'Warning', () => {
+                                this.setState({ examines: [...items], showModelList: false })
+                              })
+                            }
+                          }
+                        } else {
+                          newArray = [...items]
+                          this.setState({ examines: newArray, showModelList: false })
+                        }
                       }}
                     >
                       选择

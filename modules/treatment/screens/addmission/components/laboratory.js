@@ -309,8 +309,29 @@ class LaboratoryScreen extends Component {
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
                       onClick={() => {
-                        let newArray = [...laboratories, ...items]
-                        this.setState({ laboratories: newArray, showModelList: false })
+                        // let newArray = [...laboratories, ...items]
+                        // this.setState({ laboratories: newArray, showModelList: false })
+                        // console.log('laboratories=====', laboratories, items)
+                        let newArray = laboratories
+                        if (laboratories.length > 0) {
+                          let idArray = []
+                          for (let i = 0; i < laboratories.length; i++) {
+                            idArray.push(laboratories[i].clinic_laboratory_id)
+                          }
+                          for (let j = 0; j < items.length; j++) {
+                            if (idArray.indexOf(items[j].clinic_laboratory_id) === -1) {
+                              newArray.push(items[j])
+                              this.setState({ laboratories: newArray, showModelList: false })
+                            } else {
+                              this.refs.myAlert.confirm('提示', '模板中存在与已选择的检验项目相同，是否覆盖？', 'Warning', () => {
+                                this.setState({ laboratories: [...items], showModelList: false })
+                              })
+                            }
+                          }
+                        } else {
+                          newArray = [...items]
+                          this.setState({ laboratories: newArray, showModelList: false })
+                        }
                       }}
                     >
                       选择
