@@ -91,7 +91,7 @@ class RefundedScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>门诊ID：</a>
+                      <a>病人ID：</a>
                       <a>{patient.cert_no}</a>
                     </span>
                     <span>
@@ -162,7 +162,7 @@ class RefundedScreen extends Component {
               />
             </div>
             {/* <input type='date' placeholder='选择日期' /> */}
-            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
+            <input type='text' placeholder='搜索就诊人姓名/病人ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>
         </div>

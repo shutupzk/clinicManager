@@ -334,7 +334,8 @@ export const completePreMedicalRecord = ({
   menstrual_cycle_end_day,
   menstrual_last_day,
   gestational_weeks,
-  childbearing_history
+  childbearing_history,
+  allergic_reaction
 }) => async dispatch => {
   try {
     const data = await request('/triage/completePreMedicalRecord', {
@@ -351,7 +352,8 @@ export const completePreMedicalRecord = ({
       menstrual_cycle_end_day,
       menstrual_last_day,
       gestational_weeks,
-      childbearing_history
+      childbearing_history,
+      allergic_reaction
     })
     if (data.code !== '200') return data.msg
     return null

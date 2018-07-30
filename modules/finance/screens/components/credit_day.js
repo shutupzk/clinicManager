@@ -49,7 +49,7 @@ class CreditDayScreen extends Component {
           <ul>
             <li>
               <div>就诊人姓名</div>
-              <div>就诊id</div>
+              <div>病人ID</div>
               <div>性别</div>
               <div>手机号码</div>
               <div>类型</div>

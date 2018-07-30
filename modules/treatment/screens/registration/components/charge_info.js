@@ -192,7 +192,7 @@ class ChargeInfoScreen extends Component {
               <div style={{ flex: 2 }}>就诊人姓名：{name}</div>
               <div style={{ flex: 1 }}>性别：{sex === 1 ? '男' : '女'}</div>
               <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(birthday)}</div>
-              {/* <div style={{ flex: 2 }}>就诊ID：{cert_no}</div> */}
+              {/* <div style={{ flex: 2 }}>病人ID：{cert_no}</div> */}
               <div style={{ flex: 2 }}>手机号码：{phone}</div>
               <div style={{ flex: 3 }}>就诊日期：{moment(selectItem.visit_date).format('YYYY年MM月DD日')}</div>
             </div>
@@ -299,7 +299,7 @@ class ChargeInfoScreen extends Component {
           <div>就诊人姓名：{patientInfo.name}</div>
           <div style={{ flex: 1 }}>性别：{patientInfo.sex === 0 ? '女' : '男'}</div>
           <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
-          <div>就诊ID：</div>
+          <div>病人ID：</div>
           <div>手机号码：{patientInfo.phone}</div>
         </div>
         <div className={'blankBox'}>{this.renderChargeList()}</div>

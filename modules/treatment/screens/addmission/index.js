@@ -132,7 +132,7 @@ class AddmisionScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>门诊ID：</a>
+                      <a>病人ID：</a>
                       <a>{patient.clinic_triage_patient_id}</a>
                     </span>
                     <span>

@@ -371,7 +371,7 @@ class LaboraDetailScreen extends Component {
           <div>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
         </div>
         <div>
-          <div>就诊ID：{triagePatient.clinic_triage_patient_id}</div>
+          <div>病人ID：{triagePatient.clinic_triage_patient_id}</div>
         </div>
         <div>
           <div>手机号码：{triagePatient.phone}</div>

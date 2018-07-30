@@ -242,7 +242,7 @@ class PatientMgtScreen extends Component {
           <input
             style={{ width: '300px' }}
             type='text'
-            placeholder={`搜索就诊人姓名/门诊ID/身份证号码/手机号码`}
+            placeholder={`搜索就诊人姓名/病人ID/身份证号码/手机号码`}
             onChange={e => {
               this.setState({ keyword: e.target.value })
             }}

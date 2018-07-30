@@ -504,6 +504,17 @@ export default class CompleteHealth extends Component {
               />
             </li>
             <li>
+              <label>过敏反应</label>
+              <textarea
+                style={{ height: '63px' }}
+                value={preMedicalRecords.allergic_reaction || ''}
+                placeholder='请填过敏反应'
+                onChange={e => {
+                  this.setPreMedicalRecords(e, 'allergic_reaction')
+                }}
+              />
+            </li>
+            <li>
               <label>个人史</label>
               <textarea
                 style={{ height: '63px' }}

@@ -271,7 +271,7 @@ class ExamReportScreen extends Component {
           <div>就诊人姓名：{patientInfo.name}</div>
           <div style={{ flex: 1 }}>性别：{patientInfo.sex === 0 ? '女' : '男'}</div>
           <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
-          <div>就诊ID：</div>
+          <div>病人ID：</div>
           <div>手机号码：{patientInfo.phone}</div>
         </div>
         <div className={'blankBox'}>{this.renderExamHistory()}</div>
@@ -298,7 +298,7 @@ class ExamReportScreen extends Component {
           <div>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
         </div>
         <div>
-          <div>就诊ID：{historyDetail.clinic_triage_patient_id}</div>
+          <div>病人ID：{historyDetail.clinic_triage_patient_id}</div>
         </div>
         <div>
           <div>手机号码：{patientInfo.phone}</div>

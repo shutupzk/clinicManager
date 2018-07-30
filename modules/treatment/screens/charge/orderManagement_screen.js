@@ -83,7 +83,7 @@ class OrderManagementScreen extends Component {
               <div>平台订单号</div>
               <div>业务类型</div>
               <div>就诊人</div>
-              <div>门诊ID</div>
+              <div>病人ID</div>
               <div>支付方式</div>
               <div>支付金额</div>
               <div>支付状态</div>
@@ -184,7 +184,7 @@ class OrderManagementScreen extends Component {
               />
             </div>
             {/* <input type='date' placeholder='选择日期' /> */}
-            <input type='text' placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码' />
+            <input type='text' placeholder='搜索就诊人姓名/病人ID/身份证号码/手机号码' />
             <button>查询</button>
           </div>
         </div>

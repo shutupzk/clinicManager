@@ -136,25 +136,9 @@ export const PersonalMedicalRecordUpsert = ({
   menstrual_last_day,
   gestational_weeks,
   childbearing_history,
+  allergic_reaction,
   remark
 }) => async dispatch => {
-  console.log('patient_id ======== ', {
-    patient_id,
-    has_allergic_history,
-    allergic_history,
-    personal_medical_history,
-    family_medical_history,
-    immunizations,
-    menarche_age,
-    menstrual_period_start_day,
-    menstrual_period_end_day,
-    menstrual_cycle_start_day,
-    menstrual_cycle_end_day,
-    menstrual_last_day,
-    gestational_weeks,
-    childbearing_history,
-    remark
-  })
   try {
     const data = await request('/patient/PersonalMedicalRecordUpsert', {
       patient_id,
@@ -171,6 +155,7 @@ export const PersonalMedicalRecordUpsert = ({
       menstrual_last_day,
       gestational_weeks,
       childbearing_history,
+      allergic_reaction,
       remark
     })
     console.log(data)

@@ -58,7 +58,7 @@ class DrugHasBeenWithdrawnScreen extends Component {
                   </div>
                   <div className={'itemCenter'}>
                     <span>
-                      <a>门诊ID：</a>
+                      <a>病人ID：</a>
                       <a>{patient.cert_no}</a>
                     </span>
                     <span>
@@ -144,7 +144,7 @@ class DrugHasBeenWithdrawnScreen extends Component {
             </div>
             <input
               type='text'
-              placeholder='搜索就诊人姓名/门诊ID/身份证号码/手机号码'
+              placeholder='搜索就诊人姓名/病人ID/身份证号码/手机号码'
               onChange={e => {
                 this.setState({ keyword: e.target.value })
               }}

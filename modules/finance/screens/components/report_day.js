@@ -50,7 +50,7 @@ class ReportDayScreen extends Component {
           <ul>
             <li>
               <div>姓名</div>
-              <div>就诊ID</div>
+              <div>病人ID</div>
               <div>费用合计</div>
               <div>中药费</div>
               <div>西/成药费</div>
@@ -139,7 +139,7 @@ class ReportDayScreen extends Component {
           <ul>
             <li>
               <div>姓名</div>
-              <div>就诊ID</div>
+              <div>病人ID</div>
               <div>费用合计</div>
               <div>实收金额</div>
               <div>现金</div>

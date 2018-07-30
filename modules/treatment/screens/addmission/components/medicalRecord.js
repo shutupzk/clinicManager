@@ -1262,7 +1262,7 @@ class MedicalRecordScreen extends Component {
             <div style={patientInfoRowDivStyle}>{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
           </div>
           <div style={patientInfoRowStyle}>
-            <lable>就诊id</lable>
+            <lable>病人ID</lable>
             <div style={patientInfoRowDivStyle}>{clinic_triage_patient_id}</div>
           </div>
         </div>
