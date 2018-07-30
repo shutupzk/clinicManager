@@ -324,7 +324,7 @@ class ExamDetailScreen extends Component {
           <div>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
         </div>
         <div>
-          <div>病人ID：{triagePatient.clinic_triage_patient_id}</div>
+          <div>病人ID：{triagePatient.patient_id}</div>
         </div>
         <div>
           <div>手机号码：{triagePatient.phone}</div>
@@ -780,7 +780,7 @@ class ExamDetailScreen extends Component {
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
             <lable>病人ID：</lable>
-            <div style={patientInfoRowDivStyle}>{data.clinic_triage_patient_id}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.patient_id}</div>
           </div>
           <div style={patientInfoRowStyle}>
             <lable>联系方式：</lable>

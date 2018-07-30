@@ -615,7 +615,7 @@ class PrescriptionScreen extends Component {
           </div>
           <div style={patientInfoRow}>
             <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
-            <div style={patientInforRowItem}>病人ID：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>病人ID：{triagePatient.patient_id}</div>
             <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
           </div>
           <div style={patientInfoRow}>
@@ -1083,7 +1083,7 @@ class PrescriptionScreen extends Component {
           </div>
           <div style={patientInfoRow}>
             <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
-            <div style={patientInforRowItem}>病人ID：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>病人ID：{triagePatient.patient_id}</div>
             <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
           </div>
           <div style={patientInfoRow}>

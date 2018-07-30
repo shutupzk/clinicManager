@@ -70,7 +70,7 @@ class TobeCheckedScreen extends Component {
                   <div className={'itemCenter'}>
                     <span>
                       <a>病人ID：</a>
-                      <a>{patient.clinic_triage_patient_id}</a>
+                      <a>{patient.patient_id}</a>
                     </span>
                     <span>
                       <a>接诊科室：</a>
@@ -149,7 +149,7 @@ class TobeCheckedScreen extends Component {
                 就诊人姓名：{selItem.patient_name}&nbsp;&nbsp;&nbsp;{selItem.sex === 0 ? '女' : '男'}
               </div>
               <div>年龄：{getAgeByBirthday(selItem.birthday)}</div>
-              <div>病人ID：{selItem.clinic_triage_patient_id} </div>
+              <div>病人ID：{selItem.patient_id} </div>
             </div>
             <div className={'centerCotent'}>
               <table>

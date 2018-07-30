@@ -1278,7 +1278,7 @@ class MedicalRecordScreen extends Component {
           </div>
           <div style={patientInfoRowStyle}>
             <lable>病人ID</lable>
-            <div style={patientInfoRowDivStyle}>{clinic_triage_patient_id}</div>
+            <div style={patientInfoRowDivStyle}>{triagePatient.patient_id}</div>
           </div>
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
