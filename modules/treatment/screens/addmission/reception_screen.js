@@ -268,8 +268,8 @@ class RecptionScreen extends Component {
             <a>{getAgeByBirthday(triagePatient.birthday)}</a>
           </div>
           <div>
-            <a>门诊ID：</a>
-            <a>{triagePatient.cert_no}</a>
+            <a>病人ID：</a>
+            <a>{triagePatient.patient_id}</a>
           </div>
           <div>
             <a>手机号：</a>

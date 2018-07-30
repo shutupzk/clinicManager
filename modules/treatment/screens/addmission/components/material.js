@@ -170,7 +170,7 @@ class MaterialScreen extends Component {
             <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
             <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
             <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
-            <div style={patientInforRowItem}>病案号：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>病人ID：{clinic_triage_patient_id}</div>
           </div>
           <div style={patientInfoRow}>
             <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>

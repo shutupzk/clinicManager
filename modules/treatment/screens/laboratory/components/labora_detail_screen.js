@@ -737,7 +737,7 @@ class LaboraDetailScreen extends Component {
         </div>
         <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
           <div style={patientInfoRowStyle}>
-            <lable>病案号：</lable>
+            <lable>病人ID：</lable>
             <div style={patientInfoRowDivStyle}>{data.clinic_triage_patient_id}</div>
           </div>
           <div style={patientInfoRowStyle}>

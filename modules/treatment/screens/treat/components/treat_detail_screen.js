@@ -547,7 +547,7 @@ class TreatDetailScreen extends Component {
             <div style={patientInfoRowDivStyle}>{getAgeByBirthday(triagePatient.birthday)}</div>
           </div>
           <div style={patientInfoRowStyle}>
-            <lable>病案号：</lable>
+            <lable>病人ID：</lable>
             <div style={patientInfoRowDivStyle}>{triagePatient.clinic_triage_patient_id}</div>
           </div>
         </div>

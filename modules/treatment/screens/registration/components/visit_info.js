@@ -169,7 +169,7 @@ class VisitInfoScreen extends Component {
           </div>
           <div style={patientInfoRow}>
             <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
-            <div style={patientInforRowItem}>病历号：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>病人ID：{patientInfo.id}</div>
             <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
           </div>
           <div style={patientInfoRow}>
@@ -262,7 +262,7 @@ class VisitInfoScreen extends Component {
           </div>
           <div style={patientInfoRow}>
             <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
-            <div style={patientInforRowItem}>病历号：{clinic_triage_patient_id}</div>
+            <div style={patientInforRowItem}>病人ID：{patientInfo.id}</div>
             <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
           </div>
           <div style={patientInfoRow}>
