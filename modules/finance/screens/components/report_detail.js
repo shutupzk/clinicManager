@@ -70,7 +70,7 @@ class ReportDetailScreen extends Component {
               <div>费用合计</div>
               <div>折后金额</div>
             </li>
-            {/* <li style={{ background: 'rgba(247,247,247,1)' }}>
+            <li style={{ background: 'rgba(247,247,247,1)' }}>
               <div style={{ flex: 2 }}>合计</div>
               <div />
               <div />
@@ -86,9 +86,9 @@ class ReportDetailScreen extends Component {
               <div />
               <div />
               <div />
-              <div>费用合计</div>
-              <div>折后金额</div>
-            </li> */}
+              <div>{formatMoney(finances_page.total_fee)}</div>
+              <div>{formatMoney(finances_page.banance_fee)}</div>
+            </li>
             {finances.map((item, iKey) => {
               let sexMap = { 1: '男', 0: '女' }
               let { charge_project_type, record_type, visit_date, name, price, total, fee, unit, amount } = item
