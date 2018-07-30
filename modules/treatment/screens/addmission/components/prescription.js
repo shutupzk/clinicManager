@@ -1344,7 +1344,7 @@ class PrescriptionScreen extends Component {
                               this.setState({ wPrescItemArray: newArray, showWmodelList: false })
                             } else {
                               this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
-                                this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                                this.setState({ wPrescItemArray: [...items], showWmodelList: false })
                               })
                             }
                           }
@@ -1610,7 +1610,7 @@ class PrescriptionScreen extends Component {
                               this.setState({ cPrescItemArray: newArray, showCmodelList: false })
                             } else {
                               this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
-                                this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                                this.setState({ cPrescItemArray: [...items], showCmodelList: false })
                               })
                             }
                           }
