@@ -241,86 +241,7 @@ class DepartmentListScreen extends Component {
             cursor: pointer;
             margin: 16px 35px;
           }
-          .contentMenu {
-            width: 100%;
-            // background: #909090;
-            float: left;
-          }
-          .contentMenu span:nth-child(1) {
-            margin: 24px 0 0 32px;
-          }
-          .contentMenu span {
-            width: 88px;
-            height: 32px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 4px;
-            float: left;
-            text-align: center;
-            line-height: 32px;
-            color: #000000;
-            cursor: pointer;
-            margin-top: 24px;
-            margin-left: 10px;
-          }
-          .contentMenu span.sel {
-            width: 100px;
-            height: 32px;
-            background: rgba(42, 205, 200, 1);
-            border-radius: 4px;
-            color: #ffffff;
-          }
-          .newList_top {
-            // background: #909090;
-            height: 34px;
-            max-width: 1146px;
-            width: 100%;
-            float: left;
-            margin: 30px 0 28px 40px;
-          }
-          .newList_top .top_left {
-            float: left;
-          }
-          .newList_top .top_left input {
-            width: 300px;
-            height: 32px;
-            background: rgba(255, 255, 255, 1);
-            border-radius: 4px;
-            padding: 0;
-            border: 1px solid #dcdcdc;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            text-indent: 10px;
-            float: left;
-          }
-          .newList_top .top_left button {
-            width: 60px;
-            height: 32px;
-            background: rgba(42, 205, 200, 1);
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            margin-left: 10px;
-            float: left;
-            font-size: 12px;
-            font-family: MicrosoftYaHei;
-            color: rgba(255, 255, 255, 1);
-          }
-          .newList_top .top_right {
-            float: right;
-          }
-          .newList_top .top_right button {
-            float: left;
-            width: 110px;
-            height: 34px;
-            background: rgba(238, 201, 6, 1);
-            border: none;
-            border-radius: 17px;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: MicrosoftYaHei;
-            color: rgba(255, 255, 255, 1);
-            margin-right: 20px;
-          }
+          
           .listContent {
             float: left;
             width: 1100px;
@@ -497,8 +418,7 @@ class DepartmentListScreen extends Component {
               </button>
             </div>
           </div>
-          <div className={'pagination'} />
-          <style jsx global>
+          <style jsx>
             {`
               .doctorList_top span:nth-child(1) {
                 font-size: 16px;

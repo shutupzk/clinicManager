@@ -17,7 +17,8 @@ import {
   TriagePatientDetail,
   GetLastBodySign,
   RecptionPatientList,
-  TriagePatientVisitDetail
+  TriagePatientVisitDetail,
+  QuickReception
 } from './triage_patients'
 import {
   patients,
@@ -495,6 +496,7 @@ export {
   PatientVisionList,
   PatientBloodSugarList,
   TriagePatientVisitDetail,
+  QuickReception,
   MedicalRecordRenew,
   MedicalRecordRenewUpdate,
   MedicalRecordRenewDelete,

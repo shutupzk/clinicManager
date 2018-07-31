@@ -262,7 +262,7 @@ class RegistrationAddScreen extends Component {
                     let newPatient = patient
                     if (date) {
                       newPatient.birthday = moment(date).format('YYYY-MM-DD')
-                      console.log('newPatient.birthday====', newPatient.birthday)
+                      // console.log('newPatient.birthday====', newPatient.birthday)
                       newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
                       this.setState({ patientInfo: newPatient })
                     }
@@ -377,7 +377,7 @@ class RegistrationAddScreen extends Component {
                   options={this.getDepartmentOptions()}
                   onChange={({ value }) => {
                     let newPatient = patient
-                    console.log('value ========== ', value)
+                    // console.log('value ========== ', value)
                     newPatient.department_id = value
                     this.setState({ patientInfo: newPatient })
                   }}

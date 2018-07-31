@@ -52,7 +52,7 @@ export default class Navigation extends Component {
             }
             let menu = getLastMenu(item)
             let navigateName = menu.menu_url
-            console.log('navigateName===', url, item.menu_url, parentUrl, itemUrl)
+            // console.log('navigateName===', url, item.menu_url, parentUrl, itemUrl)
             // onClick={() => Router.push(navigateName)}
             return (
               <div key={itemKey} className={parentUrl === itemUrl ? 'selLeftMenu' : ''}>
