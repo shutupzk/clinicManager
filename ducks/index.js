@@ -87,6 +87,14 @@ import { receiveRecords, queryReceiveRecords } from './receive_records'
 import { diagnosisTreatments, queryDiagnosisTreatmentList, diagnosisTreatmentCreate, DiagnosisTreatmentUpdate, DiagnosisTreatmentOnOff, DiagnosisTreatmentDetail, queryDictDiagnosisList } from './diagnosisTreatment'
 import { treatmentPatientModels, TreatmentPatientModelList, TreatmentPatientModelUpdate, TreatmentPatientModelDetail, TreatmentPatientModelDelete, TreatmentPatientModelCreate } from './treatment_models'
 import { examinationModels, examinationModelList, ExaminationPatientModelUpdate, ExaminationPatientModelDetail, ExaminationPatientModelDelete, examinationModelCreate } from './examination_models'
+import {
+  examinationReportModels,
+  examinationReportList,
+  examinationReportCreate,
+  ExaminationReportModelUpdate,
+  ExaminationReportModelDetail,
+  ExaminationReportModelDelete
+} from './examination_report_models'
 import { laboratoryPatientModels, LaboratoryPatientModelCreate, LaboratoryPatientModelUpdate, LaboratoryPatientModelDetail, LaboratoryPatientModelDelete, LaboratoryPersonalPatientModelList, LaboratoryPatientModelList } from './laboratory_model'
 import { onCredit, queryCreditTriageList, creditTriageSelect, queryCreditRecordList } from './on_credit'
 import { associations, queryAssociationList, LaboratoryAssociationCreate } from './laboratory_association'
@@ -161,6 +169,7 @@ export {
   diagnosisTreatments,
   treatmentPatientModels,
   examinationModels,
+  examinationReportModels,
   laboratoryPatientModels,
   onCredit,
   associations,
@@ -323,6 +332,11 @@ export {
   ExaminationPatientModelUpdate,
   ExaminationPatientModelDetail,
   ExaminationPatientModelDelete,
+  examinationReportList,
+  examinationReportCreate,
+  ExaminationReportModelUpdate,
+  ExaminationReportModelDetail,
+  ExaminationReportModelDelete,
   LaboratoryPatientModelCreate,
   LaboratoryPatientModelUpdate,
   LaboratoryPatientModelDetail,

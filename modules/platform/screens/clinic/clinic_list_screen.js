@@ -136,7 +136,7 @@ class ClinicListScreen extends Component {
     return (
       <div>
         <div className={'childTopBar'}>
-          <span onClick={() => Router.push('/platform')}> + 新增诊所</span>
+          <span onClick={() => Router.push('/platform/clinique/add')}> + 新增诊所</span>
           <span className={'sel'}>诊所列表</span>
         </div>
         <div className={'filterBox'} style={{ marginBottom: '20px' }}>

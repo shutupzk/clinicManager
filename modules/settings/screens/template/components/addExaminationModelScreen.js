@@ -374,7 +374,12 @@ class AddExaminationModelScreen extends Component {
                   <div>
                     <input value={examines[index].organ} type='text' readOnly />
                     <button onClick={() => {
-                      this.setState({ showChooseOrgan: true, index, selOrgans: examines[index].organ.split(',') })
+                      // console.log('examines[index]====', examines[index])
+                      let selOrgans = []
+                      if (examines[index].organ) {
+                        selOrgans = [...examines[index].organ.split(',')]
+                      }
+                      this.setState({ showChooseOrgan: true, index, selOrgans })
                     }}>选择</button>
                   </div>
                   <div>
