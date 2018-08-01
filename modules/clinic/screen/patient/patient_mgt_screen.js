@@ -89,8 +89,8 @@ class PatientMgtScreen extends Component {
                       <td>{item.phone}</td>
                       <td>{getAgeByBirthday(item.birthday)}</td>
                       <td>{item.sex === 0 ? '女' : '男'}</td>
-                      <td>{moment(item.created_time).format('YYYY-MM-DD hh:mm')}</td>
-                      <td>{moment(item.visited_time).format('YYYY-MM-DD hh:mm') === 'Invalid date' ? '' : moment(item.visited_time).format('YYYY-MM-DD hh:mm')}</td>
+                      <td>{moment(item.created_time).format('YYYY-MM-DD HH:mm')}</td>
+                      <td>{moment(item.visited_time).format('YYYY-MM-DD HH:mm') === 'Invalid date' ? '' : moment(item.visited_time).format('YYYY-MM-DD HH:mm')}</td>
                       {/* <td>{item.supplier_name}</td>
                       <td>{item.instock_operation_name}</td> */}
                       <td style={{ flex: 2 }} className={'operTd'}>

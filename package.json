@@ -2,9 +2,9 @@
   "name": "custom-server-express",
   "version": "1.0.0",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "node --max_old_space_size=4096 server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node --max_old_space_size=4096 server.js",
     "start_windows": "set NODE_ENV=production&&node server.js"
   },
   "dependencies": {

@@ -743,7 +743,7 @@ class VisitInfoScreen extends Component {
                   <table>
                     <tbody>
                       <tr key={index}>
-                        <td style={{ flex: 2 }}>{moment(item.registion_time).format('YYYY-MM-DD hh:mm')}</td>
+                        <td style={{ flex: 2 }}>{moment(item.registion_time).format('YYYY-MM-DD HH:mm')}</td>
                         <td>{this.getVisitType(item.visit_type)}</td>
                         <td>{item.clinic_name}</td>
                         <td>{item.department_name}</td>
