@@ -101,6 +101,10 @@ class ExamineScreen extends Component {
     const { examines, selPage } = this.state
     let items = []
     for (let item of examines) {
+      if (!item.times) {
+        return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
+      }
+
       let obj = {}
       for (let key in item) {
         if (item[key] === 0) {
@@ -348,8 +352,8 @@ class ExamineScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    const {changePage} = this.props
-    const {examines, examinesStr} = this.state
+    const { changePage } = this.props
+    const { examines, examinesStr } = this.state
     // console.log('othercostsStr==', othercostsStr)
     if (JSON.stringify(examines) !== examinesStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
@@ -377,7 +381,19 @@ class ExamineScreen extends Component {
       createTime = item.created_time
     }
     return (
-      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+      <div
+        style={{
+          width: '800px',
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: '50px',
+          background: '#FFFFFF',
+          padding: '10px 20px 10px 20px',
+          fontSize: '15px',
+          fontWeight: '400',
+          color: '#202020'
+        }}
+      >
         <div style={{ display: 'flex', width: '100%' }}>
           <div style={{ width: '200px' }}>
             <img src='/static/login/login_logo.png' />
@@ -432,7 +448,7 @@ class ExamineScreen extends Component {
         <div className={'childTopBar'}>
           <span
             onClick={() => {
-              this.setState({selPage: 1})
+              this.setState({ selPage: 1 })
               this.tipsToSave(1)
             }}
           >
@@ -441,7 +457,7 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 2})
+              this.setState({ selPage: 2 })
               this.tipsToSave(2)
             }}
           >
@@ -450,7 +466,7 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 3})
+              this.setState({ selPage: 3 })
               this.tipsToSave(3)
             }}
           >
@@ -459,7 +475,7 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 4})
+              this.setState({ selPage: 4 })
               this.tipsToSave(4)
             }}
           >
@@ -476,7 +492,7 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 6})
+              this.setState({ selPage: 6 })
               this.tipsToSave(6)
             }}
           >
@@ -485,7 +501,7 @@ class ExamineScreen extends Component {
           <span
             className={this.state.pageType === 7 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 7})
+              this.setState({ selPage: 7 })
               this.tipsToSave(7)
             }}
           >
@@ -553,7 +569,16 @@ class ExamineScreen extends Component {
                       <div>
                         <input value={item.organ || ''} type='text' readOnly />
                         <div
-                          style={{ cursor: 'pointer', border: '1px solid rgba(42, 205, 200, 1)', borderRadius: '5px', height: '20px', width: '50px', textAlign: 'center', lineHeight: '20px', color: 'rgba(42, 205, 200, 1)' }}
+                          style={{
+                            cursor: 'pointer',
+                            border: '1px solid rgba(42, 205, 200, 1)',
+                            borderRadius: '5px',
+                            height: '20px',
+                            width: '50px',
+                            textAlign: 'center',
+                            lineHeight: '20px',
+                            color: 'rgba(42, 205, 200, 1)'
+                          }}
                           onClick={() => {
                             let { organ } = item
                             let selOrgans = []
@@ -570,7 +595,10 @@ class ExamineScreen extends Component {
                         <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        <div
+                          onClick={() => this.removeColumn(index)}
+                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                        >
                           删除
                         </div>
                       </div>
@@ -610,37 +638,37 @@ class ExamineScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-          .childTopBar{
+          .childTopBar {
             display: flex;
             margin-left: 65px;
           }
-          .childTopBar>span {
-            flex:1;
+          .childTopBar > span {
+            flex: 1;
             margin-left: 0;
           }
-            .buttonDiv {
-              width: 63px;
-              height: 30px;
-              border-radius: 4px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-left: 8px;
-            }
-            .buttonDivCancel {
-              background: rgba(255, 255, 255, 1);
-              border: 1px solid #d9d9d9;
-            }
-            .buttonDiv span {
-              height: 22px;
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              line-height: 22px;
-            }
-            .cancel {
-              color: rgba(0, 0, 0, 0.65);
-            }
+          .buttonDiv {
+            width: 63px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+          }
+          .buttonDivCancel {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #d9d9d9;
+          }
+          .buttonDiv span {
+            height: 22px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            line-height: 22px;
+          }
+          .cancel {
+            color: rgba(0, 0, 0, 0.65);
+          }
         `}</style>
       </div>
     )
@@ -780,4 +808,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryExaminationList, queryExaminationOrganList, ExaminationPatientCreate, ExaminationPatientGet, examinationModelList })(ExamineScreen)
+export default connect(
+  mapStateToProps,
+  { queryExaminationList, queryExaminationOrganList, ExaminationPatientCreate, ExaminationPatientGet, examinationModelList }
+)(ExamineScreen)

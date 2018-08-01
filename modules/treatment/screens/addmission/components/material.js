@@ -99,6 +99,11 @@ class MaterialScreen extends Component {
     let items = []
     for (let item of eaterials) {
       let obj = {}
+
+      if (!item.amount) {
+        return this.refs.myAlert.alert('保存失败', '存在数量无效的项目，请检查！', null, 'Danger')
+      }
+
       if (!item.stock_amount || item.stock_amount * 1 < 1) {
         return this.refs.myAlert.alert('保存失败', '库存为0 ，请您重新选择', null, 'Danger')
       }

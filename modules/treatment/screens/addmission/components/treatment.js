@@ -111,6 +111,10 @@ class TreatmentScreen extends Component {
     const { treatments, selPage } = this.state
     let items = []
     for (let { clinic_treatment_id, times, illustration } of treatments) {
+      if (!times) {
+        return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
+      }
+
       items.push({
         clinic_treatment_id: clinic_treatment_id + '',
         times: times + '',
@@ -502,7 +506,19 @@ class TreatmentScreen extends Component {
       createTime = item.created_time
     }
     return (
-      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+      <div
+        style={{
+          width: '800px',
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: '50px',
+          background: '#FFFFFF',
+          padding: '10px 20px 10px 20px',
+          fontSize: '15px',
+          fontWeight: '400',
+          color: '#202020'
+        }}
+      >
         <div style={{ display: 'flex', width: '100%' }}>
           <div style={{ width: '200px' }}>
             <img src='/static/login/login_logo.png' />
@@ -691,7 +707,10 @@ class TreatmentScreen extends Component {
                         <input maxLength='500' value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        <div
+                          onClick={() => this.removeColumn(index)}
+                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                        >
                           删除
                         </div>
                       </div>

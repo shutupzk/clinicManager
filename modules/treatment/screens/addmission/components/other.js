@@ -101,6 +101,10 @@ class OtherScreen extends Component {
     const { othercosts, selPage } = this.state
     let items = []
     for (let item of othercosts) {
+      if (!item.amount) {
+        return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
+      }
+
       let obj = {}
       for (let key in item) {
         if (item[key] === 0) {
@@ -128,8 +132,8 @@ class OtherScreen extends Component {
   // 提示是否保存当前页
   tipsToSave(pageType) {
     // console.log('pageType====', pageType)
-    const {changePage} = this.props
-    const {othercosts, othercostsStr} = this.state
+    const { changePage } = this.props
+    const { othercosts, othercostsStr } = this.state
     // console.log('othercostsStr==', othercostsStr)
     if (JSON.stringify(othercosts) !== othercostsStr) {
       this.refs.myConfirm.confirm('提示', '您填写的内容已修改，是否需要保存？', 'Warning', () => {
@@ -157,7 +161,19 @@ class OtherScreen extends Component {
       createTime = item.created_time
     }
     return (
-      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px', fontSize: '15px', fontWeight: '400', color: '#202020' }}>
+      <div
+        style={{
+          width: '800px',
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: '50px',
+          background: '#FFFFFF',
+          padding: '10px 20px 10px 20px',
+          fontSize: '15px',
+          fontWeight: '400',
+          color: '#202020'
+        }}
+      >
         <div style={{ display: 'flex', width: '100%' }}>
           <div style={{ width: '200px' }}>
             <img src='/static/login/login_logo.png' />
@@ -218,7 +234,7 @@ class OtherScreen extends Component {
         <div className={'childTopBar'}>
           <span
             onClick={() => {
-              this.setState({selPage: 1})
+              this.setState({ selPage: 1 })
               this.tipsToSave(1)
             }}
           >
@@ -227,7 +243,7 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 2 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 2})
+              this.setState({ selPage: 2 })
               this.tipsToSave(2)
             }}
           >
@@ -236,7 +252,7 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 3 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 3})
+              this.setState({ selPage: 3 })
               this.tipsToSave(3)
             }}
           >
@@ -245,7 +261,7 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 4 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 4})
+              this.setState({ selPage: 4 })
               this.tipsToSave(4)
             }}
           >
@@ -254,7 +270,7 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 5 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 5})
+              this.setState({ selPage: 5 })
               this.tipsToSave(5)
             }}
           >
@@ -263,7 +279,7 @@ class OtherScreen extends Component {
           <span
             className={this.state.pageType === 6 ? 'sel' : ''}
             onClick={() => {
-              this.setState({selPage: 6})
+              this.setState({ selPage: 6 })
               this.tipsToSave(6)
             }}
           >
@@ -313,7 +329,7 @@ class OtherScreen extends Component {
                         <div style={{ width: '100%' }}>
                           <Select
                             value={this.getSelectValue(item.clinic_other_cost_id, nameOptions)}
-                            onChange={(data) => {
+                            onChange={data => {
                               this.setItemValues(data, index)
                             }}
                             placeholder='搜索名称'
@@ -333,7 +349,10 @@ class OtherScreen extends Component {
                         <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                        <div
+                          onClick={() => this.removeColumn(index)}
+                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                        >
                           删除
                         </div>
                       </div>
@@ -369,13 +388,14 @@ class OtherScreen extends Component {
           </Confirm>
           <Confirm ref='myAlert' />
         </div>
-        <style jsx='true'>{`
-            .childTopBar{
+        <style jsx='true'>
+          {`
+            .childTopBar {
               display: flex;
               margin-left: 65px;
             }
-            .childTopBar>span {
-              flex:1;
+            .childTopBar > span {
+              flex: 1;
               margin-left: 0;
             }
             .buttonDiv {
@@ -529,4 +549,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryOtherCostList, OtherCostPatientCreate, OtherCostPatientGet })(OtherScreen)
+export default connect(
+  mapStateToProps,
+  { queryOtherCostList, OtherCostPatientCreate, OtherCostPatientGet }
+)(OtherScreen)
