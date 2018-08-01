@@ -276,7 +276,7 @@ class CheckReportTemplateScreen extends Component {
                       }}>修改</div>
                       <div className={'divideLine'}>|</div>
                       <div onClick={() => {
-                        this.ExaminationReportModelDelete(item.examination_report_model_id)
+                        this.ExaminationReportModelDelete(item.id)
                       }}>删除</div>
                     </div>
                   </td>
