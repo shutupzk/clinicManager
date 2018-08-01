@@ -148,7 +148,7 @@ export default class CustomSelect extends Component {
             }
           }}
           onFocus={e => {
-            this.setState({ showOptions: true })
+            this.setState({ showOptions: true, onMouseOver: false })
           }}
           onBlur={e => {
             const { value, label } = this.props
