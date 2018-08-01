@@ -104,7 +104,7 @@ class AddDrugInstockScreen extends Component {
     const { createDrugInstock, clinic_id, instock_operation_id } = this.props
     const { instock_date, instock_way_name, supplier_name, items, remark } = this.state
     let array = []
-    console.log('items===', items)
+    // console.log('items===', items)
     for (let key of items) {
       let value = {}
       value.clinic_drug_id = key.clinic_drug_id + ''
@@ -378,7 +378,7 @@ class AddDrugInstockScreen extends Component {
   // 药筛选项
   getDrugOptions() {
     const { clinic_id, ClinicDrugList, drugs } = this.props
-    console.log('drugs====', drugs)
+    // console.log('drugs====', drugs)
     let array = []
     for (let key in drugs) {
       let {
@@ -423,7 +423,7 @@ class AddDrugInstockScreen extends Component {
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    console.log(items)
+    // console.log(items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -491,7 +491,7 @@ class AddDrugInstockScreen extends Component {
                           )
                         }}
                         renderItem={(item, index) => {
-                          console.log('item=====', item)
+                          // console.log('item=====', item)
                           let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
                           let packing_unit_name = item.packing_unit_name || ''
                           return (
@@ -543,7 +543,7 @@ class AddDrugInstockScreen extends Component {
                       readOnly
                       placeholder={'成本合计'}
                       type='text'
-                      value={formatMoney(item.instock_amount * item.buy_price)}
+                      value={formatMoney(item.instock_amount * item.buy_price * 100)}
                     />
                   </div>
                   <div>

@@ -6,6 +6,7 @@ import {
   queryDrugStockList,
   querySupplierList
 } from '../../../../ducks'
+import { formatMoney } from '../../../../utils'
 // import AdddrugCurrentStockscreen from './components/adddrugCurrentStockscreen'
 import moment from 'moment'
 
@@ -87,8 +88,8 @@ class CurrentInventoryScreen extends Component {
                       <td>{item.packing_unit_name}</td>
                       <td style={{flex: 2}} title={item.manu_factory_name}>{item.manu_factory_name}</td>
                       <td>{item.supplier_name}</td>
-                      <td>{item.ret_price}</td>
-                      <td>{item.buy_price}</td>
+                      <td>{formatMoney(item.ret_price)}</td>
+                      <td>{formatMoney(item.buy_price)}</td>
                       <td style={{flex: 2}}>{item.serial}</td>
                       <td>
                         {isWarning ? <div style={{color: 'red'}}>{moment(item.eff_date).format('YYYY-MM-DD')}</div> : moment(item.eff_date).format('YYYY-MM-DD')}

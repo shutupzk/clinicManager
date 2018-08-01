@@ -59,7 +59,9 @@ class AddMaterialOutstockScreen extends Component {
       items: data.items,
       created_time: data.created_time,
       outstock_operation_name: data.outstock_operation_name,
-      order_number: data.order_number
+      order_number: data.order_number,
+      verify_operation_name: data.verify_operation_name,
+      updated_time: data.updated_time
     })
   }
   // 验证字段
@@ -259,7 +261,7 @@ class AddMaterialOutstockScreen extends Component {
   }
   // 出库基本信息
   renderBaseInfoBlank() {
-    const {outstock_date, outstock_way_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name, created_time, outstock_operation_name, order_number} = this.state
+    const {outstock_date, outstock_way_name, updated_time, verify_operation_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name, created_time, outstock_operation_name, order_number} = this.state
     const {showWay} = this.props
     // console.log('outstock_date, outstock_way_name, supplier_name, remark', outstock_date, outstock_way_name, supplier_name, remark)
     return (
@@ -374,6 +376,24 @@ class AddMaterialOutstockScreen extends Component {
               value={outstock_operation_name}
             />
           </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'updated_time'}
+              value={moment(updated_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'verify_operation_name'}
+              value={verify_operation_name}
+            />
+          </li> : ''}
           {showWay !== 1 ? <li>
             <label>出库单号</label>
             <input
@@ -391,7 +411,7 @@ class AddMaterialOutstockScreen extends Component {
   // 药筛选项
   getMaterialStockOptions() {
     const { material_stock, clinic_id, queryMaterialStockList } = this.props
-    console.log('material_stock====', material_stock)
+    // console.log('material_stock====', material_stock)
     let array = []
     for (let key in material_stock) {
       let {
@@ -441,7 +461,7 @@ class AddMaterialOutstockScreen extends Component {
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    console.log(items)
+    // console.log(items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -469,40 +489,6 @@ class AddMaterialOutstockScreen extends Component {
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    {/* {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
-                      <Select
-                        value={this.getSelectValue(item.material_stock_id, this.getMaterialStockOptions())}
-                        onChange={({
-                          value,
-                          label,
-                          manu_factory_name,
-                          unit_name,
-                          ret_price,
-                          stock_amount,
-                          buy_price,
-                          eff_date,
-                          serial,
-                          specification,
-                          supplier_name
-                        }) => {
-                          // let data = {}
-                          this.setItemValue(value, index, 'material_stock_id', 2)
-                          this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
-                          this.setItemValue(unit_name, index, 'unit_name', 2)
-                          this.setItemValue(ret_price, index, 'ret_price', 2)
-                          this.setItemValue(stock_amount, index, 'stock_amount', 2)
-                          this.setItemValue(buy_price, index, 'buy_price', 2)
-                          this.setItemValue(eff_date, index, 'eff_date', 2)
-                          this.setItemValue(serial, index, 'serial', 2)
-                          this.setItemValue(specification, index, 'specification', 2)
-                          this.setItemValue(supplier_name, index, 'supplier_name', 2)
-                        }}
-                        placeholder='搜索'
-                        height={38}
-                        onInputChange={keyword => this.queryMaterialStockList(keyword)}
-                        options={this.getMaterialStockOptions()}
-                      />
-                    </div> : item.material_name } */}
                     {showWay === 1 || showWay === 4 ? <div>
                       <CustomSelect
                         controlStyle={{ height: '38px', width: '100%' }}

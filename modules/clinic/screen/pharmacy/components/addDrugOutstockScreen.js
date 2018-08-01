@@ -59,7 +59,9 @@ class AddDrugOutstockScreen extends Component {
       items: data.items,
       created_time: data.created_time,
       outstock_operation_name: data.outstock_operation_name,
-      order_number: data.order_number
+      order_number: data.order_number,
+      verify_operation_name: data.verify_operation_name,
+      updated_time: data.updated_time
     })
   }
   // 验证字段
@@ -259,7 +261,7 @@ class AddDrugOutstockScreen extends Component {
   }
   // 出库基本信息
   renderBaseInfoBlank() {
-    const {outstock_date, outstock_way_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name, created_time, outstock_operation_name, order_number} = this.state
+    const {outstock_date, outstock_way_name, updated_time, verify_operation_name, department_id, personnel_id, remark, readOnly, department_name, personnel_name, created_time, outstock_operation_name, order_number} = this.state
     const {showWay} = this.props
     // console.log('outstock_date, outstock_way_name, supplier_name, remark', outstock_date, outstock_way_name, supplier_name, remark)
     return (
@@ -372,6 +374,24 @@ class AddDrugOutstockScreen extends Component {
               type='text'
               placeholder={'outstock_operation_name'}
               value={outstock_operation_name}
+            />
+          </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'updated_time'}
+              value={moment(updated_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'verify_operation_name'}
+              value={verify_operation_name}
             />
           </li> : ''}
           {showWay !== 1 ? <li>

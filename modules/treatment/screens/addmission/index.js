@@ -274,6 +274,7 @@ class AddmisionScreen extends Component {
 
   render() {
     const {alertType} = this.state
+    const {is_clinic_admin} = this.props
     return (
       <div>
         <div className={'childTopBar'}>
@@ -298,13 +299,13 @@ class AddmisionScreen extends Component {
         </div>
         <div className={'filterBox'}>
           {this.showBoxLeft()}
-          <div className={'boxRight'}>
+          {!is_clinic_admin ? <div className={'boxRight'}>
             <button
               onClick={() => {
                 this.setState({alertType: 1, patientInfo: {}})
               }}
             >快速接诊</button>
-          </div>
+          </div> : ''}
         </div>
         {this.showTriageList()}
         {alertType === 1 ? this.showQuickReception() : ''}
@@ -652,6 +653,7 @@ class AddmisionScreen extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log('state===', state)
   return {
     triage_personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
@@ -661,7 +663,8 @@ const mapStateToProps = state => {
     doctor_page_info: state.triageDoctors.page_info,
     personnel_id: state.user.data.id,
     patients: state.patients.data,
-    departments: state.departments.data
+    departments: state.departments.data,
+    is_clinic_admin: state.user.data.is_clinic_admin
   }
 }
 

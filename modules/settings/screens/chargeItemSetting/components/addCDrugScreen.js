@@ -389,7 +389,7 @@ class AddCDrugScreen extends Component {
           </div>
           <div className={'maskBox_bottom'}>
             <div>
-              <button onClick={() => this.setState({showInstock: false})}>取消</button>
+              <button onClick={() => this.props.back2List()}>取消</button>
               <button onClick={() => {
                 this.saveInStock()
               }}>保存</button>

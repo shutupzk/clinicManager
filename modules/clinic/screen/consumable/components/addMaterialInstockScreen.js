@@ -54,7 +54,9 @@ class AddMaterialInstockScreen extends Component {
       items: data.items,
       created_time: data.created_time,
       instock_operation_name: data.instock_operation_name,
-      order_number: data.order_number
+      order_number: data.order_number,
+      verify_operation_name: data.verify_operation_name,
+      updated_time: data.updated_time
     })
   }
   // 验证字段
@@ -233,7 +235,7 @@ class AddMaterialInstockScreen extends Component {
   }
   // 入库基本信息
   renderBaseInfoBlank() {
-    const {instock_date, instock_way_name, supplier_name, remark, created_time, instock_operation_name, order_number, readOnly} = this.state
+    const {instock_date, instock_way_name, updated_time, verify_operation_name, supplier_name, remark, created_time, instock_operation_name, order_number, readOnly} = this.state
     const {showWay} = this.props
     // console.log('instock_date, instock_way_name, supplier_name, remark', instock_date, instock_way_name, supplier_name, remark)
     return (
@@ -327,6 +329,24 @@ class AddMaterialInstockScreen extends Component {
               value={instock_operation_name}
             />
           </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'updated_time'}
+              value={moment(updated_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'verify_operation_name'}
+              value={verify_operation_name}
+            />
+          </li> : ''}
           {showWay !== 1 ? <li>
             <label>入库单号</label>
             <input
@@ -344,7 +364,7 @@ class AddMaterialInstockScreen extends Component {
   // 药筛选项
   getMaterialOptions() {
     const { clinic_id, queryMaterialList, materials } = this.props
-    console.log('materials====', materials)
+    // console.log('materials====', materials)
     let array = []
     for (let key in materials) {
       let {
@@ -415,32 +435,6 @@ class AddMaterialInstockScreen extends Component {
                 <li key={index}>
                   <div>{index + 1}</div>
                   <div>
-                    {/* {showWay === 1 || showWay === 4 ? <div style={{width: '100%'}}>
-                      <Select
-                        value={this.getSelectValue(item.clinic_material_id, this.getMaterialOptions())}
-                        onChange={({
-                          value,
-                          label,
-                          manu_factory_name,
-                          unit_name,
-                          ret_price,
-                          instock_amount,
-                          buy_price
-                        }) => {
-                          // let data = {}
-                          this.setItemValue(value, index, 'clinic_material_id', 2)
-                          this.setItemValue(manu_factory_name, index, 'manu_factory_name', 2)
-                          this.setItemValue(unit_name, index, 'unit_name', 2)
-                          this.setItemValue(ret_price, index, 'ret_price', 2)
-                          this.setItemValue(instock_amount, index, 'instock_amount', 2)
-                          this.setItemValue(buy_price, index, 'buy_price', 2)
-                        }}
-                        placeholder='搜索'
-                        height={38}
-                        onInputChange={keyword => this.queryMaterialList(keyword)}
-                        options={this.getMaterialOptions()}
-                      />
-                    </div> : item.material_name } */}
                     {showWay === 1 || showWay === 4 ? <div>
                       <CustomSelect
                         controlStyle={{ height: '38px', width: '100%' }}
@@ -530,7 +524,7 @@ class AddMaterialInstockScreen extends Component {
                       readOnly
                       placeholder={'成本合计'}
                       type='text'
-                      value={item.instock_amount * item.buy_price}
+                      value={formatMoney(item.instock_amount * item.buy_price * 100)}
                     />
                   </div>
                   <div>
