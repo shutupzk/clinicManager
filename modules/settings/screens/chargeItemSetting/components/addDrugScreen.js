@@ -51,7 +51,6 @@ class AddDrugScreen extends Component {
     if (showWay === 2) {
       let data = await ClinicDrugDetail({clinic_drug_id})
       if (data) {
-        console.log('drugInfo=====', data)
         data.ret_price = formatMoney(data.ret_price)
         if (data.buy_price !== null) {
           data.buy_price = formatMoney(data.buy_price)
@@ -59,7 +58,9 @@ class AddDrugScreen extends Component {
         if (data.bulk_sales_price !== null) {
           data.bulk_sales_price = formatMoney(data.bulk_sales_price)
         }
-        this.setState({drugInfo: data})
+        this.setState({drugInfo: data}, () => {
+          this.refs.CustomSelect.init({ value: data.name })
+        })
       }
     }
   }
@@ -690,7 +691,6 @@ class AddDrugScreen extends Component {
   async submit(isInstock) {
     let { drugInfo } = this.state
     const { clinic_id, ClinicDrugCreate } = this.props
-    console.log('drugInfo=======', drugInfo, isInstock)
     if (drugInfo.drug_class_id) {
       if (this.validateData(drugInfo)) {
         let data = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 0 })
@@ -970,6 +970,7 @@ class AddDrugScreen extends Component {
   // 药品基本信息
   renderBaseInfoBlank() {
     const { drugInfo } = this.state
+    console.log('drugInfo ======', drugInfo)
     const drugs = this.props.drugs || []
     // console.log('drugs=======', drugs)
     return (
@@ -982,6 +983,7 @@ class AddDrugScreen extends Component {
                 通用名<b style={{ color: 'red' }}>*</b>
               </label>
               <CustomSelect
+                ref='CustomSelect'
                 placeholder='搜索'
                 controlStyle={{ marginTop: '0px', height: '30px' }}
                 labelKey='name'

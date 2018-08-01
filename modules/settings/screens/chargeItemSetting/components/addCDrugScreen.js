@@ -52,15 +52,13 @@ class AddCDrugScreen extends Component {
     if (showWay === 2) {
       let data = await ClinicDrugDetail({clinic_drug_id})
       if (data) {
-        console.log('drugInfo=====', data)
         data.ret_price = formatMoney(data.ret_price)
         if (data.buy_price !== null) {
           data.buy_price = formatMoney(data.buy_price)
         }
-        // if (data.bulk_sales_price !== null) {
-        //   data.bulk_sales_price = formatMoney(data.bulk_sales_price)
-        // }
-        this.setState({drugInfo: data})
+        this.setState({drugInfo: data}, () => {
+          this.refs.CustomSelect.init({ value: data.name })
+        })
       }
     }
   }
@@ -867,6 +865,7 @@ class AddCDrugScreen extends Component {
                 通用名<b style={{ color: 'red' }}>*</b>
               </label>
               <CustomSelect
+                ref='CustomSelect'
                 placeholder='搜索'
                 controlStyle={{ height: '30px' }}
                 labelKey='name'

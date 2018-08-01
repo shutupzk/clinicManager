@@ -22,6 +22,16 @@ export default class CustomSelect extends Component {
     }
   }
 
+  init({value, valueKey, labelKey, options}) {
+    options = options || this.props.options || []
+    valueKey = valueKey || this.props.valueKey || ''
+    labelKey = labelKey || this.props.labelKey || ''
+    this.setState({
+      value: value || '',
+      label: getLable(value, valueKey, labelKey, options)
+    })
+  }
+
   renderOption() {
     const { showOptions, value, label } = this.state
     let { renderItem, options, onChange, renderTitle, withoutFitler } = this.props
