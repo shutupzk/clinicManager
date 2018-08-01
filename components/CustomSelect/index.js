@@ -18,7 +18,8 @@ export default class CustomSelect extends Component {
       value: value || '',
       label: getLable(value, valueKey, labelKey, options),
       showOptions: false,
-      onMouseOver: false
+      onMouseOver: false,
+      isTop: true
     }
   }
 
@@ -33,7 +34,7 @@ export default class CustomSelect extends Component {
   }
 
   renderOption() {
-    const { showOptions, value, label } = this.state
+    const { showOptions, value, label, isTop } = this.state
     let { renderItem, options, onChange, renderTitle, withoutFitler } = this.props
     options = options || []
     if (!showOptions) return null
@@ -60,23 +61,41 @@ export default class CustomSelect extends Component {
     if (array.length > 0) {
       disp = 'flex'
     }
+    let divStyle = {
+      display: disp,
+      flexDirection: 'column',
+      position: 'absolute',
+      top: '50px',
+      left: '0px',
+      zIndex: 100,
+      border: '1px solid #d9d9d9',
+      borderRadius: '4px',
+      background: '#FFFFFF',
+      paddingTop: '2px',
+      paddingBottom: '2px',
+      maxHeight: '255px',
+      overflow: 'auto'
+    }
+    if (!isTop) {
+      divStyle = {
+        display: disp,
+        flexDirection: 'column',
+        position: 'absolute',
+        bottom: '50px',
+        left: '0px',
+        zIndex: 100,
+        border: '1px solid #d9d9d9',
+        borderRadius: '4px',
+        background: '#FFFFFF',
+        paddingTop: '2px',
+        paddingBottom: '2px',
+        maxHeight: '255px',
+        overflow: 'auto'
+      }
+    }
     return (
       <div
-        style={{
-          display: disp,
-          flexDirection: 'column',
-          position: 'absolute',
-          top: '50px',
-          left: '0px',
-          zIndex: 100,
-          border: '1px solid #d9d9d9',
-          borderRadius: '4px',
-          background: '#FFFFFF',
-          paddingTop: '2px',
-          paddingBottom: '2px',
-          maxHeight: '255px',
-          overflow: 'auto'
-        }}
+        style={divStyle}
       >
         <div>{renderTitle ? renderTitle() : null}</div>
         {array.map((item, index) => {
@@ -164,7 +183,14 @@ export default class CustomSelect extends Component {
             }
           }}
           onFocus={e => {
-            this.setState({ showOptions: true, onMouseOver: false })
+            // console.log('e.target.position===', e, e.target, e.target.offsetParent.offsetTop, window.innerHeight)
+            let offsetTop = e.target.offsetParent.offsetTop
+            let windowHeight = window.innerHeight
+            let isTop = true
+            if (windowHeight - offsetTop < 200) {
+              isTop = false
+            }
+            this.setState({ showOptions: true, onMouseOver: false, isTop })
           }}
           onBlur={e => {
             const { value, label } = this.props
