@@ -383,8 +383,11 @@ class BaseInfoScreen extends Component {
           </ul>
           {patient.sex * 1 === 1 ? null : (
             <ul>
-              <li style={{ width: '32.5%' }}>
+              <li style={{ width: '100%', marginTop: '20px' }}>
                 <label>月经史</label>
+              </li>
+              <li style={{ width: '32.5%' }}>
+                <label>月经初潮年龄</label>
                 <div className='liDiv'>
                   <input
                     type='text'
@@ -398,11 +401,11 @@ class BaseInfoScreen extends Component {
                 </div>
               </li>
               <li style={{ width: '32.5%' }}>
-                <label />
+                <label>月经经期开始时间</label>
                 <div className='liDiv'>
                   <input
                     type='text'
-                    style={{ width: '120px', marginLeft: '15px' }}
+                    style={{ width: '120px' }}
                     placeholder='月经经期开始时间'
                     value={preMedicalRecords.menstrual_period_start_day || ''}
                     onChange={e => {
@@ -412,11 +415,11 @@ class BaseInfoScreen extends Component {
                 </div>
               </li>
               <li style={{ width: '32%' }}>
-                <label />
+                <label>月经经期结束时间</label>
                 <div className='liDiv'>
                   <input
                     type='text'
-                    style={{ width: '120px', marginLeft: '5px' }}
+                    style={{ width: '120px' }}
                     placeholder='月经经期结束时间'
                     value={preMedicalRecords.menstrual_period_end_day || ''}
                     onChange={e => {
@@ -426,6 +429,7 @@ class BaseInfoScreen extends Component {
                 </div>
               </li>
               <li style={{ width: '32.5%' }}>
+                <label>月经周期开始时间</label>
                 <div className='liDiv'>
                   <input
                     type='text'
@@ -439,10 +443,11 @@ class BaseInfoScreen extends Component {
                 </div>
               </li>
               <li style={{ width: '32%' }}>
+                <label>月经周期结束时间</label>
                 <div className='liDiv'>
                   <input
                     type='text'
-                    style={{ width: '120px', marginLeft: '15px' }}
+                    style={{ width: '120px' }}
                     placeholder='月经周期结束时间'
                     value={preMedicalRecords.menstrual_cycle_end_day || ''}
                     onChange={e => {
@@ -452,6 +457,7 @@ class BaseInfoScreen extends Component {
                 </div>
               </li>
               <li style={{ width: '32.5%' }}>
+                <label>末次月经时间</label>
                 <div className='liDiv'>
                   <input
                     type='text'
@@ -465,6 +471,7 @@ class BaseInfoScreen extends Component {
                 </div>
               </li>
               <li style={{ width: '32%' }}>
+                <label>孕周</label>
                 <div className='liDiv'>
                   <input
                     type='text'
@@ -502,8 +509,8 @@ class BaseInfoScreen extends Component {
   style() {
     return (
       <style jsx='true'>{`
-        .ant-input{
-          height:40px;
+        .ant-input {
+          height: 40px;
         }
         .formList {
           margin: 20px 66px 33px 66px;
