@@ -54,7 +54,9 @@ class AddDrugInstockScreen extends Component {
       items: data.items,
       created_time: data.created_time,
       instock_operation_name: data.instock_operation_name,
-      order_number: data.order_number
+      order_number: data.order_number,
+      verify_operation_name: data.verify_operation_name,
+      updated_time: data.updated_time
     })
   }
   // 验证字段
@@ -244,7 +246,7 @@ class AddDrugInstockScreen extends Component {
   }
   // 入库基本信息
   renderBaseInfoBlank() {
-    const {instock_date, instock_way_name, supplier_name, remark, created_time, instock_operation_name, order_number, readOnly} = this.state
+    const {instock_date, instock_way_name, updated_time, verify_operation_name, supplier_name, remark, created_time, instock_operation_name, order_number, readOnly} = this.state
     const {showWay} = this.props
     // console.log('instock_date, instock_way_name, supplier_name, remark', instock_date, instock_way_name, supplier_name, remark)
     return (
@@ -339,6 +341,24 @@ class AddDrugInstockScreen extends Component {
               type='text'
               placeholder={'instock_operation_name'}
               value={instock_operation_name}
+            />
+          </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核日期</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'updated_time'}
+              value={moment(updated_time).format('YYYY-MM-DD')}
+            />
+          </li> : ''}
+          {showWay === 3 ? <li>
+            <label>审核人员</label>
+            <input
+              readOnly
+              type='text'
+              placeholder={'verify_operation_name'}
+              value={verify_operation_name}
             />
           </li> : ''}
           {showWay !== 1 ? <li>
@@ -523,7 +543,7 @@ class AddDrugInstockScreen extends Component {
                       readOnly
                       placeholder={'成本合计'}
                       type='text'
-                      value={item.instock_amount * item.buy_price}
+                      value={formatMoney(item.instock_amount * item.buy_price)}
                     />
                   </div>
                   <div>

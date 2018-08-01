@@ -73,6 +73,13 @@ class CurrentInventoryScreen extends Component {
               </thead>
               <tbody>
                 {drugCurrentStocks.map((item, index) => {
+                  let isWarning = false
+                  let currDate = moment().format('YYYYMMDD')
+                  let warningDate = moment(item.eff_date).subtract(item.day_warning, 'days').format('YYYYMMDD')
+                  if (warningDate < currDate) {
+                    isWarning = true
+                  }
+                  // console.log('warningDate====', warningDate, currDate)
                   return (
                     <tr key={index}>
                       <td style={{flex: 2}}>{item.name}</td>
@@ -83,7 +90,9 @@ class CurrentInventoryScreen extends Component {
                       <td>{item.ret_price}</td>
                       <td>{item.buy_price}</td>
                       <td style={{flex: 2}}>{item.serial}</td>
-                      <td>{moment(item.eff_date).format('YYYY-MM-DD')}</td>
+                      <td>
+                        {isWarning ? <div style={{color: 'red'}}>{moment(item.eff_date).format('YYYY-MM-DD')}</div> : moment(item.eff_date).format('YYYY-MM-DD')}
+                      </td>
                       <td>{item.stock_amount}</td>
                     </tr>
                   )
