@@ -42,9 +42,15 @@ export default class CustomSelect extends Component {
       if (!withoutFitler) {
         let { value, label, py_code } = option
         try {
-          let pattern = new RegExp(this.state.label, 'gi')
+          let stateLabel = this.state.label
+          stateLabel = stateLabel.replace(/\(/g, `\\(`)
+          stateLabel = stateLabel.replace(/\)/g, `\\)`)
+          stateLabel = stateLabel.replace(/\{/g, `\\{`)
+          stateLabel = stateLabel.replace(/\}/g, `\\}`)
+          let pattern = new RegExp(stateLabel, 'gi')
           if (!pattern.test(value) && !pattern.test(label) && !pattern.test(py_code)) continue
         } catch (e) {
+          console.log(e)
           continue
         }
       }
