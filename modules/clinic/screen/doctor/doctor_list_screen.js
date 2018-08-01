@@ -623,7 +623,7 @@ class DoctorListScreen extends Component {
                 text-align: end;
                 display: block;
               }
-              .newList_content ul li input {
+              .newList_content ul li>div>input {
                 height: 40px;
                 border-radius: 5px;
                 border: 1px solid #d8d8d8;

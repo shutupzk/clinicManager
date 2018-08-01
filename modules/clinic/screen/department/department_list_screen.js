@@ -62,7 +62,7 @@ class DepartmentListScreen extends Component {
     let { departments, page_info, clinic_name } = this.props
     // let { items } = this.state
     // items = departments
-    console.log('departments=====', departments)
+    // console.log('departments=====', departments)
     // this.setState({items: departments})
     return (
       <div className={'newList'}>

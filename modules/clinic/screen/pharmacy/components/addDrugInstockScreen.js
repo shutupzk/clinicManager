@@ -358,7 +358,7 @@ class AddDrugInstockScreen extends Component {
   // 药筛选项
   getDrugOptions() {
     const { clinic_id, ClinicDrugList, drugs } = this.props
-    // console.log('drugs====', drugs)
+    console.log('drugs====', drugs)
     let array = []
     for (let key in drugs) {
       let {
@@ -471,6 +471,7 @@ class AddDrugInstockScreen extends Component {
                           )
                         }}
                         renderItem={(item, index) => {
+                          console.log('item=====', item)
                           let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
                           let packing_unit_name = item.packing_unit_name || ''
                           return (

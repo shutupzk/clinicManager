@@ -35,13 +35,13 @@ class AssignUsersScreen extends Component {
       roleInfo
     })
     this.queryDoctorList({ offset: 0, limit: 10 })
+    this.PersonnelsByRole()
   }
 
   queryDoctorList({ offset = 0, limit = 10, keyword = '' }) {
     const { queryDoctorList, clinic_id } = this.props
     // const {} = this.state
     queryDoctorList({ clinic_id, keyword, offset, limit })
-    this.PersonnelsByRole()
   }
   async PersonnelsByRole() {
     const { role_id, PersonnelsByRole } = this.props
@@ -261,11 +261,6 @@ class AssignUsersScreen extends Component {
             <button onClick={() => this.props.backToList()}>取消</button>
             <button
               onClick={() => {
-                // if (showWay === 2) {
-                //   this.RoleUpdate()
-                // } else {
-                //   this.submit()
-                // }
                 this.submit()
               }}
             >
@@ -289,26 +284,6 @@ class AssignUsersScreen extends Component {
   }
   // 保存
   async submit() {
-    // let {roleInfo, array2} = this.state
-    // const {clinic_id, roleCreate} = this.props
-    // roleInfo.clinic_id = clinic_id
-    // // console.log('array2=====', array2)
-    // let items = []
-    // for (let item of array2) {
-    //   for (let it of item.childrens_menus) {
-    //     // console.log(it)
-    //     items.push({ clinic_function_menu_id: it.clinic_function_menu_id + '' }) // it.clinic_function_menu_id
-    //   }
-    // }
-    // roleInfo.items = JSON.stringify(items)
-    // if (this.validateData(roleInfo)) {
-    // let error = await roleCreate(roleInfo)
-    // if (error) {
-    //   return this.refs.myAlert.alert('创建角色失败', error, null, 'Warning')
-    // } else {
-    //   this.props.backToList()
-    // }
-    // }
     const { role_id, RoleAllocation } = this.props
     const { array2 } = this.state
     let requestData = {}
@@ -318,11 +293,12 @@ class AssignUsersScreen extends Component {
     }
     requestData.role_id = role_id
     requestData.items = JSON.stringify(items)
+    console.log('requestData====', requestData)
     let error = await RoleAllocation(requestData)
     if (error) {
       return this.refs.myAlert.alert('分配角色失败', error, null, 'Warning')
     } else {
-      this.props.backToList()
+      // this.props.backToList()
     }
   }
   // 修改

@@ -552,8 +552,15 @@ class AddDrugOutstockScreen extends Component {
                       type='number'
                       placeholder={'出库数量'}
                       value={item.outstock_amount}
+                      min={0}
+                      max={item.stock_amount}
                       onChange={e => {
-                        this.setItemValue(e, index, 'outstock_amount')
+                        if (e.target.value > item.stock_amount) {
+                          this.refs.myAlert.alert('提示', '出库数量不能大于库存量！')
+                          this.setItemValue(item.stock_amount, index, 'outstock_amount', 2)
+                        } else {
+                          this.setItemValue(e, index, 'outstock_amount')
+                        }
                       }}
                     />
                   </div>

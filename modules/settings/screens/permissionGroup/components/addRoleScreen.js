@@ -352,6 +352,8 @@ class AddRoleScreen extends Component {
             background: rgba(255, 255, 255, 1);
             border-radius: 4px;
             border: 1px solid rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
           }
           .boxContentList {
             width: 94%;
