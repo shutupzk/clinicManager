@@ -1,7 +1,7 @@
 import React from 'react'
 import localforage from 'localforage'
 import { Provider } from 'react-redux'
-import { store, persistor } from './store'
+import { store, persistor } from '../ducks'
 // import initStore from './store'
 // const { store, persistor } = initStore()
 import { PersistGate } from 'redux-persist/integration/react'

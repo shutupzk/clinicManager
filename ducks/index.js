@@ -1,3 +1,8 @@
+import { createStore, applyMiddleware, compose } from 'redux'
+import { persistStore, persistReducer, persistCombineReducers } from 'redux-persist'
+import thunk from 'redux-thunk'
+import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
+
 import { user, signin, signout, FunMenusByPersonnel, saveUserMenu, MenubarList } from './user'
 import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete, PersonnelWithUsername, UpdatePersonnelStatus, PersonnelRoles, PersonnelAuthorizationAllocation, UpdatePersonnelUsername } from './doctors'
 import {
@@ -133,8 +138,12 @@ import { treatmentTriages, TreatmentTriageList, TreatmentTriageWaiting, Treatmen
 
 import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail, DrugRetailRefund, DrugRetailPaymentStatus } from './drug_retail'
 
-// keys
-export {
+const persistConfig = {
+  key: 'root',
+  storage
+}
+
+const appReducer = persistCombineReducers(persistConfig, {
   user,
   doctors,
   triagePatients,
@@ -162,15 +171,15 @@ export {
   routeAdministrationss,
   doseForms,
   prescriptionChinesePatients,
-  cuvetteColors,
   laboratorySamples,
+  cuvetteColors,
   laboratoryItems,
+  prescriptionWesternPatientModels,
   prescriptionChinesePatientModels,
-  receiveRecords,
   diagnosisTreatments,
+  receiveRecords,
   treatmentPatientModels,
   examinationModels,
-  examinationReportModels,
   laboratoryPatientModels,
   onCredit,
   associations,
@@ -191,8 +200,31 @@ export {
   examinationTriages,
   laboratoryTriages,
   treatmentTriages,
-  drugRetail
+  drugRetail,
+  examinationReportModels
+})
+
+const rootReducer = (state, action) => {
+  if (action.type === 'USER_SIGNOUT') {
+    state = {}
+  }
+  return appReducer(state, action)
 }
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+const middleware = [thunk]
+
+// export default () => {
+//   const store = createStore(persistedReducer, {}, compose(applyMiddleware(...middleware)))
+//   const persistor = persistStore(store, null, () => store.getState())
+//   return { store, persistor }
+// }
+
+const store = createStore(persistedReducer, {}, compose(applyMiddleware(...middleware)))
+const persistor = persistStore(store, null, () => store.getState())
+
+export { store, persistor }
 
 // actions
 export {
