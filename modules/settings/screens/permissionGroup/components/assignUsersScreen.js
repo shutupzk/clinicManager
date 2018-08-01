@@ -293,12 +293,12 @@ class AssignUsersScreen extends Component {
     }
     requestData.role_id = role_id
     requestData.items = JSON.stringify(items)
-    console.log('requestData====', requestData)
+    // console.log('requestData====', requestData)
     let error = await RoleAllocation(requestData)
     if (error) {
       return this.refs.myAlert.alert('分配角色失败', error, null, 'Warning')
     } else {
-      // this.props.backToList()
+      this.props.backToList()
     }
   }
   // 修改
