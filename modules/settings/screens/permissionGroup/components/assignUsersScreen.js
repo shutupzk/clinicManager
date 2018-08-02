@@ -46,7 +46,7 @@ class AssignUsersScreen extends Component {
   async PersonnelsByRole() {
     const { role_id, PersonnelsByRole } = this.props
     let personnels = await PersonnelsByRole({ role_id })
-    console.log('personnels=====', personnels)
+    // console.log('personnels=====', personnels)
     let array = []
     for (let key of personnels) {
       let item = {

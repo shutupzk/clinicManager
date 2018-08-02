@@ -4,7 +4,20 @@ import thunk from 'redux-thunk'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 
 import { user, signin, signout, FunMenusByPersonnel, saveUserMenu, MenubarList } from './user'
-import { doctors, queryDoctorList, doctorSelect, doctorCreate, PersonnelUpdate, PersonnelDelete, PersonnelWithUsername, UpdatePersonnelStatus, PersonnelRoles, PersonnelAuthorizationAllocation, UpdatePersonnelUsername } from './doctors'
+import {
+  doctors,
+  queryDoctorList,
+  doctorSelect,
+  doctorCreate,
+  PersonnelUpdate,
+  PersonnelDelete,
+  PersonnelWithUsername,
+  UpdatePersonnelStatus,
+  PersonnelRoles,
+  PersonnelAuthorizationAllocation,
+  UpdatePersonnelUsername,
+  PersonnelDepartmentList
+} from './doctors'
 import {
   triagePatients,
   triagePatientsList,
@@ -234,6 +247,7 @@ export {
   saveUserMenu,
   queryDoctorList,
   doctorSelect,
+  PersonnelDepartmentList,
   PersonnelUpdate,
   PersonnelDelete,
   triagePatientsList,

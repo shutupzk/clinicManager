@@ -69,6 +69,7 @@ class CurrentInventoryScreen extends Component {
                   <td>成本价</td>
                   <td style={{flex: 2}}>批号</td>
                   <td>有效期</td>
+                  <td>效期预警天数</td>
                   <td>库存</td>
                 </tr>
               </thead>
@@ -77,13 +78,14 @@ class CurrentInventoryScreen extends Component {
                   let isWarning = false
                   let currDate = moment().format('YYYYMMDD')
                   let warningDate = moment(item.eff_date).subtract(item.day_warning, 'days').format('YYYYMMDD')
+                  // console.log('item.day_warning===', item.day_warning)
                   if (warningDate < currDate) {
                     isWarning = true
                   }
                   // console.log('warningDate====', warningDate, currDate)
                   return (
                     <tr key={index}>
-                      <td style={{flex: 2}}>{item.name}</td>
+                      <td style={{flex: 2}} title={item.name}>{item.name}</td>
                       <td style={{flex: 2}}>{item.specification}</td>
                       <td>{item.packing_unit_name}</td>
                       <td style={{flex: 2}} title={item.manu_factory_name}>{item.manu_factory_name}</td>
@@ -94,6 +96,7 @@ class CurrentInventoryScreen extends Component {
                       <td>
                         {isWarning ? <div style={{color: 'red'}}>{moment(item.eff_date).format('YYYY-MM-DD')}</div> : moment(item.eff_date).format('YYYY-MM-DD')}
                       </td>
+                      <td>{item.day_warning}</td>
                       <td>{item.stock_amount}</td>
                     </tr>
                   )

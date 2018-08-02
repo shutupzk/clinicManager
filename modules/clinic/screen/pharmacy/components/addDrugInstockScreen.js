@@ -12,6 +12,7 @@ import {
 import { Select, Confirm, CustomSelect } from '../../../../../components'
 import { formatMoney, limitMoney } from '../../../../../utils'
 import moment from 'moment'
+import Print from 'rc-print'
 
 // 病历
 class AddDrugInstockScreen extends Component {
@@ -606,10 +607,16 @@ class AddDrugInstockScreen extends Component {
                 if (showWay === 4) {
                   this.DrugInstockUpdate()
                 }
+                if (showWay === 3) {
+                  this.refs.printer.onPrint()
+                }
               }}
             >
               {showWay === 1 || showWay === 4 ? '保存' : showWay === 2 ? '审核' : showWay === 3 ? '打印' : ''}
             </button>
+            <Print ref='printer' lazyRender isIframe>
+              {this.mrPrinter()}
+            </Print>
           </div>
         </div>
         {this.style()}
@@ -617,7 +624,178 @@ class AddDrugInstockScreen extends Component {
       </div>
     )
   }
-
+  mrPrinter() {
+    let { user } = this.props
+    const {
+      instock_date,
+      instock_way_name,
+      supplier_name,
+      remark,
+      created_time,
+      instock_operation_name,
+      updated_time,
+      verify_operation_name,
+      order_number,
+      items
+    } = this.state
+    const patientInfoRowStyle = {
+      display: 'flex',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '50px'
+    }
+    const patientInfoRowDivStyle = {
+      flex: 1,
+      display: 'flex',
+      margin: '10px 15px 10px 5px',
+      minHeight: '30px',
+      alignItems: 'center',
+      borderBottom: '1px solid #d8d8d8',
+      borderTop: '1px solid #ffffff'
+    }
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center' }}>
+            <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+            <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>药房入库单</div>
+          </div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>入库日期：</lable>
+            <div style={patientInfoRowDivStyle}>{moment(instock_date).format('YYYY-MM-DD')}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>入库方式：</lable>
+            <div style={patientInfoRowDivStyle}>{instock_way_name}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>供应商：</lable>
+            <div style={patientInfoRowDivStyle}>{supplier_name}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>操作日期：</lable>
+            <div style={patientInfoRowDivStyle}>{moment(created_time).format('YYYY-MM-DD')}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>操作人员：</lable>
+            <div style={patientInfoRowDivStyle}>{instock_operation_name}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>审核日期：</lable>
+            <div style={patientInfoRowDivStyle}>{moment(updated_time).format('YYYY-MM-DD')}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>审核人员：</lable>
+            <div style={patientInfoRowDivStyle}>{verify_operation_name}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>入库单号：</lable>
+            <div style={patientInfoRowDivStyle}>{order_number}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>备注：</lable>
+            <div style={patientInfoRowDivStyle}>{remark}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '14px' }}>
+          <div className='tableDIV' style={{ width: '100%', margin: '0 0 0 0' }}>
+            <ul>
+              <li style={{fontWeight: 'bold'}}>
+                <div>序号</div>
+                <div>商品名称</div>
+                <div>单位</div>
+                <div>生产厂商</div>
+                <div>数量</div>
+                <div>零售价</div>
+                <div>成本价</div>
+                <div>成本合计</div>
+                <div>批号</div>
+                <div style={{ borderRight: '1px solid #d8d8d8' }}>有效期</div>
+              </li>
+              {items.map((item, index) => {
+                return (
+                  <li key={index}>
+                    <div>{index + 1}</div>
+                    <div>{item.drug_name}</div>
+                    <div>{item.packing_unit_name}</div>
+                    <div>{item.manu_factory_name}</div>
+                    <div>{item.instock_amount}</div>
+                    <div>{formatMoney(item.ret_price)}</div>
+                    <div>{formatMoney(item.buy_price)}</div>
+                    <div>{formatMoney(item.instock_amount * item.buy_price * 100)}</div>
+                    <div>{item.serial}</div>
+                    <div style={{ borderRight: '1px solid #d8d8d8' }}>{moment(item.eff_date).format('YYYY-MM-DD')}</div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+        {this.printTableStyle()}
+      </div>
+    )
+  }
+  printTableStyle() {
+    return (
+      <style jsx='1'>{`
+      .tableDIV {
+        display: flex;
+        width: 100%;
+        background: rgba(255, 255, 255, 1);
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+      .tableDIV ul {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #e9e9e9;
+        border-bottom: none;
+      }
+      .tableDIV ul li {
+        display: flex;
+        min-height: 50px;
+        border-bottom: 1px solid #e9e9e9;
+        line-height: normal;
+        text-align: center;
+      }
+      .tableDIV ul li:nth-child(1) {
+        background: rgba(247, 247, 247, 1);
+        border-top: 1px solid #e9e9e9;
+      }
+      .tableDIV ul li > div {
+        flex: 2;
+        border-left: 1px #e9e9e9 dashed;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+      .tableDIV ul li > div:nth-child(1) {
+        // flex: 3;
+      }
+      .tableDIV ul li > div >div.longTxt{
+        line-height: 20px;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100px;
+        text-overflow: ellipsis;
+      }
+      `}</style>
+    )
+  }
   style() {
     return (
       <style jsx={'1'}>{`
@@ -913,7 +1091,8 @@ const mapStateToProps = state => {
     drugs: state.drugs.json_data,
     instock_way: state.drugStocks.instock_way,
     supplier_data: state.drugStocks.supplier_data,
-    detail_data: state.drugStocks.detail_data
+    detail_data: state.drugStocks.detail_data,
+    user: state.user.data
   }
 }
 
