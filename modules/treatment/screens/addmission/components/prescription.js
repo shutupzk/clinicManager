@@ -45,7 +45,11 @@ class PrescriptionScreen extends Component {
       showSaveWmodel: false,
       selPage: 2,
       body_sign: {},
-      patient: {}
+      patient: {},
+      historyDetail: {
+        cPrescItemArray: [],
+        wPrescItemArray: []
+      }
     }
   }
 
@@ -1658,6 +1662,8 @@ class PrescriptionScreen extends Component {
     const { showHistory, wPrescItemArray, cPrescItemArray } = this.state
     if (!showHistory) return
     const { receiveRecords, rr_page_info, PrescriptionWesternPatientGet, PrescriptionChinesePatientGet } = this.props
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
     return (
       <div className='mask'>
         <div className='doctorList' style={{ width: '1100px', left: 'unset', height: 'unset', minHeight: '500px' }}>
@@ -1715,36 +1721,135 @@ class PrescriptionScreen extends Component {
               {receiveRecords.map((item, index) => {
                 const { clinic_triage_patient_id, created_time, visit_type, department_name, doctor_name, pcp_count, pwp_count, diagnosis } = item
                 return (
-                  <li style={{ display: 'flex', alignItems: 'center' }} key={index}>
-                    <div style={{ flex: 3 }}>{moment(created_time).format('YYYY-MM-DD HH:mm')}</div>
-                    <div style={{ flex: 2 }}>{visitType[visit_type]}</div>
-                    <div style={{ flex: 2 }}>{department_name}</div>
-                    <div style={{ flex: 2 }}>{doctor_name}</div>
-                    <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{diagnosis}</div>
-                    <div style={{ flex: 2 }}>{pwp_count > 0 ? '有' : '无'}</div>
-                    <div style={{ flex: 2 }}>{pcp_count > 0 ? '有' : '无'}</div>
-                    <div
-                      style={{ flex: 2, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
-                      onClick={async () => {
-                        let qwPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
-                        qwPrescItemArray = qwPrescItemArray || []
-                        let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
-                        let qcPrescItemArray = []
-                        for (let obj of array) {
-                          let data = obj.items
-                          let info = { ...obj }
-                          delete info.items
-                          delete info.id
-                          qcPrescItemArray.push({
-                            info,
-                            data
-                          })
-                        }
-                        this.setState({ wPrescItemArray: [...wPrescItemArray, ...qwPrescItemArray], cPrescItemArray: [...cPrescItemArray, ...qcPrescItemArray], showHistory: false })
-                      }}
-                    >
-                      选择
+                  <li style={{ display: 'flex', flexDirection: 'column' }} key={index}>
+                    <div className='liDetailRow'>
+                      <div style={{ flex: 3 }}>{moment(created_time).format('YYYY-MM-DD HH:mm')}</div>
+                      <div style={{ flex: 2 }}>{visitType[visit_type]}</div>
+                      <div style={{ flex: 2 }}>{department_name}</div>
+                      <div style={{ flex: 2 }}>{doctor_name}</div>
+                      <div style={{ flex: 4, lineHeight: '20px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>{diagnosis}</div>
+                      <div style={{ flex: 2 }}>{pwp_count > 0 ? '有' : '无'}</div>
+                      <div style={{ flex: 2 }}>{pcp_count > 0 ? '有' : '无'}</div>
+                      <div style={{ flex: 2, display: 'flex' }}>
+                        <div
+                          style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                          onClick={async () => {
+                            if (this.state.showHistoryIndex === index) {
+                              return this.setState({ historyDetail: { wPrescItemArray: [], cPrescItemArray: [] }, showHistoryIndex: null })
+                            }
+                            let qwPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+                            qwPrescItemArray = qwPrescItemArray || []
+                            let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+                            let qcPrescItemArray = []
+                            for (let obj of array) {
+                              let data = obj.items
+                              let info = { ...obj }
+                              delete info.items
+                              delete info.id
+                              qcPrescItemArray.push({
+                                info,
+                                data
+                              })
+                            }
+                            console.log('qcPrescItemArray =====', qcPrescItemArray)
+                            this.setState({ historyDetail: { wPrescItemArray: qwPrescItemArray, cPrescItemArray: qcPrescItemArray }, showHistoryIndex: index })
+                          }}
+                        >
+                          {this.state.showHistoryIndex === index ? '收起' : '查看'}
+                        </div>
+                        <div
+                          style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
+                          onClick={async () => {
+                            let qwPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
+                            qwPrescItemArray = qwPrescItemArray || []
+                            let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
+                            let qcPrescItemArray = []
+                            for (let obj of array) {
+                              let data = obj.items
+                              let info = { ...obj }
+                              delete info.items
+                              delete info.id
+                              qcPrescItemArray.push({
+                                info,
+                                data
+                              })
+                            }
+                            this.setState({ wPrescItemArray: [...wPrescItemArray, ...qwPrescItemArray], cPrescItemArray: [...cPrescItemArray, ...qcPrescItemArray], showHistory: false })
+                          }}
+                        >
+                          选择
+                        </div>
+                      </div>
                     </div>
+                    {this.state.showHistoryIndex === index ? (
+                      <div style={{flexDirection: 'column', display: 'flex', borderTop: '1px solid #e9e9e9'}}>
+                        {this.state.historyDetail.wPrescItemArray.length ? (
+                          <div style={{ flexDirection: 'column', marginTop: '20px' }}>
+                            <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}>
+                              西/成药处方
+                            </label>
+                            <div style={{ marginTop: '5px' }}>
+                              {this.state.historyDetail.wPrescItemArray.map((item, index) => {
+                                return (
+                                  <div style={patientInfoRow} key={index}>
+                                    <div style={patientInforRowItem}>{index + 1}</div>
+                                    <div style={{ ...patientInforRowItem, flex: 7 }}>
+                                      <label>{item.drug_name}</label>
+                                      <label>
+                                        用法：{item.route_administration_name} 1次{item.once_dose} {item.once_dose_unit_name} {item.frequency_name} 共{item.eff_day}天
+                                      </label>
+                                    </div>
+                                    <div style={{ ...patientInforRowItem, flex: 3 }}>{item.specification}</div>
+                                    <div style={{ ...patientInforRowItem, flex: 2 }}>
+                                      共{item.amount}
+                                      {item.packing_unit_name}
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {this.state.historyDetail.cPrescItemArray.map((item, index) => {
+                          let info = item.info || {}
+                          let array = item.data || []
+                          return (
+                            <div style={{ flexDirection: 'column', marginTop: '20px' }} key={index}>
+                              <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}>
+                                {' '}
+                                中 药处方 {index + 1}
+                              </label>
+                              <div>
+                                {array.map((item, index) => {
+                                  return (
+                                    <div style={patientInfoRow} key={index}>
+                                      <div style={patientInforRowItem}>{index + 1}</div>
+                                      <div style={{ ...patientInforRowItem, flex: 7 }}>
+                                        <label>{item.drug_name}</label>
+                                        <label>
+                                          用法：1次 {item.once_dose} {item.once_dose_unit_name}
+                                        </label>
+                                      </div>
+                                      <div style={{ ...patientInforRowItem, flex: 3 }}>{item.specification}</div>
+                                      <div style={{ ...patientInforRowItem, flex: 2 }}>
+                                        共{item.amount}
+                                        {item.packing_unit_name}
+                                      </div>
+                                    </div>
+                                  )
+                                })}
+                                <div style={{ ...patientInfoRow, margin: '30px' }}>
+                                  <div style={patientInforRowItem}>
+                                    共{info.amount || ''}剂 {info.frequency_name || ''} {info.route_administration_name || ''}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    ) : null}
                   </li>
                 )
               })}
@@ -2038,7 +2143,7 @@ class PrescriptionScreen extends Component {
         }
         .tableDIV ul li {
           display: flex;
-          height: 50px;
+          min-height: 50px;
           border-bottom: 1px solid #e9e9e9;
           line-height: 40px;
           text-align: center;
@@ -2047,6 +2152,20 @@ class PrescriptionScreen extends Component {
           background: rgba(247, 247, 247, 1);
         }
         .tableDIV ul li > div {
+          flex: 2;
+          border-left: 1px #e9e9e9 dashed;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .liDetailRow {
+          display: flex;
+          min-height: 50px;
+          flex-direction: row;
+        }
+        .liDetailRow > div {
           flex: 2;
           border-left: 1px #e9e9e9 dashed;
           display: flex;
@@ -2066,6 +2185,11 @@ class PrescriptionScreen extends Component {
         }
         .tableDIV ul li > div:nth-child(1) {
           flex: 3;
+        }
+        .liDetailDiv {
+          border-top: 1px solid #e9e9e9;
+          display: flex;
+          flex-direction: column;
         }
         .formListBottom {
           width: 1388px;
