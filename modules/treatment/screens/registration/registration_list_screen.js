@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
-// import { styles } from '../../../components/styles'
-// import { theme } from '../../../components'
 import { getPatientByCertNo, queryDepartmentList, addTriagePatientsList, triagePatientsList, getPatientByKeyword, patientSelect } from '../../../../ducks'
 import { getAgeByBirthday } from '../../../../utils'
 import moment from 'moment'

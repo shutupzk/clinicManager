@@ -20,7 +20,8 @@ import {
   queryMedicalRecord,
   MedicalRecordRenew,
   MedicalRecordRenewUpdate,
-  MedicalRecordRenewDelete
+  MedicalRecordRenewDelete,
+  selectHistoryMedicalRecord
 } from '../../../../../ducks'
 import { getAgeByBirthday, limitMoney } from '../../../../../utils'
 import { PageCard, DatePicker, Confirm, ImageViewer, Upload } from '../../../../../components'
@@ -28,6 +29,7 @@ import moment from 'moment'
 import ReactEcharts from 'echarts-for-react'
 import { API_SERVER } from '../../../../../config'
 import Print from 'rc-print'
+import Router from 'next/router'
 
 class VisitInfoScreen extends Component {
   constructor(props) {
@@ -796,8 +798,11 @@ class VisitInfoScreen extends Component {
                   </table>
                   {openIndex === index ? (
                     <div style={{ position: 'relative' }}>
-                      <div style={{ position: 'absolute', right: '20px', top: '20px', display: 'flex' }}>
-                        <button className='showButton'>查看报告</button>
+                      <div style={{ position: 'absolute', right: '20px', top: '20px', display: 'flex', zIndex: 100 }}>
+                        <button className='showButton' onClick={() => {
+                          this.props.selectHistoryMedicalRecord(item.id)
+                          Router.push('/treatment/registration/report')
+                        }}>查看报告</button>
                       </div>
                       <div className='detailDiv'>
                         <div>
@@ -2243,7 +2248,7 @@ class VisitInfoScreen extends Component {
           <div>就诊人姓名：{patientInfo.name}</div>
           <div style={{ flex: 1 }}>性别：{patientInfo.sex === 0 ? '女' : '男'}</div>
           <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(patientInfo.birthday)}</div>
-          <div>就诊ID：</div>
+          <div>就诊ID：{patientInfo.id}</div>
           <div>手机号码：{patientInfo.phone}</div>
         </div>
         <div className={'blankBox keyPhysicalData'}>
@@ -2756,6 +2761,7 @@ export default connect(
     queryMedicalRecord,
     TriagePatientVisitDetail,
     MedicalRecordRenewUpdate,
-    MedicalRecordRenewDelete
+    MedicalRecordRenewDelete,
+    selectHistoryMedicalRecord
   }
 )(VisitInfoScreen)

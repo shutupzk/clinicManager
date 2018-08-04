@@ -3,6 +3,7 @@ const MEDICAL_RECORD_ADD = 'MEDICAL_RECORD_ADD'
 const MEDICAL_MODEL_ADD = 'MEDICAL_MODEL_ADD'
 const MEDICAL_HISTORY_ADD = 'MEDICAL_HISTORY_ADD'
 const CHIEF_COMPLAINTS_ADD = 'CHIEF_COMPLAINTS_ADD'
+const MEDICAL_HISTORY_SELECT = 'MEDICAL_HISTORY_SELECT'
 
 const initState = {
   chief_complaints: [], // 主诉
@@ -10,7 +11,8 @@ const initState = {
   models: [],
   model_page: {},
   history_medicals: [],
-  history_page_info: {}
+  history_page_info: {},
+  history_id: null
 }
 
 export function medicalRecords(state = initState, action = {}) {
@@ -23,6 +25,8 @@ export function medicalRecords(state = initState, action = {}) {
       return { ...state, history_medicals: action.data, history_page_info: action.page }
     case CHIEF_COMPLAINTS_ADD:
       return { ...state, chief_complaints: action.data }
+    case MEDICAL_HISTORY_SELECT:
+      return { ...state, history_id: action.history_id }
     default:
       return state
   }
@@ -308,4 +312,11 @@ export const queryChiefComplaints = () => async dispatch => {
   } catch (e) {
     return e
   }
+}
+
+export const selectHistoryMedicalRecord = history_id => async dispatch => {
+  dispatch({
+    type: MEDICAL_HISTORY_SELECT,
+    history_id
+  })
 }
