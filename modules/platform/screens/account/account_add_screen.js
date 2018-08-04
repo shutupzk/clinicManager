@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { connect } from 'react-redux'
 import {
-  AdminCreate
+  AdminCreate,
+  MenubarList
 } from '../../../../ducks'
 import { Confirm } from '../../../../components'
 
@@ -17,7 +18,20 @@ class AccountAddScreen extends Component {
       rightProfiles: []
     }
   }
-
+  componentDidMount() {
+    this.MenubarList()
+  }
+  async MenubarList() {
+    const {MenubarList} = this.props
+    let menuData = await MenubarList({ascription: '02'})
+    let rightProfiles = []
+    for (let item of menuData) {
+      if (item.parent_function_menu_id !== null) {
+        rightProfiles.push(item)
+      }
+    }
+    this.setState({rightProfiles})
+  }
   render() {
     return (
       <div>
@@ -208,7 +222,7 @@ class AccountAddScreen extends Component {
           {rightProfiles.map((item, index) => {
             let checked = false
             for (let i = 0; i < items.length; i++) {
-              if (items[i].id === item.id) {
+              if (items[i].function_menu_id === item.function_menu_id) {
                 checked = true
               }
             }
@@ -218,9 +232,15 @@ class AccountAddScreen extends Component {
                   <input
                     type={'checkbox'}
                     checked={checked}
-                    onChange={e => {}}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        this.setItems(item.function_menu_id, true)
+                      } else {
+                        this.setItems(item.function_menu_id, false)
+                      }
+                    }}
                   />
-                  {item.name}
+                  {item.menu_name}
                 </label>
               </li>
             )
@@ -229,11 +249,45 @@ class AccountAddScreen extends Component {
       </div>
     )
   }
+  setItems(function_menu_id, isChecked) {
+    let {rightProfiles, items} = this.state
+    if (isChecked) {
+      for (let item of rightProfiles) {
+        if (item.function_menu_id === function_menu_id) {
+          items.push(item)
+        }
+      }
+    } else {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].function_menu_id === function_menu_id) {
+          items.splice(i, 1)
+        }
+      }
+    }
+    this.setState({items})
+  }
   async submit() {
     const {AdminCreate} = this.props
-    let {accountInfo} = this.state
-    console.log('accountInfo====', accountInfo)
-    let error = await AdminCreate(accountInfo)
+    let {accountInfo, items} = this.state
+    // console.log('accountInfo====', accountInfo)
+    let newItems = []
+    for (let item of items) {
+      let a_item = {
+        function_menu_id: item.function_menu_id + ''
+      }
+      newItems.push(a_item)
+    }
+    let reqData = {
+      name: accountInfo.name,
+      title: accountInfo.title,
+      phone: accountInfo.phone,
+      username: accountInfo.username,
+      items: JSON.stringify(newItems)
+    }
+    if (accountInfo.password && accountInfo.password !== '') {
+      reqData.password = accountInfo.password
+    }
+    let error = await AdminCreate(reqData)
     if (error) {
       this.refs.myAlert.alert('新增账号失败！', error)
     } else {
@@ -247,5 +301,6 @@ const mapStateToProps = state => {
   }
 }
 export default connect(mapStateToProps, {
-  AdminCreate
+  AdminCreate,
+  MenubarList
 })(AccountAddScreen)

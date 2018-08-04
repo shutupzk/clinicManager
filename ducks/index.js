@@ -160,7 +160,9 @@ import {
   AdminOnOff,
   AdminGetByID,
   AdminLogin,
-  adminSelect
+  adminSelect,
+  MenubarUnsetByAdminID,
+  MenuGetByAdminID
 } from './admin'
 
 const persistConfig = {
@@ -569,5 +571,7 @@ export {
   AdminLogin,
   adminSelect,
   selectHistoryMedicalRecord,
-  TriagePatientReport
+  TriagePatientReport,
+  MenubarUnsetByAdminID,
+  MenuGetByAdminID
 }

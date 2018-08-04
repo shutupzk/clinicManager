@@ -20,12 +20,10 @@ export function admins(state = initState, action = {}) {
   }
 }
 
-export const AdminList = ({ offset = 0, limit = 10, keyword = '' }) => async dispatch => {
+export const AdminList = (reqData) => async dispatch => {
   try {
-    console.log('AdminList====', keyword)
-    const data = await request('/admin/list', {
-      clinic_id
-    })
+    console.log('AdminList====', reqData)
+    const data = await request('/admin/list', reqData)
     const docs = data.data || []
     const page_info = data.page_info || {}
     dispatch({
@@ -39,32 +37,11 @@ export const AdminList = ({ offset = 0, limit = 10, keyword = '' }) => async dis
     return e.message
   }
 }
-export const AdminCreate = ({
-  name,
-  title,
-  phone,
-  username,
-  password,
-  items
-}) => async dispatch => {
+export const AdminCreate = (reqData) => async dispatch => {
   try {
-    const data = await request('/admin/create', {
-      name,
-      title,
-      phone,
-      username,
-      password,
-      items
-    })
+    const data = await request('/admin/create', reqData)
     console.log(
-      {
-        name,
-        title,
-        phone,
-        username,
-        password,
-        items
-      },
+      reqData,
       data
     )
     if (data.code === '200') return null
@@ -74,35 +51,11 @@ export const AdminCreate = ({
     return e.message
   }
 }
-export const AdminUpdate = ({
-  admin_id,
-  name,
-  title,
-  phone,
-  username,
-  password,
-  items
-}) => async dispatch => {
+export const AdminUpdate = (reqData) => async dispatch => {
   try {
-    const data = await request('/admin/update', {
-      admin_id,
-      name,
-      title,
-      phone,
-      username,
-      password,
-      items
-    })
+    const data = await request('/admin/update', reqData)
     console.log(
-      {
-        admin_id,
-        name,
-        title,
-        phone,
-        username,
-        password,
-        items
-      },
+      reqData,
       data
     )
     if (data.code === '200') return null
@@ -166,5 +119,29 @@ export const adminSelect = ({ id }) => async dispatch => {
     return null
   } catch (e) {
     return e.message
+  }
+}
+export const MenubarUnsetByAdminID = ({admin_id}) => async dispatch => {
+  try {
+    console.log('limit====', admin_id)
+    const data = await request('/admin/MenubarUnsetByAdminID', {admin_id})
+    console.log('MenubarUnsetByAdminID=======', data)
+    const docs = data.data || {}
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
+  }
+}
+export const MenuGetByAdminID = ({admin_id}) => async dispatch => {
+  try {
+    console.log('limit====', admin_id)
+    const data = await request('/admin/menubarList', {admin_id})
+    console.log('MenuGetByAdminID=======', data)
+    const docs = data.data || []
+    return docs
+  } catch (e) {
+    console.log(e)
+    return {} // e.message
   }
 }
