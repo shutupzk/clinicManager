@@ -425,6 +425,17 @@ export const TriagePatientVisitDetail = ({ clinic_triage_patient_id }) => async 
   }
 }
 
+export const TriagePatientReport = ({ clinic_triage_patient_id }) => async dispatch => {
+  try {
+    const data = await request('/triage/TriagePatientReport', { clinic_triage_patient_id })
+    if (data.code !== '200') return {}
+    return data.data || {}
+  } catch (e) {
+    console.log(e)
+    return {}
+  }
+}
+
 export const QuickReception = (requestData) => async dispatch => {
   try {
     console.log('QuickReception====', requestData)

@@ -36,7 +36,8 @@ import {
   GetLastBodySign,
   RecptionPatientList,
   TriagePatientVisitDetail,
-  QuickReception
+  QuickReception,
+  TriagePatientReport
 } from './triage_patients'
 import {
   patients,
@@ -76,7 +77,8 @@ import {
   queryChiefComplaints,
   MedicalRecordRenew,
   MedicalRecordRenewUpdate,
-  MedicalRecordRenewDelete
+  MedicalRecordRenewDelete,
+  selectHistoryMedicalRecord
 } from './medicRecord'
 import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff, ClinicDrugListWithStock, ClinicDrugBatchSetting, clearLocalDrugData } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
@@ -565,5 +567,7 @@ export {
   AdminOnOff,
   AdminGetByID,
   AdminLogin,
-  adminSelect
+  adminSelect,
+  selectHistoryMedicalRecord,
+  TriagePatientReport
 }
