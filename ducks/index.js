@@ -150,6 +150,16 @@ import {
 import { treatmentTriages, TreatmentTriageList, TreatmentTriageWaiting, TreatmentTriageChecked, TreatmentTriageChecking, TreatmentTriageRecordCreate, TreatmentTriageRecordList, TreatmentTriageUpdate, TreatmentTriagePatientRecordList } from './treatment_triage'
 
 import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail, DrugRetailRefund, DrugRetailPaymentStatus } from './drug_retail'
+import {
+  admins,
+  AdminList,
+  AdminCreate,
+  AdminUpdate,
+  AdminOnOff,
+  AdminGetByID,
+  AdminLogin,
+  adminSelect
+} from './admin'
 
 const persistConfig = {
   key: 'root',
@@ -157,6 +167,7 @@ const persistConfig = {
 }
 
 const appReducer = persistCombineReducers(persistConfig, {
+  admins,
   user,
   doctors,
   triagePatients,
@@ -547,5 +558,12 @@ export {
   MedicalRecordRenewUpdate,
   MedicalRecordRenewDelete,
   PrescriptionChinesePatientDelete,
-  RoleDelete
+  RoleDelete,
+  AdminList,
+  AdminCreate,
+  AdminUpdate,
+  AdminOnOff,
+  AdminGetByID,
+  AdminLogin,
+  adminSelect
 }
