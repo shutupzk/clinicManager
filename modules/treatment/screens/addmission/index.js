@@ -6,9 +6,10 @@ import {
     triagePatientsSelect,
     triageReception,
     patientSelect,
-    queryDepartmentList,
+    // queryDepartmentList,
     getPatientByKeyword,
-    QuickReception
+    QuickReception,
+    PersonnelDepartmentList
 } from '../../../../ducks'
 import moment from 'moment'
 import { getAgeByBirthday, checkIdCard, checkPhoneNumber } from '../../../../utils'
@@ -45,6 +46,7 @@ class AddmisionScreen extends Component {
 
   componentDidMount() {
     this.commonQueryList({})
+    this.PersonnelDepartmentList()
   }
 
   quetryRecptionPatientList({ keyword, query_type, offset, limit, startDate, endDate }) {
@@ -273,8 +275,8 @@ class AddmisionScreen extends Component {
   }
 
   render() {
-    const {alertType} = this.state
-    const {is_clinic_admin} = this.props
+    const {alertType, patientInfo} = this.state
+    const {is_clinic_admin, departments} = this.props
     return (
       <div>
         <div className={'childTopBar'}>
@@ -302,7 +304,9 @@ class AddmisionScreen extends Component {
           {!is_clinic_admin ? <div className={'boxRight'}>
             <button
               onClick={() => {
-                this.setState({alertType: 1, patientInfo: {}})
+                let newPatient = patientInfo
+                newPatient.department_id = departments[0].department_id
+                this.setState({alertType: 1, patientInfo: newPatient})
               }}
             >快速接诊</button>
           </div> : ''}
@@ -313,6 +317,10 @@ class AddmisionScreen extends Component {
         <Confirm ref='myConfirm' />
       </div>
     )
+  }
+  PersonnelDepartmentList() {
+    const {personnel_id, PersonnelDepartmentList} = this.props
+    PersonnelDepartmentList({personnel_id})
   }
   setPatientInfo(e, key) {
     let newPatient = this.state.patientInfo
@@ -364,11 +372,12 @@ class AddmisionScreen extends Component {
 
   getDepartmentOptions() {
     const { departments } = this.props
+    // console.log('departments====', departments)
     let options = []
-    for (let { id, name } of departments) {
+    for (let { department_id, department_name } of departments) {
       options.push({
-        value: id,
-        label: name
+        value: department_id,
+        label: department_name
       })
     }
     return options
@@ -377,6 +386,7 @@ class AddmisionScreen extends Component {
     let patient = this.state.patientInfo
     const patients = this.props.patients || []
     const {isPhone, isIdCode} = this.state
+    // console.log('patient====', patient)
     return (
       <div className={'mask'}>
         <div className={'doctorList'} style={{ width: '1098px', height: '600px' }}>
@@ -598,6 +608,7 @@ class AddmisionScreen extends Component {
                     <Select
                       placeholder='选择科室'
                       options={this.getDepartmentOptions()}
+                      defaultValue={this.getDepartmentOptions()[0]}
                       onChange={({ value }) => {
                         let newPatient = patient
                         // console.log('value ========== ', value)
@@ -663,7 +674,7 @@ const mapStateToProps = state => {
     doctor_page_info: state.triageDoctors.page_info,
     personnel_id: state.user.data.id,
     patients: state.patients.data,
-    departments: state.departments.data,
+    departments: state.doctors.personnel_department,
     is_clinic_admin: state.user.data.is_clinic_admin
   }
 }
@@ -675,7 +686,8 @@ export default connect(
     triagePatientsSelect,
     triageReception,
     patientSelect,
-    queryDepartmentList,
+    // queryDepartmentList,
+    PersonnelDepartmentList,
     getPatientByKeyword,
     QuickReception
   }

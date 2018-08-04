@@ -3,6 +3,7 @@ const DOCTOR_ADD = 'DOCTOR_ADD'
 const DOCTOR_JSON = 'DOCTOR_JSON'
 const DOCTOR_SELECT = 'DOCTOR_SELECT'
 const DOCTOR_WITH_USERNAME_ADD = 'DOCTOR_WITH_USERNAME_ADD'
+const PERSONNEL_DEPART_ARRAY = 'PERSONNEL_DEPART_ARRAY'
 
 const initState = {
   data: {},
@@ -21,6 +22,8 @@ export function doctors(state = initState, action = {}) {
       return { ...state, data: { ...state.data, ...action.data }, page_info: action.page_info }
     case DOCTOR_SELECT:
       return { ...state, selectId: action.selectId }
+    case PERSONNEL_DEPART_ARRAY:
+      return { ...state, personnel_department: action.personnel_department }
     case DOCTOR_WITH_USERNAME_ADD:
       return { ...state, username_array: action.array_data, username_page_info: action.page_info }
     default:
@@ -248,5 +251,20 @@ export const doctorSelect = ({ personnel_id }) => async dispatch => {
     return null
   } catch (e) {
     return e.message
+  }
+}
+
+export const PersonnelDepartmentList = ({ personnel_id }) => async dispatch => {
+  try {
+    const data = await request('/personnel/PersonnelDepartmentList', { personnel_id })
+    const docs = data.data || []
+    dispatch({
+      type: PERSONNEL_DEPART_ARRAY,
+      personnel_department: docs
+    })
+    return docs
+  } catch (e) {
+    console.log(e)
+    return []
   }
 }

@@ -1368,7 +1368,7 @@ class MedicalRecordScreen extends Component {
   render() {
     let {
       uploadedFiles,
-      // morbidity_date,
+      morbidity_date,
       chief_complaint,
       history_of_present_illness,
       history_of_past_illness,
@@ -1388,7 +1388,7 @@ class MedicalRecordScreen extends Component {
       showProgress
       // chooseDiagnosticTemplate
     } = this.state
-    console.log('state===', this.state)
+    console.log('state===', morbidity_date)
     const { changePage } = this.props
     // const { chief_complaints } = this.props
     // console.log('chief_complaints', chief_complaints)
@@ -1464,7 +1464,7 @@ class MedicalRecordScreen extends Component {
                 // defaultValue={moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 // value={morbidity_date === '' ? moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD') : moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 format={'YYYY-MM-DD'}
-                // value={moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                value={morbidity_date === '' ? '' : moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 onChange={(date, str) => {
                   if (date) {
                     this.setState({ morbidity_date: moment(date).format('YYYY-MM-DD') })
