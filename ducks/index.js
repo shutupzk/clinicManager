@@ -89,7 +89,7 @@ import { examinationOrgans, queryExaminationOrganList } from './examination_orga
 import { treatmentPatients, TreatmentPatientCreate, TreatmentPatientGet } from './treatment_patient'
 import { laboratoryPatients, LaboratoryPatientCreate, LaboratoryPatientGet } from './laboratory_patient'
 import { examinationPatients, ExaminationPatientCreate, ExaminationPatientGet } from './examination_patient'
-import { charge, queryChargeUnpayList, chargeUnpaySelect, queryUnPaidOrders, createPayment, queryChargePaidList, chargePaidSelect, queryPaidOrders, PatientChargeList, queryPaymentStatus } from './charge'
+import { charge, queryChargeUnpayList, chargeUnpaySelect, queryUnPaidOrders, createPayment, queryChargePaidList, chargePaidSelect, queryPaidOrders, PatientChargeList, queryPaymentStatus, refundPaymen } from './charge'
 import { materialPatients, MaterialPatientCreate, MaterialPatientGet } from './material_patient'
 import { otherPatients, OtherCostPatientCreate, OtherCostPatientGet } from './other_patient'
 import { prescriptionWesternPatients, PrescriptionWesternPatientCreate, PrescriptionWesternPatientGet } from './prescription_western_patient'
@@ -510,6 +510,7 @@ export {
   TriagePatientDetail,
   PatientChargeList,
   queryPaymentStatus,
+  refundPaymen,
   GetLastBodySign,
   PatientGetByID,
   PersonalMedicalRecord,

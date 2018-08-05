@@ -1,31 +1,73 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import Router from 'next/router'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
-import { queryPaidOrders } from '../../../../ducks'
-import { PageCard } from '../../../../components'
+import { queryPaidOrders, refundPaymen } from '../../../../ducks'
+import { PageCard, Confirm } from '../../../../components'
 
 class ChargedDetailScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      refundStatus: false // 退费状态
+      refundStatus: false, // 退费状态
+      refundIds: [],
+      allSelect: true
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { charge_paid_triage_selectId, queryPaidOrders } = this.props
-    queryPaidOrders({ mz_paid_record_id: charge_paid_triage_selectId })
+    const data = await queryPaidOrders({ mz_paid_record_id: charge_paid_triage_selectId })
+    const orders_ids = data.page_info.orders_ids.split(',')
+    this.setState({ refundIds: [...orders_ids] })
+  }
+
+  changeAllSelect() {
+    const { allSelect } = this.state
+    if (allSelect) {
+      this.setState({ allSelect: false, refundIds: [] })
+    } else {
+      const { paid_orders_page } = this.props
+      const orders_ids = paid_orders_page.orders_ids.split(',')
+      this.setState({ allSelect: true, refundIds: [...orders_ids] })
+    }
+  }
+
+  checkItem(id, checked) {
+    const { refundIds } = this.state
+    let newArrary = [...refundIds]
+    if (!checked) {
+      newArrary.push(id)
+    } else {
+      var index = newArrary.indexOf(id)
+      if (index > -1) {
+        newArrary.splice(index, 1)
+      }
+    }
+    this.setState({ refundIds: newArrary })
   }
 
   submit() {
-    console.log('提交')
+    const { refundIds } = this.state
+    const { paid_orders_page } = this.props
+    if (refundIds.length === 0) return this.refs.myAlert.alert('提交失败', '请勾选退费项！', null, 'Warning')
+    this.refs.myAlert.confirm('确定提交？', '请谨慎选择', 'Danger', async () => {
+      const res = await this.props.refundPaymen({ out_trade_no: paid_orders_page.out_trade_no, refundIds })
+      if (res && res.code === '200') {
+        this.refs.myAlert.alert('提交成功', '退费成功', () => {
+          Router.push('/treatment/charge/charged')
+        })
+      } else {
+        this.refs.myAlert.alert('提交失败', (res && res.msg) || '未知原因', null, 'Warning')
+      }
+    })
   }
 
   // 费用详情
   renderFeeDetails() {
     const { charge_paid_triage, charge_paid_triage_selectId, paid_orders, paid_orders_page, paid_orders_type } = this.props
-    const { refundStatus } = this.state
+    const { refundStatus, refundIds, allSelect } = this.state
     let triagePatient = {}
     for (let tp of charge_paid_triage) {
       if (tp.mz_paid_record_id === charge_paid_triage_selectId) triagePatient = tp
@@ -89,12 +131,12 @@ class ChargedDetailScreen extends Component {
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
-              {/* {refundStatus && (
+              {refundStatus && (
                 <div>
                   <input type={'checkbox'} checked={allSelect} onChange={() => this.changeAllSelect()} />
                 </div>
-              )} */}
-              <div>序号</div>
+              )}
+              <div style={{ flex: 1 }}>序号</div>
               <div style={{ flex: 3 }}>收费名称</div>
               <div>单价</div>
               <div>数量</div>
@@ -105,10 +147,15 @@ class ChargedDetailScreen extends Component {
               <div>开费医生</div>
             </li>
             {paid_orders.map((item, iKey) => {
+              let checked = refundIds.indexOf(item.mz_paid_orders_id + '') > -1
               return (
                 <li key={iKey}>
-                  {/* {refundStatus && <div>{item.amount > 0 && <input type={'checkbox'} checked={checked} onChange={() => this.checkItem(item.record_id, checked, item.amount)} />}</div>} */}
-                  <div>{iKey + 1}</div>
+                  {refundStatus && (
+                    <div>
+                      <input type={'checkbox'} checked={checked} onChange={() => this.checkItem(item.mz_paid_orders_id + '', checked)} />
+                    </div>
+                  )}
+                  <div style={{ flex: 1 }}>{iKey + 1}</div>
                   <div style={{ flex: 3 }}>{item.name}</div>
                   <div>{formatMoney(item.price)}</div>
                   <div>{item.amount}</div>
@@ -156,7 +203,12 @@ class ChargedDetailScreen extends Component {
   }
 
   render() {
-    return <div>{this.renderFeeDetails()}</div>
+    return (
+      <div>
+        {this.renderFeeDetails()}
+        <Confirm ref='myAlert' />
+      </div>
+    )
   }
 }
 
@@ -174,5 +226,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryPaidOrders }
+  { queryPaidOrders, refundPaymen }
 )(ChargedDetailScreen)

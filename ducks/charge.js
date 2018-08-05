@@ -196,6 +196,7 @@ export const queryPaidOrders = ({ mz_paid_record_id, offset = 0, limit = 10 }) =
       page_info,
       type_total
     })
+    return data
   } catch (e) {
     console.log(e)
     return null
@@ -271,6 +272,19 @@ export const queryPaymentStatus = ({ out_trade_no }) => async dispatch => {
     })
     if (data.code === '200') return data.data
     return null
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const refundPaymen = ({ out_trade_no, refundIds }) => async dispatch => {
+  try {
+    const data = await request('/charge/payment/refund', {
+      out_trade_no,
+      refundIds: JSON.stringify(refundIds)
+    })
+    return data
   } catch (e) {
     console.log(e)
     return null
