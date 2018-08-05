@@ -44,7 +44,7 @@ export const queryClinicList = ({ keyword, clinic_status, start_date, end_date, 
       data: docs,
       page_info
     })
-    return null
+    return docs
   } catch (e) {
     console.log(e)
     return e.message

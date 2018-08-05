@@ -167,6 +167,11 @@ import {
   MenubarUnsetByAdminID,
   MenuGetByAdminID
 } from './admin'
+import {
+  financial,
+  ChargeDayReportByPayWay,
+  ChargeDayReportByBusiness
+} from './financial_analysis'
 
 const persistConfig = {
   key: 'root',
@@ -175,6 +180,7 @@ const persistConfig = {
 
 const appReducer = persistCombineReducers(persistConfig, {
   admins,
+  financial,
   user,
   doctors,
   triagePatients,
@@ -580,5 +586,7 @@ export {
   selectHistoryMedicalRecord,
   TriagePatientReport,
   MenubarUnsetByAdminID,
-  MenuGetByAdminID
+  MenuGetByAdminID,
+  ChargeDayReportByPayWay,
+  ChargeDayReportByBusiness
 }

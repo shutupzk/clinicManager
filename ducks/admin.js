@@ -1,6 +1,7 @@
 import { request } from './request'
 const ADMIN_ADD = 'ADMIN_ADD'
 const ADMIN_SELECT = 'ADMIN_SELECT'
+import localforage from 'localforage'
 
 const initState = {
   data: [],
@@ -92,9 +93,10 @@ export const AdminLogin = ({ username, password }) => async dispatch => {
       username,
       password
     })
-    if (data.code !== '200') {
-      return data.msg
-    }
+    console.log('data===', data)
+    // if (data.code !== '200') {
+    //   return data.msg
+    // }
     const user = data.data || {}
     localforage.setItem('userId', user.id)
     localforage.setItem('username', username)
