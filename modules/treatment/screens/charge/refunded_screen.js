@@ -138,9 +138,9 @@ class RefundedScreen extends Component {
           <span onClick={() => Router.push('/treatment/charge/charged')}>
 						已收费
 					</span>
-          <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
+          {/* <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
 						已挂账
-					</span>
+					</span> */}
           <span className={'sel'}>
 						已退款
 					</span>

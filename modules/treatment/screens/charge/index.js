@@ -117,7 +117,7 @@ class TobeChargedScreen extends Component {
         <div className={'childTopBar'}>
           <span className={'sel'}>待收费</span>
           <span onClick={() => Router.push('/treatment/charge/charged')}>已收费</span>
-          <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>已挂账</span>
+          {/* <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>已挂账</span> */}
           <span onClick={() => Router.push('/treatment/charge/refunded')}>已退款</span>
           <span onClick={() => Router.push('/treatment/charge/orderManagement')}>订单管理</span>
         </div>
