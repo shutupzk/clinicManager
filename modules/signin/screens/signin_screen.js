@@ -5,7 +5,14 @@ import Router from 'next/router'
 import { connect } from 'react-redux'
 import { styles } from '../../../components/styles'
 import { theme } from '../../../components'
-import { signin, FunMenusByPersonnel, saveUserMenu, queryClinicHassetPermissions } from '../../../ducks'
+import {
+  signin,
+  FunMenusByPersonnel,
+  saveUserMenu,
+  queryClinicHassetPermissions,
+  AdminLogin,
+  MenuGetByAdminID
+} from '../../../ducks'
 import { formatMenuList, getLastMenu } from '../../../utils'
 
 class SigninScreen extends Component {
@@ -13,12 +20,14 @@ class SigninScreen extends Component {
     super(props)
     this.state = {
       username: 'lh_admin',
-      password: '123456'
+      password: '123456',
+      loginType: 1
     }
   }
   async submit() {
     const username = this.state.username
     const password = this.state.password
+    const {loginType} = this.state
     if (!username) {
       alert('请输入账号')
       return
@@ -27,13 +36,22 @@ class SigninScreen extends Component {
       alert('请输入密码')
       return
     }
-
-    let data = await this.props.signin({ username, password })
+    let data
+    if (loginType === 1) {
+      data = await this.props.signin({ username, password })
+    } else {
+      data = await this.props.AdminLogin({ username, password })
+    }
+    console.log('data=====', data)
     if (data.code !== '200') {
       return alert('登录失败：' + data.msg)
     } else {
       let user = data.data
-      this.FunMenusByPersonnel({ user })
+      if (loginType === 1) {
+        this.FunMenusByPersonnel({ user })
+      } else {
+        this.MenuGetByAdminID({ user })
+      }
     }
   }
   async FunMenusByPersonnel({ user }) {
@@ -45,8 +63,18 @@ class SigninScreen extends Component {
     let menu = getLastMenu(user_menu[0])
     Router.push(menu.menu_url)
   }
+  async MenuGetByAdminID({ user }) {
+    const { MenuGetByAdminID, saveUserMenu } = this.props
+    let data = await MenuGetByAdminID({ admin_id: user.id })
+    if (!data || data.length === 0) return alert('登录失败：没有权限')
+    let user_menu = formatMenuList(null, JSON.parse(JSON.stringify(data)))
+    saveUserMenu({ user_menu })
+    let menu = getLastMenu(user_menu[0])
+    Router.push(menu.menu_url)
+  }
 
   render() {
+    const {loginType} = this.state
     return (
       <div className={'loginPage'}>
         <div className={'loginLogo'} />
@@ -63,6 +91,28 @@ class SigninScreen extends Component {
             </li>
             <li>
               <input placeholder={'请输入密码'} type='password' onChange={e => this.setState({ password: e.target.value })} value={this.state.password} />
+            </li>
+            <li style={{height: 'auto'}}>
+              <label>
+                <input
+                  type={'radio'}
+                  name={'loginType'}
+                  checked={loginType === 1}
+                  onChange={e => {
+                    this.setState({loginType: 1})
+                  }}
+                />平台用户
+              </label>
+              <label style={{marginLeft: '20px'}}>
+                <input
+                  type={'radio'}
+                  name={'loginType'}
+                  checked={loginType === 2}
+                  onChange={e => {
+                    this.setState({loginType: 2})
+                  }}
+                />管理用户
+              </label>
             </li>
           </ul>
           <button className='loginBtn' onClick={() => this.submit(this.props)}>
@@ -194,7 +244,8 @@ class SigninScreen extends Component {
             font-size: ${theme.mainfontsize};
             line-height: 0.24rem;
           }
-          input {
+          input[type='password'],
+          input[type='text'] {
             left: 0px;
             top: 0px;
             width: 284px;
@@ -236,5 +287,12 @@ class SigninScreen extends Component {
 
 export default connect(
   null,
-  { signin, FunMenusByPersonnel, saveUserMenu, queryClinicHassetPermissions }
+  {
+    signin,
+    FunMenusByPersonnel,
+    saveUserMenu,
+    queryClinicHassetPermissions,
+    AdminLogin,
+    MenuGetByAdminID
+  }
 )(SigninScreen)
