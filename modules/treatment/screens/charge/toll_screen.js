@@ -385,7 +385,7 @@ class TollScreen extends Component {
                 />元
               </div>
             </li>
-            <li>
+            {/* <li>
               <label>
                 <input type='checkbox' checked={this.state.gz_check} onClick={() => this.setCheck(2)} />
                 挂账金额
@@ -400,7 +400,7 @@ class TollScreen extends Component {
                   }}
                 />元
               </div>
-            </li>
+            </li> */}
             <li>
               <label>
                 <input type='checkbox' checked={this.state.jf_check} onClick={() => this.setCheck(3)} />
