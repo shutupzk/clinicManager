@@ -1,10 +1,12 @@
 import { request } from './request'
 const FINACIAL_PAY_WAY = 'FINACIAL_PAY_WAY'
 const FINACIAL_BUSINESS = 'FINACIAL_BUSINESS'
+const FINACIAL_MONTH = 'FINACIAL_MONTH'
 
 const initState = {
   p_data: [],
-  b_data: []
+  b_data: [],
+  m_data: []
 }
 
 export function financial(state = initState, action = {}) {
@@ -13,6 +15,8 @@ export function financial(state = initState, action = {}) {
       return { ...state, p_data: action.p_data }
     case FINACIAL_BUSINESS:
       return { ...state, b_data: action.b_data }
+    case FINACIAL_MONTH:
+      return { ...state, m_data: action.m_data }
     default:
       return state
   }
@@ -43,6 +47,22 @@ export const ChargeDayReportByBusiness = ({ start_date, end_date, clinic_id }) =
     dispatch({
       type: FINACIAL_BUSINESS,
       b_data: docs
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+export const ChargeMonthReportByPayWay = ({ start_date, end_date }) => async dispatch => {
+  try {
+    const data = await request('/financialAnalysis/ChargeMonthReportByPayWay', {
+      start_date, end_date
+    })
+    const docs = data.data || []
+    dispatch({
+      type: FINACIAL_MONTH,
+      m_data: docs
     })
     return null
   } catch (e) {
