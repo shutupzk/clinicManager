@@ -15,7 +15,7 @@ class DailyReportScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      start_date: moment().format('YYYY-MM-DD'),
+      start_date: moment().add(-1, 'd').format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
         .format('YYYY-MM-DD'),
@@ -38,25 +38,42 @@ class DailyReportScreen extends Component {
     let data = await queryClinicList(reqData)
     // console.log('data===', data)
     if (data) {
-      this.setState({selClinic: {label: data[0].name, value: data[0].clinic_id}, clinic_id: data[0].clinic_id})
+      this.setState({selClinic: {label: data[0].name, value: data[0].clinic_id}})
     }
     this.ChargeDayReportByPayWay()
   }
   ChargeDayReportByPayWay() {
     const {ChargeDayReportByPayWay} = this.props
     const {start_date, end_date, clinic_id} = this.state
-    ChargeDayReportByPayWay({start_date, end_date, clinic_id})
+    let reqData = {
+      start_date, end_date
+    }
+    if (clinic_id !== '') {
+      reqData.clinic_id = clinic_id
+    }
+    ChargeDayReportByPayWay(reqData)
     this.ChargeDayReportByBusiness()
   }
   ChargeDayReportByBusiness() {
     const {ChargeDayReportByBusiness} = this.props
     const {start_date, end_date, clinic_id} = this.state
-    ChargeDayReportByBusiness({start_date, end_date, clinic_id})
+    let reqData = {
+      start_date, end_date
+    }
+    if (clinic_id !== '') {
+      reqData.clinic_id = clinic_id
+    }
+    ChargeDayReportByBusiness(reqData)
   }
   getClinicOptions() {
     const {clinics} = this.props
     let array = []
     // console.log('clinics====', clinics)
+    let f_item = {
+      label: '全部',
+      value: ''
+    }
+    array.push(f_item)
     for (let key of clinics) {
       let item = {
         label: key.name,
@@ -68,7 +85,7 @@ class DailyReportScreen extends Component {
     return array
   }
   render() {
-    const {selectType, selClinic} = this.state
+    const {selectType} = this.state
     return (
       <div>
         <div className={'childTopBar'}>
@@ -99,7 +116,7 @@ class DailyReportScreen extends Component {
               <Select
                 placeholder={'诊所名称'}
                 height={32}
-                value={selClinic}
+                // value={selClinic}
                 options={this.getClinicOptions()}
                 onChange={({ value, label }) => {
                   this.setState({ clinic_id: value, selClinic: {value, label} })
@@ -205,6 +222,21 @@ class DailyReportScreen extends Component {
       `}</style>
     )
   }
+  getTotalFee(key) {
+    const {selectType} = this.state
+    const {p_data, b_data} = this.props
+    let total = 0
+    let array = []
+    if (selectType === 1) {
+      array = p_data
+    } else {
+      array = b_data
+    }
+    for (let item of array) {
+      total += item[key]
+    }
+    return total
+  }
   renderDetail() {
     const {p_data} = this.props
     console.log('p_data=====', p_data)
@@ -213,7 +245,6 @@ class DailyReportScreen extends Component {
         <div className={'listContent'}>
           <ul>
             <li>
-              <div><div>{''}</div></div>
               <div><div>诊所名称</div></div>
               <div><div>费用合计</div></div>
               <div><div>折后金额</div></div>
@@ -230,24 +261,22 @@ class DailyReportScreen extends Component {
             </li>
             <li>
               <div><div>合计</div></div>
-              <div><div>--</div></div>
-              <div><div>费用合计</div></div>
-              <div><div>折后金额</div></div>
-              <div><div>实收合计</div></div>
-              <div><div>现金</div></div>
-              <div><div>银行卡</div></div>
-              <div><div>微信当面付</div></div>
-              <div><div>支付宝当面付</div></div>
-              <div><div>积分抵扣</div></div>
-              <div><div>医保支付</div></div>
-              <div><div>挂账</div></div>
-              <div><div>卡卷</div></div>
-              <div><div>减免</div></div>
+              <div><div>{formatMoney(this.getTotalFee('total_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('discount_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('balance_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('cash'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('bank'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('wechat'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('alipay'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('bonus_points_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('medical_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('on_credit_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('voucher_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('derate_money'))}</div></div>
             </li>
             {p_data.map((item, index) => {
               return (
                 <li key={index}>
-                  <div><div>{''}</div></div>
                   <div><div>{item.clinic_name}</div></div>
                   <div><div>{formatMoney(item.total_money)}</div></div>
                   <div><div>{formatMoney(item.discount_money)}</div></div>
@@ -278,51 +307,45 @@ class DailyReportScreen extends Component {
         <div className={'listContent'}>
           <ul>
             <li>
-              <div><div>{''}</div></div>
               <div><div>诊所名称</div></div>
-              <div><div>区域</div></div>
               <div><div>费用合计</div></div>
               <div><div>挂号费</div></div>
-              <div><div>药费</div></div>
+              <div><div>西药费</div></div>
+              <div><div>中药费</div></div>
               <div><div>检验费</div></div>
               <div><div>检查费</div></div>
               <div><div>治疗费</div></div>
               <div><div>材料费</div></div>
               <div><div>药品零售</div></div>
               <div><div>其他费用</div></div>
-              <div><div>交易日期</div></div>
             </li>
             <li>
               <div><div>合计</div></div>
-              <div><div>--</div></div>
-              <div><div>区域</div></div>
-              <div><div>费用合计</div></div>
-              <div><div>挂号费</div></div>
-              <div><div>药费</div></div>
-              <div><div>检验费</div></div>
-              <div><div>检查费</div></div>
-              <div><div>治疗费</div></div>
-              <div><div>材料费</div></div>
-              <div><div>药品零售</div></div>
-              <div><div>其他费用</div></div>
-              <div><div>交易日期</div></div>
+              <div><div>{formatMoney(this.getTotalFee('total_money'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('diagnosis_treatment_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('western_medicine_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('traditional_medical_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('labortory_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('examination_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('treatment_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('material_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('retail_fee'))}</div></div>
+              <div><div>{formatMoney(this.getTotalFee('other_fee'))}</div></div>
             </li>
             {b_data.map((item, index) => {
               return (
                 <li key={index}>
-                  <div><div>{''}</div></div>
-                  <div><div>诊所名称</div></div>
-                  <div><div>区域</div></div>
-                  <div><div>费用合计</div></div>
-                  <div><div>挂号费</div></div>
-                  <div><div>药费</div></div>
-                  <div><div>检验费</div></div>
-                  <div><div>检查费</div></div>
-                  <div><div>治疗费</div></div>
-                  <div><div>材料费</div></div>
-                  <div><div>药品零售</div></div>
-                  <div><div>其他费用</div></div>
-                  <div><div>交易日期</div></div>
+                  <div><div>{item.clinic_name}</div></div>
+                  <div><div>{formatMoney(item.total_money)}</div></div>
+                  <div><div>{formatMoney(item.diagnosis_treatment_fee)}</div></div>
+                  <div><div>{formatMoney(item.western_medicine_fee)}</div></div>
+                  <div><div>{formatMoney(item.traditional_medical_fee)}</div></div>
+                  <div><div>{formatMoney(item.labortory_fee)}</div></div>
+                  <div><div>{formatMoney(item.examination_fee)}</div></div>
+                  <div><div>{formatMoney(item.treatment_fee)}</div></div>
+                  <div><div>{formatMoney(item.material_fee)}</div></div>
+                  <div><div>{formatMoney(item.retail_fee)}</div></div>
+                  <div><div>{formatMoney(item.other_fee)}</div></div>
                 </li>
               )
             })}
