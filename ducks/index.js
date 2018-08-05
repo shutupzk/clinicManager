@@ -165,6 +165,8 @@ import {
   MenuGetByAdminID
 } from './admin'
 
+import {totalAmounts, queryTotalAmounts} from './total_amount'
+
 const persistConfig = {
   key: 'root',
   storage
@@ -229,7 +231,8 @@ const appReducer = persistCombineReducers(persistConfig, {
   laboratoryTriages,
   treatmentTriages,
   drugRetail,
-  examinationReportModels
+  examinationReportModels,
+  totalAmounts
 })
 
 const rootReducer = (state, action) => {
@@ -574,5 +577,6 @@ export {
   selectHistoryMedicalRecord,
   TriagePatientReport,
   MenubarUnsetByAdminID,
-  MenuGetByAdminID
+  MenuGetByAdminID,
+  queryTotalAmounts
 }
