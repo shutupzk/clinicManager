@@ -173,6 +173,8 @@ import {
   ChargeDayReportByBusiness
 } from './financial_analysis'
 
+import {totalAmounts, queryTotalAmounts} from './total_amount'
+
 const persistConfig = {
   key: 'root',
   storage
@@ -238,7 +240,8 @@ const appReducer = persistCombineReducers(persistConfig, {
   laboratoryTriages,
   treatmentTriages,
   drugRetail,
-  examinationReportModels
+  examinationReportModels,
+  totalAmounts
 })
 
 const rootReducer = (state, action) => {
@@ -588,5 +591,6 @@ export {
   MenubarUnsetByAdminID,
   MenuGetByAdminID,
   ChargeDayReportByPayWay,
-  ChargeDayReportByBusiness
+  ChargeDayReportByBusiness,
+  queryTotalAmounts
 }

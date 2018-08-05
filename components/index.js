@@ -10,8 +10,8 @@ import MyTree from './Tree'
 import CustomSelect from './CustomSelect'
 import MyCreatableSelect from './CreatableSelect'
 import ImageViewer from './ImageViewer'
-import DatePicker from './DatePicker'
-import Upload from './Upload'
+import { MyDatePicker as DatePicker, MyMonthPicker as MonthPicker, MyUpload as Upload } from './Ant'
+// import Upload from './Upload'
 
 export {
   Loading,
@@ -27,5 +27,6 @@ export {
   MyCreatableSelect,
   ImageViewer,
   DatePicker,
-  Upload
+  Upload,
+  MonthPicker
 }
