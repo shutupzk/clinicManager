@@ -39,6 +39,10 @@ class ChargedScreen extends Component {
           <ul>
             {data.map((patient, index) => {
               let statusColor = '#31B0B3'
+
+              let fee = `￥${formatMoney(patient.charge_total_fee)}`
+              if (patient.refund_money < 0) fee += `（已退￥${formatMoney(patient.refund_money)}）`
+
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
@@ -83,8 +87,8 @@ class ChargedScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span style={{ cursor: 'unset' }} title={'￥' + formatMoney(patient.charge_total_fee) + '' + patient.refund_money ? '（退费￥' + `${formatMoney(patient.refund_money)}）` : ''}>
-                      ￥{formatMoney(patient.charge_total_fee)} {patient.refund_money ? `（退费￥${formatMoney(patient.refund_money)}）` : ''}
+                    <span style={{ cursor: 'unset' }} title={fee}>
+                      {fee}
                     </span>
                     <span style={{ cursor: 'unset' }}>打印发票</span>
                     <span
