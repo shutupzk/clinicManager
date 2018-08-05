@@ -278,11 +278,12 @@ export const queryPaymentStatus = ({ out_trade_no }) => async dispatch => {
   }
 }
 
-export const refundPaymen = ({ out_trade_no, refundIds }) => async dispatch => {
+export const refundPayment = ({ out_trade_no, refundIds, operation_id }) => async dispatch => {
   try {
     const data = await request('/charge/payment/refund', {
       out_trade_no,
-      refundIds: JSON.stringify(refundIds)
+      refundIds: JSON.stringify(refundIds),
+      operation_id
     })
     return data
   } catch (e) {

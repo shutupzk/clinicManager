@@ -42,11 +42,16 @@ class ChargedScreen extends Component {
               return (
                 <li key={index}>
                   <div className={'itemTop'}>
-                    <span style={{ cursor: 'pointer' }} onClick={() => {
-                      let patient_id = patient.patient_id
-                      this.props.patientSelect({ patient_id })
-                      Router.push('/treatment/registration/list_detail')
-                    }}>{patient.patient_name}</span>
+                    <span
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        let patient_id = patient.patient_id
+                        this.props.patientSelect({ patient_id })
+                        Router.push('/treatment/registration/list_detail')
+                      }}
+                    >
+                      {patient.patient_name}
+                    </span>
                     <span>{patient.sex === 0 ? '女' : '男'}</span>
                     <span>{getAgeByBirthday(patient.birthday)}</span>
                     <span style={{ color: statusColor, border: '1px solid ' + statusColor }}>已收费</span>
@@ -78,7 +83,9 @@ class ChargedScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span style={{ cursor: 'unset' }}>￥{formatMoney(patient.charge_total_fee)}</span>
+                    <span style={{ cursor: 'unset' }}>
+                      ￥{formatMoney(patient.charge_total_fee)} {patient.refund_money ? `（退费￥${formatMoney(patient.refund_money)}）` : ''}
+                    </span>
                     <span style={{ cursor: 'unset' }}>打印发票</span>
                     <span
                       onClick={() => {
@@ -108,7 +115,7 @@ class ChargedScreen extends Component {
 
   // 收费详情
   gotoChargeDetail(clinic_triage_patient_id) {
-    this.props.chargePaidSelect({selectId: clinic_triage_patient_id})
+    this.props.chargePaidSelect({ selectId: clinic_triage_patient_id })
     Router.push('/treatment/charge/chargedDetail')
   }
   // 加载
@@ -171,4 +178,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { queryChargePaidList, chargePaidSelect, patientSelect })(ChargedScreen)
+export default connect(
+  mapStateToProps,
+  { queryChargePaidList, chargePaidSelect, patientSelect }
+)(ChargedScreen)
