@@ -23,8 +23,8 @@ class TotalAmountScreen extends Component {
           <span className={'sel'}>交易总额</span>
           <span onClick={() => Router.push('/platform/operation/profit')}>利润</span>
           <span onClick={() => Router.push('/platform/operation/patient')}>患者分析</span>
-          <span onClick={() => Router.push('/platform/operation/diagnosis')}>诊断分析</span>
-          <span onClick={() => Router.push('/platform/operation/drug')}>药品分析</span>
+          {/* <span onClick={() => Router.push('/platform/operation/diagnosis')}>诊断分析</span>
+          <span onClick={() => Router.push('/platform/operation/drug')}>药品分析</span> */}
         </div>
       </div>
     )

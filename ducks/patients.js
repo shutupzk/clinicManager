@@ -2,11 +2,17 @@ import { request } from './request'
 const PATIENT_ADD = 'PATIENT_ADD'
 const PATIENT_SELECT = 'PATIENT_SELECT'
 const MEMBER_PATIENT_LIST = 'MEMBER_PATIENT_LIST'
+const PATIENT_COUNT_SEX = 'PATIENT_COUNT_SEX'
+const PATIENT_COUNT_AGE = 'PATIENT_COUNT_AGE'
+const PATIENT_COUNT_CHANNEL = 'PATIENT_COUNT_CHANNEL'
 
 const initState = {
   data: [],
   member_patient_data: [],
   page_info: {},
+  sex_cdata: [],
+  age_cdata: [],
+  channel_cdata: [],
   selectId: null
 }
 
@@ -18,8 +24,62 @@ export function patients(state = initState, action = {}) {
       return { ...state, member_patient_data: action.member_patient_data, page_info: action.page_info }
     case PATIENT_SELECT:
       return Object.assign({}, state, { selectId: action.selectId })
+    case PATIENT_COUNT_SEX:
+      return { ...state, sex_cdata: action.sex_cdata }
+    case PATIENT_COUNT_AGE:
+      return { ...state, age_cdata: action.age_cdata }
+    case PATIENT_COUNT_CHANNEL:
+      return { ...state, channel_cdata: action.channel_cdata }
     default:
       return state
+  }
+}
+
+export const PatientCountBySex = () => async dispatch => {
+  try {
+    console.log('PatientCountBySex========')
+    const data = await request('/patient/PatientCountBySex', {})
+    // console.log(data)
+    const docs = data.data || []
+    console.log('PatientCountBySex====', data)
+    dispatch({
+      type: PATIENT_COUNT_SEX,
+      sex_cdata: docs
+    })
+    // return patient
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+export const PatientCountByAge = () => async dispatch => {
+  try {
+    const data = await request('/patient/PatientCountByAge', {})
+    console.log(data)
+    const docs = data.data || []
+    dispatch({
+      type: PATIENT_COUNT_AGE,
+      age_cdata: docs
+    })
+    // return patient
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+export const PatientCountByChannel = () => async dispatch => {
+  try {
+    const data = await request('/patient/PatientCountByChannel', {})
+    console.log(data)
+    const docs = data.data || []
+    dispatch({
+      type: PATIENT_COUNT_CHANNEL,
+      channel_cdata: docs
+    })
+    // return patient
+  } catch (e) {
+    console.log(e)
+    return null
   }
 }
 

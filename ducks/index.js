@@ -59,7 +59,10 @@ import {
   PatientBmiList,
   PatientBloodPressureList,
   PatientVisionList,
-  PatientBloodSugarList
+  PatientBloodSugarList,
+  PatientCountBySex,
+  PatientCountByAge,
+  PatientCountByChannel
 } from './patients'
 import { departments, queryDepartmentList, departmentSelect, departmentCreate, DepartmentDelete, DepartmentUpdate } from './departments'
 import { triageDoctors, triageDoctorsList, triageDoctorsSelect } from './triage_doctors'
@@ -269,6 +272,9 @@ export {
   triagePatientsSelect,
   addTriagePatientsList,
   getPatientByCertNo,
+  PatientCountBySex,
+  PatientCountByAge,
+  PatientCountByChannel,
   patientSelect,
   MemberPateintList,
   queryDepartmentList,
