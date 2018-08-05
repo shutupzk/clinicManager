@@ -83,7 +83,7 @@ class ChargedScreen extends Component {
                     </span>
                   </div>
                   <div className={'itemBottom'}>
-                    <span style={{ cursor: 'unset' }}>
+                    <span style={{ cursor: 'unset' }} title={'￥' + formatMoney(patient.charge_total_fee) + '' + patient.refund_money ? '（退费￥' + `${formatMoney(patient.refund_money)}）` : ''}>
                       ￥{formatMoney(patient.charge_total_fee)} {patient.refund_money ? `（退费￥${formatMoney(patient.refund_money)}）` : ''}
                     </span>
                     <span style={{ cursor: 'unset' }}>打印发票</span>
