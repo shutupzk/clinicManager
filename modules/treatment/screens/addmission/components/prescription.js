@@ -73,9 +73,6 @@ class PrescriptionScreen extends Component {
         data
       })
     }
-
-    console.log('wPrescItemArray, cPrescItemArray', wPrescItemArray, cPrescItemArray)
-
     let wPrescItemArrayStr = JSON.stringify(wPrescItemArray)
     let cPrescItemArrayStr = JSON.stringify(cPrescItemArray)
     this.setState({ wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr, body_sign, patient })
@@ -293,7 +290,6 @@ class PrescriptionScreen extends Component {
         index = 0
       }
       let selItem = 'cPresc' + index
-      // console.log('array=========', array, index, selItem)
       if (array.length === 0) {
         selItem = 'wPresc'
       }
@@ -464,7 +460,6 @@ class PrescriptionScreen extends Component {
                         labelKey='drug_name'
                         placeholder='搜索'
                         onChange={item => {
-                          // console.log('item=====', item)
                           this.setWItemValues(item, index)
                         }}
                         onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
@@ -485,6 +480,7 @@ class PrescriptionScreen extends Component {
                           let has = false
                           for (let i = 0; i < wPrescItemArray.length; i++) {
                             let obj = wPrescItemArray[i]
+                            if (obj.paid_status) continue
                             if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
                               has = true
                               break
@@ -1404,14 +1400,12 @@ class PrescriptionScreen extends Component {
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
                       onClick={() => {
                         let newArray = wPrescItemArray // [...wPrescItemArray, ...items]
-                        // console.log('wPrescItemArray======', wPrescItemArray, items)
                         if (wPrescItemArray.length > 0) {
                           let idArray = []
                           for (let i = 0; i < wPrescItemArray.length; i++) {
                             idArray.push(wPrescItemArray[i].clinic_drug_id)
                           }
                           for (let j = 0; j < items.length; j++) {
-                            // console.log(idArray.indexOf(items[j].clinic_drug_id))
                             if (idArray.indexOf(items[j].clinic_drug_id) === -1) {
                               newArray.push(items[j])
                               this.setState({ wPrescItemArray: newArray, showWmodelList: false })
@@ -1425,7 +1419,6 @@ class PrescriptionScreen extends Component {
                           newArray = [...items]
                           this.setState({ wPrescItemArray: newArray, showWmodelList: false })
                         }
-                        // console.log('wPrescItemArray======', wPrescItemArray, items)
                       }}
                     >
                       选择
@@ -1667,16 +1660,13 @@ class PrescriptionScreen extends Component {
                         // newObj.data = [...newObj.data, ...array]
                         let newArray = [...cPrescItemArray]
                         newArray[selIndex] = newObj
-                        // console.log('newObj=====', cPrescItemArray[selIndex], newObj)
-                        let newArrayItem = cPrescItemArray[selIndex].data // [...wPrescItemArray, ...items]
-                        // console.log('cPrescItemArray======', cPrescItemArray[selIndex], array)
+                        let newArrayItem = cPrescItemArray[selIndex].data
                         if (newArrayItem.length > 0) {
                           let idArray = []
                           for (let i = 0; i < newArrayItem.length; i++) {
                             idArray.push(newArrayItem[i].clinic_drug_id)
                           }
                           for (let j = 0; j < array.length; j++) {
-                            // console.log(idArray.indexOf(items[j].clinic_drug_id))
                             if (idArray.indexOf(array[j].clinic_drug_id) === -1) {
                               newArrayItem.push(items[j])
                               newArray[selIndex].data = newArrayItem
@@ -1820,7 +1810,6 @@ class PrescriptionScreen extends Component {
                                 data
                               })
                             }
-                            console.log('qcPrescItemArray =====', qcPrescItemArray)
                             this.setState({ historyDetail: { wPrescItemArray: qwPrescItemArray, cPrescItemArray: qcPrescItemArray }, showHistoryIndex: index })
                           }}
                         >
@@ -2327,7 +2316,6 @@ class PrescriptionScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state.user.data ==========', state.user.data)
   return {
     clinic_triage_patient_id: state.triagePatients.selectId,
     user: state.user.data,
