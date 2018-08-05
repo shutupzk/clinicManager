@@ -15,7 +15,8 @@ class AccountAddScreen extends Component {
         items: []
       },
       items: [],
-      rightProfiles: []
+      rightProfiles: [],
+      parentMenu: {}
     }
   }
   componentDidMount() {
@@ -25,12 +26,15 @@ class AccountAddScreen extends Component {
     const {MenubarList} = this.props
     let menuData = await MenubarList({ascription: '02'})
     let rightProfiles = []
+    let parentMenu = {}
     for (let item of menuData) {
       if (item.parent_function_menu_id !== null) {
         rightProfiles.push(item)
+      } else {
+        parentMenu = item
       }
     }
-    this.setState({rightProfiles})
+    this.setState({rightProfiles, parentMenu})
   }
   render() {
     return (
@@ -268,9 +272,15 @@ class AccountAddScreen extends Component {
   }
   async submit() {
     const {AdminCreate} = this.props
-    let {accountInfo, items} = this.state
+    let {accountInfo, items, parentMenu} = this.state
     // console.log('accountInfo====', accountInfo)
     let newItems = []
+    if (items.length > 0) {
+      let p_item = {
+        function_menu_id: parentMenu.function_menu_id + ''
+      }
+      newItems.push(p_item)
+    }
     for (let item of items) {
       let a_item = {
         function_menu_id: item.function_menu_id + ''

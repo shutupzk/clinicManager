@@ -26,7 +26,8 @@ class AccountListScreen extends Component {
         items: []
       },
       items: [],
-      rightProfiles: []
+      rightProfiles: [],
+      parentMenu: {}
     }
   }
   componentDidMount() {
@@ -235,6 +236,7 @@ class AccountListScreen extends Component {
     let menuData = await MenubarList({ascription: '02'})
     let adminMenu = await MenuGetByAdminID({admin_id})
     console.log('data=====', data, menuData, adminMenu)
+    let parentMenu = {}
     if (data.code !== '200') {
       this.refs.myAlert.alert('查询数据详情失败', data.msg)
       this.setState({showType: 0, accountInfo: {items: []}})
@@ -243,6 +245,8 @@ class AccountListScreen extends Component {
       for (let item of menuData) {
         if (item.parent_function_menu_id !== null) {
           rightProfiles.push(item)
+        } else {
+          parentMenu = item
         }
       }
       let items = []
@@ -255,7 +259,8 @@ class AccountListScreen extends Component {
         showType: 1,
         accountInfo: data.data,
         items,
-        rightProfiles
+        rightProfiles,
+        parentMenu
       })
     }
   }
@@ -482,8 +487,14 @@ class AccountListScreen extends Component {
   }
   async submit() {
     const {AdminUpdate} = this.props
-    let {accountInfo, items} = this.state
+    let {accountInfo, items, parentMenu} = this.state
     let newItems = []
+    if (items.length > 0) {
+      let p_item = {
+        function_menu_id: parentMenu.function_menu_id + ''
+      }
+      newItems.push(p_item)
+    }
     for (let item of items) {
       let a_item = {
         function_menu_id: item.function_menu_id + ''
