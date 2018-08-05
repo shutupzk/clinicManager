@@ -36,7 +36,8 @@ import {
   GetLastBodySign,
   RecptionPatientList,
   TriagePatientVisitDetail,
-  QuickReception
+  QuickReception,
+  TriagePatientReport
 } from './triage_patients'
 import {
   patients,
@@ -76,7 +77,8 @@ import {
   queryChiefComplaints,
   MedicalRecordRenew,
   MedicalRecordRenewUpdate,
-  MedicalRecordRenewDelete
+  MedicalRecordRenewDelete,
+  selectHistoryMedicalRecord
 } from './medicRecord'
 import { drugs, ClinicDrugCreate, ClinicDrugList, queryDicDrugsList, ClinicDrugUpdate, ClinicDrugDetail, ClinicDrugOnOff, ClinicDrugListWithStock, ClinicDrugBatchSetting, clearLocalDrugData } from './drug'
 import { laboratories, laboratoryCreate, queryLaboratoryList, queryLaboList, LaboratoryOnOff, LaboratoryUpdate, LaboratoryDetail } from './laboratory'
@@ -150,6 +152,18 @@ import {
 import { treatmentTriages, TreatmentTriageList, TreatmentTriageWaiting, TreatmentTriageChecked, TreatmentTriageChecking, TreatmentTriageRecordCreate, TreatmentTriageRecordList, TreatmentTriageUpdate, TreatmentTriagePatientRecordList } from './treatment_triage'
 
 import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail, DrugRetailRefund, DrugRetailPaymentStatus } from './drug_retail'
+import {
+  admins,
+  AdminList,
+  AdminCreate,
+  AdminUpdate,
+  AdminOnOff,
+  AdminGetByID,
+  AdminLogin,
+  adminSelect,
+  MenubarUnsetByAdminID,
+  MenuGetByAdminID
+} from './admin'
 
 const persistConfig = {
   key: 'root',
@@ -157,6 +171,7 @@ const persistConfig = {
 }
 
 const appReducer = persistCombineReducers(persistConfig, {
+  admins,
   user,
   doctors,
   triagePatients,
@@ -548,5 +563,16 @@ export {
   MedicalRecordRenewUpdate,
   MedicalRecordRenewDelete,
   PrescriptionChinesePatientDelete,
-  RoleDelete
+  RoleDelete,
+  AdminList,
+  AdminCreate,
+  AdminUpdate,
+  AdminOnOff,
+  AdminGetByID,
+  AdminLogin,
+  adminSelect,
+  selectHistoryMedicalRecord,
+  TriagePatientReport,
+  MenubarUnsetByAdminID,
+  MenuGetByAdminID
 }

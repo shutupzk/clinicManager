@@ -750,7 +750,6 @@ class ExamDetailScreen extends Component {
         images.push({ src: API_SERVER + f.url })
       }
     }
-    console.log('triagePatient====', triagePatient, exams, data)
     return (
       <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
         <div style={{ display: 'flex', width: '100%' }}>
@@ -811,7 +810,7 @@ class ExamDetailScreen extends Component {
           return (
             <div style={{ width: '100%', display: 'flex', fontSize: '17px' }} key={index}>
               <div style={patientInfoRowStyle}>
-                <img src={item.src} />
+                <img src={item.src} style={{maxHeight: '700px', maxWidth: '700px', marginTop: '20px'}} />
               </div>
             </div>
           )
