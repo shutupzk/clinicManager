@@ -39,6 +39,7 @@ class MaterialScreen extends Component {
       let has = false
       for (let i = 0; i < datas.length; i++) {
         let obj = datas[i]
+        if (obj.paid_status) continue
         if (obj.clinic_material_id === clinic_material_id && index !== i) {
           has = true
           break
@@ -98,8 +99,8 @@ class MaterialScreen extends Component {
     const { eaterials, selPage } = this.state
     let items = []
     for (let item of eaterials) {
+      if (item.paid_status) continue
       let obj = {}
-
       if (!item.amount) {
         return this.refs.myAlert.alert('保存失败', '存在数量无效的项目，请检查！', null, 'Danger')
       }
@@ -318,16 +319,20 @@ class MaterialScreen extends Component {
                     <li key={index}>
                       <div>
                         <div style={{ width: '100%' }}>
-                          <Select
-                            value={this.getSelectValue(item.clinic_material_id, nameOptions)}
-                            onChange={item => {
-                              this.setItemValues(item, index)
-                            }}
-                            placeholder='搜索名称'
-                            height={38}
-                            onInputChange={keyword => this.queryMaterialList(keyword)}
-                            options={nameOptions}
-                          />
+                          {item.paid_status ? (
+                            item.name
+                          ) : (
+                            <Select
+                              value={this.getSelectValue(item.clinic_material_id, nameOptions)}
+                              onChange={item => {
+                                this.setItemValues(item, index)
+                              }}
+                              placeholder='搜索名称'
+                              height={38}
+                              onInputChange={keyword => this.queryMaterialList(keyword)}
+                              options={nameOptions}
+                            />
+                          )}
                         </div>
                       </div>
                       <div>
@@ -340,18 +345,17 @@ class MaterialScreen extends Component {
                         <input readOnly value={item.stock_amount || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'stock_amount')} />
                       </div>
                       <div>
-                        <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
+                        <input readOnly={item.paid_status} value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
                       </div>
                       <div>
-                        <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                        <input readOnly={item.paid_status} value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div
-                          onClick={() => this.removeColumn(index)}
-                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                        >
-                          删除
-                        </div>
+                        {item.paid_status ? null : (
+                          <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                            删除
+                          </div>
+                        )}
                       </div>
                     </li>
                   )
@@ -387,37 +391,37 @@ class MaterialScreen extends Component {
           </Confirm>
         </div>
         <style jsx='true'>{`
-          .childTopBar{
+          .childTopBar {
             display: flex;
             margin-left: 65px;
           }
-          .childTopBar>span {
-            flex:1;
+          .childTopBar > span {
+            flex: 1;
             margin-left: 0;
           }
-            .buttonDiv {
-              width: 63px;
-              height: 30px;
-              border-radius: 4px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-left: 8px;
-            }
-            .buttonDivCancel {
-              background: rgba(255, 255, 255, 1);
-              border: 1px solid #d9d9d9;
-            }
-            .buttonDiv span {
-              height: 22px;
-              font-size: 14px;
-              font-family: PingFangSC-Regular;
-              line-height: 22px;
-            }
-            .cancel {
-              color: rgba(0, 0, 0, 0.65);
-            }
+          .buttonDiv {
+            width: 63px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+          }
+          .buttonDivCancel {
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid #d9d9d9;
+          }
+          .buttonDiv span {
+            height: 22px;
+            font-size: 14px;
+            font-family: PingFangSC-Regular;
+            line-height: 22px;
+          }
+          .cancel {
+            color: rgba(0, 0, 0, 0.65);
+          }
         `}</style>
       </div>
     )

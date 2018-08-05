@@ -39,6 +39,7 @@ class LaboratoryScreen extends Component {
       let has = false
       for (let i = 0; i < datas.length; i++) {
         let obj = datas[i]
+        if (obj.paid_status) continue
         if (obj.clinic_laboratory_id === clinic_laboratory_id && index !== i) {
           has = true
           break
@@ -91,6 +92,7 @@ class LaboratoryScreen extends Component {
     const { laboratories, selPage } = this.state
     let items = []
     for (let item of laboratories) {
+      if (item.paid_status) continue
       if (!item.times) {
         return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
       }
@@ -677,32 +679,35 @@ class LaboratoryScreen extends Component {
                     <li key={index}>
                       <div>
                         <div style={{ width: '100%' }}>
-                          <Select
-                            value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
-                            onChange={({ value, label }) => {
-                              this.setItemValue(value, index, 'clinic_laboratory_id', 2)
-                              this.setItemValue(label, index, 'name', 2)
-                            }}
-                            placeholder='搜索名称'
-                            height={38}
-                            onInputChange={keyword => this.queryLaboratoryList(keyword)}
-                            options={nameOptions}
-                          />
+                          {item.paid_status ? (
+                            item.laboratory_name
+                          ) : (
+                            <Select
+                              value={this.getSelectValue(laboratories[index].clinic_laboratory_id, nameOptions)}
+                              onChange={({ value, label }) => {
+                                this.setItemValue(value, index, 'clinic_laboratory_id', 2)
+                                this.setItemValue(label, index, 'name', 2)
+                              }}
+                              placeholder='搜索名称'
+                              height={38}
+                              onInputChange={keyword => this.queryLaboratoryList(keyword)}
+                              options={nameOptions}
+                            />
+                          )}
                         </div>
                       </div>
                       <div>
-                        <input value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                        <input readOnly={item.paid_status} value={laboratories[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                       </div>
                       <div>
-                        <input maxLength='500' value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                        <input readOnly={item.paid_status} maxLength='500' value={laboratories[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div
-                          onClick={() => this.removeColumn(index)}
-                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                        >
-                          删除
-                        </div>
+                        {item.paid_status ? null : (
+                          <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                            删除
+                          </div>
+                        )}
                       </div>
                     </li>
                   )
