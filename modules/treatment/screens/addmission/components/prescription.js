@@ -63,14 +63,19 @@ class PrescriptionScreen extends Component {
     let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
     let cPrescItemArray = []
     for (let obj of array) {
-      let data = obj.items
-      let info = { ...obj }
+      let data = obj.items || []
+      let paid_status = false
+      if (data.length) paid_status = data[0].paid_status
+      let info = { ...obj, paid_status }
       delete info.items
       cPrescItemArray.push({
         info,
         data
       })
     }
+
+    console.log('wPrescItemArray, cPrescItemArray', wPrescItemArray, cPrescItemArray)
+
     let wPrescItemArrayStr = JSON.stringify(wPrescItemArray)
     let cPrescItemArrayStr = JSON.stringify(cPrescItemArray)
     this.setState({ wPrescItemArray, cPrescItemArray, wPrescItemArrayStr, cPrescItemArrayStr, body_sign, patient })
@@ -164,6 +169,16 @@ class PrescriptionScreen extends Component {
     }
     return null
   }
+
+  getSelectLable(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj.label
+      }
+    }
+    return null
+  }
+
   // 设置中药药品信息
   setCItemValue(e, index, key, type = 1) {
     const { selIndex, cPrescItemArray } = this.state
@@ -224,6 +239,7 @@ class PrescriptionScreen extends Component {
       let array = cPrescItemArray[selIndex].data
       info.amount = value
       for (let i = 0; i < array.length; i++) {
+        if (array[i].paid_status) continue
         if (array[i].once_dose) {
           array[i].amount = array[i].once_dose * value
         }
@@ -376,7 +392,8 @@ class PrescriptionScreen extends Component {
     let hasNoStockAmount = false
     let hasNoStockName = ''
     for (let item of wPrescItemArray) {
-      const { stock_amount, fetch_address, drug_name } = item
+      const { stock_amount, fetch_address, drug_name, paid_status } = item
+      if (paid_status) continue
       if ((!stock_amount || stock_amount === 0) && fetch_address * 1 === 0) {
         hasNoStockAmount = true
         hasNoStockName = drug_name
@@ -435,119 +452,143 @@ class PrescriptionScreen extends Component {
               <li key={index}>
                 <div style={{ flex: 4 }}>
                   <div>
-                    <CustomSelect
-                      controlStyle={{ height: '38px' }}
-                      value={item.clinic_drug_id || ''}
-                      label={item.drug_name || ''}
-                      mustOptionValue={!false}
-                      valueKey='clinic_drug_id'
-                      labelKey='drug_name'
-                      placeholder='搜索'
-                      onChange={item => {
-                        // console.log('item=====', item)
-                        this.setWItemValues(item, index)
-                      }}
-                      onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
-                      options={this.getDrugOptions(0)}
-                      renderTitle={(item, index) => {
-                        return (
-                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
-                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
-                            <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
-                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
-                            <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
-                          </div>
-                        )
-                      }}
-                      renderItem={(item, sindex) => {
-                        let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
-                        let packing_unit_name = item.packing_unit_name || ''
-                        let has = false
-                        for (let i = 0; i < wPrescItemArray.length; i++) {
-                          let obj = wPrescItemArray[i]
-                          if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
-                            has = true
-                            break
+                    {item.paid_status ? (
+                      item.drug_name
+                    ) : (
+                      <CustomSelect
+                        controlStyle={{ height: '38px' }}
+                        value={item.clinic_drug_id || ''}
+                        label={item.drug_name || ''}
+                        mustOptionValue={!false}
+                        valueKey='clinic_drug_id'
+                        labelKey='drug_name'
+                        placeholder='搜索'
+                        onChange={item => {
+                          // console.log('item=====', item)
+                          this.setWItemValues(item, index)
+                        }}
+                        onInputChange={keyword => this.ClinicDrugList(keyword, 0)}
+                        options={this.getDrugOptions(0)}
+                        renderTitle={(item, index) => {
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={index}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                            </div>
+                          )
+                        }}
+                        renderItem={(item, sindex) => {
+                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                          let packing_unit_name = item.packing_unit_name || ''
+                          let has = false
+                          for (let i = 0; i < wPrescItemArray.length; i++) {
+                            let obj = wPrescItemArray[i]
+                            if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
+                              has = true
+                              break
+                            }
                           }
-                        }
-                        if (has) return null
-                        return (
-                          <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
-                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
-                            <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
-                            <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
-                            <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
-                          </div>
-                        )
-                      }}
-                    />
+                          if (has) return null
+                          return (
+                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                            </div>
+                          )
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
                 <div style={{ flex: 3 }}>{item.specification}</div>
                 <div style={{ flex: 2 }}>{stock_amount + ' ' + packing_unit_name}</div>
                 <div style={{ flex: 2 }}>
-                  <input value={item.once_dose || ''} type='number' onChange={e => this.setWItemValue(e, index, 'once_dose')} />
+                  <input readOnly={item.paid_status} value={item.once_dose || ''} type='number' onChange={e => this.setWItemValue(e, index, 'once_dose')} />
                 </div>
                 <div style={{ flex: 3 }}>
-                  <Select
-                    value={this.getSelectValue(item.once_dose_unit_name, this.getUnitoptions())}
-                    onChange={({ value, label }) => {
-                      this.setWItemValue(value, index, 'once_dose_unit_name', 2)
-                    }}
-                    placeholder='搜索'
-                    height={38}
-                    onInputChange={keyword => this.queryDictionaries(keyword, 'queryDoseUnitList')}
-                    options={this.getUnitoptions()}
-                  />
+                  {item.paid_status ? (
+                    this.getSelectLable(item.once_dose_unit_name, this.getUnitoptions())
+                  ) : (
+                    <Select
+                      value={this.getSelectValue(item.once_dose_unit_name, this.getUnitoptions())}
+                      onChange={({ value, label }) => {
+                        this.setWItemValue(value, index, 'once_dose_unit_name', 2)
+                      }}
+                      placeholder='搜索'
+                      height={38}
+                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryDoseUnitList')}
+                      options={this.getUnitoptions()}
+                    />
+                  )}
                 </div>
                 <div style={{ flex: 3 }}>
                   <div>
-                    <Select
-                      value={this.getSelectValue(item.route_administration_name, this.getUsageOptions())}
-                      onChange={({ value }) => this.setWItemValue(value, index, 'route_administration_name', 2)}
-                      placeholder='搜索'
-                      height={38}
-                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryRouteAdministrationList')}
-                      options={this.getUsageOptions()}
-                    />
+                    {item.paid_status ? (
+                      this.getSelectLable(item.route_administration_name, this.getUsageOptions())
+                    ) : (
+                      <Select
+                        value={this.getSelectValue(item.route_administration_name, this.getUsageOptions())}
+                        onChange={({ value }) => this.setWItemValue(value, index, 'route_administration_name', 2)}
+                        placeholder='搜索'
+                        height={38}
+                        onInputChange={keyword => this.queryDictionaries(keyword, 'queryRouteAdministrationList')}
+                        options={this.getUsageOptions()}
+                      />
+                    )}
                   </div>
                 </div>
                 <div style={{ flex: 3 }}>
                   <div>
-                    <Select
-                      value={this.getSelectValue(item.frequency_name, this.getFrequencyOptions())}
-                      onChange={({ value }) => this.setWItemValue(value, index, 'frequency_name', 2)}
-                      placeholder='搜索'
-                      height={38}
-                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryFrequencyList')}
-                      options={this.getFrequencyOptions()}
-                    />
+                    {item.paid_status ? (
+                      this.getSelectLable(item.frequency_name, this.getFrequencyOptions())
+                    ) : (
+                      <Select
+                        value={this.getSelectValue(item.frequency_name, this.getFrequencyOptions())}
+                        onChange={({ value }) => this.setWItemValue(value, index, 'frequency_name', 2)}
+                        placeholder='搜索'
+                        height={38}
+                        onInputChange={keyword => this.queryDictionaries(keyword, 'queryFrequencyList')}
+                        options={this.getFrequencyOptions()}
+                      />
+                    )}
                   </div>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <input value={item.eff_day || ''} type='number' onChange={e => this.setWItemValue(e, index, 'eff_day')} />
+                  <input readOnly={item.paid_status} value={item.eff_day || ''} type='number' onChange={e => this.setWItemValue(e, index, 'eff_day')} />
                 </div>
                 <div style={{ flex: 2 }}>
-                  <input value={item.amount || ''} type='number' onChange={e => this.setWItemValue(e, index, 'amount')} />
+                  <input readOnly={item.paid_status} value={item.amount || ''} type='number' onChange={e => this.setWItemValue(e, index, 'amount')} />
                 </div>
                 <div style={{ flex: 2 }}>{item.packing_unit_name}</div>
                 <div style={{ flex: 3 }}>
                   <div>
-                    <Select value={this.getSelectValue(item.fetch_address, this.getPharmacyOptions())} onChange={({ value }) => this.setWItemValue(value, index, 'fetch_address', 2)} placeholder='搜索' height={38} options={this.getPharmacyOptions()} />
+                    {item.paid_status ? (
+                      this.getSelectLable(item.fetch_address, this.getPharmacyOptions())
+                    ) : (
+                      <Select value={this.getSelectValue(item.fetch_address, this.getPharmacyOptions())} onChange={({ value }) => this.setWItemValue(value, index, 'fetch_address', 2)} placeholder='搜索' height={38} options={this.getPharmacyOptions()} />
+                    )}
                   </div>
                 </div>
                 <div style={{ flex: 3 }}>
                   <input value={item.illustration || ''} type='text' onChange={e => this.setWItemValue(e, index, 'illustration')} />
                 </div>
                 <div style={{ flex: 2 }}>
-                  <div
-                    style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => {
-                      this.removeWestMedicinePres(index)
-                    }}
-                  >
-                    删除
-                  </div>
+                  {item.paid_status ? (
+                    '已缴费'
+                  ) : (
+                    <div
+                      style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                      onClick={() => {
+                        this.removeWestMedicinePres(index)
+                      }}
+                    >
+                      删除
+                    </div>
+                  )}
                 </div>
               </li>
             )
@@ -775,6 +816,7 @@ class PrescriptionScreen extends Component {
     let items = []
     for (let item of array) {
       let obj = {}
+      if (item.paid_status) continue
       for (let key in item) {
         if (item[key] === 0) {
           obj[key] = item[key] + ''
@@ -866,59 +908,65 @@ class PrescriptionScreen extends Component {
                 <li key={index}>
                   <div>
                     <div>
-                      <CustomSelect
-                        controlStyle={{ height: '38px' }}
-                        value={item.clinic_drug_id || ''}
-                        label={item.drug_name || ''}
-                        mustOptionValue={!false}
-                        valueKey='clinic_drug_id'
-                        labelKey='drug_name'
-                        placeholder='搜索'
-                        onChange={item => {
-                          this.setCItemValues(item, index)
-                        }}
-                        onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
-                        options={this.getDrugOptions(1)}
-                        renderTitle={(item, sindex) => {
-                          return (
-                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={sindex}>
-                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
-                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
-                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
-                              <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
-                            </div>
-                          )
-                        }}
-                        renderItem={(item, sindex) => {
-                          let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
-                          let packing_unit_name = item.packing_unit_name || ''
-                          let has = false
-                          for (let i = 0; i < array.length; i++) {
-                            let obj = array[i]
-                            if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
-                              has = true
-                              break
+                      {item.paid_status ? (
+                        item.drug_name
+                      ) : (
+                        <CustomSelect
+                          controlStyle={{ height: '38px' }}
+                          value={item.clinic_drug_id || ''}
+                          label={item.drug_name || ''}
+                          mustOptionValue={!false}
+                          valueKey='clinic_drug_id'
+                          labelKey='drug_name'
+                          placeholder='搜索'
+                          onChange={item => {
+                            this.setCItemValues(item, index)
+                          }}
+                          onInputChange={keyword => this.ClinicDrugList(keyword, 1)}
+                          options={this.getDrugOptions(1)}
+                          renderTitle={(item, sindex) => {
+                            return (
+                              <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '40px', justifyContent: 'center', alignItems: 'center', background: '#F2F2F2' }} key={sindex}>
+                                <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>药品名</div>
+                                <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>规格</div>
+                                <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>生产厂家</div>
+                                <div style={{ flex: 1, textAlign: 'center' }}>库存</div>
+                              </div>
+                            )
+                          }}
+                          renderItem={(item, sindex) => {
+                            let stock_amount = !item.stock_amount || item.stock_amount === 'null' ? '0' : item.stock_amount
+                            let packing_unit_name = item.packing_unit_name || ''
+                            let has = false
+                            for (let i = 0; i < array.length; i++) {
+                              let obj = array[i]
+                              if (obj.clinic_drug_id === item.clinic_drug_id && sindex !== index) {
+                                has = true
+                                break
+                              }
                             }
-                          }
-                          if (has) return null
-                          return (
-                            <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
-                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
-                              <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
-                              <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
-                              <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
-                            </div>
-                          )
-                        }}
-                      />
+                            if (has) return null
+                            return (
+                              <div style={{ display: 'flex', flexDirection: 'row', width: '800px', height: '50px', justifyContent: 'center', alignItems: 'center' }} key={sindex}>
+                                <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.drug_name}</div>
+                                <div style={{ flex: 2, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.specification}</div>
+                                <div style={{ flex: 3, textAlign: 'center', borderRight: '1px solid #d9d9d9' }}>{item.manu_factory_name}</div>
+                                <div style={{ flex: 1, textAlign: 'center' }}>{stock_amount + ' ' + packing_unit_name}</div>
+                              </div>
+                            )
+                          }}
+                        />
+                      )}
                     </div>
                   </div>
                   <div>{stock_amount + ' ' + packing_unit_name}</div>
                   <div>
-                    <input value={item.once_dose || ''} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
+                    <input readOnly={item.paid_status} value={item.once_dose || ''} type='number' onChange={e => this.setCItemAmountValue(e, index)} />
                   </div>
                   <div>
-                    {item.once_dose_unit_id ? (
+                    {item.paid_status ? (
+                      this.getSelectLable(item.once_dose_unit_name, this.getUnitoptions())
+                    ) : item.once_dose_unit_id ? (
                       item.once_dose_unit_name
                     ) : (
                       <Select
@@ -934,16 +982,22 @@ class PrescriptionScreen extends Component {
                     )}
                   </div>
                   <div>
-                    <input value={item.special_illustration || ''} type='text' onChange={e => this.setCItemValue(e, index, 'special_illustration')} />
+                    <input readOnly={item.paid_status} value={item.special_illustration || ''} type='text' onChange={e => this.setCItemValue(e, index, 'special_illustration')} />
                   </div>
                   <div>{item.amount}</div>
-                  <div
-                    style={{ width: '80px', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                    onClick={() => {
-                      this.removecPresc(index)
-                    }}
-                  >
-                    删除
+                  <div>
+                    {item.paid_status ? (
+                      '已缴费'
+                    ) : (
+                      <div
+                        style={{ width: '80px', color: 'red', cursor: 'pointer', textAlign: 'center' }}
+                        onClick={() => {
+                          this.removecPresc(index)
+                        }}
+                      >
+                        删除
+                      </div>
+                    )}
                   </div>
                 </li>
               )
@@ -963,16 +1017,20 @@ class PrescriptionScreen extends Component {
             <li>
               <div>
                 <div>
-                  <Select
-                    value={this.getSelectValue(info.route_administration_name, this.getUsageOptions())}
-                    onChange={({ value, label }) => {
-                      this.setCInfoValue(value, 'route_administration_name', 2)
-                    }}
-                    placeholder='搜索用法'
-                    height={38}
-                    onInputChange={keyword => this.queryDictionaries(keyword, 'queryRouteAdministrationList')}
-                    options={this.getUsageOptions()}
-                  />
+                  {info.paid_status ? (
+                    this.getSelectLable(info.route_administration_name, this.getUsageOptions())
+                  ) : (
+                    <Select
+                      value={this.getSelectValue(info.route_administration_name, this.getUsageOptions())}
+                      onChange={({ value, label }) => {
+                        this.setCInfoValue(value, 'route_administration_name', 2)
+                      }}
+                      placeholder='搜索用法'
+                      height={38}
+                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryRouteAdministrationList')}
+                      options={this.getUsageOptions()}
+                    />
+                  )}
                 </div>
               </div>
               <div>
@@ -989,21 +1047,29 @@ class PrescriptionScreen extends Component {
               </div>
               <div>
                 <div>
-                  <Select
-                    value={this.getSelectValue(info.frequency_name, this.getFrequencyOptions())}
-                    onChange={({ value, label }) => {
-                      this.setCInfoValue(value, 'frequency_name', 2)
-                    }}
-                    placeholder='搜索频次'
-                    height={38}
-                    onInputChange={keyword => this.queryDictionaries(keyword, 'queryFrequencyList')}
-                    options={this.getFrequencyOptions()}
-                  />
+                  {info.paid_status ? (
+                    this.getSelectLable(info.frequency_name, this.getFrequencyOptions())
+                  ) : (
+                    <Select
+                      value={this.getSelectValue(info.frequency_name, this.getFrequencyOptions())}
+                      onChange={({ value, label }) => {
+                        this.setCInfoValue(value, 'frequency_name', 2)
+                      }}
+                      placeholder='搜索频次'
+                      height={38}
+                      onInputChange={keyword => this.queryDictionaries(keyword, 'queryFrequencyList')}
+                      options={this.getFrequencyOptions()}
+                    />
+                  )}
                 </div>
               </div>
               <div>
                 <div>
-                  <Select value={this.getSelectValue(info.fetch_address, this.getPharmacyOptions())} onChange={({ value }) => this.setCInfoValue(value, 'fetch_address', 2)} placeholder='搜索' height={38} options={this.getPharmacyOptions()} />
+                  {info.paid_status ? (
+                    this.getSelectLable(info.fetch_address, this.getPharmacyOptions())
+                  ) : (
+                    <Select value={this.getSelectValue(info.fetch_address, this.getPharmacyOptions())} onChange={({ value }) => this.setCInfoValue(value, 'fetch_address', 2)} placeholder='搜索' height={38} options={this.getPharmacyOptions()} />
+                  )}
                 </div>
               </div>
               <div>
@@ -1013,17 +1079,20 @@ class PrescriptionScreen extends Component {
           </ul>
         </div>
         <div className={'formListBottom'}>
-          <div className={'bottomCenter'}>
-            <button className={'cancel'}>取消</button>
-            <button
-              className={'save'}
-              onClick={() => {
-                this.prescriptionChinesePatientCreate()
-              }}
-            >
-              保存
-            </button>
-          </div>
+          {info.paid_status ? null : (
+            <div className={'bottomCenter'}>
+              <button className={'cancel'}>取消</button>
+              <button
+                className={'save'}
+                onClick={() => {
+                  this.prescriptionChinesePatientCreate()
+                }}
+              >
+                保存
+              </button>
+            </div>
+          )}
+
           <div className={'bottomRight'}>
             <button
               onClick={() => {
@@ -1782,12 +1851,10 @@ class PrescriptionScreen extends Component {
                       </div>
                     </div>
                     {this.state.showHistoryIndex === index ? (
-                      <div style={{flexDirection: 'column', display: 'flex', borderTop: '1px solid #e9e9e9'}}>
+                      <div style={{ flexDirection: 'column', display: 'flex', borderTop: '1px solid #e9e9e9' }}>
                         {this.state.historyDetail.wPrescItemArray.length ? (
                           <div style={{ flexDirection: 'column', marginTop: '20px' }}>
-                            <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}>
-                              西/成药处方
-                            </label>
+                            <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}>西/成药处方</label>
                             <div style={{ marginTop: '5px' }}>
                               {this.state.historyDetail.wPrescItemArray.map((item, index) => {
                                 return (
@@ -1816,10 +1883,7 @@ class PrescriptionScreen extends Component {
                           let array = item.data || []
                           return (
                             <div style={{ flexDirection: 'column', marginTop: '20px' }} key={index}>
-                              <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}>
-                                {' '}
-                                中 药处方 {index + 1}
-                              </label>
+                              <label style={{ display: 'flex', fontSize: '14', fontWeight: '500' }}> 中 药处方 {index + 1}</label>
                               <div>
                                 {array.map((item, index) => {
                                   return (
