@@ -1,14 +1,48 @@
 import React, { Component } from 'react'
+import DatePicker from 'antd/lib/date-picker'
 import Upload from 'antd/lib/upload'
+import locale from 'antd/lib/date-picker/locale/zh_CN'
+import moment from 'moment'
+import thiscss from '../../static/css/date/antd.scss'
 import Button from 'antd/lib/button'
 import Icon from 'antd/lib/icon'
 import { API_SERVER } from '../../config'
-// import locale from 'antd/lib/date-picker/locale/zh_CN'
-// import moment from 'moment'
-import thiscss from '../../static/css/date/antd.scss'
-// moment.locale('zh-cn')
 
-export default class MyUpload extends Component {
+moment.locale('zh-cn')
+
+const { MonthPicker } = DatePicker
+
+export class MyDatePicker extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+  render() {
+    return (
+      <div>
+        <DatePicker locale={locale} style={{ width: '120px', marginTop: '17px' }} {...this.props} />
+        <style dangerouslySetInnerHTML={{ __html: thiscss }} />
+      </div>
+    )
+  }
+}
+
+export class MyMonthPicker extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+  render() {
+    return (
+      <div>
+        <MonthPicker locale={locale} style={{ width: '120px', marginTop: '17px' }} {...this.props} />
+        <style dangerouslySetInnerHTML={{ __html: thiscss }} />
+      </div>
+    )
+  }
+}
+
+export class MyUpload extends Component {
   constructor(props) {
     super(props)
     this.state = {}
