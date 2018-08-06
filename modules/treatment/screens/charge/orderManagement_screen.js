@@ -1,81 +1,41 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Router from 'next/router'
-import { triagePatientsList } from '../../../../ducks'
+import { queryManagementOrders } from '../../../../ducks'
 import moment from 'moment'
-import { DatePicker } from '../../../../components'
-// import { getAgeByBirthday } from '../../../../utils'
+import { DatePicker, PageCard } from '../../../../components'
+import { formatMoney } from '../../../../utils'
 
 class OrderManagementScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pageType: 5,
-      showType: 1,
-      nowWeekNum: 1,
-      OrderType: 1
+      orderType: 2,
+      start_date: moment()
+        .add(-7, 'd')
+        .format('YYYY-MM-DD'),
+      end_date: moment()
+        .add(1, 'd')
+        .format('YYYY-MM-DD'),
+      keyword: ''
     }
   }
 
   componentDidMount() {
-    const { clinic_id, triagePatientsList } = this.props
-    triagePatientsList({ clinic_id, is_today: true, register_type: 2 })
-  }
-	// 改变显示内容
-  changeContent({ type }) {
-    this.setState({ pageType: type })
+    this.getData({})
   }
 
-  getTriagePatientListData(treat_status) {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (!patient.treat_status) continue
-      if (treat_status) {
-        if (!patient.reception_time) continue
-      } else {
-        if (patient.reception_time) continue
-      }
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return 1
-      return -1
-    })
-  }
-  getUnTriagePatientListData() {
-    const { triagePatients } = this.props
-    let array = []
-    let today = moment().format('YYYY-MM-DD')
-    for (let key in triagePatients) {
-      const patient = triagePatients[key]
-      if (moment(patient.visit_date).format('YYYY-MM-DD') !== today) continue
-      if (patient.treat_status) continue
-      array.push(patient)
-    }
-    return array.sort((a, b) => {
-      if (a.clinic_triage_patient_id > b.clinic_triage_patient_id) return -1
-      return 1
-    })
-  }
-
-	// 切换显示列表
-  changeShowType({ type }) {
-    this.setState({ showType: type })
+  getData({ offset, limit }) {
+    const { clinic_id, queryManagementOrders } = this.props
+    let { start_date, end_date, keyword, orderType } = this.state
+    queryManagementOrders({ start_date, end_date, clinic_id, keyword, offset, limit, orderType })
   }
 
   // 显示订单管理
   showOrderManagement() {
-    const array = []
-    for (let i = 0; i < 10; i++) {
-      let item = {}
-      array.push(item)
-    }
+    const { data, data_page } = this.props
     return (
-      <div className={'detailBox'} style={{float: 'left'}}>
+      <div className={'detailBox'} style={{ float: 'left' }}>
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
@@ -90,32 +50,57 @@ class OrderManagementScreen extends Component {
               <div>操作员</div>
               <div>操作</div>
             </li>
-            {array.map((item, index) => {
+            {data.map((item, index) => {
+              let map = {
+                cash: '现金',
+                alipay: '支付宝',
+                wechat: 'wechat',
+                bank: '银行卡'
+              }
+
+              let status_map = {
+                NOTPAY: '未支付',
+                USERPAYING: '用户支付中',
+                SUCCESS: '交易成功',
+                REFUND: '转入退费',
+                CLOSE: '已关闭/已撤销',
+                FAIL: '交易失败',
+                UNKNOW: '未知',
+                PROCESSING: '退款处理中'
+              }
               return (
                 <li>
-                  <div>2018-04-08 12:23:22</div>
-                  <div>4002018040812345</div>
-                  <div>挂号费</div>
-                  <div>王俊凯</div>
-                  <div>1231423412</div>
-                  <div>支付宝</div>
-                  <div>100.00元</div>
-                  <div>支付中</div>
-                  <div>蔡徐坤</div>
+                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
+                  <div>{item.number}</div>
+                  <div>{item.order_type}</div>
+                  <div>{item.patient_name}</div>
+                  <div>{item.patient_id}</div>
+                  <div>{map[item.pay_method_code]}</div>
+                  <div>{formatMoney(item.balance_money)}</div>
+                  <div>{status_map[item.order_status] || '未知状态'}</div>
+                  <div>{item.operation}</div>
                   <div>更新状态</div>
                 </li>
               )
             })}
           </ul>
         </div>
+        <PageCard
+          offset={data_page.offset}
+          limit={data_page.limit}
+          total={data_page.total}
+          onItemClick={({ offset, limit }) => {
+            this.getData({ offset, limit })
+          }}
+        />
         <style jsx='true'>
           {`
             .feeScheduleBox ul li div:nth-child(2),
             .feeScheduleBox ul li div:nth-child(1) {
-              flex:2;
+              flex: 2;
             }
-            .feeScheduleBox ul li div{
-              flex:1;
+            .feeScheduleBox ul li div {
+              flex: 1;
             }
           `}
         </style>
@@ -123,69 +108,63 @@ class OrderManagementScreen extends Component {
     )
   }
 
-  // 收费详情
-  gotoChargeDetail() {
-    Router.push('/treatment/charge/toll')
+  changeType(orderType) {
+    this.setState({ orderType })
+    this.getData({})
   }
+
   // 选择异常/正常订单
   renderOrderType() {
-    const {OrderType} = this.state
+    const { orderType } = this.state
     return (
       <div>
-        <label style={{margin: '20px 15px', float: 'left'}}>
-          <input type='radio'
-            name={'listType'}
-            checked={OrderType === 1}
-            onChange={() => this.setState({ OrderType: 1 })}
-          /> 异常订单
+        <label style={{ margin: '20px 15px', float: 'left' }}>
+          <input type='radio' name={'listType'} checked={orderType === 1} onChange={() => this.changeType(1)} /> 异常订单
         </label>
-        <label style={{margin: '20px 15px', float: 'left'}}>
-          <input type='radio'
-            name={'listType'}
-            checked={OrderType === 2}
-            onChange={() => this.setState({ OrderType: 2 })}
-          /> 正常订单
+        <label style={{ margin: '20px 15px', float: 'left' }}>
+          <input type='radio' name={'listType'} checked={orderType === 2} onChange={() => this.changeType(2)} /> 正常订单
         </label>
       </div>
     )
   }
   // 加载
   render() {
-    const {pageType} = this.state
     return (
       <div>
         <div className={'childTopBar'}>
           <span onClick={() => Router.push('/treatment/charge')}>待收费</span>
-          <span onClick={() => Router.push('/treatment/charge/charged')}>
-						已收费
-					</span>
+          <span onClick={() => Router.push('/treatment/charge/charged')}>已收费</span>
           {/* <span onClick={() => Router.push('/treatment/charge/alreadyCharged')}>
 						已挂账
 					</span> */}
-          <span onClick={() => Router.push('/treatment/charge/refunded')}>
-						已退款
-					</span>
-          <span className={'sel'}>
-						订单管理
-					</span>
+          <span onClick={() => Router.push('/treatment/charge/refunded')}>已退款</span>
+          <span className={'sel'}>订单管理</span>
         </div>
         <div className={'filterBox'}>
-          {pageType === 5 ? this.renderOrderType() : ''}
+          {this.renderOrderType()}
           <div className={'boxLeft'}>
             <div className={'dateDiv'}>
               <DatePicker
-                // placeholder={'开始日期'}
-                // value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 onChange={(date, str) => {
                   if (date) {
-                    // this.setState({ start_date: date })
+                    this.setState({ start_date: date })
                   }
                 }}
               />
             </div>
-            {/* <input type='date' placeholder='选择日期' /> */}
-            <input type='text' placeholder='搜索就诊人姓名/病人ID/身份证号码/手机号码' />
-            <button>查询</button>
+            <div className={'dateDiv'}>
+              <DatePicker
+                value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                onChange={(date, str) => {
+                  if (date) {
+                    this.setState({ end_date: date })
+                  }
+                }}
+              />
+            </div>
+            <input onChange={e => this.setState({ keyword: e.target.value })} type='text' placeholder='搜索就诊人姓名/病人ID/身份证号码/手机号码' value={this.state.keyword} />
+            <button onClick={() => this.getData({})}>查询</button>
           </div>
         </div>
         {this.showOrderManagement()}
@@ -195,15 +174,14 @@ class OrderManagementScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
   return {
-    triage_personnel_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
-    triagePatients: state.triagePatients.data,
-    patient_page_info: state.triagePatients.page_info,
-    triageDoctors: state.triageDoctors.data,
-    doctor_page_info: state.triageDoctors.page_info
+    data: state.managementOrders.data,
+    data_page: state.managementOrders.page_info
   }
 }
 
-export default connect(mapStateToProps, { triagePatientsList })(OrderManagementScreen)
+export default connect(
+  mapStateToProps,
+  { queryManagementOrders }
+)(OrderManagementScreen)
