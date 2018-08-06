@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Router from 'next/router'
 import { queryChargeRefundList } from '../../../../ducks'
 import moment from 'moment'
-import { DatePicker } from '../../../../components'
+import { DatePicker, PageCard } from '../../../../components'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
 
 class RefundedScreen extends Component {
@@ -31,7 +31,7 @@ class RefundedScreen extends Component {
   }
 
   showTobeCharged() {
-    const { data } = this.props
+    const { data, data_page } = this.props
     return (
       <div>
         <div className={'listContent'}>
@@ -86,7 +86,14 @@ class RefundedScreen extends Component {
             })}
           </ul>
         </div>
-        <div className={'pagination'} />
+        <PageCard
+          offset={data_page.offset}
+          limit={data_page.limit}
+          total={data_page.total}
+          onItemClick={({ offset, limit }) => {
+            this.getData({ offset, limit })
+          }}
+        />
       </div>
     )
   }
