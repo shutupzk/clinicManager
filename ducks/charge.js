@@ -9,6 +9,8 @@ const CHARGE_PAID_ORDER_ADD = 'CHARGE_PAID_ORDER_ADD'
 
 const CHARGE_PATIENT_ORDER_LIST = 'CHARGE_PATIENT_ORDER_LIST'
 
+const CHARGE_REFUND_TRIAGE_ADD = 'CHARGE_REFUND_TRIAGE_ADD'
+
 const initState = {
   charge_unpay: [], // 未交费的就诊记录
   charge_unpay_selectId: '', // 选中的未交费的记录
@@ -24,7 +26,10 @@ const initState = {
   paid_orders_page: {},
   paid_orders_type: [],
   patient_charge_data: [],
-  patient_charge_page_info: {}
+  patient_charge_page_info: {},
+
+  charge_refund_triage: [],
+  charge_refund_triage_page: {}
 }
 
 export function charge(state = initState, action = {}) {
@@ -52,6 +57,12 @@ export function charge(state = initState, action = {}) {
         ...state,
         charge_paid_triage: action.data,
         charge_paid_triage_page: action.page_info
+      }
+    case CHARGE_REFUND_TRIAGE_ADD:
+      return {
+        ...state,
+        charge_refund_triage: action.data,
+        charge_refund_triage_page: action.page_info
       }
     case CHARGE_PAID_SELECT:
       return {
@@ -105,6 +116,7 @@ export const queryChargeUnpayList = ({ start_date, end_date, clinic_id, keyword,
   }
 }
 
+// 获取已缴费的分诊记录
 export const queryChargePaidList = ({ start_date, end_date, clinic_id, keyword, offset = 0, limit = 6 }) => async dispatch => {
   try {
     const data = await request('/charge/traigePatient/paid', {
@@ -123,6 +135,35 @@ export const queryChargePaidList = ({ start_date, end_date, clinic_id, keyword, 
     }
     dispatch({
       type: CHARGE_PAID_TRIAGE_ADD,
+      data: docs,
+      page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+// 获取已退费的分诊记录
+export const queryChargeRefundList = ({ start_date, end_date, clinic_id, keyword, offset = 0, limit = 6 }) => async dispatch => {
+  try {
+    const data = await request('/charge/traigePatient/refund', {
+      clinic_id,
+      keyword,
+      start_date,
+      end_date,
+      offset,
+      limit
+    })
+    const docs = data.data || []
+    const page_info = data.page_info || {
+      offset,
+      limit,
+      total: 0
+    }
+    dispatch({
+      type: CHARGE_REFUND_TRIAGE_ADD,
       data: docs,
       page_info
     })
