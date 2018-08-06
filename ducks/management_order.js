@@ -2,7 +2,7 @@ import { request } from './request'
 const MANAGEMENT_ORDER_ADD = 'MANAGEMENT_ORDER_ADD'
 
 const initState = {
-  data: {},
+  data: [],
   page_info: {}
 }
 
