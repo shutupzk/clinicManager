@@ -38,6 +38,7 @@ class OtherScreen extends Component {
       let has = false
       for (let i = 0; i < datas.length; i++) {
         let obj = datas[i]
+        if (obj.paid_status) continue
         if (obj.clinic_other_cost_id === clinic_other_cost_id && index !== i) {
           has = true
           break
@@ -101,6 +102,7 @@ class OtherScreen extends Component {
     const { othercosts, selPage } = this.state
     let items = []
     for (let item of othercosts) {
+      if (item.paid_status) continue
       if (!item.amount) {
         return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
       }
@@ -327,34 +329,37 @@ class OtherScreen extends Component {
                     <li key={index}>
                       <div>
                         <div style={{ width: '100%' }}>
-                          <Select
-                            value={this.getSelectValue(item.clinic_other_cost_id, nameOptions)}
-                            onChange={data => {
-                              this.setItemValues(data, index)
-                            }}
-                            placeholder='搜索名称'
-                            height={38}
-                            onInputChange={keyword => this.queryOtherCostLists(keyword)}
-                            options={nameOptions}
-                          />
+                          {item.paid_status ? (
+                            item.name
+                          ) : (
+                            <Select
+                              value={this.getSelectValue(item.clinic_other_cost_id, nameOptions)}
+                              onChange={data => {
+                                this.setItemValues(data, index)
+                              }}
+                              placeholder='搜索名称'
+                              height={38}
+                              onInputChange={keyword => this.queryOtherCostLists(keyword)}
+                              options={nameOptions}
+                            />
+                          )}
                         </div>
                       </div>
                       <div>
                         <input readOnly value={item.unit_name || ''} type='text' min={0} max={100} onChange={e => this.setItemValue(e, index, 'unit_name')} />
                       </div>
                       <div>
-                        <input value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
+                        <input readOnly={item.paid_status} value={item.amount || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'amount')} />
                       </div>
                       <div>
-                        <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                        <input readOnly={item.paid_status} value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div
-                          onClick={() => this.removeColumn(index)}
-                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                        >
-                          删除
-                        </div>
+                        {item.paid_status ? null : (
+                          <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                            删除
+                          </div>
+                        )}
                       </div>
                     </li>
                   )

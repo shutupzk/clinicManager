@@ -42,6 +42,7 @@ class ExamineScreen extends Component {
       let has = false
       for (let i = 0; i < datas.length; i++) {
         let obj = datas[i]
+        if (obj.paid_status) continue
         if (obj.clinic_examination_id === clinic_examination_id && index !== i) {
           has = true
           break
@@ -101,6 +102,7 @@ class ExamineScreen extends Component {
     const { examines, selPage } = this.state
     let items = []
     for (let item of examines) {
+      if (item.paid_status) continue
       if (!item.times) {
         return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
       }
@@ -550,57 +552,62 @@ class ExamineScreen extends Component {
                     <li key={index}>
                       <div>
                         <div style={{ width: '100%' }}>
-                          <Select
-                            value={this.getSelectValue(item.clinic_examination_id, nameOptions)}
-                            onChange={({ value, organ, label }) => {
-                              this.setItemValue(value, index, 'clinic_examination_id', 2)
-                              this.setItemValue(label, index, 'name', 2)
-                            }}
-                            placeholder='搜索名称'
-                            height={38}
-                            onInputChange={keyword => this.queryExaminationList(keyword)}
-                            options={nameOptions}
-                          />
+                          {item.paid_status ? (
+                            item.name
+                          ) : (
+                            <Select
+                              value={this.getSelectValue(item.clinic_examination_id, nameOptions)}
+                              onChange={({ value, organ, label }) => {
+                                this.setItemValue(value, index, 'clinic_examination_id', 2)
+                                this.setItemValue(label, index, 'name', 2)
+                              }}
+                              placeholder='搜索名称'
+                              height={38}
+                              onInputChange={keyword => this.queryExaminationList(keyword)}
+                              options={nameOptions}
+                            />
+                          )}
                         </div>
                       </div>
                       <div>
-                        <input value={item.times || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                        <input readOnly={item.paid_status} value={item.times || ''} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                       </div>
                       <div>
                         <input value={item.organ || ''} type='text' readOnly />
-                        <div
-                          style={{
-                            cursor: 'pointer',
-                            border: '1px solid rgba(42, 205, 200, 1)',
-                            borderRadius: '5px',
-                            height: '20px',
-                            width: '50px',
-                            textAlign: 'center',
-                            lineHeight: '20px',
-                            color: 'rgba(42, 205, 200, 1)'
-                          }}
-                          onClick={() => {
-                            let { organ } = item
-                            let selOrgans = []
-                            if (organ) {
-                              selOrgans = organ.split(',')
-                            }
-                            this.setState({ showChooseOrgan: true, index, selOrgans })
-                          }}
-                        >
-                          选择
-                        </div>
+                        {item.paid_status ? null : (
+                          <div
+                            style={{
+                              cursor: 'pointer',
+                              border: '1px solid rgba(42, 205, 200, 1)',
+                              borderRadius: '5px',
+                              height: '20px',
+                              width: '50px',
+                              textAlign: 'center',
+                              lineHeight: '20px',
+                              color: 'rgba(42, 205, 200, 1)'
+                            }}
+                            onClick={() => {
+                              let { organ } = item
+                              let selOrgans = []
+                              if (organ) {
+                                selOrgans = organ.split(',')
+                              }
+                              this.setState({ showChooseOrgan: true, index, selOrgans })
+                            }}
+                          >
+                            选择
+                          </div>
+                        )}
                       </div>
                       <div>
                         <input value={item.illustration || ''} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div
-                          onClick={() => this.removeColumn(index)}
-                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                        >
-                          删除
-                        </div>
+                        {item.paid_status ? null : (
+                          <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                            删除
+                          </div>
+                        )}
                       </div>
                     </li>
                   )

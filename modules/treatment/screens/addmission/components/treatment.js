@@ -39,6 +39,7 @@ class TreatmentScreen extends Component {
       let has = false
       for (let i = 0; i < datas.length; i++) {
         let obj = datas[i]
+        if (obj.paid_status) continue
         if (obj.clinic_treatment_id === clinic_treatment_id && index !== i) {
           has = true
           break
@@ -110,7 +111,8 @@ class TreatmentScreen extends Component {
     const { TreatmentPatientCreate, personnel_id, clinic_triage_patient_id, changePage, TreatmentPatientGet } = this.props
     const { treatments, selPage } = this.state
     let items = []
-    for (let { clinic_treatment_id, times, illustration } of treatments) {
+    for (let { clinic_treatment_id, times, illustration, paid_status } of treatments) {
+      if (paid_status) continue
       if (!times) {
         return this.refs.myAlert.alert('保存失败', '存在次数无效的项目，请检查！', null, 'Danger')
       }
@@ -681,38 +683,41 @@ class TreatmentScreen extends Component {
                     <li key={index}>
                       <div>
                         <div style={{ width: '100%' }}>
-                          <Select
-                            value={this.getSelectValue(treatments[index].clinic_treatment_id, nameOptions)}
-                            onChange={({ value, unit_id, label, unit_name, price }) => {
-                              this.setItemValue(value, index, 'clinic_treatment_id', 2)
-                              this.setItemValue(label, index, 'treatment_name', 2)
-                              this.setItemValue(unit_id, index, 'unit_id', 2)
-                              this.setItemValue(unit_name, index, 'unit_name', 2)
-                              this.setItemValue(price, index, 'price', 2)
-                            }}
-                            placeholder='搜索名称'
-                            height={38}
-                            onInputChange={keyword => this.queryTreatmentList(keyword)}
-                            options={nameOptions}
-                          />
+                          {item.paid_status ? (
+                            item.treatment_name
+                          ) : (
+                            <Select
+                              value={this.getSelectValue(treatments[index].clinic_treatment_id, nameOptions)}
+                              onChange={({ value, unit_id, label, unit_name, price }) => {
+                                this.setItemValue(value, index, 'clinic_treatment_id', 2)
+                                this.setItemValue(label, index, 'treatment_name', 2)
+                                this.setItemValue(unit_id, index, 'unit_id', 2)
+                                this.setItemValue(unit_name, index, 'unit_name', 2)
+                                this.setItemValue(price, index, 'price', 2)
+                              }}
+                              placeholder='搜索名称'
+                              height={38}
+                              onInputChange={keyword => this.queryTreatmentList(keyword)}
+                              options={nameOptions}
+                            />
+                          )}
                         </div>
                       </div>
                       <div>
                         <input readOnly type='text' value={treatments[index].unit_name} />
                       </div>
                       <div>
-                        <input value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
+                        <input readOnly={item.paid_status} value={treatments[index].times} type='number' min={0} max={100} onChange={e => this.setItemValue(e, index, 'times')} />
                       </div>
                       <div>
-                        <input maxLength='500' value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
+                        <input readOnly={item.paid_status} maxLength='500' value={treatments[index].illustration} type='text' onChange={e => this.setItemValue(e, index, 'illustration')} />
                       </div>
                       <div>
-                        <div
-                          onClick={() => this.removeColumn(index)}
-                          style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
-                        >
-                          删除
-                        </div>
+                        {item.paid_status ? null : (
+                          <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
+                            删除
+                          </div>
+                        )}
                       </div>
                     </li>
                   )

@@ -381,7 +381,7 @@ class DepartmentListScreen extends Component {
               <li>
                 <div>
                   <label>所属诊所：</label>
-                  <input readOnly placeholder='请填写所属诊所' value='龙华诊所' />
+                  <input readOnly placeholder='请填写所属诊所' value={this.props.clinic_name} />
                 </div>
               </li>
               <li>
