@@ -298,8 +298,25 @@ import {
 } from './treatment_triage'
 
 import { drugRetail, createDrugRetailOrder, createDrugRetailPaymentOrder, DrugRetailList, SelectDrugRetail, DrugRetailDetail, DrugRetailRefund, DrugRetailPaymentStatus } from './drug_retail'
-import { admins, AdminList, AdminCreate, AdminUpdate, AdminOnOff, AdminGetByID, AdminLogin, adminSelect, MenubarUnsetByAdminID, MenuGetByAdminID } from './admin'
-import { financial, ChargeDayReportByPayWay, ChargeDayReportByBusiness, ChargeMonthReportByPayWay } from './financial_analysis'
+import {
+  admins,
+  AdminList,
+  AdminCreate,
+  AdminUpdate,
+  AdminOnOff,
+  AdminGetByID,
+  AdminLogin,
+  adminSelect,
+  MenubarUnsetByAdminID,
+  MenuGetByAdminID
+} from './admin'
+import {
+  financial,
+  ChargeDayReportByPayWay,
+  ChargeDayReportByBusiness,
+  ChargeMonthReportByPayWay,
+  ProfitReport
+} from './financial_analysis'
 
 import { totalAmounts, queryTotalAmounts } from './total_amount'
 import { managementOrders, queryManagementOrders } from './management_order'
@@ -725,5 +742,6 @@ export {
   ChargeDayReportByBusiness,
   ChargeMonthReportByPayWay,
   queryTotalAmounts,
-  queryManagementOrders
+  queryManagementOrders,
+  ProfitReport
 }

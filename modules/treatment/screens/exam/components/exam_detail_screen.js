@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Select, Confirm, PageCard, ImageViewer, Upload } from '../../../../../components'
-import { queryMedicalRecord, ExaminationTriageList, ExaminationTriageRecordCreate, ExaminationTriagePatientRecordList, FileUpload } from '../../../../../ducks'
+import {
+  queryMedicalRecord,
+  ExaminationTriageList,
+  ExaminationTriageRecordCreate,
+  ExaminationTriagePatientRecordList,
+  FileUpload,
+  examinationReportList
+} from '../../../../../ducks'
 import { getAgeByBirthday } from '../../../../../utils'
 import { API_SERVER } from '../../../../../config'
 import moment from 'moment'
@@ -23,18 +30,27 @@ class ExamDetailScreen extends Component {
       imgHeight: 0,
       visible: false,
       showProgress: false,
-      percent: 0
+      percent: 0,
+      selTemplate: ''
     }
   }
 
   async componentDidMount() {
+    this.examinationReportList()
     let { queryMedicalRecord, triagePatient, ExaminationTriageList, order_status = '20' } = this.props
     const { clinic_triage_patient_id } = triagePatient
     let record = await queryMedicalRecord(clinic_triage_patient_id)
     let exams = await ExaminationTriageList({ clinic_triage_patient_id, order_status })
     this.setState({ record, exams })
   }
-
+  examinationReportList() {
+    const {examinationReportList} = this.props
+    let reqData = {
+      limit: 1000,
+      offset: 0
+    }
+    examinationReportList(reqData)
+  }
   render() {
     const { order_status } = this.props
     return (
@@ -347,15 +363,38 @@ class ExamDetailScreen extends Component {
       </div>
     )
   }
+  getTemplateOptions() {
+    const {examinationReportModels} = this.props
+    console.log('examinationReportModels====', examinationReportModels)
+    let array = []
+    for (let key of examinationReportModels) {
+      let item = {
+        label: key.model_name,
+        value: key.model_name,
+        conclusion_examination: key.conclusion_examination,
+        result_examination: key.result_examination
+      }
+      array.push(item)
+    }
+    return array
+  }
+  getSelectValue(value, array) {
+    for (let obj of array) {
+      if (obj.value === value) {
+        return obj
+      }
+    }
+    return null
+  }
   renderItemTitle() {
-    const { exams, selIndex } = this.state
-    console.log(exams)
+    let { exams, selIndex, selTemplate } = this.state
+    // console.log('exams====', exams)
     return (
       <div className={'detailCenter'}>
         <div className={'childTopBar'}>
           {exams.map((item, index) => {
             return (
-              <span key={index} className={index === selIndex ? 'sel' : ''} onClick={() => this.setState({ selIndex: index })}>
+              <span key={index} className={index === selIndex ? 'sel' : ''} onClick={() => this.setState({ selIndex: index, selTemplate: '' })}>
                 {item.clinic_examination_name}
               </span>
             )
@@ -363,7 +402,18 @@ class ExamDetailScreen extends Component {
         </div>
         <div className={'chooseModel'}>
           <div>
-            <Select placeholder={'选择模板'} height={32} options={[]} />
+            <Select
+              placeholder={'选择模板'}
+              height={32}
+              options={this.getTemplateOptions()}
+              value={this.getSelectValue(selTemplate, this.getTemplateOptions())}
+              onChange={e => {
+                exams[selIndex].conclusion_examination = e.conclusion_examination
+                exams[selIndex].result_examination = e.result_examination
+                // exams[selIndex].template = e.value
+                this.setState({ exams, selTemplate: e.value })
+              }}
+            />
           </div>
         </div>
         <div className={'rightBtn'}>
@@ -1132,7 +1182,8 @@ const mapStateToProps = state => {
     operation_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     patient_record_data: state.examinationTriages.patient_record_data,
-    patient_record_page_info: state.examinationTriages.patient_record_page_info
+    patient_record_page_info: state.examinationTriages.patient_record_page_info,
+    examinationReportModels: state.examinationReportModels.data
   }
 }
 
@@ -1143,6 +1194,7 @@ export default connect(
     ExaminationTriageList,
     ExaminationTriageRecordCreate,
     ExaminationTriagePatientRecordList,
-    FileUpload
+    FileUpload,
+    examinationReportList
   }
 )(ExamDetailScreen)
