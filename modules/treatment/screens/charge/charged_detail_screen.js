@@ -150,11 +150,7 @@ class ChargedDetailScreen extends Component {
               let checked = refundIds.indexOf(item.mz_paid_orders_id + '') > -1
               return (
                 <li key={iKey}>
-                  {refundStatus && (
-                    <div>
-                      <input type={'checkbox'} checked={checked} onChange={() => this.checkItem(item.mz_paid_orders_id + '', checked)} />
-                    </div>
-                  )}
+                  {refundStatus && <div>{!item.refund_status && <input type={'checkbox'} checked={checked} onChange={() => this.checkItem(item.mz_paid_orders_id + '', checked)} />}</div>}
                   <div style={{ flex: 1 }}>{iKey + 1}</div>
                   <div style={{ flex: 3 }}>{item.name}</div>
                   <div>{formatMoney(item.price)}</div>
