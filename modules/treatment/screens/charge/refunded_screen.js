@@ -128,7 +128,7 @@ class RefundedScreen extends Component {
                 value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 onChange={(date, str) => {
                   if (date) {
-                    this.setState({ start_date: date })
+                    this.setState({ end_date: date })
                   }
                 }}
               />
