@@ -7,7 +7,7 @@ import {
   ChargeMonthReportByPayWay
 } from '../../../../ducks'
 import { formatMoney } from '../../../../utils'
-// import { Confirm, PageCard, Select } from '../../../../components'
+import { MonthPicker } from '../../../../components'
 import ReactEcharts from 'echarts-for-react'
 
 class MonthlyReportScreen extends Component {
@@ -45,24 +45,26 @@ class MonthlyReportScreen extends Component {
         </div>
         <div className={'filterBox'} style={{ marginBottom: '20px' }}>
           <div className={'boxLeft'} style={{display: 'flex', alignItems: 'center'}}>
-            <input
-              style={{marginTop: 0}}
-              type='date'
-              placeholder='开始日期'
-              value={this.state.start_date}
-              onChange={e => {
-                this.setState({ start_date: e.target.value })
-              }}
-            />
-            <input
-              style={{marginTop: 0}}
-              type='date'
-              placeholder='结束日期'
-              value={this.state.end_date}
-              onChange={e => {
-                this.setState({ end_date: e.target.value })
-              }}
-            />
+            <div style={{margin: '-14px 0 0 20px'}}>
+              <MonthPicker
+                placeholder={'开始日期'}
+                value={moment(this.state.start_date)}
+                onChange={(date, str) => {
+                  // console.log('e===', date, str)
+                  this.setState({ start_date: moment(date).format('YYYY-MM') })
+                }}
+              />
+            </div>
+            <div style={{margin: '-14px 0 0 20px'}}>
+              <MonthPicker
+                placeholder={'结束日期'}
+                value={moment(this.state.end_date)}
+                onChange={(date, str) => {
+                  // console.log('e===', date, str)
+                  this.setState({ end_date: moment(date).format('YYYY-MM') })
+                }}
+              />
+            </div>
             <button style={{marginLeft: '20px'}} onClick={() => {
               this.ChargeMonthReportByPayWay()
             }}>查询</button>

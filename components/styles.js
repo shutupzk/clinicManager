@@ -1167,6 +1167,9 @@ export function styles() {
 					text-align: center;
 					cursor:pointer;
 					border-right: 2px solid #31b0b3;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
 				}
 				.itemBottom span:nth-child(1) {
 					border-right: 2px solid #31b0b3;

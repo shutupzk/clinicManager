@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import Router from 'next/router'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
-import { queryPaidOrders, refundPaymen } from '../../../../ducks'
+import { queryPaidOrders, refundPayment } from '../../../../ducks'
 import { PageCard, Confirm } from '../../../../components'
 
 class ChargedDetailScreen extends Component {
@@ -50,10 +50,10 @@ class ChargedDetailScreen extends Component {
 
   submit() {
     const { refundIds } = this.state
-    const { paid_orders_page } = this.props
+    const { paid_orders_page, operation_id } = this.props
     if (refundIds.length === 0) return this.refs.myAlert.alert('提交失败', '请勾选退费项！', null, 'Warning')
     this.refs.myAlert.confirm('确定提交？', '请谨慎选择', 'Danger', async () => {
-      const res = await this.props.refundPaymen({ out_trade_no: paid_orders_page.out_trade_no, refundIds })
+      const res = await this.props.refundPayment({ out_trade_no: paid_orders_page.out_trade_no, refundIds, operation_id })
       if (res && res.code === '200') {
         this.refs.myAlert.alert('提交成功', '退费成功', () => {
           Router.push('/treatment/charge/charged')
@@ -226,5 +226,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryPaidOrders, refundPaymen }
+  { queryPaidOrders, refundPayment }
 )(ChargedDetailScreen)
