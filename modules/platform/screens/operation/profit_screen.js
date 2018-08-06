@@ -4,9 +4,11 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 // import { provinces } from '../../../../config/provinces'
 import {
-  queryClinicList
+  queryClinicList,
+  ProfitReport
 } from '../../../../ducks'
-import { Confirm, PageCard, Select } from '../../../../components'
+import { Select } from '../../../../components'
+import { formatMoney } from '../../../../utils'
 import ReactEcharts from 'echarts-for-react'
 
 class ProfitScreen extends Component {
@@ -17,7 +19,9 @@ class ProfitScreen extends Component {
       end_date: moment()
         .add(3, 'd')
         .format('YYYY-MM-DD'),
-      selClinic: ''
+      selClinic: '',
+      clinic_id: '',
+      tableData: []
     }
   }
   componentDidMount() {
@@ -35,6 +39,19 @@ class ProfitScreen extends Component {
     if (data) {
       this.setState({selClinic: {label: data[0].name, value: data[0].clinic_id}})
     }
+    this.ProfitReport()
+  }
+  ProfitReport () {
+    const {ProfitReport} = this.props
+    const {start_date, end_date, clinic_id} = this.state
+    let reqData = {
+      start_date,
+      end_date
+    }
+    if (clinic_id !== '') {
+      reqData.clinic_id = clinic_id
+    }
+    ProfitReport(reqData)
   }
   render() {
     return (
@@ -55,6 +72,8 @@ class ProfitScreen extends Component {
     const {clinics} = this.props
     let array = []
     // console.log('clinics====', clinics)
+    let f_item = {label: '全部', value: ''}
+    array.push(f_item)
     for (let key of clinics) {
       let item = {
         label: key.name,
@@ -66,7 +85,7 @@ class ProfitScreen extends Component {
     return array
   }
   renderFilter() {
-    const {selClinic} = this.state
+    // const {selClinic} = this.state
     return (
       <div className={''}>
         <div className={'filterBox'}>
@@ -93,15 +112,15 @@ class ProfitScreen extends Component {
               <Select
                 placeholder={'诊所名称'}
                 height={32}
-                value={selClinic}
+                // value={selClinic}
                 options={this.getClinicOptions()}
                 onChange={({ value }) => {
-                  this.setState({ status: value })
+                  this.setState({ clinic_id: value })
                 }}
               />
             </div>
             <button style={{marginLeft: '20px'}} onClick={() => {
-              // this.AdminList()
+              this.ProfitReport()
             }}>查询</button>
           </div>
           <div className={'boxRight'}>
@@ -119,34 +138,18 @@ class ProfitScreen extends Component {
   getOption() {
     // const {dataType} = this.state
     // const {sex_cdata, age_cdata, channel_cdata} = this.props
-    // let array = []
+    let array = this.getTableData()
     let data = []
-    // if (dataType === 1) {
-    //   array = sex_cdata
-    // } else if (dataType === 2) {
-    //   array = age_cdata
-    // } else {
-    //   array = channel_cdata
-    // }
-    // for (let i = 0; i < array.length; i++) {
-    //   let item = {}
-    //   if (dataType === 1) {
-    //     if (array[i].sex === 0) {
-    //       item.name = '女'
-    //     } else {
-    //       item.name = '男'
-    //     }
-    //   } else if (dataType === 2) {
-    //     item.name = array[i].age
-    //   } else {
-    //     item.name = array[i].patient_channel_name
-    //   }
-    //   item.value = array[i].total
-    //   item.itemStyle = {
-    //     color: this.colorStyle()[i]
-    //   }
-    //   data.push(item)
-    // }
+    for (let i = 0; i < array.length; i++) {
+      let item = {
+        name: array[i].name,
+        value: formatMoney(array[i].profit),
+        itemStyle: {
+          color: this.colorStyle()[i]
+        }
+      }
+      data.push(item)
+    }
     return {
       tooltip: {
         trigger: 'item',
@@ -164,9 +167,84 @@ class ProfitScreen extends Component {
       ]
     }
   }
+  getTableData () {
+    const {r_data} = this.props
+    console.log('r_data===', r_data)
+    let item = r_data
+    let array = []
+    if (item !== null) {
+      array = [
+        {
+          name: '西/成药处方',
+          cost: item.total_western_medicine_cost,
+          fee: item.total_western_medicine_fee,
+          profit: item.total_western_medicine_fee - item.total_western_medicine_cost
+        },
+        {
+          name: '中药处方',
+          cost: item.total_traditional_medical_cost,
+          fee: item.total_traditional_medical_fee,
+          profit: item.total_traditional_medical_fee - item.total_traditional_medical_cost
+        },
+        {
+          name: '检查费',
+          cost: item.total_examination_cost,
+          fee: item.total_examination_fee,
+          profit: item.total_examination_fee - item.total_examination_cost
+        },
+        {
+          name: '检验费',
+          cost: item.total_labortory_cost,
+          fee: item.total_labortory_fee,
+          profit: item.total_labortory_fee - item.total_labortory_cost
+        },
+        {
+          name: '治疗费',
+          cost: item.total_treatment_cost,
+          fee: item.total_treatment_fee,
+          profit: item.total_treatment_fee - item.total_treatment_cost
+        },
+        {
+          name: '材料费',
+          cost: item.total_material_cost,
+          fee: item.total_material_fee,
+          profit: item.total_material_fee - item.total_material_cost
+        },
+        {
+          name: '其他费用',
+          cost: item.total_other_cost,
+          fee: item.total_other_fee,
+          profit: item.total_other_fee - item.total_other_cost
+        },
+        {
+          name: '诊断费用',
+          cost: item.total_diagnosis_treatment_cost,
+          fee: item.total_diagnosis_treatment_fee,
+          profit: item.total_diagnosis_treatment_fee - item.total_diagnosis_treatment_cost
+        },
+        {
+          name: '零售费',
+          cost: item.total_retail_cost,
+          fee: item.total_retail_fee,
+          profit: item.total_retail_fee - item.total_retail_cost
+        }
+      ]
+    }
+    return array
+  }
+  getTotalFee(key) {
+    let total = 0
+    let array = this.getTableData()
+    for (let item of array) {
+      total += item[key]
+    }
+    return total
+  }
   renderDetail() {
     const {start_date, end_date} = this.state
-    let array = []
+    // const {r_data} = this.props
+    let array = this.getTableData()
+    // console.log('array====', array)
     return (
       <div>
         {this.renderCharts()}
@@ -182,18 +260,18 @@ class ProfitScreen extends Component {
             {array.map((item, index) => {
               return (
                 <li key={index}>
-                  <div>收入分类</div>
-                  <div>收入</div>
-                  <div>成本</div>
-                  <div>利润</div>
+                  <div>{item.name}</div>
+                  <div>{formatMoney(item.fee)}</div>
+                  <div>{formatMoney(item.cost)}</div>
+                  <div>{formatMoney(item.profit)}</div>
                 </li>
               )
             })}
             <li>
               <div>合计</div>
-              <div>收入</div>
-              <div>成本</div>
-              <div>利润</div>
+              <div>{formatMoney(this.getTotalFee('fee'))}</div>
+              <div>{formatMoney(this.getTotalFee('cost'))}</div>
+              <div>{formatMoney(this.getTotalFee('profit'))}</div>
             </li>
           </ul>
         </div>
@@ -261,7 +339,7 @@ class ProfitScreen extends Component {
   renderCharts() {
     return (
       <div>
-        <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
+        <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px', marginTop: '20px' }}>
           {this.renderTitle()}
           <ReactEcharts option={this.getOption()} style={{ height: '400px', width: '100%' }} />
         </div>
@@ -276,7 +354,7 @@ class ProfitScreen extends Component {
           width: 100px;
         }
         .leftTille ul li {
-          width: 100px;
+          width: 105px;
           display: flex;
           align-items: center;
         }
@@ -303,19 +381,17 @@ class ProfitScreen extends Component {
       '#428bca',
       '#749f83',
       '#797b7f',
+      '#290a7c',
       '#324b5c'
     ]
     return style
   }
   renderTitle() {
-    // const {sex_cdata} = this.props
-    let sex_cdata = [
-      {name: 'aaa'}
-    ]
+    let array = this.getTableData()
     return (
       <div className={'leftTille'}>
         <ul>
-          {sex_cdata.map((item, index) => {
+          {array.map((item, index) => {
             return (
               <li key={index}>
                 <label>{item.name}</label>
@@ -332,9 +408,11 @@ class ProfitScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    clinics: state.clinics.data
+    clinics: state.clinics.data,
+    r_data: state.financial.r_data
   }
 }
 export default connect(mapStateToProps, {
-  queryClinicList
+  queryClinicList,
+  ProfitReport
 })(ProfitScreen)

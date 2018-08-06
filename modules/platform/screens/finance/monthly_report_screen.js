@@ -239,10 +239,10 @@ class MonthlyReportScreen extends Component {
     const {start_date, end_date} = this.state
     let xdata = []
     let ydata = []
-    let month = moment(start_date).add(-1, 'M').format('YYYY-MM')
+    let month = moment(start_date).format('YYYY-MM')
     while (month <= end_date) {
-      month = moment(month).add(1, 'M').format('YYYY-MM')
       xdata.push(month)
+      month = moment(month).add(1, 'M').format('YYYY-MM')
     }
     ydata = this.getYData(xdata)
     // for (let item of m_data) {

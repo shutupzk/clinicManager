@@ -171,7 +171,8 @@ import {
   financial,
   ChargeDayReportByPayWay,
   ChargeDayReportByBusiness,
-  ChargeMonthReportByPayWay
+  ChargeMonthReportByPayWay,
+  ProfitReport
 } from './financial_analysis'
 
 import {totalAmounts, queryTotalAmounts} from './total_amount'
@@ -595,5 +596,6 @@ export {
   ChargeDayReportByPayWay,
   ChargeDayReportByBusiness,
   ChargeMonthReportByPayWay,
+  ProfitReport,
   queryTotalAmounts
 }
