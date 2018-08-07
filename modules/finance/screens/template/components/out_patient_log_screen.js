@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { queryFinanceListAnalysis, queryDoctorList } from '../../../../../ducks'
+import { OutPatietnRecords, queryDoctorList } from '../../../../../ducks'
 import { PageCard, Select } from '../../../../../components'
-import { formatMoney } from '../../../../../utils'
+import { getAgeByBirthday } from '../../../../../utils'
 // import ReactEcharts from 'echarts-for-react'
 
 // 其他收费
@@ -27,12 +27,12 @@ class Outpatientlogscreen extends Component {
 
   componentDidMount() {
     this.queryDoctorList()
-    this.queryContentData({})
   }
 
   queryDoctorList() {
     const {queryDoctorList, clinic_id} = this.props
     queryDoctorList({clinic_id, offset: 0, limit: 1000})
+    this.queryContentData({})
   }
 
   getDoctorOptions() {
@@ -69,13 +69,40 @@ class Outpatientlogscreen extends Component {
   }
 
   queryContentData({ offset = 0, limit = 10 }) {
-    const { queryFinanceListAnalysis } = this.props
-    const { start_date, end_date } = this.state
-    queryFinanceListAnalysis({ start_date, end_date, offset, limit })
+    const { OutPatietnRecords, clinic_id } = this.props
+    const {
+      start_date,
+      end_date,
+      patient_name,
+      phone,
+      doctor_id,
+      operation_id
+    } = this.state
+    let reqData = {
+      start_date,
+      end_date,
+      clinic_id,
+      limit,
+      offset
+    }
+    if (patient_name !== '') {
+      reqData.patient_name = patient_name
+    }
+    if (phone !== '') {
+      reqData.phone = phone
+    }
+    if (doctor_id !== '') {
+      reqData.doctor_id = doctor_id
+    }
+    if (operation_id !== '') {
+      reqData.operation_id = operation_id
+    }
+    OutPatietnRecords(reqData)
   }
 
   showContent() {
-    const { finances, finances_page } = this.props
+    const { log_data, page_info } = this.props
+    // console.log('log_data====a=', log_data, page_info)
     return (
       <div>
         <div
@@ -93,7 +120,7 @@ class Outpatientlogscreen extends Component {
           <ul>
             <li>
               <div>就诊日期</div>
-              <div>门诊ID</div>
+              <div>病人ID</div>
               <div>患者姓名</div>
               <div>性别</div>
               <div>年龄</div>
@@ -104,47 +131,57 @@ class Outpatientlogscreen extends Component {
               <div>初步诊断</div>
               <div>接诊类型</div>
               <div>登记人员</div>
-              <div>护士姓名</div>
               <div>接诊科室</div>
               <div>接诊医生</div>
             </li>
             <li style={{ background: 'rgba(247,247,247,1)' }}>
-              <div>总计</div>
-              <div>{formatMoney(finances_page.total_money)}</div>
-              <div>{formatMoney(finances_page.cash)}</div>
-              <div>{formatMoney(finances_page.bank)}</div>
-              <div>{formatMoney(finances_page.wechat)}</div>
-              <div>{formatMoney(finances_page.alipay)}</div>
-              <div>{formatMoney(finances_page.bonus_points_money)}</div>
-              <div>{formatMoney(0)}</div>
-              <div>{formatMoney(finances_page.medical_money)}</div>
-              <div>{formatMoney(finances_page.on_credit_money)}</div>
-              <div>{formatMoney(finances_page.discount_money || 0 + finances_page.voucher_money || 0)}</div>
-              <div>{formatMoney(finances_page.derate_money)}</div>
+              <div>合计</div>
+              <div><div>{page_info.person_amount}人</div></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
+              <div><div /></div>
             </li>
-            {finances.map((item, iKey) => {
+            {log_data.map((item, iKey) => {
               return (
                 <li key={iKey}>
-                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
-                  <div>{formatMoney(item.total_money)}</div>
-                  <div>{formatMoney(item.cash)}</div>
-                  <div>{formatMoney(item.bank)}</div>
-                  <div>{formatMoney(item.wechat)}</div>
-                  <div>{formatMoney(item.alipay)}</div>
-                  <div>{formatMoney(item.bonus_points_money)}</div>
-                  <div>{formatMoney(0)}</div>
-                  <div>{formatMoney(item.medical_money)}</div>
-                  <div>{formatMoney(item.on_credit_money)}</div>
-                  <div>{formatMoney(item.discount_money || 0 + item.voucher_money || 0)}</div>
-                  <div>{formatMoney(item.derate_money)}</div>
+                  <div><div>{moment(item.visit_date).format('YYYY-MM-DD')}</div></div>
+                  <div><div>{item.patient_id}</div></div>
+                  <div><div>{item.patient_name}</div></div>
+                  <div><div>{item.sex === 0 ? '女' : '男'}</div></div>
+                  <div><div>{getAgeByBirthday(item.birthday)}</div></div>
+                  <div><div>{item.phone}</div></div>
+                  <div><div>{item.profession}</div></div>
+                  <div><div>{item.province}{item.city}{item.district}{item.address}</div></div>
+                  <div><div>{item.morbidity_date}</div></div>
+                  <div><div>{item.diagnosis}</div></div>
+                  <div><div>{item.visit_type === 1 ? '初诊' : item.visit_type === 2 ? '复诊' : item.visit_type === 3 ? '术后复诊' : '' }</div></div>
+                  <div><div>{item.opreation_name}</div></div>
+                  <div><div>{item.dept_name}</div></div>
+                  <div><div>{item.doctor_name}</div></div>
                 </li>
               )
             })}
           </ul>
         </div>
         <style jsx='true'>{`
-          .feeScheduleBox ul li div {
+          .feeScheduleBox ul li>div {
             flex: 1;
+            display:flex;
+            align-items: center;
+            justify-content:center;
+            // line-height: 24px;
+          }
+          .feeScheduleBox ul li>div>div{
+            line-height: normal;
           }
           .leftTille {
             padding-top: 70px;
@@ -168,9 +205,9 @@ class Outpatientlogscreen extends Component {
           }
         `}</style>
         <PageCard
-          offset={finances_page.offset}
-          limit={finances_page.limit}
-          total={finances_page.total}
+          offset={page_info.offset}
+          limit={page_info.limit}
+          total={page_info.total}
           onItemClick={({ offset, limit }) => {
             this.queryContentData({ offset, limit })
           }}
@@ -278,16 +315,16 @@ class Outpatientlogscreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state=====', state)
+  // console.log('state=====', state)
   return {
-    finances: state.finances.data,
-    finances_page: state.finances.page_info,
     clinic_id: state.user.data.clinic_id,
-    doctors: state.doctors.array_data
+    doctors: state.doctors.array_data,
+    log_data: state.medReports.l_data,
+    page_info: state.medReports.l_page_info
   }
 }
 
 export default connect(
   mapStateToProps,
-  { queryFinanceListAnalysis, queryDoctorList }
+  { OutPatietnRecords, queryDoctorList }
 )(Outpatientlogscreen)

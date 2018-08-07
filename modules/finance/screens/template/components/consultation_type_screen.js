@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { queryFinanceListAnalysis } from '../../../../../ducks'
+import { OutPatietnType } from '../../../../../ducks'
 import { PageCard } from '../../../../../components'
-import { formatMoney } from '../../../../../utils'
+// import { formatMoney } from '../../../../../utils'
 import ReactEcharts from 'echarts-for-react'
 
 // 其他收费
@@ -25,70 +25,26 @@ class Consultationtypescreen extends Component {
   }
 
   getOption() {
-    const { finances_page } = this.props
-
     let data = [
       {
-        name: '中药费',
-        value: formatMoney(finances_page.traditional_medical_fee),
+        name: '初诊',
+        value: this.getTotalFee('type1'),
         itemStyle: {
           color: '#5bc0de'
         }
       },
       {
-        name: '西/成药费',
-        value: formatMoney(finances_page.western_medicine_fee),
+        name: '复诊',
+        value: this.getTotalFee('type2'),
         itemStyle: {
           color: '#d9534f'
         }
       },
       {
-        name: '检查费',
-        value: formatMoney(finances_page.examination_fee),
+        name: '术后复诊',
+        value: this.getTotalFee('type3'),
         itemStyle: {
           color: '#428bca'
-        }
-      },
-      {
-        name: '检验费',
-        value: formatMoney(finances_page.labortory_fee),
-        itemStyle: {
-          color: '#f0ad4e'
-        }
-      },
-      {
-        name: '治疗费',
-        value: formatMoney(finances_page.treatment_fee),
-        itemStyle: {
-          color: '#54af9b'
-        }
-      },
-      {
-        name: '诊疗费',
-        value: formatMoney(finances_page.diagnosis_treatment_fee),
-        itemStyle: {
-          color: '#54b2a6'
-        }
-      },
-      {
-        name: '材料费',
-        value: formatMoney(finances_page.material_fee),
-        itemStyle: {
-          color: '#a28eda'
-        }
-      },
-      {
-        name: '药品零售',
-        value: formatMoney(finances_page.retail_fee),
-        itemStyle: {
-          color: '#749f83'
-        }
-      },
-      {
-        name: '其他费用',
-        value: formatMoney(finances_page.other_fee),
-        itemStyle: {
-          color: '#5ab472'
         }
       }
     ]
@@ -100,7 +56,7 @@ class Consultationtypescreen extends Component {
 
       series: [
         {
-          name: '金额占比',
+          name: '类型占比',
           type: 'pie',
           data: data.sort(function(a, b) {
             return a.value - b.value
@@ -111,53 +67,37 @@ class Consultationtypescreen extends Component {
   }
 
   queryContentData({ offset = 0, limit = 10 }) {
-    const { queryFinanceListAnalysis } = this.props
+    const { OutPatietnType, clinic_id } = this.props
     const { start_date, end_date } = this.state
-    queryFinanceListAnalysis({ start_date, end_date, offset, limit })
+    OutPatietnType({ start_date, end_date, clinic_id, offset, limit })
   }
-
+  getTotalFee(key) {
+    let total = 0
+    let array = this.props.t_data
+    for (let item of array) {
+      total += item[key]
+    }
+    return total
+  }
   showContent() {
-    const { finances, finances_page } = this.props
+    const { t_data, t_page_info } = this.props
+    console.log('t_data, t_page_info', t_data, t_page_info)
     return (
       <div>
         <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
           <div className={'leftTille'}>
             <ul>
               <li>
-                <label>中药费</label>
+                <label>初诊</label>
                 <i style={{ background: '#5bc0de' }} />
               </li>
               <li>
-                <label>西/成药费</label>
+                <label>复诊</label>
                 <i style={{ background: '#d9534f' }} />
               </li>
               <li>
-                <label>检查费</label>
+                <label>术后复诊</label>
                 <i style={{ background: '#428bca' }} />
-              </li>
-              <li>
-                <label>检验费</label>
-                <i style={{ background: '#f0ad4e' }} />
-              </li>
-              <li>
-                <label>治疗费</label>
-                <i style={{ background: '#54af9b' }} />
-              </li>
-              <li>
-                <label>诊疗费</label>
-                <i style={{ background: '#54b2a6' }} />
-              </li>
-              <li>
-                <label>材料费</label>
-                <i style={{ background: '#a28eda' }} />
-              </li>
-              <li>
-                <label>药品零售</label>
-                <i style={{ background: '#749f83' }} />
-              </li>
-              <li>
-                <label>其他费用</label>
-                <i style={{ background: '#5ab472' }} />
               </li>
             </ul>
           </div>
@@ -172,53 +112,29 @@ class Consultationtypescreen extends Component {
             marginBottom: '15px'
           }}
         >
-          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '业务类型'}</h3>
+          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '接诊类型统计'}</h3>
         </div>
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
-              <div>交易日期</div>
-              <div>费用合计</div>
-              <div>中药费</div>
-              <div>西/成药费</div>
-              <div>检查费</div>
-              <div>检验费</div>
-              <div>治疗费</div>
-              <div>诊疗费</div>
-              <div>材料费</div>
-              <div>药品零售</div>
-              <div>其他费用</div>
+              <div>接诊日期</div>
+              <div>初诊</div>
+              <div>复诊</div>
+              <div>术后复诊</div>
             </li>
             <li style={{ background: 'rgba(247,247,247,1)' }}>
-              <div>总计</div>
-              <div>
-                {formatMoney(finances_page.total_money)}
-                {}
-              </div>
-              <div>{formatMoney(finances_page.traditional_medical_fee)}</div>
-              <div>{formatMoney(finances_page.western_medicine_fee)}</div>
-              <div>{formatMoney(finances_page.examination_fee)}</div>
-              <div>{formatMoney(finances_page.labortory_fee)}</div>
-              <div>{formatMoney(finances_page.treatment_fee)}</div>
-              <div>{formatMoney(finances_page.diagnosis_treatment_fee)}</div>
-              <div>{formatMoney(finances_page.material_fee)}</div>
-              <div>{formatMoney(finances_page.retail_fee)}</div>
-              <div>{formatMoney(finances_page.other_fee)}</div>
+              <div>合计</div>
+              <div>{this.getTotalFee('type1')}</div>
+              <div>{this.getTotalFee('type2')}</div>
+              <div>{this.getTotalFee('type3')}</div>
             </li>
-            {finances.map((item, iKey) => {
+            {t_data.map((item, iKey) => {
               return (
                 <li key={iKey}>
                   <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
-                  <div>{formatMoney(item.total_money)}</div>
-                  <div>{formatMoney(item.traditional_medical_fee)}</div>
-                  <div>{formatMoney(item.western_medicine_fee)}</div>
-                  <div>{formatMoney(item.examination_fee)}</div>
-                  <div>{formatMoney(item.labortory_fee)}</div>
-                  <div>{formatMoney(item.treatment_fee)}</div>
-                  <div>{formatMoney(item.diagnosis_treatment_fee)}</div>
-                  <div>{formatMoney(item.material_fee)}</div>
-                  <div>{formatMoney(item.retail_fee)}</div>
-                  <div>{formatMoney(item.other_fee)}</div>
+                  <div>{item.type1}</div>
+                  <div>{item.type2}</div>
+                  <div>{item.type3}</div>
                 </li>
               )
             })}
@@ -250,9 +166,9 @@ class Consultationtypescreen extends Component {
           }
         `}</style>
         <PageCard
-          offset={finances_page.offset}
-          limit={finances_page.limit}
-          total={finances_page.total}
+          offset={t_page_info.offset}
+          limit={t_page_info.limit}
+          total={t_page_info.total}
           onItemClick={({ offset, limit }) => {
             this.queryContentData({ offset, limit })
           }}
@@ -293,6 +209,8 @@ class Consultationtypescreen extends Component {
             <button style={{ marginLeft: '100px' }} onClick={() => this.queryContentData({})}>
               查询
             </button>
+          </div>
+          <div className={'boxRight'}>
             <button style={{ marginLeft: '20px' }} onClick={() => {}}>
               导出
             </button>
@@ -306,12 +224,13 @@ class Consultationtypescreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    finances: state.finances.data,
-    finances_page: state.finances.page_info
+    t_data: state.medReports.t_data,
+    t_page_info: state.medReports.t_page_info,
+    clinic_id: state.user.data.clinic_id
   }
 }
 
 export default connect(
   mapStateToProps,
-  { queryFinanceListAnalysis }
+  { OutPatietnType }
 )(Consultationtypescreen)

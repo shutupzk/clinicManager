@@ -4,7 +4,9 @@ const CONS_TYPE = 'CONS_TYPE'
 
 const initState = {
   l_data: [],
-  t_data: []
+  t_data: [],
+  l_page_info: {},
+  t_page_info: {}
 }
 
 export function medReports(state = initState, action = {}) {
@@ -29,6 +31,17 @@ export const OutPatietnRecords = ({
   offset = 0,
   limit = 10
 }) => async dispatch => {
+  // console.log('OutPatietnRecords====', {
+  //   start_date,
+  //   end_date,
+  //   clinic_id,
+  //   patient_name,
+  //   phone,
+  //   doctor_id,
+  //   operation_id,
+  //   offset,
+  //   limit
+  // })
   try {
     const data = await request('/medicalReport/outPatient/record', {
       start_date,
@@ -42,7 +55,8 @@ export const OutPatietnRecords = ({
       limit
     })
     const docs = data.data || []
-    const page_info = data.page_info
+    const page_info = data.page_info || {}
+    console.log('OutPatietnRecords====', data)
     dispatch({
       type: OUT_PATIENT_LOG,
       l_data: docs,
