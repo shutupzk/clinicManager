@@ -58,13 +58,22 @@ export const queryDoctorList = ({ clinic_id, personnel_type, keyword = '', offse
     const page_info = data.page_info || {}
     if (jsonType) {
       let json = {}
+      // let doc_json = {}
+      // let emp_json = {}
       for (let doc of docs) {
         json[doc.id] = doc
         // json[doc.name] = doc
+        // if (doc.personnel_type === 1) {
+        //   emp_json[doc.id] = doc
+        // } else {
+        //   doc_json[doc.id] = doc
+        // }
       }
       dispatch({
         type: DOCTOR_JSON,
         data: json,
+        // doc_data: doc_json,
+        // emp_dta: emp_json,
         page_info
       })
     } else {
