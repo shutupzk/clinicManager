@@ -6,6 +6,7 @@ import Navigation from './foot_navigation'
 
 class ConLayout extends Component {
   render() {
+    let { clinic_name } = this.props
     const url = (this.props.url && this.props.url.pathname) || '/'
     const conList = [] // this.props.user_menu.filter(item => url.indexOf(item.navigateName) > -1)
     let routeUrl = '/' + url.split('/')[1]
@@ -20,7 +21,7 @@ class ConLayout extends Component {
           <img src={'/static/home/index_logo.png'} />
           <div className={'logoTxt'}>
             <span>{`${TITLE}`}</span>
-            <span>深圳市龙华店</span>
+            <span>{clinic_name}</span>
           </div>
         </div>
         <div className={'appContentLeft left'}>
@@ -108,7 +109,8 @@ class ConLayout extends Component {
 }
 const mapStateToProps = state => {
   return {
-    user_menu: state.user.user_menu
+    user_menu: state.user.user_menu,
+    clinic_name: state.user.data.clinic_name
   }
 }
 

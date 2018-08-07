@@ -101,7 +101,7 @@ class SigninScreen extends Component {
                   onChange={e => {
                     this.setState({loginType: 1})
                   }}
-                />平台用户
+                />诊所用户
               </label>
               <label style={{marginLeft: '20px'}}>
                 <input

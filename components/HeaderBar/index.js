@@ -65,6 +65,7 @@ class HeaderBar extends Component {
   }
 
   render() {
+    let { clinic_name } = this.props
     // const hideRightCon = this.props.hideRightCon || false
     // const { showLogutBtn } = this.state
     const curUrl = this.props.url && this.props.url.pathname
@@ -100,7 +101,7 @@ class HeaderBar extends Component {
           <div className={'left_title'}>
             <img src={'/static/login/u49.png'} />
             <span className={'left_title_txt'}>{`${TITLE}`}</span>
-            <span className={'left_title_addr'}>深圳市龙华店</span>
+            <span className={'left_title_addr'}>{clinic_name}</span>
           </div>
           <div className={'right_nav_menu'}>
             <ul className='left'>
@@ -168,11 +169,14 @@ class HeaderBar extends Component {
 
 function mapStateToProps(state) {
   return {
-    // token: state.user.data.token,
+    clinic_name: state.user.data.clinic_name
     // adminId: state.user.data.id,
     // loading: state.user.loading,
     // error: state.user.error
   }
 }
 
-export default connect(mapStateToProps, { signout })(HeaderBar)
+export default connect(
+  mapStateToProps,
+  { signout }
+)(HeaderBar)
