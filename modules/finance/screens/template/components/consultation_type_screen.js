@@ -25,24 +25,25 @@ class Consultationtypescreen extends Component {
   }
 
   getOption() {
+    const {t_total} = this.props
     let data = [
       {
         name: '初诊',
-        value: this.getTotalFee('type1'),
+        value: t_total.type1,
         itemStyle: {
           color: '#5bc0de'
         }
       },
       {
         name: '复诊',
-        value: this.getTotalFee('type2'),
+        value: t_total.type2,
         itemStyle: {
           color: '#d9534f'
         }
       },
       {
         name: '术后复诊',
-        value: this.getTotalFee('type3'),
+        value: t_total.type3,
         itemStyle: {
           color: '#428bca'
         }
@@ -80,7 +81,7 @@ class Consultationtypescreen extends Component {
     return total
   }
   showContent() {
-    const { t_data, t_page_info } = this.props
+    const { t_data, t_page_info, t_total } = this.props
     console.log('t_data, t_page_info', t_data, t_page_info)
     return (
       <div>
@@ -124,9 +125,9 @@ class Consultationtypescreen extends Component {
             </li>
             <li style={{ background: 'rgba(247,247,247,1)' }}>
               <div>合计</div>
-              <div>{this.getTotalFee('type1')}</div>
-              <div>{this.getTotalFee('type2')}</div>
-              <div>{this.getTotalFee('type3')}</div>
+              <div>{t_total.type1}</div>
+              <div>{t_total.type1}</div>
+              <div>{t_total.type1}</div>
             </li>
             {t_data.map((item, iKey) => {
               return (
@@ -226,6 +227,7 @@ const mapStateToProps = state => {
   return {
     t_data: state.medReports.t_data,
     t_page_info: state.medReports.t_page_info,
+    t_total: state.medReports.t_total,
     clinic_id: state.user.data.clinic_id
   }
 }
