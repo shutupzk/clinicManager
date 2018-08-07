@@ -18,14 +18,16 @@ class ClinicAddScreen extends Component {
 
       area: '', // 详细地址
       name: '', // 诊所名称
-      code: '123456', // 诊所编码
       responsible_person: '', // 负责人
       status: true, // 开启状态
       username: '', // 诊所账号
       password: '', // 诊所密码
       passwordConfirm: '', // 诊所密码
-      phone: '' // 手机号
+      phone: '', // 手机号,
+      vertifyCode: ''
     }
+
+    this.code = null
   }
 
   // 保存新增登记
@@ -53,7 +55,7 @@ class ClinicAddScreen extends Component {
     if (password !== passwordConfirm) {
       return this.refs.myAlert.alert('两次输入密码不一致！', null, null, 'Warning')
     }
-    let res = await clinicCreate(this.state)
+    let res = await clinicCreate({...this.state, code: this.code})
     if (res) {
       return this.refs.myAlert.alert('添加失败', res, null, 'Warning')
     }
@@ -62,8 +64,9 @@ class ClinicAddScreen extends Component {
     })
   }
 
-  componentDidMount() {
-    this.props.queryClinicCode()
+  async componentDidMount() {
+    let code = await this.props.queryClinicCode()
+    this.code = (code && code * 1 + 1) || 10000
   }
 
   getProvincesOptions() {
@@ -105,9 +108,8 @@ class ClinicAddScreen extends Component {
 
   // 显示添加新增
   showAddNew() {
-    let { lastest_code } = this.props
+    let { lastest_code } = this.code
     if (!lastest_code || lastest_code * 1 < 10000) lastest_code = 10000
-    lastest_code = lastest_code * 1 + 1
     return (
       <div className={'formList'} style={{ marginLeft: '65px' }}>
         <div className={'formListBox'} style={{}}>
@@ -228,9 +230,9 @@ class ClinicAddScreen extends Component {
               </label>
               <input
                 type='text'
-                value={this.state.password}
+                value={this.state.vertifyCode}
                 onChange={e => {
-                  this.setState({ password: e.target.value })
+                  this.setState({ vertifyCode: e.target.value })
                 }}
               />
             </li>

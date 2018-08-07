@@ -92,12 +92,12 @@ export const queryClinicCode = () => async dispatch => {
         type: CLINIC_CODE_ADD,
         data: data.data.code || 10001
       })
-      return null
+      return data.data.code
     }
-    return data.msg
+    return null
   } catch (e) {
     console.log(e)
-    return e.message
+    return null
   }
 }
 
