@@ -13,7 +13,7 @@ class ClinicListScreen extends Component {
       pageType: 1,
       keyword: '',
       start_date: moment()
-        .add(-7, 'd')
+        .add(-1, 'year')
         .format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
