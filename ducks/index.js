@@ -320,6 +320,11 @@ import {
 
 import { totalAmounts, queryTotalAmounts } from './total_amount'
 import { managementOrders, queryManagementOrders } from './management_order'
+import {
+  medReports,
+  OutPatietnRecords,
+  OutPatietnType
+} from './medical_report'
 
 const persistConfig = {
   key: 'root',
@@ -327,6 +332,7 @@ const persistConfig = {
 }
 
 const appReducer = persistCombineReducers(persistConfig, {
+  medReports,
   admins,
   financial,
   user,
@@ -743,5 +749,7 @@ export {
   ChargeMonthReportByPayWay,
   queryTotalAmounts,
   queryManagementOrders,
-  ProfitReport
+  ProfitReport,
+  OutPatietnRecords,
+  OutPatietnType
 }
