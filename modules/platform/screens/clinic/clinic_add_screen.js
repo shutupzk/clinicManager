@@ -18,6 +18,7 @@ class ClinicAddScreen extends Component {
 
       area: '', // 详细地址
       name: '', // 诊所名称
+      code: '', // 诊所编码
       responsible_person: '', // 负责人
       status: true, // 开启状态
       username: '', // 诊所账号
@@ -55,7 +56,7 @@ class ClinicAddScreen extends Component {
     if (password !== passwordConfirm) {
       return this.refs.myAlert.alert('两次输入密码不一致！', null, null, 'Warning')
     }
-    let res = await clinicCreate({...this.state, code: this.code})
+    let res = await clinicCreate(this.state)
     if (res) {
       return this.refs.myAlert.alert('添加失败', res, null, 'Warning')
     }
@@ -66,7 +67,9 @@ class ClinicAddScreen extends Component {
 
   async componentDidMount() {
     let code = await this.props.queryClinicCode()
-    this.code = (code && code * 1 + 1) || 10000
+    if (!code || code * 1 < 10000) code = 10000
+    code = code * 1 + 1
+    this.setState({ code })
   }
 
   getProvincesOptions() {
@@ -108,8 +111,9 @@ class ClinicAddScreen extends Component {
 
   // 显示添加新增
   showAddNew() {
-    let { lastest_code } = this.code
+    let { lastest_code } = this.props
     if (!lastest_code || lastest_code * 1 < 10000) lastest_code = 10000
+    lastest_code = lastest_code * 1 + 1
     return (
       <div className={'formList'} style={{ marginLeft: '65px' }}>
         <div className={'formListBox'} style={{}}>
@@ -321,7 +325,10 @@ const mapStateToProps = state => {
     lastest_code: state.clinics.lastest_code
   }
 }
-export default connect(mapStateToProps, {
-  clinicCreate,
-  queryClinicCode
-})(ClinicAddScreen)
+export default connect(
+  mapStateToProps,
+  {
+    clinicCreate,
+    queryClinicCode
+  }
+)(ClinicAddScreen)
