@@ -126,8 +126,8 @@ class Consultationtypescreen extends Component {
             <li style={{ background: 'rgba(247,247,247,1)' }}>
               <div>合计</div>
               <div>{t_total.type1}</div>
-              <div>{t_total.type1}</div>
-              <div>{t_total.type1}</div>
+              <div>{t_total.type2}</div>
+              <div>{t_total.type3}</div>
             </li>
             {t_data.map((item, iKey) => {
               return (
