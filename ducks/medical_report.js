@@ -3,6 +3,8 @@ const OUT_PATIENT_LOG = 'OUT_PATIENT_LOG'
 const CONS_TYPE = 'CONS_TYPE'
 const REC_TREATMENT = 'REC_TREATMENT'
 const EXAM_STIC = 'EXAM_STIC'
+const LABOR_STIC = 'LABOR_STIC'
+const TREAT_STIC = 'TREAT_STIC'
 
 const initState = {
   l_data: [],
@@ -12,7 +14,11 @@ const initState = {
   t_total: {},
   r_data: [],
   exam_data: [],
-  exam_page: {}
+  exam_page: {},
+  labor_data: [],
+  labor_page: {},
+  treat_data: [],
+  treat_page: {}
 }
 
 export function medReports(state = initState, action = {}) {
@@ -25,6 +31,10 @@ export function medReports(state = initState, action = {}) {
       return { ...state, r_data: action.data }
     case EXAM_STIC:
       return { ...state, exam_data: action.data, exam_page: action.page_info }
+    case LABOR_STIC:
+      return { ...state, labor_data: action.data, labor_page: action.page_info }
+    case TREAT_STIC:
+      return { ...state, treat_data: action.data, treat_page: action.page_info }
     default:
       return state
   }
@@ -56,7 +66,6 @@ export const OutPatietnRecords = ({ start_date, end_date, clinic_id, patient_nam
     })
     const docs = data.data || []
     const page_info = data.page_info || {}
-    console.log('OutPatietnRecords====', data)
     dispatch({
       type: OUT_PATIENT_LOG,
       l_data: docs,
@@ -133,6 +142,56 @@ export const ExaminationStatistics = ({ start_date, end_date, clinic_id, offset 
 
     dispatch({
       type: EXAM_STIC,
+      data: docs,
+      page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const LaboratoryStatistics = ({ start_date, end_date, clinic_id, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    const data = await request('/medicalReport/LaboratoryStatistics', {
+      start_date,
+      end_date,
+      clinic_id,
+      offset,
+      limit
+    })
+
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+
+    dispatch({
+      type: LABOR_STIC,
+      data: docs,
+      page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const TreatmentStatistics = ({ start_date, end_date, clinic_id, offset = 0, limit = 10 }) => async dispatch => {
+  try {
+    const data = await request('/medicalReport/TreatmentStatistics', {
+      start_date,
+      end_date,
+      clinic_id,
+      offset,
+      limit
+    })
+
+    const docs = data.data || []
+    const page_info = data.page_info || {}
+
+    dispatch({
+      type: TREAT_STIC,
       data: docs,
       page_info
     })

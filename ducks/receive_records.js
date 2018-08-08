@@ -24,7 +24,6 @@ export const queryReceiveRecords = ({ clinic_patient_id, keyword, offset = 0, li
       offset,
       limit
     })
-    console.log('personnel ======', data)
     const docs = data.data || []
     const page_info = data.page_info || {}
     dispatch({
