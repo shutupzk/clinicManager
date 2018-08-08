@@ -213,7 +213,7 @@ class ChargedDetailScreen extends Component {
         </div>
         <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
           <div style={{ ...patientInfoRow }}>
-            <div style={patientInforRowItem}>应收金额：{formatMoney(paid_orders_page.charge_total_fee)} 元</div>
+            <div style={patientInforRowItem}>实收金额：{formatMoney(paid_orders_page.charge_total_fee)} 元</div>
             <div style={patientInforRowItem}>收费方式：{payMethodMap[paid_orders_page.pay_method_code]}</div>
             <div style={patientInforRowItem}>开单医师：{triagePatient.doctor_name}</div>
             <div style={patientInforRowItem}>收款人：{triagePatient.register_personnel_name}</div>
