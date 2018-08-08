@@ -57,9 +57,12 @@ class Doctorconsultationscreen extends Component {
     let material_fee = 0
     let other_fee = 0
     let diagnosis_treatment_fee = 0
+    let treatement_fee = 0
+    let tatol_count = 0
 
     for (let item of data) {
       total_fee += item.total_fee
+      tatol_count += item.tatol_count
       labora_pre_fee += item.labora_pre_fee
       exam_pre_fee += item.exam_pre_fee
       west_pre_fee += item.west_pre_fee
@@ -67,6 +70,7 @@ class Doctorconsultationscreen extends Component {
       material_fee += item.material_fee
       other_fee += item.other_fee
       diagnosis_treatment_fee += item.diagnosis_treatment_fee
+      treatement_fee += item.treatement_fee
     }
 
     return (
@@ -101,11 +105,11 @@ class Doctorconsultationscreen extends Component {
             <li style={{ background: 'rgba(247,247,247,1)' }}>
               <div>合计</div>
               <div />
-              <div />
+              <div>{tatol_count}</div>
               <div>{formatMoney(total_fee)}</div>
               <div>{formatMoney(labora_pre_fee)}</div>
               <div>{formatMoney(exam_pre_fee)}</div>
-              <div />
+              <div>{formatMoney(treatement_fee)}</div>
               <div>{formatMoney(west_pre_fee)}</div>
               <div>{formatMoney(east_pre_fee)}</div>
               <div>{formatMoney(material_fee)}</div>
@@ -117,11 +121,11 @@ class Doctorconsultationscreen extends Component {
                 <li key={iKey}>
                   <div>{item.personnel_name}</div>
                   <div>{item.department_name}</div>
-                  <div />
+                  <div>{item.tatol_count}</div>
                   <div>{formatMoney(item.total_fee)}</div>
                   <div>{formatMoney(item.labora_pre_fee)}</div>
                   <div>{formatMoney(item.exam_pre_fee)}</div>
-                  <div />
+                  <div>{formatMoney(item.treatement_fee)}</div>
                   <div>{formatMoney(item.west_pre_fee)}</div>
                   <div>{formatMoney(item.east_pre_fee)}</div>
                   <div>{formatMoney(item.material_fee)}</div>
