@@ -65,14 +65,14 @@ class Laboratoryscreen extends Component {
               <div>合计</div>
               <div />
               <div />
+              <div>{page.patient_count}</div>
               <div />
               <div />
               <div />
               <div />
               <div />
               <div />
-              <div />
-              <div />
+              <div>{page.tiems_total}</div>
               <div />
             </li>
             {data.map((item, iKey) => {

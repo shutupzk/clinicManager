@@ -330,7 +330,8 @@ import {
   ExaminationStatistics,
   LaboratoryStatistics,
   TreatmentStatistics,
-  RegisterStatistics
+  RegisterStatistics,
+  OutPatietnEfficiencyStatistics
 } from './medical_report'
 
 const persistConfig = {
@@ -765,5 +766,6 @@ export {
   ExaminationStatistics,
   LaboratoryStatistics,
   TreatmentStatistics,
-  RegisterStatistics
+  RegisterStatistics,
+  OutPatietnEfficiencyStatistics
 }
