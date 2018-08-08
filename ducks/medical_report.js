@@ -1,13 +1,15 @@
 import { request } from './request'
 const OUT_PATIENT_LOG = 'OUT_PATIENT_LOG'
 const CONS_TYPE = 'CONS_TYPE'
+const REC_TREATMENT = 'REC_TREATMENT'
 
 const initState = {
   l_data: [],
   t_data: [],
   l_page_info: {},
   t_page_info: {},
-  t_total: {}
+  t_total: {},
+  r_data: []
 }
 
 export function medReports(state = initState, action = {}) {
@@ -16,22 +18,14 @@ export function medReports(state = initState, action = {}) {
       return { ...state, l_data: action.l_data, l_page_info: action.l_page_info }
     case CONS_TYPE:
       return { ...state, t_data: action.t_data, t_page_info: action.t_page_info, t_total: action.t_total }
+    case REC_TREATMENT:
+      return { ...state, r_data: action.data }
     default:
       return state
   }
 }
 
-export const OutPatietnRecords = ({
-  start_date,
-  end_date,
-  clinic_id,
-  patient_name,
-  phone,
-  doctor_id,
-  operation_id,
-  offset = 0,
-  limit = 10
-}) => async dispatch => {
+export const OutPatietnRecords = ({ start_date, end_date, clinic_id, patient_name, phone, doctor_id, operation_id, offset = 0, limit = 10 }) => async dispatch => {
   // console.log('OutPatietnRecords====', {
   //   start_date,
   //   end_date,
@@ -70,17 +64,7 @@ export const OutPatietnRecords = ({
   }
 }
 
-export const OutPatietnType = ({
-  start_date,
-  end_date,
-  clinic_id,
-  patient_name,
-  phone,
-  doctor_id,
-  operation_id,
-  offset = 0,
-  limit = 10
-}) => async dispatch => {
+export const OutPatietnType = ({ start_date, end_date, clinic_id, patient_name, phone, doctor_id, operation_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
     const data = await request('/medicalReport/outPatient/type', {
       start_date,
@@ -98,6 +82,28 @@ export const OutPatietnType = ({
       t_data: docs,
       t_page_info: page_info,
       t_total: t_total
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const ReceiveTreatment = ({ start_date, end_date, clinic_id, department_id }) => async dispatch => {
+  try {
+    const data = await request('/medicalReport/ReceiveTreatment', {
+      start_date,
+      end_date,
+      clinic_id,
+      department_id
+    })
+
+    const docs = data.data || []
+
+    dispatch({
+      type: REC_TREATMENT,
+      data: docs
     })
     return null
   } catch (e) {

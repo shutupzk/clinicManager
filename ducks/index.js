@@ -325,7 +325,8 @@ import { managementOrders, queryManagementOrders } from './management_order'
 import {
   medReports,
   OutPatietnRecords,
-  OutPatietnType
+  OutPatietnType,
+  ReceiveTreatment
 } from './medical_report'
 
 const persistConfig = {
@@ -755,5 +756,6 @@ export {
   queryManagementOrders,
   ProfitReport,
   OutPatietnRecords,
-  OutPatietnType
+  OutPatietnType,
+  ReceiveTreatment
 }
