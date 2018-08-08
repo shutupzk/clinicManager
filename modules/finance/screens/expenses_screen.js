@@ -45,7 +45,7 @@ class ExpensesScreen extends Component {
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
             收费明细
           </span>
-          <span className={this.state.pageType === 4 ? 'sel' : ''} onClick={() => this.changeContent({ type: 4 })}>
+          {/* <span className={this.state.pageType === 4 ? 'sel' : ''} onClick={() => this.changeContent({ type: 4 })}>
             充值日报
           </span>
           <span className={this.state.pageType === 5 ? 'sel' : ''} onClick={() => this.changeContent({ type: 5 })}>
@@ -53,7 +53,7 @@ class ExpensesScreen extends Component {
           </span>
           <span className={this.state.pageType === 6 ? 'sel' : ''} onClick={() => this.changeContent({ type: 6 })}>
             挂账明细
-          </span>
+          </span> */}
         </div>
         {this.showDataList()}
       </div>

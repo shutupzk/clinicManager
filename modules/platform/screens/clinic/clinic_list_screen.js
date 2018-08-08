@@ -12,12 +12,8 @@ class ClinicListScreen extends Component {
     this.state = {
       pageType: 1,
       keyword: '',
-      start_date: moment()
-        .add(-1, 'year')
-        .format('YYYY-MM-DD'),
-      end_date: moment()
-        .add(1, 'd')
-        .format('YYYY-MM-DD'),
+      start_date: '',
+      end_date: '',
 
       cities: [],
       counties: [],
@@ -440,4 +436,7 @@ const mapStateToProps = state => {
     clinics_page_info: state.clinics.page_info
   }
 }
-export default connect(mapStateToProps, { queryClinicList, clinicUpdateStatus, clinicUpdate })(ClinicListScreen)
+export default connect(
+  mapStateToProps,
+  { queryClinicList, clinicUpdateStatus, clinicUpdate }
+)(ClinicListScreen)

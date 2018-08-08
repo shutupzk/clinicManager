@@ -87,9 +87,9 @@ class Efficiencyscreen extends Component {
               <div />
               <div>{page.average_triage_finished_time}</div>
               <div />
-              <div>{page.average_reception_finished_time}</div>
-              <div />
               <div>{page.average_receptioned_time}</div>
+              <div />
+              <div>{page.average_reception_finished_time}</div>
               <div />
               <div>{page.average_pay_finished_time}</div>
             </li>
