@@ -66,7 +66,7 @@ class TobeChargedScreen extends Component {
                     </span>
                     <span>
                       <a>登记人员：</a>
-                      <a>{patient.register_personnel_name}</a>
+                      <a>{patient.register_personnel_name || patient.doctor_name}</a>
                     </span>
                     <span>
                       <a>登记时间：</a>
