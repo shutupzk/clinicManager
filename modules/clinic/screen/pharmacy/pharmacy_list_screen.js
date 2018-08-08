@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import StorageMgtScreen from './storage_mgt_screen'
 import OutboundMgtScreen from './outbound_mgt_screen'
 import CurrentInventoryScreen from './current_inventory_screen'
+import InventoryScreen from './inventory_screen'
 
 class PharmacyListScreen extends Component {
   constructor(props) {
@@ -26,8 +27,8 @@ class PharmacyListScreen extends Component {
     let map = {
       1: <StorageMgtScreen />,
       2: <OutboundMgtScreen />,
-      3: <CurrentInventoryScreen />
-      // 4: <StorageMgtScreen />
+      3: <CurrentInventoryScreen />,
+      4: <InventoryScreen />
     }
     return map[personnel_type] || null
   }
@@ -59,6 +60,14 @@ class PharmacyListScreen extends Component {
             }}
           >
             当前库存
+          </span>
+          <span
+            className={this.state.personnel_type === 4 ? 'sel' : ''}
+            onClick={() => {
+              this.changeContent({ personnel_type: 4 })
+            }}
+          >
+            盘点
           </span>
           {/* <span
             className={this.state.personnel_type === 4 ? 'sel' : ''}
