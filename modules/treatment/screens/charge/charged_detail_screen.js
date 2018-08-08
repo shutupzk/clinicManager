@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import Router from 'next/router'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
-import { queryPaidOrders, refundPayment } from '../../../../ducks'
+import { queryPaidOrders, refundPayment, queryPaidOrdersForPrint } from '../../../../ducks'
 import { PageCard, Confirm } from '../../../../components'
+import Print from 'rc-print'
 
 class ChargedDetailScreen extends Component {
   constructor(props) {
@@ -12,7 +13,8 @@ class ChargedDetailScreen extends Component {
     this.state = {
       refundStatus: false, // 退费状态
       refundIds: [],
-      allSelect: true
+      allSelect: true,
+      rows: []
     }
   }
 
@@ -62,6 +64,163 @@ class ChargedDetailScreen extends Component {
         this.refs.myAlert.alert('提交失败', (res && res.msg) || '未知原因', null, 'Warning')
       }
     })
+  }
+
+  async printOrders() {
+    const { charge_paid_triage_selectId, queryPaidOrdersForPrint } = this.props
+    const data = await queryPaidOrdersForPrint({ mz_paid_record_id: charge_paid_triage_selectId })
+    this.setState({ rows: data })
+    this.refs.printer.onPrint()
+  }
+
+  mrPrinter() {
+    const { charge_paid_triage, charge_paid_triage_selectId, user, paid_orders_page, paid_orders_type } = this.props
+
+    let triagePatient = {}
+    for (let tp of charge_paid_triage) {
+      if (tp.mz_paid_record_id === charge_paid_triage_selectId) triagePatient = tp
+    }
+    const { birthday, patient_name, sex, patient_id, cert_no } = triagePatient
+
+    let typeMap = {}
+    for (let item of paid_orders_type) {
+      typeMap[item.charge_project_type_id] = formatMoney(item.type_charge_total)
+    }
+
+    let payMethodMap = { 1: '支付宝', 2: '微信', 3: '银行卡', 4: '现金' }
+
+    const patientInfoRowStyle = {
+      display: 'flex',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '50px'
+    }
+    const patientInfoRowDivStyle = {
+      flex: 1,
+      display: 'flex',
+      margin: '10px 15px 10px 5px',
+      minHeight: '30px',
+      alignItems: 'center',
+      borderBottom: '1px solid #d8d8d8',
+      borderTop: '1px solid #ffffff'
+    }
+    const patientInfoRow = { display: 'flex', width: '100%', marginBottom: '5px' }
+    const patientInforRowItem = { flex: 1, display: 'flex', flexDirection: 'column' }
+    const borderBottomDiv = { display: 'flex', flexDirection: 'column', width: '100%', marginTop: '20px' }
+
+    return (
+      <div style={{ width: '800px', display: 'flex', flexDirection: 'column', marginBottom: '50px', background: '#FFFFFF', padding: '10px 20px 10px 20px' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
+          <div style={{ width: '200px' }}>
+            <img src='/static/login/login_logo.png' />
+          </div>
+          <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center' }}>
+            <div style={{ fontSize: '30px', fontWeight: '500', width: '100%', textAlign: 'center', height: '50px' }}>{user.clinic_name}</div>
+            <div style={{ fontSize: '25px', fontWeight: '400', width: '100%', textAlign: 'center', height: '30px', marginBottom: '15px' }}>收费清单</div>
+          </div>
+          <div style={{ width: '200px' }} />
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>姓名：</lable>
+            <div style={patientInfoRowDivStyle}>{patient_name}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>性别：</lable>
+            <div style={patientInfoRowDivStyle}>{sex === 1 ? '男' : '女'}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>病人ID：</lable>
+            <div style={patientInfoRowDivStyle}>{patient_id}</div>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', fontSize: '17px' }}>
+          <div style={patientInfoRowStyle}>
+            <lable>年龄：</lable>
+            <div style={patientInfoRowDivStyle}>{getAgeByBirthday(birthday)}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>证件号：</lable>
+            <div style={patientInfoRowDivStyle}>{cert_no}</div>
+          </div>
+          <div style={patientInfoRowStyle}>
+            <lable>收费日期：</lable>
+            <div style={patientInfoRowDivStyle}>{moment().format('YYYY-MM-DD')}</div>
+          </div>
+        </div>
+
+        <div style={{ ...borderBottomDiv, borderBottom: '2px solid #101010' }}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', borderBottom: '2px solid #101010' }}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>项目类型</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>金额（元）</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>项目类型</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>金额(元)</div>
+          </div>
+
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>西/成药费</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[1] || '0.00'}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>中药费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[2] || '0.00'}</div>
+          </div>
+
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>检验费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[3] || '0.00'}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>检查费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[4] || '0.00'}</div>
+          </div>
+
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>治疗费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[7] || '0.00'}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>材料费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[5] || '0.00'}</div>
+          </div>
+
+          <div style={{ ...patientInfoRow, marginTop: '5px' }}>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>其他费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[6] || '0.00'}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>诊疗费用</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>{typeMap[8] || '0.00'}</div>
+          </div>
+        </div>
+
+        <div style={{ ...borderBottomDiv, borderBottom: '2px solid #101010' }}>
+          <div style={{ ...patientInfoRow, fontWeight: '500', borderBottom: '2px solid #101010' }}>
+            <div style={{ ...patientInforRowItem, flex: 6 }}>项目名称</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>单价（元）</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>数量</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>应收金额(元)</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>折扣金额(元)</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>折后金额(元)</div>
+            <div style={{ ...patientInforRowItem, flex: 1 }}>状态</div>
+          </div>
+          {this.state.rows.map((item, index) => {
+            return (
+              <div style={{ ...patientInfoRow, marginTop: '5px' }} key={index}>
+                <div style={{ ...patientInforRowItem, flex: 6 }}>{item.name}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{formatMoney(item.price)}</div>
+                <div style={{ ...patientInforRowItem, flex: 1 }}>{item.amount}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{formatMoney(item.total)}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{formatMoney(item.discount)}</div>
+                <div style={{ ...patientInforRowItem, flex: 2 }}>{formatMoney(item.fee)}</div>
+                <div style={{ ...patientInforRowItem, flex: 1 }}>{item.refund_status ? '已退费' : '已收费'}</div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
+          <div style={{ ...patientInfoRow }}>
+            <div style={patientInforRowItem}>应收金额：{formatMoney(paid_orders_page.charge_total_fee)} 元</div>
+            <div style={patientInforRowItem}>收费方式：{payMethodMap[paid_orders_page.pay_method_code]}</div>
+            <div style={patientInforRowItem}>开单医师：{triagePatient.doctor_name}</div>
+            <div style={patientInforRowItem}>收款人：{triagePatient.register_personnel_name}</div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // 费用详情
@@ -177,8 +336,11 @@ class ChargedDetailScreen extends Component {
           {refundStatus && '注：如原收费单据含有优惠，则退费时只可全额退药退款。'}
         </div>
         <div className={'feeScheduleBottom'}>
-          {!refundStatus ? <button>打印</button> : <button onClick={() => this.setState({ refundStatus: false })}>取消</button>}
+          {!refundStatus ? <button onClick={() => this.printOrders()}>打印</button> : <button onClick={() => this.setState({ refundStatus: false })}>取消</button>}
           {!refundStatus ? <button onClick={() => this.setState({ refundStatus: true })}>退费</button> : <button onClick={() => this.submit()}>确定</button>}
+          <Print ref='printer' lazyRender isIframe>
+            {this.mrPrinter()}
+          </Print>
         </div>
         <style jsx='true'>{`
           .filterBox {
@@ -210,6 +372,7 @@ class ChargedDetailScreen extends Component {
 
 const mapStateToProps = state => {
   return {
+    user: state.user.data,
     operation_id: state.user.data.id,
     clinic_id: state.user.data.clinic_id,
     charge_paid_triage: state.charge.charge_paid_triage,
@@ -222,5 +385,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { queryPaidOrders, refundPayment }
+  { queryPaidOrders, refundPayment, queryPaidOrdersForPrint }
 )(ChargedDetailScreen)

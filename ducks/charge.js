@@ -216,6 +216,21 @@ export const queryUnPaidOrders = ({ clinic_triage_patient_id, offset = 0, limit 
   }
 }
 
+export const queryUnPaidOrdersForPrint = ({ clinic_triage_patient_id }) => async dispatch => {
+  try {
+    const data = await request('/charge/unPay/list', {
+      clinic_triage_patient_id,
+      offset: 0,
+      limit: 10000
+    })
+    const docs = data.data || []
+    return docs
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
 export const queryPaidOrders = ({ mz_paid_record_id, offset = 0, limit = 10 }) => async dispatch => {
   try {
     const data = await request('/charge/paid/list', {
@@ -238,6 +253,21 @@ export const queryPaidOrders = ({ mz_paid_record_id, offset = 0, limit = 10 }) =
       type_total
     })
     return data
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+
+export const queryPaidOrdersForPrint = ({ mz_paid_record_id }) => async dispatch => {
+  try {
+    const data = await request('/charge/paid/list', {
+      mz_paid_record_id,
+      offset: 0,
+      limit: 10000
+    })
+    const docs = data.data || []
+    return docs
   } catch (e) {
     console.log(e)
     return null
