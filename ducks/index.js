@@ -333,6 +333,17 @@ import {
   RegisterStatistics,
   OutPatietnEfficiencyStatistics
 } from './medical_report'
+import {
+  drugInventorys,
+  DrugInventoryList,
+  DrugInventoryCreate,
+  DrugInventoryUpdate,
+  DrugInventoryRecordDelete,
+  drugInventorySelect,
+  DrugInventoryRecordDetail,
+  DrugStockInventoryList,
+  DrugInventoryCheck
+} from './drug_inventory'
 
 const persistConfig = {
   key: 'root',
@@ -340,6 +351,7 @@ const persistConfig = {
 }
 
 const appReducer = persistCombineReducers(persistConfig, {
+  drugInventorys,
   medReports,
   admins,
   financial,
@@ -763,6 +775,14 @@ export {
   OutPatietnRecords,
   OutPatietnType,
   ReceiveTreatment,
+  DrugInventoryList,
+  DrugInventoryCreate,
+  DrugInventoryUpdate,
+  DrugInventoryRecordDelete,
+  drugInventorySelect,
+  DrugInventoryRecordDetail,
+  DrugStockInventoryList,
+  DrugInventoryCheck,
   ExaminationStatistics,
   LaboratoryStatistics,
   TreatmentStatistics,
