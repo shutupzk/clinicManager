@@ -98,7 +98,12 @@ class CMedicinePrescriptionScreen extends Component {
             <button>导出</button>
             <button
               onClick={() => {
-                this.setState({ pageType: 2 })
+                this.setState({
+                  pageType: 2,
+                  clinic_drug_id: '',
+                  showWay: 1,
+                  drugInfo: {}
+                })
               }}
             >
               新建

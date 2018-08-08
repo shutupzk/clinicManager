@@ -646,19 +646,24 @@ class AddCDrugScreen extends Component {
   }
   // 修改
   async ClinicDrugUpdate(isInstock) {
-    let { drugInfo } = this.state
+    let { drugInfo, druginstockInfo } = this.state
     const { clinic_id, ClinicDrugUpdate } = this.props
-    drugInfo.buy_price = drugInfo.buy_price * 100
+    // drugInfo.buy_price = drugInfo.buy_price * 100
     if (this.validateData(drugInfo)) {
       let clinic_drug_id = drugInfo.id
       delete drugInfo.id
       let data = await ClinicDrugUpdate({ ...drugInfo, clinic_drug_id, clinic_id, type: 1 })
       if (data.code !== '200') {
-        this.refs.myAlert.alert('修改药品失败', error, null, 'Danger')
+        this.refs.myAlert.alert('修改药品失败', data.msg, null, 'Danger')
       } else {
         this.refs.myAlert.alert('修改成功')
         if (isInstock) {
-          this.setState({showInstock: true, drugReturnInfo: data.data})
+          druginstockInfo.items[0].buy_price = formatMoney(data.data.buy_price)
+          this.setState({
+            showInstock: true,
+            drugReturnInfo: data.data,
+            druginstockInfo
+          })
         } else {
           this.props.back2List()
         }
@@ -667,17 +672,22 @@ class AddCDrugScreen extends Component {
   }
   // 保存
   async submit(isInstock) {
-    let { drugInfo } = this.state
+    let { drugInfo, druginstockInfo } = this.state
     const { clinic_id, ClinicDrugCreate } = this.props
-    drugInfo.buy_price = drugInfo.buy_price * 100
+    // drugInfo.buy_price = drugInfo.buy_price * 100
     if (this.validateData(drugInfo)) {
-      let error = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 1 })
+      let data = await ClinicDrugCreate({ ...drugInfo, clinic_id, type: 1 })
       if (data.code !== '200') {
-        this.refs.myAlert.alert('添加药品失败', error, null, 'Danger')
+        this.refs.myAlert.alert('添加药品失败', data.msg, null, 'Danger')
       } else {
         this.refs.myAlert.alert('添加成功')
         if (isInstock) {
-          this.setState({showInstock: true, drugReturnInfo: data.data})
+          druginstockInfo.items[0].buy_price = formatMoney(data.data.buy_price)
+          this.setState({
+            showInstock: true,
+            drugReturnInfo: data.data,
+            druginstockInfo
+          })
         } else {
           this.props.back2List()
         }
@@ -694,7 +704,7 @@ class AddCDrugScreen extends Component {
     for (let key of druginstockInfo.items) {
       let value = {}
       value.clinic_drug_id = drugReturnInfo.clinic_drug_id + ''
-      value.buy_price = key.buy_price * 100 + ''
+      value.buy_price = key.buy_price + ''
       if (key.instock_amount > 0) {
         value.instock_amount = key.instock_amount + ''
       } else {
@@ -718,6 +728,8 @@ class AddCDrugScreen extends Component {
     druginstockInfo.items = JSON.stringify(array)
     let error = await createDrugInstock(druginstockInfo)
     if (error) {
+      druginstockInfo.items = JSON.parse(druginstockInfo.items)
+      this.setState({druginstockInfo})
       return this.refs.myAlert.alert('保存失败', error)
     } else {
       // this.setState({ showSaveModel: false })
@@ -1117,7 +1129,7 @@ class AddCDrugScreen extends Component {
                   placeholder={'ret_price'}
                   value={drugInfo.ret_price}
                   onChange={e => {
-                    this.setItemValue(e, 'ret_price')
+                    this.setItemValue(limitMoney(e.target.value), 'ret_price', 2)
                   }}
                 />元
               </div>
@@ -1131,7 +1143,7 @@ class AddCDrugScreen extends Component {
                   placeholder={'buy_price'}
                   value={drugInfo.buy_price}
                   onChange={e => {
-                    this.setItemValue(e, 'buy_price')
+                    this.setItemValue(limitMoney(e.target.value), 'buy_price', 2)
                   }}
                 />元
               </div>

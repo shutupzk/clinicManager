@@ -424,7 +424,7 @@ class AddDrugInstockScreen extends Component {
   renderItems() {
     const { items, readOnly } = this.state
     const {showWay} = this.props
-    // console.log(items)
+    console.log('items====', items)
     return (
       <div style={{ width: '100%' }}>
         <div className='tableDIV'>
@@ -531,7 +531,7 @@ class AddDrugInstockScreen extends Component {
                       readOnly={readOnly}
                       placeholder={'成本价'}
                       type='text'
-                      value={showWay === 1 || showWay === 4 ? item.buy_price : formatMoney(item.buy_price)}
+                      value={showWay === 1 || showWay === 4 ? item.buy_price : item.buy_price}
                       onChange={e => {
                         let value = limitMoney(e.target.value)
                         this.setItemValue(value, index, 'buy_price', 2)
@@ -1084,7 +1084,7 @@ class AddDrugInstockScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log('state=====', state)
+  // console.log('state=====', state)
   return {
     clinic_id: state.user.data.clinic_id,
     instock_operation_id: state.user.data.id,
