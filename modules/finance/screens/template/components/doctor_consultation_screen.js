@@ -182,9 +182,7 @@ class Doctorconsultationscreen extends Component {
               value={this.state.start_date}
               onChange={e => {
                 this.setState({
-                  start_date: moment(e.target.value)
-                    .startOf('M')
-                    .format('YYYY-MM-DD')
+                  start_date: moment(e.target.value).format('YYYY-MM-DD')
                 })
               }}
             />
@@ -194,9 +192,7 @@ class Doctorconsultationscreen extends Component {
               value={this.state.end_date}
               onChange={e => {
                 this.setState({
-                  end_date: moment(e.target.value)
-                    .startOf('M')
-                    .format('YYYY-MM-DD')
+                  end_date: moment(e.target.value).format('YYYY-MM-DD')
                 })
               }}
             />

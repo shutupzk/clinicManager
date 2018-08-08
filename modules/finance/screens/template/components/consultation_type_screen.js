@@ -25,7 +25,7 @@ class Consultationtypescreen extends Component {
   }
 
   getOption() {
-    const {t_total} = this.props
+    const { t_total } = this.props
     let data = [
       {
         name: '初诊',
@@ -189,9 +189,7 @@ class Consultationtypescreen extends Component {
               value={this.state.start_date}
               onChange={e => {
                 this.setState({
-                  start_date: moment(e.target.value)
-                    .startOf('M')
-                    .format('YYYY-MM-DD')
+                  start_date: moment(e.target.value).format('YYYY-MM-DD')
                 })
               }}
             />
@@ -201,9 +199,7 @@ class Consultationtypescreen extends Component {
               value={this.state.end_date}
               onChange={e => {
                 this.setState({
-                  end_date: moment(e.target.value)
-                    .startOf('M')
-                    .format('YYYY-MM-DD')
+                  end_date: moment(e.target.value).format('YYYY-MM-DD')
                 })
               }}
             />

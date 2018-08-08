@@ -30,16 +30,16 @@ class Outpatientlogscreen extends Component {
   }
 
   queryDoctorList() {
-    const {queryDoctorList, clinic_id} = this.props
-    queryDoctorList({clinic_id, offset: 0, limit: 1000})
+    const { queryDoctorList, clinic_id } = this.props
+    queryDoctorList({ clinic_id, offset: 0, limit: 1000 })
     this.queryContentData({})
   }
 
   getDoctorOptions() {
-    const {doctors} = this.props
+    const { doctors } = this.props
     // console.log('doctors====', doctors)
     let array = []
-    let f_item = {value: '', label: '全部'}
+    let f_item = { value: '', label: '全部' }
     array.push(f_item)
     for (let key of doctors) {
       let item = {}
@@ -52,10 +52,10 @@ class Outpatientlogscreen extends Component {
     return array
   }
   getEmployeeOptions() {
-    const {doctors} = this.props
+    const { doctors } = this.props
     // console.log('doctors====', doctors)
     let array = []
-    let f_item = {value: '', label: '全部'}
+    let f_item = { value: '', label: '全部' }
     array.push(f_item)
     for (let key of doctors) {
       let item = {}
@@ -70,14 +70,7 @@ class Outpatientlogscreen extends Component {
 
   queryContentData({ offset = 0, limit = 10 }) {
     const { OutPatietnRecords, clinic_id } = this.props
-    const {
-      start_date,
-      end_date,
-      patient_name,
-      phone,
-      doctor_id,
-      operation_id
-    } = this.state
+    const { start_date, end_date, patient_name, phone, doctor_id, operation_id } = this.state
     let reqData = {
       start_date,
       end_date,
@@ -136,51 +129,110 @@ class Outpatientlogscreen extends Component {
             </li>
             <li style={{ background: 'rgba(247,247,247,1)' }}>
               <div>合计</div>
-              <div><div>{page_info.person_amount}人</div></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
-              <div><div /></div>
+              <div>
+                <div>{page_info.person_amount}人</div>
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
+              <div>
+                <div />
+              </div>
             </li>
             {log_data.map((item, iKey) => {
               return (
                 <li key={iKey}>
-                  <div><div>{moment(item.visit_date).format('YYYY-MM-DD')}</div></div>
-                  <div><div>{item.patient_id}</div></div>
-                  <div><div>{item.patient_name}</div></div>
-                  <div><div>{item.sex === 0 ? '女' : '男'}</div></div>
-                  <div><div>{getAgeByBirthday(item.birthday)}</div></div>
-                  <div><div>{item.phone}</div></div>
-                  <div><div>{item.profession}</div></div>
-                  <div><div>{item.province}{item.city}{item.district}{item.address}</div></div>
-                  <div><div>{item.morbidity_date}</div></div>
-                  <div><div>{item.diagnosis}</div></div>
-                  <div><div>{item.visit_type === 1 ? '初诊' : item.visit_type === 2 ? '复诊' : item.visit_type === 3 ? '术后复诊' : '' }</div></div>
-                  <div><div>{item.opreation_name}</div></div>
-                  <div><div>{item.dept_name}</div></div>
-                  <div><div>{item.doctor_name}</div></div>
+                  <div>
+                    <div>{moment(item.visit_date).format('YYYY-MM-DD')}</div>
+                  </div>
+                  <div>
+                    <div>{item.patient_id}</div>
+                  </div>
+                  <div>
+                    <div>{item.patient_name}</div>
+                  </div>
+                  <div>
+                    <div>{item.sex === 0 ? '女' : '男'}</div>
+                  </div>
+                  <div>
+                    <div>{getAgeByBirthday(item.birthday)}</div>
+                  </div>
+                  <div>
+                    <div>{item.phone}</div>
+                  </div>
+                  <div>
+                    <div>{item.profession}</div>
+                  </div>
+                  <div>
+                    <div>
+                      {item.province}
+                      {item.city}
+                      {item.district}
+                      {item.address}
+                    </div>
+                  </div>
+                  <div>
+                    <div>{item.morbidity_date}</div>
+                  </div>
+                  <div>
+                    <div>{item.diagnosis}</div>
+                  </div>
+                  <div>
+                    <div>{item.visit_type === 1 ? '初诊' : item.visit_type === 2 ? '复诊' : item.visit_type === 3 ? '术后复诊' : ''}</div>
+                  </div>
+                  <div>
+                    <div>{item.opreation_name}</div>
+                  </div>
+                  <div>
+                    <div>{item.dept_name}</div>
+                  </div>
+                  <div>
+                    <div>{item.doctor_name}</div>
+                  </div>
                 </li>
               )
             })}
           </ul>
         </div>
         <style jsx='true'>{`
-          .feeScheduleBox ul li>div {
+          .feeScheduleBox ul li > div {
             flex: 1;
-            display:flex;
+            display: flex;
             align-items: center;
-            justify-content:center;
+            justify-content: center;
             // line-height: 24px;
           }
-          .feeScheduleBox ul li>div>div{
+          .feeScheduleBox ul li > div > div {
             line-height: normal;
           }
           .leftTille {
@@ -226,9 +278,7 @@ class Outpatientlogscreen extends Component {
               value={this.state.start_date}
               onChange={e => {
                 this.setState({
-                  start_date: moment(e.target.value)
-                    .startOf('M')
-                    .format('YYYY-MM-DD')
+                  start_date: moment(e.target.value).format('YYYY-MM-DD')
                 })
               }}
             />
@@ -238,9 +288,7 @@ class Outpatientlogscreen extends Component {
               value={this.state.end_date}
               onChange={e => {
                 this.setState({
-                  end_date: moment(e.target.value)
-                    .startOf('M')
-                    .format('YYYY-MM-DD')
+                  end_date: moment(e.target.value).format('YYYY-MM-DD')
                 })
               }}
             />
@@ -298,12 +346,12 @@ class Outpatientlogscreen extends Component {
         </div>
         {this.showContent()}
         <style jsx>{`
-          .boxLeft>input{
+          .boxLeft > input {
             width: 120px;
             margin-left: 15px;
-            margin-right:0;
+            margin-right: 0;
           }
-          .boxLeft>div{
+          .boxLeft > div {
             width: 120px;
             margin: 14px 0 0 15px;
             float: left;
