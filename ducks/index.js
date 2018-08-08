@@ -326,7 +326,12 @@ import {
   medReports,
   OutPatietnRecords,
   OutPatietnType,
-  ReceiveTreatment
+  ReceiveTreatment,
+  ExaminationStatistics,
+  LaboratoryStatistics,
+  TreatmentStatistics,
+  RegisterStatistics,
+  OutPatietnEfficiencyStatistics
 } from './medical_report'
 import {
   drugInventorys,
@@ -777,5 +782,10 @@ export {
   drugInventorySelect,
   DrugInventoryRecordDetail,
   DrugStockInventoryList,
-  DrugInventoryCheck
+  DrugInventoryCheck,
+  ExaminationStatistics,
+  LaboratoryStatistics,
+  TreatmentStatistics,
+  RegisterStatistics,
+  OutPatietnEfficiencyStatistics
 }
