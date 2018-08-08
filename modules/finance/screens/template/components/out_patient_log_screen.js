@@ -270,7 +270,7 @@ class Outpatientlogscreen extends Component {
                 placeholder={'搜索医生'}
                 options={this.getDoctorOptions()}
                 onChange={({ value }) => {
-                  this.setState({ in_out: value })
+                  this.setState({ doctor_id: value })
                 }}
                 height={32}
               />
@@ -281,7 +281,7 @@ class Outpatientlogscreen extends Component {
                 placeholder={'登记人'}
                 options={this.getEmployeeOptions()}
                 onChange={({ value }) => {
-                  this.setState({ in_out: value })
+                  this.setState({ operation_id: value })
                 }}
                 height={32}
               />
