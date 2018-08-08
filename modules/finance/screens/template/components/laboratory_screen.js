@@ -43,7 +43,7 @@ class Laboratoryscreen extends Component {
             marginBottom: '15px'
           }}
         >
-          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '治疗统计报表'}</h3>
+          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '检验统计报表'}</h3>
         </div>
         <div className={'feeScheduleBox'}>
           <ul>
