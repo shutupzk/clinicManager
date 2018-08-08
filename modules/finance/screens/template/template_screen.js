@@ -43,37 +43,34 @@ class FinanceTemplateScreen extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ width: '1200px' }}>
         <div className={'childTopBar'}>
           <span className={this.state.pageType === 1 ? 'sel' : ''} onClick={() => this.changeContent({ type: 1 })}>
-          门诊日志
+            门诊日志
           </span>
           <span className={this.state.pageType === 2 ? 'sel' : ''} onClick={() => this.changeContent({ type: 2 })}>
-          科室统计
+            科室统计
           </span>
           <span className={this.state.pageType === 3 ? 'sel' : ''} onClick={() => this.changeContent({ type: 3 })}>
-          接诊类型统计
+            接诊类型统计
           </span>
           <span className={this.state.pageType === 4 ? 'sel' : ''} onClick={() => this.changeContent({ type: 4 })}>
-          医生接诊
+            医生接诊
           </span>
           <span className={this.state.pageType === 5 ? 'sel' : ''} onClick={() => this.changeContent({ type: 5 })}>
-          检查统计
+            检查统计
           </span>
           <span className={this.state.pageType === 6 ? 'sel' : ''} onClick={() => this.changeContent({ type: 6 })}>
-          检验统计
+            检验统计
           </span>
           <span className={this.state.pageType === 7 ? 'sel' : ''} onClick={() => this.changeContent({ type: 7 })}>
-          治疗统计
-          </span>
-          <span className={this.state.pageType === 8 ? 'sel' : ''} onClick={() => this.changeContent({ type: 8 })}>
-          预约统计
+            治疗统计
           </span>
           <span className={this.state.pageType === 9 ? 'sel' : ''} onClick={() => this.changeContent({ type: 9 })}>
-          登记分类
+            登记分类
           </span>
           <span className={this.state.pageType === 10 ? 'sel' : ''} onClick={() => this.changeContent({ type: 10 })}>
-          门诊效率
+            门诊效率
           </span>
         </div>
         {this.showDataList()}
