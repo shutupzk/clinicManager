@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { PageCard, Confirm, DatePicker } from '../../../../components'
 // import moment from 'moment'
 import {
-  DrugInventoryList,
-  DrugInventoryRecordDelete
+  MaterialInventoryList,
+  MaterialInventoryRecordDelete
 } from '../../../../ducks'
-import AddDrugInventoryScreen from './components/addDrugInventoryScreen'
+import AddMaterialInventoryScreen from './components/addMaterialInventoryScreen'
 import moment from 'moment'
 
 // 病历
@@ -18,7 +18,7 @@ class InventoryScreen extends Component {
       end_date: '',
       showType: 1,
       showWay: 1,
-      drug_inventory_record_id: ''
+      material_inventory_record_id: ''
     }
   }
 
@@ -26,7 +26,7 @@ class InventoryScreen extends Component {
     this.getDataList({offset: 0, limit: 10})
   }
   getDataList({ offset = 0, limit = 10 }) {
-    const {clinic_id, DrugInventoryList} = this.props
+    const {clinic_id, MaterialInventoryList} = this.props
     const {start_date, end_date} = this.state
     let requestData = {
       clinic_id,
@@ -35,17 +35,17 @@ class InventoryScreen extends Component {
       start_date,
       end_date
     }
-    DrugInventoryList(requestData)
+    MaterialInventoryList(requestData)
   }
-  async DrugInventoryRecordDelete(drug_inventory_record_id) {
-    const { DrugInventoryRecordDelete, pageInfo, drugInventorys } = this.props
+  async MaterialInventoryRecordDelete(material_inventory_record_id) {
+    const { MaterialInventoryRecordDelete, pageInfo, materialInventorys } = this.props
     this.refs.myAlert.confirm('提示', '确认删除这条记录？', 'Warning', async () => {
-      let error = await DrugInventoryRecordDelete({drug_inventory_record_id})
+      let error = await MaterialInventoryRecordDelete({material_inventory_record_id})
       if (error) {
         return this.refs.myAlert.alert('删除失败', error)
       } else {
         this.refs.myAlert.alert('删除成功')
-        if (drugInventorys.length > 1) {
+        if (materialInventorys.length > 1) {
           this.getDataList({ offset: pageInfo.offset, limit: 10 })
         } else if (pageInfo.offset > 0) {
           this.getDataList({ offset: pageInfo.offset - 1, limit: 10 })
@@ -54,8 +54,8 @@ class InventoryScreen extends Component {
     })
   }
   renderTable() {
-    const { drugInventorys, pageInfo } = this.props
-    console.log('drugInventorys=====  ', drugInventorys)
+    const { materialInventorys, pageInfo } = this.props
+    console.log('materialInventorys=====  ', materialInventorys)
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'contentTable'}>
@@ -71,7 +71,7 @@ class InventoryScreen extends Component {
                 </tr>
               </thead>
               <tbody>
-                {drugInventorys.map((item, index) => {
+                {materialInventorys.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td style={{flex: 2}}>{item.order_number}</td>
@@ -83,7 +83,7 @@ class InventoryScreen extends Component {
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
-                              drug_inventory_record_id: item.drug_inventory_record_id,
+                              material_inventory_record_id: item.material_inventory_record_id,
                               showWay: 4
                             })
                           }}>修改</div>
@@ -91,19 +91,19 @@ class InventoryScreen extends Component {
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
-                              drug_inventory_record_id: item.drug_inventory_record_id,
+                              material_inventory_record_id: item.material_inventory_record_id,
                               showWay: 2
                             })
                           }}>审核</div>
                           <div className={'divideLine'}>|</div>
                           <div onClick={() => {
-                            this.DrugInventoryRecordDelete(item.drug_inventory_record_id)
+                            this.MaterialInventoryRecordDelete(item.material_inventory_record_id)
                           }}>删除</div>
                         </div> : <div>
                           <div onClick={() => {
                             this.setState({
                               showType: 2,
-                              drug_inventory_record_id: item.drug_inventory_record_id,
+                              material_inventory_record_id: item.material_inventory_record_id,
                               showWay: 3
                             })
                           }}>查看详情</div>
@@ -199,10 +199,10 @@ class InventoryScreen extends Component {
     )
   }
   showView() {
-    let { showType, drug_inventory_record_id, showWay } = this.state
+    let { showType, material_inventory_record_id, showWay } = this.state
     let map = {
       // 1: <AddDrugScreen />,
-      2: <AddDrugInventoryScreen showWay={showWay} drug_inventory_record_id={drug_inventory_record_id} drugType={1} backToList={() => {
+      2: <AddMaterialInventoryScreen showWay={showWay} material_inventory_record_id={material_inventory_record_id} drugType={1} backToList={() => {
         this.setState({showType: 1})
         this.getDataList({offset: 0, limit: 10})
       }} />
@@ -240,7 +240,7 @@ class InventoryScreen extends Component {
         <div className={'boxRight'}>
           <button
             onClick={() => {
-              this.setState({showType: 2, showWay: 1, drug_inventory_record_id: ''})
+              this.setState({showType: 2, showWay: 1, material_inventory_record_id: ''})
             }}
           >
             新增盘点
@@ -368,12 +368,12 @@ class InventoryScreen extends Component {
 const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
-    drugInventorys: state.drugInventorys.data,
-    pageInfo: state.drugInventorys.page_info
+    materialInventorys: state.materialInventorys.data,
+    pageInfo: state.materialInventorys.page_info
   }
 }
 
 export default connect(mapStateToProps, {
-  DrugInventoryList,
-  DrugInventoryRecordDelete
+  MaterialInventoryList,
+  MaterialInventoryRecordDelete
 })(InventoryScreen)

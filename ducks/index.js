@@ -344,6 +344,17 @@ import {
   DrugStockInventoryList,
   DrugInventoryCheck
 } from './drug_inventory'
+import {
+  materialInventorys,
+  MaterialInventoryList,
+  MaterialInventoryCreate,
+  MaterialInventoryUpdate,
+  MaterialInventoryRecordDelete,
+  materialInventorySelect,
+  MaterialInventoryRecordDetail,
+  MaterialStockInventoryList,
+  MaterialInventoryCheck
+} from './material_inventory'
 
 const persistConfig = {
   key: 'root',
@@ -351,6 +362,7 @@ const persistConfig = {
 }
 
 const appReducer = persistCombineReducers(persistConfig, {
+  materialInventorys,
   drugInventorys,
   medReports,
   admins,
@@ -787,5 +799,13 @@ export {
   LaboratoryStatistics,
   TreatmentStatistics,
   RegisterStatistics,
-  OutPatietnEfficiencyStatistics
+  OutPatietnEfficiencyStatistics,
+  MaterialInventoryList,
+  MaterialInventoryCreate,
+  MaterialInventoryUpdate,
+  MaterialInventoryRecordDelete,
+  materialInventorySelect,
+  MaterialInventoryRecordDetail,
+  MaterialStockInventoryList,
+  MaterialInventoryCheck
 }
