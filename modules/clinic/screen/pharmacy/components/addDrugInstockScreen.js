@@ -47,6 +47,11 @@ class AddDrugInstockScreen extends Component {
     for (let key of data.items) {
       key.buy_price = formatMoney(key.buy_price)
     }
+    // for (let i = 0; i < data.items.length; i++) {
+    //   this.setState(() => {
+    //     this.refs.CustomSelect.init({ value: data.name })
+    //   })
+    // }
     this.setState({
       instock_date: data.instock_date,
       instock_way_name: data.instock_way_name,
@@ -453,6 +458,7 @@ class AddDrugInstockScreen extends Component {
                   <div>
                     {showWay === 1 || showWay === 4 ? <div>
                       <CustomSelect
+                        // ref={'CustomSelect' + index}
                         controlStyle={{ height: '38px', width: '100%' }}
                         value={item.clinic_drug_id || ''}
                         label={item.drug_name || ''}
