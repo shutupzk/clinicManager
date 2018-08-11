@@ -164,9 +164,11 @@ class Treatmentscreen extends Component {
                 })
               }}
             />
-            <button style={{ marginLeft: '100px' }} onClick={() => this.queryContentData({})}>
+            <button style={{ marginLeft: '20px' }} onClick={() => this.queryContentData({})}>
               查询
             </button>
+          </div>
+          <div className={'boxRight'}>
             <button style={{ marginLeft: '20px' }} onClick={() => {}}>
               导出
             </button>

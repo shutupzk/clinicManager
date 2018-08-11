@@ -331,7 +331,8 @@ import {
   LaboratoryStatistics,
   TreatmentStatistics,
   RegisterStatistics,
-  OutPatietnEfficiencyStatistics
+  OutPatietnEfficiencyStatistics,
+  DepartmentStatistics
 } from './medical_report'
 import {
   drugInventorys,
@@ -807,5 +808,6 @@ export {
   materialInventorySelect,
   MaterialInventoryRecordDetail,
   MaterialStockInventoryList,
-  MaterialInventoryCheck
+  MaterialInventoryCheck,
+  DepartmentStatistics
 }

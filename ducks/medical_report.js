@@ -7,6 +7,7 @@ const LABOR_STIC = 'LABOR_STIC'
 const TREAT_STIC = 'TREAT_STIC'
 const REGIST_STIC = 'REGIST_STIC'
 const EFF_STIC = 'EFF_STIC'
+const DEPT_STIC = 'DEPT_STIC'
 
 const initState = {
   l_data: [],
@@ -23,7 +24,8 @@ const initState = {
   treat_page: {},
   regist_data: [],
   eff_data: [],
-  eff_page: {}
+  eff_page: {},
+  dept_data: []
 }
 
 export function medReports(state = initState, action = {}) {
@@ -44,6 +46,8 @@ export function medReports(state = initState, action = {}) {
       return { ...state, regist_data: action.data }
     case EFF_STIC:
       return { ...state, eff_data: action.data, eff_page: action.page_info }
+    case DEPT_STIC:
+      return { ...state, dept_data: action.data }
     default:
       return state
   }
@@ -267,6 +271,27 @@ export const OutPatietnEfficiencyStatistics = ({ start_date, end_date, clinic_id
       type: EFF_STIC,
       data: docs,
       page_info
+    })
+    return null
+  } catch (e) {
+    console.log(e)
+    return e.message
+  }
+}
+
+export const DepartmentStatistics = ({ start_date, end_date, clinic_id }) => async dispatch => {
+  try {
+    const data = await request('/medicalReport/DepartmentStatistics', {
+      start_date,
+      end_date,
+      clinic_id
+    })
+
+    const docs = data.data || []
+
+    dispatch({
+      type: DEPT_STIC,
+      data: docs
     })
     return null
   } catch (e) {

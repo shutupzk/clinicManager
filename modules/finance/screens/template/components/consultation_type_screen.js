@@ -203,7 +203,7 @@ class Consultationtypescreen extends Component {
                 })
               }}
             />
-            <button style={{ marginLeft: '100px' }} onClick={() => this.queryContentData({})}>
+            <button style={{ marginLeft: '20px' }} onClick={() => this.queryContentData({})}>
               查询
             </button>
           </div>
