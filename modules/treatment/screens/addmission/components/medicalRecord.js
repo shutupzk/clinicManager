@@ -360,7 +360,7 @@ class MedicalRecordScreen extends Component {
     if (!this.state.showMedicalModels) return null
     return (
       <div className='mask'>
-        <div className='doctorList' style={{ width: '900px', height: '600px', left: '324px' }}>
+        <div className='doctorList' style={{ width: '900px', minHeight: '600px', left: '324px' }}>
           <div className='doctorList_top'>
             <span>选择病历模板</span>
             <div style={{ float: 'left', marginLeft: '20%' }}>
@@ -434,6 +434,7 @@ class MedicalRecordScreen extends Component {
           }
 
           .meical_nodel_item ul {
+            margin: 0;
             display: flex;
             height: 38px;
             background:rgba(255,255,255,1);
