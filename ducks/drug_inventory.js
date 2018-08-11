@@ -106,10 +106,10 @@ export const drugInventorySelect = ({ id }) => async dispatch => {
     return e.message
   }
 }
-export const DrugInventoryRecordDetail = ({drug_inventory_record_id, keyword, status, amount, offset, limit}) => async dispatch => {
+export const DrugInventoryRecordDetail = ({clinic_id, drug_inventory_record_id, keyword, status, amount, offset, limit}) => async dispatch => {
   try {
-    console.log('DrugInventoryRecordDetail====', {drug_inventory_record_id, keyword, status, amount, offset, limit})
-    const data = await request('/clinic_drug/DrugInventoryRecordDetail', {drug_inventory_record_id, keyword, status, amount, offset, limit})
+    console.log('DrugInventoryRecordDetail====', {clinic_id, drug_inventory_record_id, keyword, status, amount, offset, limit})
+    const data = await request('/clinic_drug/DrugInventoryRecordDetail', {clinic_id, drug_inventory_record_id, keyword, status, amount, offset, limit})
     console.log('DrugInventoryRecordDetail=======', data)
     const docs = data.data.items || []
     const page_info = data.page_info || {}
@@ -122,7 +122,7 @@ export const DrugInventoryRecordDetail = ({drug_inventory_record_id, keyword, st
       detail_data: docs,
       d_page_info: page_info
     })
-    return docs
+    return {docs, page_info}
   } catch (e) {
     console.log(e)
     return {} // e.message

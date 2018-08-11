@@ -667,7 +667,7 @@ class AddDrugScreen extends Component {
   }
   // 修改
   async ClinicDrugUpdate(isInstock) {
-    let { drugInfo } = this.state
+    let { drugInfo, druginstockInfo } = this.state
     const { clinic_id, ClinicDrugUpdate } = this.props
     if (drugInfo.drug_class_id) {
       if (this.validateData(drugInfo)) {
@@ -679,7 +679,12 @@ class AddDrugScreen extends Component {
         } else {
           this.refs.myAlert.alert('修改成功')
           if (isInstock) {
-            this.setState({showInstock: true, drugReturnInfo: data.data})
+            druginstockInfo.items[0].buy_price = formatMoney(data.data.buy_price)
+            this.setState({
+              showInstock: true,
+              drugReturnInfo: data.data,
+              druginstockInfo
+            })
           } else {
             this.props.back2List()
           }
@@ -689,7 +694,7 @@ class AddDrugScreen extends Component {
   }
   // 保存
   async submit(isInstock) {
-    let { drugInfo } = this.state
+    let { drugInfo, druginstockInfo } = this.state
     const { clinic_id, ClinicDrugCreate } = this.props
     if (drugInfo.drug_class_id) {
       if (this.validateData(drugInfo)) {
@@ -699,7 +704,12 @@ class AddDrugScreen extends Component {
         } else {
           this.refs.myAlert.alert('添加成功')
           if (isInstock) {
-            this.setState({showInstock: true, drugReturnInfo: data.data})
+            druginstockInfo.items[0].buy_price = formatMoney(data.data.buy_price)
+            this.setState({
+              showInstock: true,
+              drugReturnInfo: data.data,
+              druginstockInfo
+            })
           } else {
             this.props.back2List()
           }

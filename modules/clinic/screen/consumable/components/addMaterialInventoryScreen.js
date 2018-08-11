@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  DrugInventoryCreate,
-  DrugStockInventoryList,
-  DrugInventoryRecordDetail,
-  DrugInventoryCheck,
-  DrugInventoryUpdate
+  MaterialInventoryCreate,
+  MaterialStockInventoryList,
+  MaterialInventoryRecordDetail,
+  MaterialInventoryCheck,
+  MaterialInventoryUpdate
 } from '../../../../../ducks'
 import { Confirm, PageCard } from '../../../../../components'
 // import { formatMoney, limitMoney } from '../../../../../utils'
@@ -14,7 +14,7 @@ import { formatMoney } from '../../../../../utils'
 // import Print from 'rc-print'
 
 // 病历
-class AddDrugInventoryScreen extends Component {
+class AddMaterialInventoryScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -42,14 +42,14 @@ class AddDrugInventoryScreen extends Component {
         this.setState({readOnly: true})
       }
     } else {
-      this.DrugStockInventoryList({limit: 10, offset: 0})
+      this.MaterialStockInventoryList({limit: 10, offset: 0})
     }
   }
   queryDetail() {
-    this.DrugInventoryRecordDetail({limit: 10, offset: 0})
+    this.MaterialInventoryRecordDetail({limit: 10, offset: 0})
   }
-  DrugStockInventoryList({limit = 10, offset = 0}) {
-    const {DrugStockInventoryList, clinic_id} = this.props
+  MaterialStockInventoryList({limit = 10, offset = 0}) {
+    const {MaterialStockInventoryList, clinic_id} = this.props
     const {keyword, status, amount} = this.state
     let reqData = {
       limit,
@@ -65,15 +65,15 @@ class AddDrugInventoryScreen extends Component {
     if (amount) {
       reqData.amount = amount
     }
-    DrugStockInventoryList(reqData)
+    MaterialStockInventoryList(reqData)
   }
-  async DrugInventoryRecordDetail({limit = 10, offset = 0}) {
-    const {DrugInventoryRecordDetail, drug_inventory_record_id, clinic_id} = this.props
+  async MaterialInventoryRecordDetail({limit = 10, offset = 0}) {
+    const {MaterialInventoryRecordDetail, material_inventory_record_id, clinic_id} = this.props
     const {keyword, status, amount} = this.state
     let reqData = {
       limit,
       offset,
-      drug_inventory_record_id,
+      material_inventory_record_id,
       clinic_id
     }
     if (keyword !== '') {
@@ -85,11 +85,10 @@ class AddDrugInventoryScreen extends Component {
     if (amount) {
       reqData.amount = amount
     }
-    let data = await DrugInventoryRecordDetail(reqData)
+    let data = await MaterialInventoryRecordDetail(reqData)
     this.setState({items: data.page_info.total_item})
-    // console.log('data====', data)
     // for (let key of data) {
-    //   this.setItemsValue({drug_stock_id: key.drug_stock_id, actual_amount: key.actual_amount})
+    //   this.setItemsValue({material_stock_id: key.material_stock_id, actual_amount: key.actual_amount})
     // }
   }
   // 验证字段
@@ -133,13 +132,13 @@ class AddDrugInventoryScreen extends Component {
     this.setState({ items: array })
   }
 
-  async DrugInventoryCreate() {
-    const { DrugInventoryCreate, clinic_id, inventory_operation_id } = this.props
+  async MaterialInventoryCreate() {
+    const { MaterialInventoryCreate, clinic_id, inventory_operation_id } = this.props
     const { items } = this.state
     // let array = []
     // console.log('items===', items)
     for (let key of items) {
-      key.drug_stock_id = key.drug_stock_id + ''
+      key.material_stock_id = key.material_stock_id + ''
       key.actual_amount = key.actual_amount + ''
     }
     let reqData = {
@@ -147,7 +146,7 @@ class AddDrugInventoryScreen extends Component {
       inventory_operation_id,
       items: JSON.stringify(items)
     }
-    let error = await DrugInventoryCreate(reqData)
+    let error = await MaterialInventoryCreate(reqData)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -157,21 +156,21 @@ class AddDrugInventoryScreen extends Component {
     }
   }
   // 修改
-  async DrugInventoryUpdate() {
-    const { DrugInventoryUpdate, inventory_operation_id, drug_inventory_record_id } = this.props
+  async MaterialInventoryUpdate() {
+    const { MaterialInventoryUpdate, inventory_operation_id, material_inventory_record_id } = this.props
     const { items } = this.state
     // let array = []
     // console.log('items===', items)
     for (let key of items) {
-      key.drug_stock_id = key.drug_stock_id + ''
+      key.material_stock_id = key.material_stock_id + ''
       key.actual_amount = key.actual_amount + ''
     }
     let reqData = {
-      drug_inventory_record_id,
+      material_inventory_record_id,
       inventory_operation_id,
       items: JSON.stringify(items)
     }
-    let error = await DrugInventoryUpdate(reqData)
+    let error = await MaterialInventoryUpdate(reqData)
     if (error) {
       return this.refs.myAlert.alert('保存失败', error)
     } else {
@@ -181,14 +180,14 @@ class AddDrugInventoryScreen extends Component {
     }
   }
   // 审核
-  async DrugInventoryCheck() {
-    const {drug_inventory_record_id, inventory_operation_id, DrugInventoryCheck} = this.props
+  async MaterialInventoryCheck() {
+    const {material_inventory_record_id, inventory_operation_id, MaterialInventoryCheck} = this.props
     let requestData = {
-      drug_inventory_record_id,
+      material_inventory_record_id,
       verify_operation_id: inventory_operation_id
     }
     this.refs.myAlert.confirm('提示', '是否审核通过，请确认？', 'Warning', async () => {
-      let error = await DrugInventoryCheck(requestData)
+      let error = await MaterialInventoryCheck(requestData)
       if (error) {
         return this.refs.myAlert.alert('审核失败', error)
       } else {
@@ -213,13 +212,13 @@ class AddDrugInventoryScreen extends Component {
             {showWay !== 3 ? <button
               onClick={() => {
                 if (showWay === 1) {
-                  this.DrugInventoryCreate()
+                  this.MaterialInventoryCreate()
                 }
                 if (showWay === 2) {
-                  this.DrugInventoryCheck()
+                  this.MaterialInventoryCheck()
                 }
                 if (showWay === 4) {
-                  this.DrugInventoryUpdate()
+                  this.MaterialInventoryUpdate()
                 }
                 // if (showWay === 3) {
                 //   this.refs.printer.onPrint()
@@ -242,16 +241,16 @@ class AddDrugInventoryScreen extends Component {
         <div className={'boxLeft'}>
           <input
             type={'text'}
-            placeholder={'药品名称/条形码'}
+            placeholder={'耗材名称/条形码'}
             onChange={e => {
               this.setState({keyword: e.target.value})
             }}
           />
           <button onClick={() => {
             if (showWay === 1) {
-              this.DrugStockInventoryList({offset: 0, limit: 10})
+              this.MaterialStockInventoryList({offset: 0, limit: 10})
             } else {
-              this.DrugInventoryRecordDetail({offset: 0, limit: 10})
+              this.MaterialInventoryRecordDetail({offset: 0, limit: 10})
             }
           }}>查询</button>
           <label>
@@ -350,10 +349,7 @@ class AddDrugInventoryScreen extends Component {
   renderTable() {
     const { detail_data, pageInfo, showWay } = this.props
     const {items, readOnly} = this.state
-    // if (items !== 1) {
-    //   items = pageInfo.total_item
-    // }
-    console.log('items=====  ', items)
+    // console.log('items=====  ', items)
     return (
       <div className={'contentCenterRight'} style={{marginLeft: '0'}}>
         <div className={'contentTable'}>
@@ -378,22 +374,22 @@ class AddDrugInventoryScreen extends Component {
                 {detail_data.map((item, index) => {
                   let actual_amount = 0
                   for (let key of items) {
-                    if (key.drug_stock_id === item.drug_stock_id) {
+                    if (key.material_stock_id === item.material_stock_id) {
                       actual_amount = key.actual_amount
                     }
                   }
                   let profit = formatMoney((actual_amount - item.stock_amount) * item.buy_price)
                   return (
                     <tr key={index}>
-                      <td style={{flex: 2}} title={item.name}>{item.name}</td>
+                      <td style={{flex: 2}} title={item.material_name}>{item.material_name}</td>
                       <td>{item.status ? '正常' : '停用'}</td>
                       <td>{item.specification}</td>
-                      <td>{item.packing_unit_name}</td>
+                      <td>{item.unit_name}</td>
                       <td style={{flex: 2}} title={item.manu_factory_name}>{item.manu_factory_name}</td>
                       <td style={{flex: 2}} title={item.supplier_name}>{item.supplier_name}</td>
                       <td style={{flex: 2}} title={item.serial}>{item.serial}</td>
                       <td style={{flex: 2}}>{moment(item.eff_date).format('YYYY-MM-DD')}</td>
-                      <td>{item.stock_amount}{item.packing_unit_name}</td>
+                      <td>{item.stock_amount}{item.unit_name}</td>
                       <td style={{flex: 2}} className={'realAmount'}>
                         <input
                           readOnly={readOnly}
@@ -401,11 +397,11 @@ class AddDrugInventoryScreen extends Component {
                           placeholder={'请填写'}
                           value={actual_amount !== 0 ? actual_amount : ''}
                           onChange={e => {
-                            let drug_stock_id = item.drug_stock_id
+                            let material_stock_id = item.material_stock_id
                             let actual_amount = e.target.value
-                            this.setItemsValue({drug_stock_id, actual_amount})
+                            this.setItemsValue({material_stock_id, actual_amount})
                           }}
-                        />{item.packing_unit_name}
+                        />{item.unit_name}
                       </td>
                       <td>{actual_amount !== 0 ? profit : ''}</td>
                     </tr>
@@ -420,9 +416,9 @@ class AddDrugInventoryScreen extends Component {
               style={{margin: '20px 0', width: '100%'}}
               onItemClick={({ offset, limit }) => {
                 if (showWay === 1) {
-                  this.DrugStockInventoryList({offset, limit})
+                  this.MaterialStockInventoryList({offset, limit})
                 } else {
-                  this.DrugInventoryRecordDetail({offset, limit})
+                  this.MaterialInventoryRecordDetail({offset, limit})
                 }
               }}
             />
@@ -508,12 +504,12 @@ class AddDrugInventoryScreen extends Component {
       </div>
     )
   }
-  setItemsValue({drug_stock_id, actual_amount}) {
+  setItemsValue({material_stock_id, actual_amount}) {
     // const {detail_data} = this.props
     let {items} = this.state
-    let idArray = [drug_stock_id]
+    let idArray = [material_stock_id]
     for (let i = 0; i < items.length; i++) {
-      if (items[i].drug_stock_id === drug_stock_id) {
+      if (items[i].material_stock_id === material_stock_id) {
         items[i].actual_amount = actual_amount
         if (actual_amount === '') {
           items.splice(i, 1)
@@ -522,12 +518,12 @@ class AddDrugInventoryScreen extends Component {
     }
     let array = []
     if (actual_amount !== '') {
-      array.push({drug_stock_id, actual_amount})
+      array.push({material_stock_id, actual_amount})
     }
     for (let i = 0; i < items.length; i++) {
-      if (idArray.indexOf(items[i].drug_stock_id) === -1) {
+      if (idArray.indexOf(items[i].material_stock_id) === -1) {
         array.push(items[i])
-        idArray.push(items[i].drug_stock_id)
+        idArray.push(items[i].material_stock_id)
       }
     }
     this.setState({items: array})
@@ -824,16 +820,16 @@ const mapStateToProps = state => {
   return {
     clinic_id: state.user.data.clinic_id,
     inventory_operation_id: state.user.data.id,
-    detail_data: state.drugInventorys.detail_data,
-    pageInfo: state.drugInventorys.d_page_info,
+    detail_data: state.materialInventorys.detail_data,
+    pageInfo: state.materialInventorys.d_page_info,
     user: state.user.data
   }
 }
 
 export default connect(mapStateToProps, {
-  DrugInventoryCreate,
-  DrugStockInventoryList,
-  DrugInventoryRecordDetail,
-  DrugInventoryCheck,
-  DrugInventoryUpdate
-})(AddDrugInventoryScreen)
+  MaterialInventoryCreate,
+  MaterialStockInventoryList,
+  MaterialInventoryRecordDetail,
+  MaterialInventoryCheck,
+  MaterialInventoryUpdate
+})(AddMaterialInventoryScreen)
