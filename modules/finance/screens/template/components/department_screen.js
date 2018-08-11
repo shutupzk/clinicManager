@@ -9,7 +9,7 @@ class Departmentscreen extends Component {
     super(props)
     this.state = {
       start_date: moment()
-        .add(30, 'd')
+        .add(-30, 'd')
         .format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
