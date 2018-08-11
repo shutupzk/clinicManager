@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { DepartmentStatistics } from '../../../../../ducks'
-// import { formatMoney } from '../../../../../utils'
-
+import { DepartmentStatistics, queryDepartmentList } from '../../../../../ducks'
+import { formatMoney } from '../../../../../utils'
 // 其他收费
 class Departmentscreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       start_date: moment()
-        .add(-7, 'd')
+        .add(30, 'd')
         .format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
@@ -19,6 +18,8 @@ class Departmentscreen extends Component {
   }
 
   componentDidMount() {
+    let { clinic_id, queryDepartmentList } = this.props
+    queryDepartmentList({ clinic_id, offset: 0, limit: 1000 })
     this.queryContentData()
   }
 
@@ -29,7 +30,41 @@ class Departmentscreen extends Component {
   }
 
   showContent() {
-    const { data } = this.props
+    let { data, departments } = this.props
+
+    let array = []
+    let deptMap = {}
+    let dateTemp = {}
+    for (let item of data) {
+      let { department_id, total, balance_money, date } = item
+      balance_money = balance_money || 0
+      if (!deptMap[department_id]) {
+        deptMap[department_id] = {
+          total: 0,
+          fee: 0
+        }
+      }
+
+      deptMap[department_id].total += total * 1
+      deptMap[department_id].fee += balance_money * 1
+
+      if (!dateTemp[date]) {
+        dateTemp[date] = {}
+      }
+
+      if (!dateTemp[date][department_id]) {
+        dateTemp[date][department_id] = {
+          total: 0,
+          fee: 0
+        }
+      }
+
+      dateTemp[date][department_id].total = total * 1
+      dateTemp[date][department_id].fee = balance_money * 1
+    }
+
+    for (let key in dateTemp) array.push({ ...dateTemp[key], date: key })
+
     return (
       <div>
         <div
@@ -43,151 +78,90 @@ class Departmentscreen extends Component {
         >
           <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '科室统计报表'}</h3>
         </div>
-        <div className={'feeScheduleBox'}>
+        <div className={'listDIV'}>
           <ul>
-            <li>
-              <div>就诊日期</div>
-              <div>病人ID</div>
-              <div>患者姓名</div>
-              <div>性别</div>
-              <div>年龄</div>
-              <div>手机号码</div>
-              <div>职业</div>
-              <div>住址</div>
-              <div>发病日期</div>
-              <div>初步诊断</div>
-              <div>接诊类型</div>
-              <div>登记人员</div>
-              <div>接诊科室</div>
-              <div>接诊医生</div>
+            <li style={{ background: 'rgba(247,247,247,1)' }}>
+              <div>接诊日期</div>
+              {departments.map((dept, i) => {
+                return <div key={i}>{dept.name}</div>
+              })}
+            </li>
+            <li style={{ background: 'rgba(247,247,247,1)' }}>
+              <div />
+              {departments.map((dept, i) => {
+                return (
+                  <div key={i}>
+                    <div>人次</div>
+                    <div>金额</div>
+                  </div>
+                )
+              })}
             </li>
             <li style={{ background: 'rgba(247,247,247,1)' }}>
               <div>合计</div>
-              <div>
-                <div>{}人</div>
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
-              <div>
-                <div />
-              </div>
+              {departments.map((dept, i) => {
+                return (
+                  <div key={i}>
+                    <div>{(deptMap[dept.id] && deptMap[dept.id].total) || 0}</div>
+                    <div>{(deptMap[dept.id] && formatMoney(deptMap[dept.id].fee)) || '0.00'}</div>
+                  </div>
+                )
+              })}
             </li>
-            {data.map((item, iKey) => {
+            {array.map((item, k) => {
               return (
-                <li key={iKey}>
-                  <div>
-                    <div>{moment(item.visit_date).format('YYYY-MM-DD')}</div>
-                  </div>
-                  <div>
-                    <div>{item.patient_id}</div>
-                  </div>
-                  <div>
-                    <div>{item.patient_name}</div>
-                  </div>
-                  <div>
-                    <div>{item.sex === 0 ? '女' : '男'}</div>
-                  </div>
-                  <div>
-                    <div>{getAgeByBirthday(item.birthday)}</div>
-                  </div>
-                  <div>
-                    <div>{item.phone}</div>
-                  </div>
-                  <div>
-                    <div>{item.profession}</div>
-                  </div>
-                  <div>
-                    <div>
-                      {item.province}
-                      {item.city}
-                      {item.district}
-                      {item.address}
-                    </div>
-                  </div>
-                  <div>
-                    <div>{item.morbidity_date}</div>
-                  </div>
-                  <div>
-                    <div>{item.diagnosis}</div>
-                  </div>
-                  <div>
-                    <div>{item.visit_type === 1 ? '初诊' : item.visit_type === 2 ? '复诊' : item.visit_type === 3 ? '术后复诊' : ''}</div>
-                  </div>
-                  <div>
-                    <div>{item.opreation_name}</div>
-                  </div>
-                  <div>
-                    <div>{item.dept_name}</div>
-                  </div>
-                  <div>
-                    <div>{item.doctor_name}</div>
-                  </div>
+                <li key={k}>
+                  <div>{item.date}</div>
+                  {departments.map((dept, i) => {
+                    return (
+                      <div key={i}>
+                        <div>{(item[dept.id] && item[dept.id].total) || 0}</div>
+                        <div>{(item[dept.id] && formatMoney(item[dept.id].fee)) || '0.00'}</div>
+                      </div>
+                    )
+                  })}
                 </li>
               )
             })}
           </ul>
         </div>
         <style jsx='true'>{`
-          .feeScheduleBox ul li > div {
-            flex: 1;
+          .listDIV {
+            float: left;
             display: flex;
+            background: rgba(255, 255, 255, 1);
+            border-radius: 4px;
+            margin: 20px 0 0 65px;
+          }
+          .listDIV ul {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9e9e9;
+            border-bottom: none;
+          }
+          .listDIV ul li {
+            display: flex;
+            min-height: 40px;
+            border-bottom: 1px solid #e9e9e9;
+            line-height: 40px;
+            text-align: center;
+          }
+          .listDIV ul li > div {
+            margin: 0;
+            width: 200px;
             align-items: center;
             justify-content: center;
-            // line-height: 24px;
+            border-left: 1px #e9e9e9 dashed;
           }
-          .feeScheduleBox ul li > div > div {
-            line-height: normal;
-          }
-          .leftTille {
-            padding-top: 70px;
+          .listDIV ul li > div:nth-child(1){
             width: 100px;
           }
-          .leftTille ul li {
-            width: 100px;
-            display: flex;
+          .listDIV ul li > div > div {
+            float: left
+            width: 99px;
             align-items: center;
-          }
-          .leftTille ul li label {
-            flex: 1;
-            text-align: right;
-          }
-          .leftTille ul li i {
-            width: 25px;
-            height: 15px;
-            border-radius: 4px;
-            display: block;
-            margin-left: 5px;
+            justify-content: center;
+            border-left: 1px #e9e9e9 dashed;
           }
         `}</style>
       </div>
@@ -256,5 +230,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { DepartmentStatistics }
+  { DepartmentStatistics, queryDepartmentList }
 )(Departmentscreen)

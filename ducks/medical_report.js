@@ -281,7 +281,7 @@ export const OutPatietnEfficiencyStatistics = ({ start_date, end_date, clinic_id
 
 export const DepartmentStatistics = ({ start_date, end_date, clinic_id }) => async dispatch => {
   try {
-    const data = await request('/medicalReport/DepartmentStatistics', {
+    const data = await request('/medicalReport/outPatient/department', {
       start_date,
       end_date,
       clinic_id
