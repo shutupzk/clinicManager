@@ -80,7 +80,7 @@ class AddMaterialInstockScreen extends Component {
 
   addColumn() {
     const { items } = this.state
-    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0, eff_date: moment().format('YYYY-MM-DD')}] })
+    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0}] })
   }
 
   removeColumn(index) {
@@ -389,7 +389,7 @@ class AddMaterialInstockScreen extends Component {
         unit_name,
         ret_price,
         stock_amount,
-        instock_amount: stock_amount,
+        instock_amount: '',
         buy_price: formatMoney(buy_price)
       })
     }
@@ -539,7 +539,17 @@ class AddMaterialInstockScreen extends Component {
                       }}
                     />
                   </div>
-                  <div>
+                  {showWay === 1 ? <div>
+                    <input
+                      readOnly={readOnly}
+                      placeholder={'有效期'}
+                      type='date'
+                      // value={moment(item.eff_date).format('YYYY-MM-DD')}
+                      onChange={e => {
+                        this.setItemValue(e, index, 'eff_date')
+                      }}
+                    />
+                  </div> : showWay === 4 ? <div>
                     <input
                       readOnly={readOnly}
                       placeholder={'有效期'}
@@ -549,7 +559,7 @@ class AddMaterialInstockScreen extends Component {
                         this.setItemValue(e, index, 'eff_date')
                       }}
                     />
-                  </div>
+                  </div> : <div>{moment(item.eff_date).format('YYYY-MM-DD')}</div> }
                   {showWay === 1 || showWay === 4 ? <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
                       删除
