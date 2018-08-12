@@ -645,27 +645,60 @@ class PrescriptionScreen extends Component {
           <div style={patientInfoRow}>
             <div style={patientInfoRow} />
             <div style={patientInfoRow} />
-            <div style={patientInfoRow}>处方编号：{orderSn}</div>
+            <div style={patientInfoRow}>
+              处方编号：
+              {orderSn}
+            </div>
           </div>
         </div>
         <div style={borderBottomDiv}>
           <div style={patientInfoRow}>
-            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
-            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
-            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+            <div style={patientInforRowItem}>
+              姓名：
+              {triagePatient.patient_name}
+            </div>
+            <div style={patientInforRowItem}>
+              年龄：
+              {getAgeByBirthday(triagePatient.birthday)}
+            </div>
+            <div style={patientInforRowItem}>
+              性别：
+              {triagePatient.sex * 1 === 0 ? '女' : '男'}
+            </div>
           </div>
           <div style={patientInfoRow}>
-            <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
-            <div style={patientInforRowItem}>病人ID：{triagePatient.patient_id}</div>
-            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+            <div style={patientInforRowItem}>
+              体重：
+              {body_sign.weight}
+            </div>
+            <div style={patientInforRowItem}>
+              病人ID：
+              {triagePatient.patient_id}
+            </div>
+            <div style={patientInforRowItem}>
+              科别：
+              {triagePatient.department_name}
+            </div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
-            <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>
+              临床（初步）诊断：
+              {medicalRecord.diagnosis}
+            </div>
+            <div style={patientInforRowItem}>
+              开具日期：
+              {moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}
+            </div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patient.province || '') + ' ' + (patient.city || '') + ' ' + (patient.district || '') + ' ' + (patient.address || '')}</div>
-            <div style={patientInforRowItem}>电话：{patient.phone}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>
+              地址：
+              {(patient.province || '') + ' ' + (patient.city || '') + ' ' + (patient.district || '') + ' ' + (patient.address || '')}
+            </div>
+            <div style={patientInforRowItem}>
+              电话：
+              {patient.phone}
+            </div>
           </div>
         </div>
         <div style={borderBottomDiv}>
@@ -683,7 +716,9 @@ class PrescriptionScreen extends Component {
                 <div style={{ ...patientInforRowItem, flex: 7 }}>
                   <label>{item.drug_name}</label>
                   <label>
-                    用法：{item.route_administration_name} 1次{item.once_dose} {item.once_dose_unit_name} {item.frequency_name} 共{item.eff_day}天
+                    用法：
+                    {item.route_administration_name} 1次
+                    {item.once_dose} {item.once_dose_unit_name} {item.frequency_name} 共{item.eff_day}天
                   </label>
                 </div>
                 <div style={{ ...patientInforRowItem, flex: 3 }}>{item.specification}</div>
@@ -697,7 +732,10 @@ class PrescriptionScreen extends Component {
         </div>
         <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
           <div style={patientInfoRow}>
-            <div style={patientInforRowItem}>医师签名：{triagePatient.doctor_name}</div>
+            <div style={patientInforRowItem}>
+              医师签名：
+              {triagePatient.doctor_name}
+            </div>
           </div>
           <div style={{ ...patientInfoRow, marginTop: '20px' }}>
             <div style={patientInforRowItem}>审核药师：</div>
@@ -1141,27 +1179,60 @@ class PrescriptionScreen extends Component {
           <div style={patientInfoRow}>
             <div style={patientInfoRow} />
             <div style={patientInfoRow} />
-            <div style={patientInfoRow}>处方编号：{orderSn}</div>
+            <div style={patientInfoRow}>
+              处方编号：
+              {orderSn}
+            </div>
           </div>
         </div>
         <div style={borderBottomDiv}>
           <div style={patientInfoRow}>
-            <div style={patientInforRowItem}>姓名：{triagePatient.patient_name}</div>
-            <div style={patientInforRowItem}>年龄：{getAgeByBirthday(triagePatient.birthday)}</div>
-            <div style={patientInforRowItem}>性别：{triagePatient.sex * 1 === 0 ? '女' : '男'}</div>
+            <div style={patientInforRowItem}>
+              姓名：
+              {triagePatient.patient_name}
+            </div>
+            <div style={patientInforRowItem}>
+              年龄：
+              {getAgeByBirthday(triagePatient.birthday)}
+            </div>
+            <div style={patientInforRowItem}>
+              性别：
+              {triagePatient.sex * 1 === 0 ? '女' : '男'}
+            </div>
           </div>
           <div style={patientInfoRow}>
-            <div style={patientInforRowItem}>体重：{body_sign.weight}</div>
-            <div style={patientInforRowItem}>病人ID：{triagePatient.patient_id}</div>
-            <div style={patientInforRowItem}>科别：{triagePatient.department_name}</div>
+            <div style={patientInforRowItem}>
+              体重：
+              {body_sign.weight}
+            </div>
+            <div style={patientInforRowItem}>
+              病人ID：
+              {triagePatient.patient_id}
+            </div>
+            <div style={patientInforRowItem}>
+              科别：
+              {triagePatient.department_name}
+            </div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>临床（初步）诊断：{medicalRecord.diagnosis}</div>
-            <div style={patientInforRowItem}>开具日期：{moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>
+              临床（初步）诊断：
+              {medicalRecord.diagnosis}
+            </div>
+            <div style={patientInforRowItem}>
+              开具日期：
+              {moment(orderSn.substr(0, 8)).format('YYYY-MM-DD')}
+            </div>
           </div>
           <div style={patientInfoRow}>
-            <div style={{ ...patientInforRowItem, flex: 2 }}>地址：{(patient.province || '') + ' ' + (patient.city || '') + ' ' + (patient.district || '') + ' ' + (patient.address || '')}</div>
-            <div style={patientInforRowItem}>电话：{patient.phone}</div>
+            <div style={{ ...patientInforRowItem, flex: 2 }}>
+              地址：
+              {(patient.province || '') + ' ' + (patient.city || '') + ' ' + (patient.district || '') + ' ' + (patient.address || '')}
+            </div>
+            <div style={patientInforRowItem}>
+              电话：
+              {patient.phone}
+            </div>
           </div>
         </div>
         <div style={borderBottomDiv}>
@@ -1198,7 +1269,10 @@ class PrescriptionScreen extends Component {
         </div>
         <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
           <div style={patientInfoRow}>
-            <div style={patientInforRowItem}>医师签名：{triagePatient.doctor_name}</div>
+            <div style={patientInforRowItem}>
+              医师签名：
+              {triagePatient.doctor_name}
+            </div>
           </div>
           <div style={{ ...patientInfoRow, marginTop: '20px' }}>
             <div style={patientInforRowItem}>审核药师：</div>
@@ -1267,7 +1341,8 @@ class PrescriptionScreen extends Component {
                     onChange={e => {
                       this.setState({ is_common: e.target.checked })
                     }}
-                  />通用
+                  />
+                  通用
                   <input
                     type='radio'
                     name='type'
@@ -1276,7 +1351,8 @@ class PrescriptionScreen extends Component {
                     onChange={e => {
                       this.setState({ is_common: !e.target.checked })
                     }}
-                  />个人
+                  />
+                  个人
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
@@ -1399,24 +1475,26 @@ class PrescriptionScreen extends Component {
                     <div
                       style={{ flex: 1, cursor: 'pointer', color: 'rgba(42,205,200,1)' }}
                       onClick={() => {
-                        let newArray = wPrescItemArray // [...wPrescItemArray, ...items]
-                        if (wPrescItemArray.length > 0) {
-                          let idArray = []
-                          for (let i = 0; i < wPrescItemArray.length; i++) {
-                            idArray.push(wPrescItemArray[i].clinic_drug_id)
+                        let newArray = [...wPrescItemArray]
+                        let idArray = []
+                        for (let i = 0; i < wPrescItemArray.length; i++) {
+                          idArray.push(wPrescItemArray[i].clinic_drug_id)
+                        }
+                        let has = false
+                        for (let j = 0; j < items.length; j++) {
+                          let index = idArray.indexOf(items[j].clinic_drug_id)
+                          if (index === -1 || newArray[index].paid_status) {
+                            newArray.push(items[j])
+                          } else {
+                            has = true
+                            newArray[index] = items[j]
                           }
-                          for (let j = 0; j < items.length; j++) {
-                            if (idArray.indexOf(items[j].clinic_drug_id) === -1) {
-                              newArray.push(items[j])
-                              this.setState({ wPrescItemArray: newArray, showWmodelList: false })
-                            } else {
-                              this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
-                                this.setState({ wPrescItemArray: [...items], showWmodelList: false })
-                              })
-                            }
-                          }
+                        }
+                        if (has) {
+                          this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
+                            this.setState({ wPrescItemArray: newArray, showWmodelList: false })
+                          })
                         } else {
-                          newArray = [...items]
                           this.setState({ wPrescItemArray: newArray, showWmodelList: false })
                         }
                       }}
@@ -1510,7 +1588,8 @@ class PrescriptionScreen extends Component {
                     onChange={e => {
                       this.setState({ is_common: e.target.checked })
                     }}
-                  />通用
+                  />
+                  通用
                   <input
                     type='radio'
                     name='type'
@@ -1519,7 +1598,8 @@ class PrescriptionScreen extends Component {
                     onChange={e => {
                       this.setState({ is_common: !e.target.checked })
                     }}
-                  />个人
+                  />
+                  个人
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
@@ -1660,29 +1740,29 @@ class PrescriptionScreen extends Component {
                         // newObj.data = [...newObj.data, ...array]
                         let newArray = [...cPrescItemArray]
                         newArray[selIndex] = newObj
-                        let newArrayItem = cPrescItemArray[selIndex].data
-                        if (newArrayItem.length > 0) {
-                          let idArray = []
-                          for (let i = 0; i < newArrayItem.length; i++) {
-                            idArray.push(newArrayItem[i].clinic_drug_id)
+                        let newArrayItem = [ ...cPrescItemArray[selIndex].data ]
+                        let idArray = []
+                        for (let i = 0; i < newArrayItem.length; i++) {
+                          idArray.push(newArrayItem[i].clinic_drug_id)
+                        }
+                        let has = false
+                        for (let j = 0; j < array.length; j++) {
+                          let index = idArray.indexOf(array[j].clinic_drug_id)
+                          if (index === -1 || newArrayItem[index].paid_status) {
+                            newArrayItem.push(items[j])
+                          } else {
+                            has = true
+                            newArrayItem[index] = items[j]
                           }
-                          for (let j = 0; j < array.length; j++) {
-                            if (idArray.indexOf(array[j].clinic_drug_id) === -1) {
-                              newArrayItem.push(items[j])
-                              newArray[selIndex].data = newArrayItem
-                              this.setState({ cPrescItemArray: newArray, showCmodelList: false })
-                            } else {
-                              this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
-                                this.setState({ cPrescItemArray: [...items], showCmodelList: false })
-                              })
-                            }
-                          }
+                        }
+                        newArray[selIndex].data = newArrayItem
+                        if (has) {
+                          this.refs.myAlert.confirm('提示', '模板中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
+                            this.setState({ cPrescItemArray: newArray, showCmodelList: false })
+                          })
                         } else {
-                          newObj.data = [...newObj.data, ...array]
-                          newArray[selIndex] = newObj
                           this.setState({ cPrescItemArray: newArray, showCmodelList: false })
                         }
-                        // this.setState({ cPrescItemArray: newArray, showCmodelList: false })
                       }}
                     >
                       选择
@@ -1826,16 +1906,16 @@ class PrescriptionScreen extends Component {
                               idArray.push(wPrescItemArray[i].clinic_drug_id)
                             }
 
-                            let newWArray = [ ...wPrescItemArray ]
+                            let newWArray = [...wPrescItemArray]
 
                             let has = false
                             for (let obj of qwPrescItemArray) {
                               let index = idArray.indexOf(obj.clinic_drug_id)
-                              if (index > -1) {
-                                newWArray[index] = { ...obj, paid_status: false }
-                                has = true
-                              } else {
+                              if (index === -1 || newWArray[index].paid_status) {
                                 newWArray.push({ ...obj, paid_status: false })
+                              } else {
+                                has = true
+                                newWArray[index] = { ...obj, paid_status: false }
                               }
                             }
                             let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
@@ -1880,7 +1960,9 @@ class PrescriptionScreen extends Component {
                                     <div style={{ ...patientInforRowItem, flex: 7 }}>
                                       <label>{item.drug_name}</label>
                                       <label>
-                                        用法：{item.route_administration_name} 1次{item.once_dose} {item.once_dose_unit_name} {item.frequency_name} 共{item.eff_day}天
+                                        用法：
+                                        {item.route_administration_name} 1次
+                                        {item.once_dose} {item.once_dose_unit_name} {item.frequency_name} 共{item.eff_day}天
                                       </label>
                                     </div>
                                     <div style={{ ...patientInforRowItem, flex: 3 }}>{item.specification}</div>
@@ -2054,7 +2136,8 @@ class PrescriptionScreen extends Component {
                           this.setState({ selItem: 'cPresc' + index, selIndex: index })
                         }}
                       >
-                        中药处方{index + 1}
+                        中药处方
+                        {index + 1}
                       </div>
                       <i onClick={() => this.removecPrescItem(index)}>×</i>
                     </div>
