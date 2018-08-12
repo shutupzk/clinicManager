@@ -574,7 +574,7 @@ class PrescriptionScreen extends Component {
                 </div>
                 <div style={{ flex: 2 }}>
                   {item.paid_status ? (
-                    '已缴费'
+                    ''
                   ) : (
                     <div
                       style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}
@@ -983,7 +983,7 @@ class PrescriptionScreen extends Component {
                   <div>{item.amount}</div>
                   <div>
                     {item.paid_status ? (
-                      '已缴费'
+                      ''
                     ) : (
                       <div
                         style={{ width: '80px', color: 'red', cursor: 'pointer', textAlign: 'center' }}
@@ -1820,19 +1820,47 @@ class PrescriptionScreen extends Component {
                           onClick={async () => {
                             let qwPrescItemArray = await PrescriptionWesternPatientGet({ clinic_triage_patient_id })
                             qwPrescItemArray = qwPrescItemArray || []
+
+                            let idArray = []
+                            for (let i = 0; i < wPrescItemArray.length; i++) {
+                              idArray.push(wPrescItemArray[i].clinic_drug_id)
+                            }
+
+                            let newWArray = [ ...wPrescItemArray ]
+
+                            let has = false
+                            for (let obj of qwPrescItemArray) {
+                              let index = idArray.indexOf(obj.clinic_drug_id)
+                              if (index > -1) {
+                                newWArray[index] = { ...obj, paid_status: false }
+                                has = true
+                              } else {
+                                newWArray.push({ ...obj, paid_status: false })
+                              }
+                            }
                             let array = await PrescriptionChinesePatientGet({ clinic_triage_patient_id })
                             let qcPrescItemArray = []
                             for (let obj of array) {
-                              let data = obj.items
-                              let info = { ...obj }
+                              let data = obj.items || []
+                              let info = { ...obj, paid_status: false }
                               delete info.items
                               delete info.id
+                              let cArray = []
+                              for (let item of data) {
+                                cArray.push({ ...item, paid_status: false })
+                              }
                               qcPrescItemArray.push({
                                 info,
-                                data
+                                data: cArray
                               })
                             }
-                            this.setState({ wPrescItemArray: [...wPrescItemArray, ...qwPrescItemArray], cPrescItemArray: [...cPrescItemArray, ...qcPrescItemArray], showHistory: false })
+                            if (has) {
+                              this.refs.myAlert.confirm('提示', '历史处方中存在与已选择的药品相同，是否覆盖？', 'Warning', () => {
+                                this.setState({ wPrescItemArray: newWArray, cPrescItemArray: [...cPrescItemArray, ...qcPrescItemArray], showHistory: false })
+                              })
+                            } else {
+                              this.setState({ wPrescItemArray: newWArray, cPrescItemArray: [...cPrescItemArray, ...qcPrescItemArray], showHistory: false })
+                            }
                           }}
                         >
                           选择
