@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { queryFinanceListAnalysis } from '../../../../../ducks'
-import { PageCard } from '../../../../../components'
+import {
+  MaterialInvoicingStatistics,
+  querySupplierList
+} from '../../../../../ducks'
+import { PageCard, Select } from '../../../../../components'
 import { formatMoney } from '../../../../../utils'
-import ReactEcharts from 'echarts-for-react'
+// import ReactEcharts from 'echarts-for-react'
 
 // 其他收费
 class MaterialinvoicingScreen extends Component {
@@ -16,7 +19,10 @@ class MaterialinvoicingScreen extends Component {
         .format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
-        .format('YYYY-MM-DD')
+        .format('YYYY-MM-DD'),
+      supplier_name: '',
+      material_name: '',
+      serial: ''
     }
   }
 
@@ -24,220 +30,176 @@ class MaterialinvoicingScreen extends Component {
     this.queryContentData({})
   }
 
-  getOption() {
-    const { finances_page } = this.props
-
-    let data = [
-      {
-        name: '现金',
-        value: formatMoney(finances_page.cash),
-        itemStyle: {
-          color: '#5bc0de'
-        }
-      },
-      {
-        name: '支付宝',
-        value: formatMoney(finances_page.alipay),
-        itemStyle: {
-          color: '#d9534f'
-        }
-      },
-      {
-        name: '微信',
-        value: formatMoney(finances_page.wechat),
-        itemStyle: {
-          color: '#428bca'
-        }
-      },
-      {
-        name: '银行卡',
-        value: formatMoney(finances_page.bank),
-        itemStyle: {
-          color: '#f0ad4e'
-        }
-      },
-      {
-        name: '积分抵扣',
-        value: formatMoney(finances_page.bonus_points_money),
-        itemStyle: {
-          color: '#54af9b'
-        }
-      },
-      {
-        name: '余额支付',
-        value: formatMoney(0),
-        itemStyle: {
-          color: '#54b2a6'
-        }
-      },
-      {
-        name: '医保支付',
-        value: formatMoney(finances_page.medical_money),
-        itemStyle: {
-          color: '#a28eda'
-        }
-      },
-      {
-        name: '挂账',
-        value: formatMoney(finances_page.on_credit_money),
-        itemStyle: {
-          color: '#749f83'
-        }
-      },
-      {
-        name: '卡券',
-        value: formatMoney(finances_page.discount_money || 0 + finances_page.voucher_money || 0),
-        itemStyle: {
-          color: '#5ab472'
-        }
-      },
-      {
-        name: '减免',
-        value: formatMoney(finances_page.derate_money),
-        itemStyle: {
-          color: '#5ab472'
-        }
-      }
-    ]
-    return {
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
-      },
-
-      series: [
-        {
-          name: '金额占比',
-          type: 'pie',
-          data: data.sort(function(a, b) {
-            return a.value - b.value
-          })
-        }
-      ]
+  queryContentData({ offset = 0, limit = 10 }) {
+    const { MaterialInvoicingStatistics, clinic_id } = this.props
+    const {
+      start_date,
+      end_date,
+      supplier_name,
+      material_name,
+      serial
+    } = this.state
+    let reqData = {
+      start_date,
+      end_date,
+      clinic_id,
+      offset,
+      limit
+    }
+    if (supplier_name !== '') {
+      reqData.supplier_name = supplier_name
+    }
+    if (material_name !== '') {
+      reqData.material_name = material_name
+    }
+    if (serial !== '') {
+      reqData.serial = serial
+    }
+    MaterialInvoicingStatistics(reqData)
+  }
+  // 获取供应商筛选
+  getSupplierOptions() {
+    const { supplier_data, querySupplierList } = this.props
+    // console.log('supplier_data====', supplier_data)
+    let array = []
+    array.push({value: '', label: '全部'})
+    for (let key in supplier_data) {
+      let {name} = supplier_data[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 1) {
+      querySupplierList({keyword: ''})
+    }
+    return array
+  }
+  // 获取供应商数据
+  querySupplierList(keyword) {
+    const {querySupplierList} = this.props
+    if (keyword) {
+      querySupplierList({keyword})
     }
   }
-
-  queryContentData({ offset = 0, limit = 10 }) {
-    const { queryFinanceListAnalysis } = this.props
-    const { start_date, end_date } = this.state
-    queryFinanceListAnalysis({ start_date, end_date, offset, limit })
-  }
-
   showContent() {
-    const { finances, finances_page } = this.props
+    const { invoice_data, pageInfo } = this.props
+    console.log('invoice_data====', invoice_data)
     return (
       <div>
-        <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
-          <div className={'leftTille'}>
-            <ul>
-              <li>
-                <label>现金</label>
-                <i style={{ background: '#5bc0de' }} />
-              </li>
-              <li>
-                <label>支付宝</label>
-                <i style={{ background: '#d9534f' }} />
-              </li>
-              <li>
-                <label>微信</label>
-                <i style={{ background: '#428bca' }} />
-              </li>
-              <li>
-                <label>银行卡</label>
-                <i style={{ background: '#f0ad4e' }} />
-              </li>
-              <li>
-                <label>积分抵扣</label>
-                <i style={{ background: '#54af9b' }} />
-              </li>
-              <li>
-                <label>余额支付</label>
-                <i style={{ background: '#54b2a6' }} />
-              </li>
-              <li>
-                <label>医保支付</label>
-                <i style={{ background: '#a28eda' }} />
-              </li>
-              <li>
-                <label>挂账</label>
-                <i style={{ background: '#749f83' }} />
-              </li>
-              <li>
-                <label>卡券</label>
-                <i style={{ background: '#5ab472' }} />
-              </li>
-              <li>
-                <label>减免</label>
-                <i style={{ background: '#5ab472' }} />
-              </li>
-            </ul>
-          </div>
-          <ReactEcharts option={this.getOption()} style={{ height: '400px', width: '100%' }} />
-        </div>
-        <div
-          style={{
-            float: 'left',
-            display: 'flex',
-            width: '1200px',
-            justifyContent: 'center',
-            marginBottom: '15px'
-          }}
-        >
-          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '支付方式'}</h3>
-        </div>
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
-              <div>交易日期</div>
-              <div>费用合计</div>
-              <div>现金</div>
-              <div>支付宝</div>
-              <div>微信</div>
-              <div>银行卡</div>
-              <div>积分抵扣</div>
-              <div>余额支付</div>
-              <div>医保支付</div>
-              <div>挂账</div>
-              <div>卡券</div>
-              <div>减免</div>
+              <div>商品编码</div>
+              <div>商品名称</div>
+              <div>规格</div>
+              <div>生产厂商</div>
+              <div>供应商</div>
+              <div>单位</div>
+              <div>批号</div>
+              <div>有效期</div>
+              <div>成本价</div>
+              <div style={{flex: 2}}>
+                <span>本期入库</span>
+                <div>
+                  <span>数量</span>
+                  <span>合计金额</span>
+                </div>
+              </div>
+              <div style={{flex: 2}}>
+                <span>本期出库</span>
+                <div>
+                  <span>数量</span>
+                  <span>合计金额</span>
+                </div>
+              </div>
+              <div style={{flex: 2}}>
+                <span>库存盘点</span>
+                <div>
+                  <span>数量</span>
+                  <span>合计金额</span>
+                </div>
+              </div>
             </li>
-            <li style={{ background: 'rgba(247,247,247,1)' }}>
-              <div>总计</div>
-              <div>{formatMoney(finances_page.total_money)}</div>
-              <div>{formatMoney(finances_page.cash)}</div>
-              <div>{formatMoney(finances_page.bank)}</div>
-              <div>{formatMoney(finances_page.wechat)}</div>
-              <div>{formatMoney(finances_page.alipay)}</div>
-              <div>{formatMoney(finances_page.bonus_points_money)}</div>
-              <div>{formatMoney(0)}</div>
-              <div>{formatMoney(finances_page.medical_money)}</div>
-              <div>{formatMoney(finances_page.on_credit_money)}</div>
-              <div>{formatMoney(finances_page.discount_money || 0 + finances_page.voucher_money || 0)}</div>
-              <div>{formatMoney(finances_page.derate_money)}</div>
-            </li>
-            {finances.map((item, iKey) => {
+            {invoice_data.map((item, iKey) => {
+              let total_instock_amount = item.total_instock_amount
+              let total_outstock_amount = item.total_outstock_amount
+              let stock_amount = item.stock_amount
+              if (total_instock_amount === null) {
+                total_instock_amount = 0
+              }
+              if (total_outstock_amount === null) {
+                total_outstock_amount = 0
+              }
+              if (stock_amount === null) {
+                stock_amount = 0
+              }
               return (
                 <li key={iKey}>
-                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
-                  <div>{formatMoney(item.total_money)}</div>
-                  <div>{formatMoney(item.cash)}</div>
-                  <div>{formatMoney(item.bank)}</div>
-                  <div>{formatMoney(item.wechat)}</div>
-                  <div>{formatMoney(item.alipay)}</div>
-                  <div>{formatMoney(item.bonus_points_money)}</div>
-                  <div>{formatMoney(0)}</div>
-                  <div>{formatMoney(item.medical_money)}</div>
-                  <div>{formatMoney(item.on_credit_money)}</div>
-                  <div>{formatMoney(item.discount_money || 0 + item.voucher_money || 0)}</div>
-                  <div>{formatMoney(item.derate_money)}</div>
+                  <div title={item.idc_code}>{item.idc_code}</div>
+                  <div title={item.name}>{item.name}</div>
+                  <div title={item.specification}>{item.specification}</div>
+                  <div title={item.manu_factory_name}>{item.manu_factory_name}</div>
+                  <div title={item.supplier_name}>{item.supplier_name}</div>
+                  <div title={item.unit_name}>{item.unit_name}</div>
+                  <div title={item.serial}>{item.serial}</div>
+                  <div title={moment(item.eff_date).format('YYYY-MM-DD')}>{moment(item.eff_date).format('YYYY-MM-DD')}</div>
+                  <div title={formatMoney(item.buy_price)}>{formatMoney(item.buy_price)}</div>
+                  <div style={{flex: 2}}>
+                    <div>
+                      <span title={total_instock_amount}>{total_instock_amount}</span>
+                      <span title={formatMoney(total_instock_amount * item.buy_price)}>{formatMoney(total_instock_amount * item.buy_price)}</span>
+                    </div>
+                  </div>
+                  <div style={{flex: 2}}>
+                    <div>
+                      <span title={total_outstock_amount}>{total_outstock_amount}</span>
+                      <span title={formatMoney(total_outstock_amount * item.buy_price)}>{formatMoney(total_outstock_amount * item.buy_price)}</span>
+                    </div>
+                  </div>
+                  <div style={{flex: 2}}>
+                    <div>
+                      <span title={stock_amount}>{stock_amount}</span>
+                      <span title={formatMoney(stock_amount * item.buy_price)}>{formatMoney(stock_amount * item.buy_price)}</span>
+                    </div>
+                  </div>
                 </li>
               )
             })}
           </ul>
         </div>
         <style jsx='true'>{`
-          .feeScheduleBox ul li div {
+          .feeScheduleBox{
+            width: 1366px;
+          }
+          .feeScheduleBox ul li:first-child>div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+          }
+          .feeScheduleBox ul li>div {
             flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            // display: flex;
+            // flex-direction: column;
+          }
+          .feeScheduleBox ul li>div>div{
+            display: flex;
+            border-top: 1px dashed #d8d8d8;
+            width: 100%;
+          }
+          .feeScheduleBox ul li>div>div > span{
+            flex:1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          .feeScheduleBox ul li>div>div > span:last-child{
+            border-left: 1px dashed #d8d8d8;
           }
           .leftTille {
             padding-top: 70px;
@@ -261,9 +223,9 @@ class MaterialinvoicingScreen extends Component {
           }
         `}</style>
         <PageCard
-          offset={finances_page.offset}
-          limit={finances_page.limit}
-          total={finances_page.total}
+          offset={pageInfo.offset}
+          limit={pageInfo.limit}
+          total={pageInfo.total}
           onItemClick={({ offset, limit }) => {
             this.queryContentData({ offset, limit })
           }}
@@ -300,15 +262,57 @@ class MaterialinvoicingScreen extends Component {
                 })
               }}
             />
-            <button style={{ marginLeft: '100px' }} onClick={() => this.queryContentData({})}>
+            <div className={'select_div'}>
+              <Select
+                height={32}
+                placeholder={'供应商'}
+                onInputChange={keyword => { this.querySupplierList(keyword) }}
+                options={this.getSupplierOptions()}
+                onChange={e => {
+                  this.setState({supplier_name: e.value})
+                }}
+              />
+            </div>
+            <input
+              placeholder={'耗材名称/条形码'}
+              type={'text'}
+              onChange={e => {
+                this.setState({material_name: e.target.value})
+              }}
+            />
+            <input
+              placeholder={'入库批号'}
+              type={'text'}
+              onChange={e => {
+                this.setState({serial: e.target.value})
+              }}
+            />
+            <button style={{ marginLeft: '10px' }} onClick={() => this.queryContentData({})}>
               查询
             </button>
+          </div>
+          <div className={'boxRight'}>
             <button style={{ marginLeft: '20px' }} onClick={() => {}}>
               导出
             </button>
           </div>
         </div>
         {this.showContent()}
+        <style jsx>{`
+          .filterBox{
+            width: 1366px;
+          }
+          .boxLeft{
+            display: flex;
+            align-items: center;
+            // justify-content: center;
+          }
+          .boxLeft>div,
+          .boxLeft>input{
+            margin: 0 0 0 10px !important;
+            width: 130px;
+          }
+        `}</style>
       </div>
     )
   }
@@ -316,12 +320,17 @@ class MaterialinvoicingScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    finances: state.finances.data,
-    finances_page: state.finances.page_info
+    invoice_data: state.invoicingStatistics.miv_data,
+    pageInfo: state.invoicingStatistics.miv_page_info,
+    clinic_id: state.user.data.clinic_id,
+    supplier_data: state.drugStocks.supplier_data
   }
 }
 
 export default connect(
   mapStateToProps,
-  { queryFinanceListAnalysis }
+  {
+    MaterialInvoicingStatistics,
+    querySupplierList
+  }
 )(MaterialinvoicingScreen)
