@@ -356,6 +356,15 @@ import {
   MaterialStockInventoryList,
   MaterialInventoryCheck
 } from './material_inventory'
+import {
+  invoicingStatistics,
+  DrugInstockStatistics,
+  DrugOutstockStatistics,
+  DrugInvoicingStatistics,
+  MaterialInstockStatistics,
+  MaterialOutstockStatistics,
+  MaterialInvoicingStatistics
+} from './invoicingStatistics'
 
 const persistConfig = {
   key: 'root',
@@ -363,6 +372,7 @@ const persistConfig = {
 }
 
 const appReducer = persistCombineReducers(persistConfig, {
+  invoicingStatistics,
   materialInventorys,
   drugInventorys,
   medReports,
@@ -809,5 +819,11 @@ export {
   MaterialInventoryRecordDetail,
   MaterialStockInventoryList,
   MaterialInventoryCheck,
-  DepartmentStatistics
+  DepartmentStatistics,
+  DrugInstockStatistics,
+  DrugOutstockStatistics,
+  DrugInvoicingStatistics,
+  MaterialInstockStatistics,
+  MaterialOutstockStatistics,
+  MaterialInvoicingStatistics
 }

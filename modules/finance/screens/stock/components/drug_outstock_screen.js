@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import { queryFinanceListAnalysis } from '../../../../../ducks'
-import { PageCard } from '../../../../../components'
+import {
+  DrugOutstockStatistics,
+  querySupplierList,
+  queryOutstockWayList,
+  queryDoctorList
+} from '../../../../../ducks'
+import { PageCard, Select } from '../../../../../components'
 import { formatMoney } from '../../../../../utils'
-import ReactEcharts from 'echarts-for-react'
+// import ReactEcharts from 'echarts-for-react'
 
 // 其他收费
 class DrugoutstockScreen extends Component {
@@ -16,7 +21,13 @@ class DrugoutstockScreen extends Component {
         .format('YYYY-MM-DD'),
       end_date: moment()
         .add(1, 'd')
-        .format('YYYY-MM-DD')
+        .format('YYYY-MM-DD'),
+      outstock_way_name: '',
+      supplier_name: '',
+      drug_type: '',
+      drug_name: '',
+      personnel_name: '',
+      serial: ''
     }
   }
 
@@ -24,209 +35,214 @@ class DrugoutstockScreen extends Component {
     this.queryContentData({})
   }
 
-  getOption() {
-    const { finances_page } = this.props
-
-    let data = [
-      {
-        name: '中药费',
-        value: formatMoney(finances_page.traditional_medical_fee),
-        itemStyle: {
-          color: '#5bc0de'
-        }
-      },
-      {
-        name: '西/成药费',
-        value: formatMoney(finances_page.western_medicine_fee),
-        itemStyle: {
-          color: '#d9534f'
-        }
-      },
-      {
-        name: '检查费',
-        value: formatMoney(finances_page.examination_fee),
-        itemStyle: {
-          color: '#428bca'
-        }
-      },
-      {
-        name: '检验费',
-        value: formatMoney(finances_page.labortory_fee),
-        itemStyle: {
-          color: '#f0ad4e'
-        }
-      },
-      {
-        name: '治疗费',
-        value: formatMoney(finances_page.treatment_fee),
-        itemStyle: {
-          color: '#54af9b'
-        }
-      },
-      {
-        name: '诊疗费',
-        value: formatMoney(finances_page.diagnosis_treatment_fee),
-        itemStyle: {
-          color: '#54b2a6'
-        }
-      },
-      {
-        name: '材料费',
-        value: formatMoney(finances_page.material_fee),
-        itemStyle: {
-          color: '#a28eda'
-        }
-      },
-      {
-        name: '药品零售',
-        value: formatMoney(finances_page.retail_fee),
-        itemStyle: {
-          color: '#749f83'
-        }
-      },
-      {
-        name: '其他费用',
-        value: formatMoney(finances_page.other_fee),
-        itemStyle: {
-          color: '#5ab472'
-        }
-      }
+  queryContentData({ offset = 0, limit = 10 }) {
+    const { DrugOutstockStatistics, clinic_id } = this.props
+    const {
+      start_date,
+      end_date,
+      outstock_way_name,
+      supplier_name,
+      drug_type,
+      drug_name,
+      serial,
+      personnel_name
+    } = this.state
+    let reqData = {
+      start_date,
+      end_date,
+      clinic_id,
+      offset,
+      limit
+    }
+    if (outstock_way_name !== '') {
+      reqData.outstock_way_name = outstock_way_name
+    }
+    if (supplier_name !== '') {
+      reqData.supplier_name = supplier_name
+    }
+    if (drug_type !== '') {
+      reqData.drug_type = drug_type
+    }
+    if (drug_name !== '') {
+      reqData.drug_name = drug_name
+    }
+    if (serial !== '') {
+      reqData.serial = serial
+    }
+    if (personnel_name !== '') {
+      reqData.personnel_name = personnel_name
+    }
+    DrugOutstockStatistics(reqData)
+  }
+  // 获取出库方式筛选
+  getInstockWayNameOptions() {
+    const { outstock_way, queryOutstockWayList } = this.props
+    // console.log('outstock_way====', outstock_way)
+    let array = []
+    array.push({value: '', label: '全部'})
+    for (let key in outstock_way) {
+      let {name} = outstock_way[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 1) {
+      queryOutstockWayList({keyword: ''})
+    }
+    return array
+  }
+  // 获取出库方式数据
+  queryOutstockWayList(keyword) {
+    const {queryOutstockWayList} = this.props
+    if (keyword) {
+      queryOutstockWayList({keyword})
+    }
+  }
+  // 获取供应商筛选
+  getSupplierOptions() {
+    const { supplier_data, querySupplierList } = this.props
+    // console.log('supplier_data====', supplier_data)
+    let array = []
+    array.push({value: '', label: '全部'})
+    for (let key in supplier_data) {
+      let {name} = supplier_data[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 1) {
+      querySupplierList({keyword: ''})
+    }
+    return array
+  }
+  // 获取供应商数据
+  querySupplierList(keyword) {
+    const {querySupplierList} = this.props
+    if (keyword) {
+      querySupplierList({keyword})
+    }
+  }
+  getDrugTypeOptions() {
+    let array = [
+      {value: '', label: '全部'},
+      {value: 0, label: '西/成药'},
+      {value: 1, label: '中药'}
     ]
-    return {
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
-      },
-
-      series: [
-        {
-          name: '金额占比',
-          type: 'pie',
-          data: data.sort(function(a, b) {
-            return a.value - b.value
-          })
-        }
-      ]
+    return array
+  }
+  // 获取领用人员筛选
+  getOperNameOptions() {
+    const { doctors, queryDoctorList, clinic_id } = this.props
+    // console.log('supplier_data====', supplier_data)
+    let array = []
+    array.push({value: '', label: '全部'})
+    for (let key in doctors) {
+      let {name} = doctors[key]
+      // if (type !== 0) continue
+      array.push({
+        value: name,
+        label: name
+      })
+    }
+    if (array.length === 1) {
+      queryDoctorList({keyword: '', clinic_id}, true)
+    }
+    return array
+  }
+  // 获取供应商数据
+  queryDoctorList(keyword) {
+    const {queryDoctorList, clinic_id} = this.props
+    if (keyword) {
+      queryDoctorList({keyword, clinic_id}, true)
     }
   }
 
-  queryContentData({ offset = 0, limit = 10 }) {
-    const { queryFinanceListAnalysis } = this.props
-    const { start_date, end_date } = this.state
-    queryFinanceListAnalysis({ start_date, end_date, offset, limit })
-  }
-
   showContent() {
-    const { finances, finances_page } = this.props
+    const { invoice_data, pageInfo } = this.props
+    console.log('invoice_data====', invoice_data)
     return (
       <div>
-        <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
-          <div className={'leftTille'}>
-            <ul>
-              <li>
-                <label>中药费</label>
-                <i style={{ background: '#5bc0de' }} />
-              </li>
-              <li>
-                <label>西/成药费</label>
-                <i style={{ background: '#d9534f' }} />
-              </li>
-              <li>
-                <label>检查费</label>
-                <i style={{ background: '#428bca' }} />
-              </li>
-              <li>
-                <label>检验费</label>
-                <i style={{ background: '#f0ad4e' }} />
-              </li>
-              <li>
-                <label>治疗费</label>
-                <i style={{ background: '#54af9b' }} />
-              </li>
-              <li>
-                <label>诊疗费</label>
-                <i style={{ background: '#54b2a6' }} />
-              </li>
-              <li>
-                <label>材料费</label>
-                <i style={{ background: '#a28eda' }} />
-              </li>
-              <li>
-                <label>药品零售</label>
-                <i style={{ background: '#749f83' }} />
-              </li>
-              <li>
-                <label>其他费用</label>
-                <i style={{ background: '#5ab472' }} />
-              </li>
-            </ul>
-          </div>
-          <ReactEcharts option={this.getOption()} style={{ height: '400px', width: '100%' }} />
-        </div>
-        <div
-          style={{
-            float: 'left',
-            display: 'flex',
-            width: '1200px',
-            justifyContent: 'center',
-            marginBottom: '15px'
-          }}
-        >
-          <h3> {moment(this.state.start_date).format('YYYY年MM月DD日') + `至` + moment(this.state.end_date).format('YYYY年MM月DD日') + '业务类型'}</h3>
-        </div>
         <div className={'feeScheduleBox'}>
           <ul>
             <li>
-              <div>交易日期</div>
-              <div>费用合计</div>
-              <div>中药费</div>
-              <div>西/成药费</div>
-              <div>检查费</div>
-              <div>检验费</div>
-              <div>治疗费</div>
-              <div>诊疗费</div>
-              <div>材料费</div>
-              <div>药品零售</div>
-              <div>其他费用</div>
+              <div>出库日期</div>
+              <div>出库单号</div>
+              <div>出库方式</div>
+              <div>供应商</div>
+              <div>出库人员</div>
+              <div>领用人员</div>
+              <div>性别</div>
+              <div>药品编码</div>
+              <div>药品名称</div>
+              <div>规格</div>
+              <div>生产厂商</div>
+              <div>出库数量</div>
+              <div>单位</div>
+              <div>零售价</div>
+              <div>成本价</div>
+              <div>成本合计</div>
+              <div>批号</div>
+              <div>有效日期</div>
             </li>
             <li style={{ background: 'rgba(247,247,247,1)' }}>
-              <div>总计</div>
-              <div>
-                {formatMoney(finances_page.total_money)}
-                {}
-              </div>
-              <div>{formatMoney(finances_page.traditional_medical_fee)}</div>
-              <div>{formatMoney(finances_page.western_medicine_fee)}</div>
-              <div>{formatMoney(finances_page.examination_fee)}</div>
-              <div>{formatMoney(finances_page.labortory_fee)}</div>
-              <div>{formatMoney(finances_page.treatment_fee)}</div>
-              <div>{formatMoney(finances_page.diagnosis_treatment_fee)}</div>
-              <div>{formatMoney(finances_page.material_fee)}</div>
-              <div>{formatMoney(finances_page.retail_fee)}</div>
-              <div>{formatMoney(finances_page.other_fee)}</div>
+              <div>合计</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{pageInfo.total_outstock_amount}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
+              <div>{formatMoney(pageInfo.total_buy_price)}</div>
+              <div>{'--'}</div>
+              <div>{'--'}</div>
             </li>
-            {finances.map((item, iKey) => {
+            {invoice_data.map((item, iKey) => {
               return (
                 <li key={iKey}>
-                  <div>{moment(item.created_time).format('YYYY-MM-DD')}</div>
-                  <div>{formatMoney(item.total_money)}</div>
-                  <div>{formatMoney(item.traditional_medical_fee)}</div>
-                  <div>{formatMoney(item.western_medicine_fee)}</div>
-                  <div>{formatMoney(item.examination_fee)}</div>
-                  <div>{formatMoney(item.labortory_fee)}</div>
-                  <div>{formatMoney(item.treatment_fee)}</div>
-                  <div>{formatMoney(item.diagnosis_treatment_fee)}</div>
-                  <div>{formatMoney(item.material_fee)}</div>
-                  <div>{formatMoney(item.retail_fee)}</div>
-                  <div>{formatMoney(item.other_fee)}</div>
+                  <div>{moment(item.outstock_date).format('YYYY-MM-DD')}</div>
+                  <div title={item.order_number}>{item.order_number}</div>
+                  <div title={item.outstock_way_name}>{item.outstock_way_name}</div>
+                  <div title={item.supplier_name}>{item.supplier_name}</div>
+                  <div title={item.outstock_operation_name}>{item.outstock_operation_name}</div>
+                  <div title={item.personnel_name}>{item.personnel_name}</div>
+                  <div title={item.sex === 0 ? '女' : item.sex === 1 ? '男' : ''}>{item.sex === 0 ? '女' : item.sex === 1 ? '男' : ''}</div>
+                  <div title={item.barcode}>{item.barcode}</div>
+                  <div title={item.drug_name}>{item.drug_name}</div>
+                  <div title={item.specification}>{item.specification}</div>
+                  <div title={item.manu_factory_name}>{item.manu_factory_name}</div>
+                  <div title={item.outstock_amount}>{item.outstock_amount}</div>
+                  <div title={item.packing_unit_name}>{item.packing_unit_name}</div>
+                  <div title={formatMoney(item.ret_price)}>{formatMoney(item.ret_price)}</div>
+                  <div title={formatMoney(item.buy_price)}>{formatMoney(item.buy_price)}</div>
+                  <div title={formatMoney(item.buy_price * item.outstock_amount)}>{formatMoney(item.buy_price * item.outstock_amount)}</div>
+                  <div title={item.serial}>{item.serial}</div>
+                  <div title={moment(item.eff_date).format('YYYY-MM-DD')}>{moment(item.eff_date).format('YYYY-MM-DD')}</div>
                 </li>
               )
             })}
           </ul>
         </div>
         <style jsx='true'>{`
+          .feeScheduleBox{
+            width: 1366px;
+          }
           .feeScheduleBox ul li div {
             flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
           .leftTille {
             padding-top: 70px;
@@ -250,9 +266,9 @@ class DrugoutstockScreen extends Component {
           }
         `}</style>
         <PageCard
-          offset={finances_page.offset}
-          limit={finances_page.limit}
-          total={finances_page.total}
+          offset={pageInfo.offset}
+          limit={pageInfo.limit}
+          total={pageInfo.total}
           onItemClick={({ offset, limit }) => {
             this.queryContentData({ offset, limit })
           }}
@@ -260,7 +276,6 @@ class DrugoutstockScreen extends Component {
       </div>
     )
   }
-
   render() {
     return (
       <div>
@@ -290,15 +305,89 @@ class DrugoutstockScreen extends Component {
                 })
               }}
             />
-            <button style={{ marginLeft: '100px' }} onClick={() => this.queryContentData({})}>
+            <div className={'select_div'}>
+              <Select
+                height={32}
+                placeholder={'出库类型'}
+                onInputChange={keyword => { this.queryOutstockWayList(keyword) }}
+                options={this.getInstockWayNameOptions()}
+                onChange={e => {
+                  this.setState({outstock_way_name: e.value})
+                }}
+              />
+            </div>
+            <div className={'select_div'}>
+              <Select
+                height={32}
+                placeholder={'供应商'}
+                onInputChange={keyword => { this.querySupplierList(keyword) }}
+                options={this.getSupplierOptions()}
+                onChange={e => {
+                  this.setState({supplier_name: e.value})
+                }}
+              />
+            </div>
+            <div className={'select_div'}>
+              <Select
+                height={32}
+                placeholder={'药品类型'}
+                options={this.getDrugTypeOptions()}
+                onChange={e => {
+                  this.setState({drug_type: e.value})
+                }}
+              />
+            </div>
+            <div className={'select_div'}>
+              <Select
+                height={32}
+                placeholder={'领用人员'}
+                onInputChange={keyword => { this.queryDoctorList(keyword) }}
+                options={this.getOperNameOptions()}
+                onChange={e => {
+                  this.setState({personnel_name: e.value})
+                }}
+              />
+            </div>
+            <input
+              placeholder={'药品名称/条形码'}
+              type={'text'}
+              onChange={e => {
+                this.setState({drug_name: e.target.value})
+              }}
+            />
+            <input
+              placeholder={'批号'}
+              type={'text'}
+              onChange={e => {
+                this.setState({serial: e.target.value})
+              }}
+            />
+            <button style={{ marginLeft: '10px' }} onClick={() => this.queryContentData({})}>
               查询
             </button>
+          </div>
+          <div className={'boxRight'}>
             <button style={{ marginLeft: '20px' }} onClick={() => {}}>
               导出
             </button>
           </div>
         </div>
         {this.showContent()}
+        <style jsx>{`
+          .filterBox{
+            width: 1366px;
+          }
+          .boxLeft{
+            display: flex;
+            align-items: center;
+            // justify-content: center;
+          }
+          .boxLeft>div,
+          .boxLeft>input{
+            margin: 0 0 0 10px !important;
+            width: 130px;
+          }
+        `}</style>
       </div>
     )
   }
@@ -306,12 +395,21 @@ class DrugoutstockScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    finances: state.finances.data,
-    finances_page: state.finances.page_info
+    invoice_data: state.invoicingStatistics.dos_data,
+    pageInfo: state.invoicingStatistics.dos_page_info,
+    clinic_id: state.user.data.clinic_id,
+    outstock_way: state.drugOutStocks.outstock_way,
+    supplier_data: state.drugStocks.supplier_data,
+    doctors: state.doctors.data
   }
 }
 
 export default connect(
   mapStateToProps,
-  { queryFinanceListAnalysis }
+  {
+    DrugOutstockStatistics,
+    querySupplierList,
+    queryOutstockWayList,
+    queryDoctorList
+  }
 )(DrugoutstockScreen)

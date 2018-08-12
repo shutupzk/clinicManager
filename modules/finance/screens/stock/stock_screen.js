@@ -23,8 +23,8 @@ class FinanceStockScreen extends Component {
   showDataList() {
     let { pageType } = this.state
     let map = {
-      1: <DrugoutstockScreen />,
-      2: <DruginstockScreen />,
+      1: <DruginstockScreen />,
+      2: <DrugoutstockScreen />,
       3: <DruginvoicingScreen />,
       4: <MaterialinstockScreen />,
       5: <MaterialoutstockScreen />,
