@@ -313,7 +313,7 @@ class InventoryScreen extends Component {
     return (
       <div className={'filterBox'}>
         <div className={'boxLeft'}>
-          <span>药房管理-盘点</span>
+          <span>耗材管理-盘点</span>
         </div>
         <div className='back2List' onClick={() => this.setState({showType: 1})}>
           {'<返回'}
