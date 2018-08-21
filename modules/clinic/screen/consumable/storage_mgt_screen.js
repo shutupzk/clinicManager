@@ -332,7 +332,7 @@ class StorageMgtScreen extends Component {
     return (
       <div className={'filterBox'}>
         <div className={'boxLeft'}>
-          <span>药房管理-入库</span>
+          <span>耗材管理-入库</span>
         </div>
         <div className='back2List' onClick={() => this.setState({showType: 1})}>
           {'<返回'}

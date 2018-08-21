@@ -119,9 +119,9 @@ class AccountAddScreen extends Component {
               <div className={'verifyCode'}>
                 <input
                   type='text'
-                  value={accountInfo.password}
+                  // value={accountInfo.password}
                   onChange={e => {
-                    accountInfo.password = e.target.value
+                    accountInfo.verifyCode = e.target.value
                     this.setState({ accountInfo })
                   }}
                 />

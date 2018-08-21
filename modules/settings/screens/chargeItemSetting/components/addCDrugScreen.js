@@ -183,7 +183,7 @@ class AddCDrugScreen extends Component {
     const {showWay} = this.props
     return (
       <div className={'contentCenter'}>
-        {this.renderSearchBlank()}
+        {/* {this.renderSearchBlank()} */}
         {this.renderBaseInfoBlank()}
         {this.renderFeeInfoBlank()}
         {this.renderUsageInfoBlank()}
