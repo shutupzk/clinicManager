@@ -184,9 +184,7 @@ class RetailScreen extends Component {
 
   ClinicDrugList(keyword) {
     const { ClinicDrugListWithStock, clinic_id } = this.props
-    if (keyword) {
-      ClinicDrugListWithStock({ clinic_id, keyword })
-    }
+    ClinicDrugListWithStock({ clinic_id, keyword })
   }
 
   getDrugOptions() {
@@ -261,6 +259,7 @@ class RetailScreen extends Component {
                           onChange={item => {
                             this.setItemValues(item, index)
                           }}
+                          focusSearch
                           onInputChange={keyword => this.ClinicDrugList(keyword)}
                           options={this.getDrugOptions()}
                           renderTitle={(item, index) => {

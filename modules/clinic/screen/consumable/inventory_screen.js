@@ -9,7 +9,6 @@ import {
 import AddMaterialInventoryScreen from './components/addMaterialInventoryScreen'
 import moment from 'moment'
 
-// 病历
 class InventoryScreen extends Component {
   constructor(props) {
     super(props)
@@ -63,7 +62,7 @@ class InventoryScreen extends Component {
             <table>
               <thead>
                 <tr>
-                  <td style={{flex: 2}}>出库单号</td>
+                  <td style={{flex: 2}}>盘点单号</td>
                   <td style={{flex: 2}}>盘点日期</td>
                   <td>操作员</td>
                   <td>状态</td>

@@ -132,14 +132,15 @@ class TotalAmountScreen extends Component {
   showDataList() {
     const { clinic, total } = this.props
     const array = this.getDataArray()
+    // console.log('array-======', array)
     return (
-      <div>
+      <div className={'boxContent'}>
         <div className={'filterBox'}>
           <div className={'boxLeft'}>
             <div className={'dateDiv'}>
               <DatePicker
                 placeholder={'开始日期'}
-                value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                // value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 onChange={(date, str) => {
                   if (date) {
                     this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
@@ -150,7 +151,7 @@ class TotalAmountScreen extends Component {
             <div className={'dateDiv'}>
               <DatePicker
                 placeholder={'结束日期'}
-                value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
+                // value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 onChange={(date, str) => {
                   if (date) {
                     this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
@@ -174,10 +175,10 @@ class TotalAmountScreen extends Component {
             <button style={{ marginLeft: '20px' }}>导出</button>
           </div>
         </div>
-        <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
+        {array.length > 0 ? <div id='chart' style={{ width: 1098, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
           <ReactEcharts option={this.getOption()} style={{ height: '400px', width: '100%' }} />
-        </div>
-        <div className={'contentDIV'}>
+        </div> : <div className={'noData'}><h1>暂无数据，请通过筛选条件搜索</h1></div>}
+        {array.length > 0 ? <div className={'contentDIV'}>
           <ul>
             <li>
               <div>日期</div>
@@ -206,8 +207,18 @@ class TotalAmountScreen extends Component {
               )
             })}
           </ul>
-        </div>
+        </div> : ''}
         <style jsx='true'>{`
+          .boxContent{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+          }
+          .noData {
+            float: left;
+            text-align: center;
+            line-height: 100px;
+          }
           .contentDIV {
             float: left;
             background: rgba(255, 255, 255, 1);

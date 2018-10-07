@@ -5,7 +5,6 @@ import { RegisterStatistics } from '../../../../../ducks'
 // import { formatMoney } from '../../../../../utils'
 import ReactEcharts from 'echarts-for-react'
 
-// 其他收费
 class Registrationscreen extends Component {
   constructor(props) {
     super(props)
@@ -120,7 +119,7 @@ class Registrationscreen extends Component {
   }
 
   showContent() {
-    const { data } = this.props
+    let data = [...this.props.data]
     let total_count = 0
     let appointment_count = 0
     let register_count = 0
@@ -129,6 +128,9 @@ class Registrationscreen extends Component {
       appointment_count += item.appointment_count
       register_count += item.register_count
     }
+    let array = data.sort((a, b) => {
+      return a.visit_date > b.visit_date ? -1 : 1
+    })
     return (
       <div>
         <div id='chart' style={{ width: 500, display: 'flex', justifyContent: 'center', float: 'left', marginLeft: '66px' }}>
@@ -174,7 +176,7 @@ class Registrationscreen extends Component {
               <div>{appointment_count}</div>
               <div>{register_count}</div>
             </li>
-            {data.map((item, iKey) => {
+            {array.map((item, iKey) => {
               return (
                 <li key={iKey}>
                   <div>{item.visit_date}</div>

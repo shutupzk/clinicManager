@@ -130,7 +130,6 @@ class DruginstockScreen extends Component {
   }
   showContent() {
     const { invoice_data, pageInfo } = this.props
-    console.log('invoice_data====', invoice_data)
     return (
       <div>
         <div className={'feeScheduleBox'}>
@@ -197,7 +196,7 @@ class DruginstockScreen extends Component {
         </div>
         <style jsx='true'>{`
           .feeScheduleBox{
-            width: 1366px;
+            width: 2566px;
           }
           .feeScheduleBox ul li div {
             flex: 1;
@@ -249,7 +248,7 @@ class DruginstockScreen extends Component {
               onChange={e => {
                 this.setState({
                   start_date: moment(e.target.value)
-                    .startOf('M')
+                    // .startOf('M')
                     .format('YYYY-MM-DD')
                 })
               }}
@@ -261,7 +260,7 @@ class DruginstockScreen extends Component {
               onChange={e => {
                 this.setState({
                   end_date: moment(e.target.value)
-                    .startOf('M')
+                    // .startOf('M')
                     .format('YYYY-MM-DD')
                 })
               }}

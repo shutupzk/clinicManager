@@ -150,7 +150,7 @@ export default class CustomSelect extends Component {
   }
 
   render() {
-    const { onInputChange, controlStyle, placeholder, mustOptionValue } = this.props
+    const { onInputChange, controlStyle, placeholder, mustOptionValue, focusSearch } = this.props
     const { onMouseOver, showOptions, label } = this.state
     let marginTop = controlStyle.marginTop || '0px'
     return (
@@ -191,6 +191,10 @@ export default class CustomSelect extends Component {
               isTop = false
             }
             this.setState({ showOptions: true, onMouseOver: false, isTop })
+            let value = e.target.value
+            if (onInputChange && focusSearch) {
+              onInputChange(value)
+            }
           }}
           onBlur={e => {
             const { value, label } = this.props

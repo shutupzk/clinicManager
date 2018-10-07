@@ -288,7 +288,7 @@ class DrugoutstockScreen extends Component {
               onChange={e => {
                 this.setState({
                   start_date: moment(e.target.value)
-                    .startOf('M')
+                    // .startOf('M')
                     .format('YYYY-MM-DD')
                 })
               }}
@@ -300,7 +300,7 @@ class DrugoutstockScreen extends Component {
               onChange={e => {
                 this.setState({
                   end_date: moment(e.target.value)
-                    .startOf('M')
+                    // .startOf('M')
                     .format('YYYY-MM-DD')
                 })
               }}
