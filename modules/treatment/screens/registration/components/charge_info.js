@@ -216,7 +216,7 @@ class ChargeInfoScreen extends Component {
                 <li>缴费时间：{moment(paid_orders_page.updated_time).format('YYYY-MM-DD HH:mm:ss')}</li>
                 <li>订单号：{paid_orders_page.out_trade_no}</li>
                 <li>支付方式：{payMethodMap[paid_orders_page.pay_method_code]}</li>
-                <li>第三方订单号：{paid_orders_page.trade_no}</li>
+                <li>第三方订单号：{paid_orders_page.pay_method_code == 4 ? '' : paid_orders_page.trade_no}</li>
               </ul>
             </div>
             <div className={'toatalFeeBox'}>
