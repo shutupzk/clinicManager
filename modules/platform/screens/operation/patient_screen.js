@@ -395,7 +395,8 @@ class PatientScreen extends Component {
       '#428bca',
       '#749f83',
       '#797b7f',
-      '#324b5c'
+      '#324b5c',
+      '#9f876d'
     ]
     return style
   }

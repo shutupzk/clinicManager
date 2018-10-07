@@ -21,7 +21,7 @@ class ChargedDetailScreen extends Component {
   async componentDidMount() {
     const { charge_paid_triage_selectId, queryPaidOrders } = this.props
     const data = await queryPaidOrders({ mz_paid_record_id: charge_paid_triage_selectId })
-    const orders_ids = data.page_info.orders_ids.split(',')
+    const orders_ids = (data.page_info.orders_ids && data.page_info.orders_ids.split(',')) || []
     this.setState({ refundIds: [...orders_ids] })
   }
 
@@ -213,10 +213,22 @@ class ChargedDetailScreen extends Component {
         </div>
         <div style={{ ...borderBottomDiv, borderBottom: '0px', marginBottom: '20px' }}>
           <div style={{ ...patientInfoRow }}>
-            <div style={patientInforRowItem}>实收金额：{formatMoney(paid_orders_page.charge_total_fee)} 元</div>
-            <div style={patientInforRowItem}>收费方式：{payMethodMap[paid_orders_page.pay_method_code]}</div>
-            <div style={patientInforRowItem}>开单医师：{triagePatient.doctor_name}</div>
-            <div style={patientInforRowItem}>收款人：{triagePatient.register_personnel_name}</div>
+            <div style={patientInforRowItem}>
+              实收金额：
+              {formatMoney(paid_orders_page.charge_total_fee)} 元
+            </div>
+            <div style={patientInforRowItem}>
+              收费方式：
+              {payMethodMap[paid_orders_page.pay_method_code]}
+            </div>
+            <div style={patientInforRowItem}>
+              开单医师：
+              {triagePatient.doctor_name}
+            </div>
+            <div style={patientInforRowItem}>
+              收款人：
+              {triagePatient.register_personnel_name}
+            </div>
           </div>
         </div>
       </div>
@@ -244,47 +256,131 @@ class ChargedDetailScreen extends Component {
     return (
       <div className={'detailBox'}>
         <div className={'filterBox'}>
-          <div style={{ flex: 2 }}>就诊人姓名：{patient_name}</div>
-          <div style={{ flex: 1 }}>性别：{sex === 1 ? '男' : '女'}</div>
-          <div style={{ flex: 1 }}>年龄：{getAgeByBirthday(birthday)}</div>
-          <div style={{ flex: 2 }}>病人ID：{triagePatient.cert_no}</div>
-          <div style={{ flex: 2 }}>手机号码：{phone}</div>
-          <div style={{ flex: 3 }}>就诊日期：{moment(visit_date).format('YYYY年MM月DD日')}</div>
+          <div style={{ flex: 2 }}>
+            就诊人姓名：
+            {patient_name}
+          </div>
+          <div style={{ flex: 1 }}>
+            性别：
+            {sex === 1 ? '男' : '女'}
+          </div>
+          <div style={{ flex: 1 }}>
+            年龄：
+            {getAgeByBirthday(birthday)}
+          </div>
+          <div style={{ flex: 2 }}>
+            病人ID：
+            {triagePatient.cert_no}
+          </div>
+          <div style={{ flex: 2 }}>
+            手机号码：
+            {phone}
+          </div>
+          <div style={{ flex: 3 }}>
+            就诊日期：
+            {moment(visit_date).format('YYYY年MM月DD日')}
+          </div>
         </div>
         <div className={'filterBox'}>
-          <div>费用合计：{formatMoney(charge_total)}元</div>
-          <div>折扣金额：{formatMoney(discount_total)}元</div>
-          <div>应收费用：{formatMoney(charge_total_fee)}元</div>
-          <div>实收费用：{formatMoney(paid_orders_page.balance_money)}元</div>
+          <div>
+            费用合计：
+            {formatMoney(charge_total)}元
+          </div>
+          <div>
+            折扣金额：
+            {formatMoney(discount_total)}元
+          </div>
+          <div>
+            应收费用：
+            {formatMoney(charge_total_fee)}元
+          </div>
+          <div>
+            实收费用：
+            {formatMoney(paid_orders_page.balance_money)}元
+          </div>
         </div>
         <div className={'toatalFeeBox'}>
           <h4>优惠费用汇总</h4>
           <ul>
-            <li>折扣金额：{formatMoney(paid_orders_page.discount_money)}元</li>
-            <li>减免金额：{formatMoney(paid_orders_page.derate_money)}元</li>
-            <li>医保金额：{formatMoney(paid_orders_page.medical_money)}元</li>
-            <li>挂账金额：{formatMoney(paid_orders_page.on_credit_money)}元</li>
-            <li>积分抵扣：{formatMoney(paid_orders_page.bonus_points_money)}元</li>
-            <li>代金券：{formatMoney(paid_orders_page.voucher_money)}元</li>
+            <li>
+              折扣金额：
+              {formatMoney(paid_orders_page.discount_money)}元
+            </li>
+            <li>
+              减免金额：
+              {formatMoney(paid_orders_page.derate_money)}元
+            </li>
+            <li>
+              医保金额：
+              {formatMoney(paid_orders_page.medical_money)}元
+            </li>
+            <li>
+              挂账金额：
+              {formatMoney(paid_orders_page.on_credit_money)}元
+            </li>
+            <li>
+              积分抵扣：
+              {formatMoney(paid_orders_page.bonus_points_money)}元
+            </li>
+            <li>
+              代金券：
+              {formatMoney(paid_orders_page.voucher_money)}元
+            </li>
             <li />
             <li />
-            <li style={{ width: '25%' }}>缴费时间：{moment(paid_orders_page.updated_time).format('YYYY-MM-DD HH:mm:ss')}</li>
-            <li style={{ width: '25%' }}>订单号：{paid_orders_page.out_trade_no}</li>
-            <li style={{ width: '20%' }}>支付方式：{payMethodMap[paid_orders_page.pay_method_code]}</li>
-            <li style={{ width: '30%' }}>第三方订单号：{paid_orders_page.trade_no}</li>
+            <li style={{ width: '25%' }}>
+              缴费时间：
+              {moment(paid_orders_page.updated_time).format('YYYY-MM-DD HH:mm:ss')}
+            </li>
+            <li style={{ width: '25%' }}>
+              订单号：
+              {paid_orders_page.out_trade_no}
+            </li>
+            <li style={{ width: '20%' }}>
+              支付方式：
+              {payMethodMap[paid_orders_page.pay_method_code]}
+            </li>
+            <li style={{ width: '30%' }}>
+              第三方订单号：
+              {paid_orders_page.trade_no}
+            </li>
           </ul>
         </div>
         <div className={'toatalFeeBox'}>
           <h4>分类汇总明细费用</h4>
           <ul>
-            <li>西/成药费：{typeMap[1] || '0.00'}元</li>
-            <li>中药费用：{typeMap[2] || '0.00'}元</li>
-            <li>检验费用：{typeMap[3] || '0.00'}元</li>
-            <li>检查费用：{typeMap[4] || '0.00'}元</li>
-            <li>治疗费用：{typeMap[7] || '0.00'}元</li>
-            <li>材料费用：{typeMap[5] || '0.00'}元</li>
-            <li>其他费用：{typeMap[6] || '0.00'}元</li>
-            <li>诊疗费用：{typeMap[8] || '0.00'}元</li>
+            <li>
+              西/成药费：
+              {typeMap[1] || '0.00'}元
+            </li>
+            <li>
+              中药费用：
+              {typeMap[2] || '0.00'}元
+            </li>
+            <li>
+              检验费用：
+              {typeMap[3] || '0.00'}元
+            </li>
+            <li>
+              检查费用：
+              {typeMap[4] || '0.00'}元
+            </li>
+            <li>
+              治疗费用：
+              {typeMap[7] || '0.00'}元
+            </li>
+            <li>
+              材料费用：
+              {typeMap[5] || '0.00'}元
+            </li>
+            <li>
+              其他费用：
+              {typeMap[6] || '0.00'}元
+            </li>
+            <li>
+              诊疗费用：
+              {typeMap[8] || '0.00'}元
+            </li>
           </ul>
         </div>
         <div className={'feeScheduleBox'}>

@@ -212,7 +212,7 @@ class CurrentInventoryScreen extends Component {
           <div>
             <input
               type='text'
-              placeholder={`药品名称或条形码号`}
+              placeholder={`耗材名称`}
               onChange={(e) => {
                 this.setState({keyword: e.target.value})
               }}

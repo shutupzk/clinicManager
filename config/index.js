@@ -3,7 +3,7 @@ import withData from './withData'
 const TITLE = '海王星辰管家平台'
 
 // const API_SERVER = 'http://47.104.206.95:8080' //
-const API_SERVER = 'http://47.93.206.157:8080'
+const API_SERVER = 'http://47.92.128.90:8080'
 // const API_SERVER = 'http://localhost:8080' //
 const PORT = 9000 // 端口
 

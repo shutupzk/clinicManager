@@ -108,7 +108,7 @@ class Efficiencyscreen extends Component {
                   <div>{item.finish_time && moment(item.finish_time).format('YYYY-MM-DD HH:mm:ss')}</div>
                   <div>{item.finish_time && item.reception_time && moment(item.finish_time).diff(moment(item.reception_time), 'm')}</div>
                   <div>{item.pay_time && moment(item.pay_time).format('YYYY-MM-DD HH:mm:ss')}</div>
-                  <div>{item.pay_time && item.finish_time && moment(item.pay_time).diff(moment(item.finish_time), 'm')}</div>
+                  <div>{item.pay_time && item.triage_time && moment(item.pay_time).diff(moment(item.triage_time), 'm')}</div>
                 </li>
               )
             })}

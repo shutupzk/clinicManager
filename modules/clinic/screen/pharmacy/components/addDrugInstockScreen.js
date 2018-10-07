@@ -85,7 +85,7 @@ class AddDrugInstockScreen extends Component {
 
   addColumn() {
     const { items } = this.state
-    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0, eff_date: moment().format('YYYY-MM-DD')}] })
+    this.setState({ items: [...items, {buy_price: 0, instock_amount: 0}] })
   }
 
   removeColumn(index) {
@@ -393,7 +393,7 @@ class AddDrugInstockScreen extends Component {
         packing_unit_name,
         manu_factory_name,
         ret_price,
-        stock_amount,
+        // stock_amount,
         buy_price,
         specification
       } = drugs[key]
@@ -407,8 +407,8 @@ class AddDrugInstockScreen extends Component {
         specification,
         packing_unit_name,
         ret_price,
-        stock_amount,
-        instock_amount: stock_amount,
+        stock_amount: '',
+        instock_amount: '',
         buy_price: formatMoney(buy_price)
       })
     }
@@ -444,7 +444,7 @@ class AddDrugInstockScreen extends Component {
               <div>成本价</div>
               <div>成本合计</div>
               <div>批号</div>
-              <div>有效期</div>
+              <div style={{flex: 3}}>有效期</div>
               {showWay === 1 || showWay === 4 ? <div>
                 <div onClick={() => this.addColumn()} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'rgba(42,205,200,1)', cursor: 'pointer' }}>
                   新增
@@ -525,7 +525,7 @@ class AddDrugInstockScreen extends Component {
                       placeholder={'入库数量'}
                       type='number'
                       min={0}
-                      value={item.instock_amount || 0}
+                      value={item.instock_amount}
                       onChange={e => {
                         this.setItemValue(e, index, 'instock_amount')
                       }}
@@ -564,7 +564,17 @@ class AddDrugInstockScreen extends Component {
                       }}
                     />
                   </div>
-                  <div>
+                  {showWay === 1 ? <div style={{flex: 3}}>
+                    <input
+                      readOnly={readOnly}
+                      placeholder={'有效期'}
+                      type='date'
+                      // value={moment(item.eff_date).format('YYYY-MM-DD')}
+                      onChange={e => {
+                        this.setItemValue(e, index, 'eff_date')
+                      }}
+                    />
+                  </div> : showWay === 4 ? <div style={{flex: 3}}>
                     <input
                       readOnly={readOnly}
                       placeholder={'有效期'}
@@ -574,7 +584,7 @@ class AddDrugInstockScreen extends Component {
                         this.setItemValue(e, index, 'eff_date')
                       }}
                     />
-                  </div>
+                  </div> : <div style={{flex: 3}}>{moment(item.eff_date).format('YYYY-MM-DD')}</div> }
                   {showWay === 1 || showWay === 4 ? <div>
                     <div onClick={() => this.removeColumn(index)} style={{ width: '80px', height: '20px', lineHeight: '20px', border: 'none', color: 'red', cursor: 'pointer', textAlign: 'center' }}>
                       删除
