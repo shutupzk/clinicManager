@@ -283,7 +283,6 @@ class AnalyslsMethodScreen extends Component {
               onChange={e => {
                 this.setState({
                   start_date: moment(e.target.value)
-                    .startOf('M')
                     .format('YYYY-MM-DD')
                 })
               }}
@@ -295,7 +294,6 @@ class AnalyslsMethodScreen extends Component {
               onChange={e => {
                 this.setState({
                   end_date: moment(e.target.value)
-                    .startOf('M')
                     .format('YYYY-MM-DD')
                 })
               }}
