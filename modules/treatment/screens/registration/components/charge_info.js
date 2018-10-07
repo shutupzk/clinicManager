@@ -43,28 +43,28 @@ class ChargeInfoScreen extends Component {
             <table>
               <thead>
                 <tr>
-                  <td>收费时间</td>
+                  <td style={{ flex: 2 }}>收费时间</td>
                   <td>接诊诊所</td>
                   <td>收费状态</td>
-                  <td>就诊时间</td>
+                  <td style={{ flex: 2 }}>就诊时间</td>
                   <td>应收金额</td>
                   <td>实收金额</td>
                   <td>挂账</td>
-                  <td style={{ flex: 2 }}>操作</td>
+                  <td>操作</td>
                 </tr>
               </thead>
               <tbody>
                 {patient_charge_data.map((item, index) => {
                   return (
                     <tr key={index}>
-                      <td>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
+                      <td style={{ flex: 2 }}>{moment(item.created_time).format('YYYY-MM-DD HH:mm:ss')}</td>
                       <td>{item.clinic_name}</td>
                       <td>{item.in_out === 'in' ? '已收费' : '已退费'}</td>
-                      <td>{moment(item.visit_time).format('YYYY-MM-DD HH:mm:ss')}</td>
+                      <td style={{ flex: 2 }}>{moment(item.visit_time).format('YYYY-MM-DD HH:mm:ss')}</td>
                       <td>{formatMoney(item.total_money)}</td>
                       <td>{formatMoney(item.balance_money)}</td>
                       <td>{formatMoney(item.on_credit_money)}</td>
-                      <td style={{ flex: 2 }} className={'operTd'}>
+                      <td className={'operTd'}>
                         <div>
                           <div
                             onClick={() => {

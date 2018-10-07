@@ -11,7 +11,7 @@ import OtherScreen from './components/other'
 import TollScreen from './components/toll'
 import { getAgeByBirthday, formatMoney } from '../../../../utils'
 import { Confirm, Select } from '../../../../components'
-import { triageFinish, queryDiagnosisTreatmentList, DiagnosisTreatmentPatientCreate } from '../../../../ducks'
+import { triageFinish, queryDiagnosisTreatmentList, DiagnosisTreatmentPatientCreate, patientSelect } from '../../../../ducks'
 
 class RecptionScreen extends Component {
   constructor(props) {
@@ -32,27 +32,55 @@ class RecptionScreen extends Component {
     let { pageType } = this.state
     // console.log('pageType====', pageType)
     let map = {
-      1: <MedicalRecordScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />,
-      2: <PrescriptionScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />,
-      3: <TreatmentScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />,
-      4: <LaboratoryScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />,
-      5: <ExamineScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />,
-      6: <MaterialScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />,
-      7: <OtherScreen changePage={(pageType) => {
-        this.setState({pageType})
-      }} />
+      1: (
+        <MedicalRecordScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      ),
+      2: (
+        <PrescriptionScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      ),
+      3: (
+        <TreatmentScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      ),
+      4: (
+        <LaboratoryScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      ),
+      5: (
+        <ExamineScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      ),
+      6: (
+        <MaterialScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      ),
+      7: (
+        <OtherScreen
+          changePage={pageType => {
+            this.setState({ pageType })
+          }}
+        />
+      )
     }
     return map[pageType] || null
   }
@@ -115,7 +143,8 @@ class RecptionScreen extends Component {
             <div className='content'>
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '120px' }}>
                 <label>
-                  本次的诊疗费为：<b style={{ color: 'red' }}>*</b>
+                  本次的诊疗费为：
+                  <b style={{ color: 'red' }}>*</b>
                 </label>
                 <div style={{ width: '300px', marginLeft: '20px' }}>
                   <Select
@@ -258,7 +287,19 @@ class RecptionScreen extends Component {
     return (
       <div className={'contentBox'} style={{ width: pageType === 2 ? '1500px' : '1098px' }}>
         <div className='filterBox' style={{ width: pageType === 2 ? '1500px' : '1098px' }}>
-          <div>就诊人姓名：{triagePatient.patient_name}</div>
+          <div>
+            就诊人姓名：
+            <span
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                let patient_id = triagePatient.patient_id
+                this.props.patientSelect({ patient_id })
+                Router.push('/treatment/registration/list_detail')
+              }}
+            >
+              {triagePatient.patient_name}
+            </span>
+          </div>
           <div>
             <a>性别：</a>
             <a>{triagePatient.sex === 1 ? '男' : '女'}</a>
@@ -334,4 +375,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { triageFinish, queryDiagnosisTreatmentList, DiagnosisTreatmentPatientCreate })(RecptionScreen)
+export default connect(
+  mapStateToProps,
+  { triageFinish, queryDiagnosisTreatmentList, DiagnosisTreatmentPatientCreate, patientSelect }
+)(RecptionScreen)

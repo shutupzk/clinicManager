@@ -44,7 +44,7 @@ class AddUserScreen extends Component {
     let options = []
     for (let doctor of doctors) {
       const { id, name, username } = doctor
-      if (username) continue
+      if (!username) continue
       options.push({
         value: id,
         label: name,
