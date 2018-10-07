@@ -131,7 +131,6 @@ class ReportDayScreen extends Component {
   // 按收费方式
   showMethodContent() {
     const { finances, finances_page } = this.props
-    console.log('finances====', finances)
     return (
       <div>
         <div className={'feeScheduleBox'}>
