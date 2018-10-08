@@ -1462,6 +1462,7 @@ class MedicalRecordScreen extends Component {
           <div className='boxLeft'>
             <div style={{ float: 'left', margin: '-3px 0 0 15px' }}>
               <DatePicker
+                // padding={'10px 0'}
                 // defaultValue={moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 // value={morbidity_date === '' ? moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD') : moment(moment(morbidity_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
                 format={'YYYY-MM-DD'}

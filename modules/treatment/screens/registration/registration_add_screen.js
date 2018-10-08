@@ -258,6 +258,7 @@ class RegistrationAddScreen extends Component {
               <div>
                 <DatePicker
                   value={moment(patient.birthday)}
+                  padding={'10px 0'}
                   onChange={(value) => {
                     let newPatient = patient
                     console.log('date======', value, value.format('YYYY-MM-DD'))
