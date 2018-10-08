@@ -257,11 +257,12 @@ class RegistrationAddScreen extends Component {
               </label>
               <div>
                 <DatePicker
-                  value={moment(moment(patient.birthday).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
-                  onChange={(date, str) => {
+                  value={moment(patient.birthday)}
+                  onChange={(value) => {
                     let newPatient = patient
-                    if (date) {
-                      newPatient.birthday = moment(date).format('YYYY-MM-DD')
+                    console.log('date======', value, value.format('YYYY-MM-DD'))
+                    if (value) {
+                      newPatient.birthday = value.format('YYYY-MM-DD')
                       // console.log('newPatient.birthday====', newPatient.birthday)
                       newPatient.age = getAgeByBirthday(newPatient.birthday) === 'NaN岁' ? '未知' : getAgeByBirthday(newPatient.birthday)
                       this.setState({ patientInfo: newPatient })
@@ -366,7 +367,7 @@ class RegistrationAddScreen extends Component {
                     }}
                   />
                 </div>
-                <input type='text' value={patient.address || ''} defaultValue={''} onChange={e => this.setPatientInfo(e, 'address')} />
+                <input type='text' value={patient.address || ''} onChange={e => this.setPatientInfo(e, 'address')} />
               </div>
             </li>
             <li>

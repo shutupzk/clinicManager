@@ -18,9 +18,10 @@ export class MyDatePicker extends Component {
     this.state = {}
   }
   render() {
+    const { value } = this.props
     return (
       <div>
-        <DatePicker locale={locale} style={{ width: '120px', marginTop: '17px' }} {...this.props} />
+        <DatePicker locale={locale} style={{ width: '120px', marginTop: '17px' }} {...this.props} value={moment(value)} />
         <style dangerouslySetInnerHTML={{ __html: thiscss }} />
       </div>
     )
