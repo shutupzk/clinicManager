@@ -342,7 +342,7 @@ class ChargedDetailScreen extends Component {
             </li>
             <li style={{ width: '30%' }}>
               第三方订单号：
-              {paid_orders_page.trade_no}
+              {paid_orders_page.pay_method_code == 4 ? '' : paid_orders_page.trade_no}
             </li>
           </ul>
         </div>

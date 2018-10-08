@@ -19,7 +19,8 @@ const MAINFUNCTION = [
 			{ title: '医生接诊', navigateName: '/treatment/admission', icon: '/static/icons/admission.svg' },
 			{ title: '收费管理', navigateName: '/treatment/charge', icon: '/static/icons/charge.svg' },
 			{ title: '门诊发药', navigateName: '/treatment/drugdelivery', icon: '/static/icons/drugdelivery.svg' },
-			{ title: '检查', navigateName: '/treatment/exam', icon: '/static/icons/exam.svg' },
+      { title: '检查', navigateName: '/treatment/exam', icon: '/static/icons/exam.svg' },
+      
 			{ title: '检验', navigateName: '/treatment/inspect', icon: '/static/icons/inspect.svg' },
 			{ title: '治疗', navigateName: '/treatment/treat', icon: '/static/icons/treat.svg' },
 			{ title: '药品零售', navigateName: '/treatment/drugretail', icon: '/static/icons/drugretail.svg' }
