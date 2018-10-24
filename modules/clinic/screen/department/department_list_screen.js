@@ -166,7 +166,7 @@ class DepartmentListScreen extends Component {
                   <div>
                     <div>
                       <span onClick={() => {
-                        this.setState({alertType: 1, editType: 1, departInfo: depart})
+                        this.setState({alertType: 1, editType: 1, departInfo: {...depart}})
                       }}>编辑</span>
                       |
                       <span

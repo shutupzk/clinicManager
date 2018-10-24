@@ -171,7 +171,7 @@ class DoctorListScreen extends Component {
                     <div>
                       <span
                         onClick={() => {
-                          this.setState({ showAddPersonnel: true, editType: 1, doctorInfo: doctor })
+                          this.setState({ showAddPersonnel: true, editType: 1, doctorInfo: {...doctor} })
                         }}
                       >
                         编辑
