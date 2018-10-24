@@ -216,7 +216,7 @@ class ScheduleListScreen extends Component {
             <div className={'calenderFilter'}>
               <div className={'filterCnter'}>
                 <span
-                  style={{ flex: 3 }}
+                  style={{ flex: 3, color: 'rgb(42, 205, 200)' }}
                   onClick={() => {
                     this.setState({ weekNum: weekNum - 7, offset: 0, limit: 10 }, () => {
                       this.queryListData()
@@ -225,8 +225,8 @@ class ScheduleListScreen extends Component {
                 >
                   {'上一周'}
                 </span>
-                <span style={{ flex: 1 }}>{'《'}</span>
-                <span style={{ flex: 1 }}>{'<'}</span>
+                {/* <span style={{ flex: 1 }}>{'《'}</span>
+                <span style={{ flex: 1 }}>{'<'}</span> */}
                 <span
                   style={{ flex: 11 }}
                   onClick={() => {
@@ -241,10 +241,10 @@ class ScheduleListScreen extends Component {
                     .day(weekNum + 6)
                     .format('MM月DD日')}）
                 </span>
-                <span style={{ flex: 1 }}>{'>'}</span>
-                <span style={{ flex: 1 }}>{'》'}</span>
+                {/* <span style={{ flex: 1 }}>{'>'}</span>
+                <span style={{ flex: 1 }}>{'》'}</span> */}
                 <span
-                  style={{ flex: 3 }}
+                  style={{ flex: 3, color: 'rgb(42, 205, 200)' }}
                   onClick={() => {
                     this.setState({ weekNum: weekNum + 7, offset: 0, limit: 10 }, () => {
                       this.queryListData({})

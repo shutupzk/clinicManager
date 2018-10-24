@@ -140,10 +140,10 @@ class TotalAmountScreen extends Component {
             <div className={'dateDiv'}>
               <DatePicker
                 placeholder={'开始日期'}
-                // value={moment(moment(this.state.start_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
-                onChange={(date, str) => {
-                  if (date) {
-                    this.setState({ start_date: moment(date).format('YYYY-MM-DD') })
+                value={this.state.start_date}
+                onChange={(value) => {
+                  if (value) {
+                    this.setState({ start_date: value.format('YYYY-MM-DD') })
                   }
                 }}
               />
@@ -151,10 +151,10 @@ class TotalAmountScreen extends Component {
             <div className={'dateDiv'}>
               <DatePicker
                 placeholder={'结束日期'}
-                // value={moment(moment(this.state.end_date).format('YYYY-MM-DD'), 'YYYY-MM-DD')}
-                onChange={(date, str) => {
-                  if (date) {
-                    this.setState({ end_date: moment(date).format('YYYY-MM-DD') })
+                value={this.state.end_date}
+                onChange={(value) => {
+                  if (value) {
+                    this.setState({ end_date: value.format('YYYY-MM-DD') })
                   }
                 }}
               />

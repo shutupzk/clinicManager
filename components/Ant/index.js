@@ -18,10 +18,30 @@ export class MyDatePicker extends Component {
     this.state = {}
   }
   render() {
+    const { value, onChange, padding } = this.props
     return (
       <div>
-        <DatePicker locale={locale} style={{ width: '120px', marginTop: '17px' }} {...this.props} />
-        <style dangerouslySetInnerHTML={{ __html: thiscss }} />
+        <input type={'date'} style={{ marginTop: '17px', padding }}
+          {...this.props} value={moment(value).format('YYYY-MM-DD')}
+          onChange={e => {
+            onChange(moment(e.target.value))
+          }}
+        />
+        <style jsx={true}>{`
+          input[type='date']{
+            float: left;
+            /* text-indent: 10px; */
+            background: rgb(255,255,255);
+            border-radius: 4px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(217,217,217);
+            border-image: initial;
+            padding: 5px 0px;
+            height: 100%;
+          }
+        `}</style>
+        {/* <style dangerouslySetInnerHTML={{ __html: thiscss }} /> */}
       </div>
     )
   }
