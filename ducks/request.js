@@ -21,7 +21,7 @@ export const request = async (url, params, isJson) => {
     const result = data.data
     return result
   } else {
-    // console.log('json ========', API_SERVER + url, json)
+    console.log('json ========', API_SERVER + url, json)
     const data = await axios.post(API_SERVER + url, qs.stringify(json))
     const result = data.data
     return result
