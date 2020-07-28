@@ -13,7 +13,7 @@ export default function(Component) {
     }
 
     async componentWillMount() {
-      console.log = () => {}
+      //console.log = () => {}
       try {
         let token = await localforage.getItem('token')
         this.setState({ token })
