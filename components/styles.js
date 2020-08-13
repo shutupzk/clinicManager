@@ -1060,7 +1060,7 @@ export function styles() {
 				}
 				.listContent ul li {
 					width: 360px;
-					height: 270px;
+					// height: 270px;
 					background: rgba(255, 255, 255, 1);
 					border-radius: 7px;
 					margin: 10px 10px 0 0;
@@ -1813,7 +1813,7 @@ export function styles() {
 					line-height: 14px;
 				}
 				.formList ul li > input {
-					flex: 1;
+					// flex: 1;
 					height: 40px;
 					margin-top: 17px;
 					background: rgba(245, 248, 249, 1);
